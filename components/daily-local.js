@@ -213,14 +213,14 @@
   root.AGSIST_DAILY_LOCAL = api;
 
   var doc = root.document;
-  var CSS = 'aside.dl{margin:1rem 0;padding:.75rem .95rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;background:var(--surface);font-size:.9rem;line-height:1.55;color:var(--text-dim)}' +
+  var CSS = 'aside.dl{margin:1rem 0;padding:.75rem .95rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);background:var(--surface);font-size:.9rem;line-height:1.55;color:var(--text-dim)}' +
     'aside.dl p{margin:.3rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.dl b{color:var(--text)}' +
-    'aside.dl .dl-k{font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}' +
+    'aside.dl .dl-k{font-family:var(--font-body);font-size:.7rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim)}' +
     'aside.dl a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.dl .dl-s{font-size:.76rem;color:var(--text-muted)}' +
     'aside.dl .dl-f{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}' +
     'aside.dl .dl-lab{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}' +
-    'aside.dl input{font:inherit;font-family:"JetBrains Mono",monospace;width:7.5rem;min-height:44px;padding:0 .7rem;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text)}' +
-    'aside.dl button{font:inherit;font-weight:700;min-height:44px;padding:0 1rem;border:1px solid var(--gold);border-radius:6px;background:transparent;color:var(--gold);cursor:pointer}' +
+    'aside.dl input{font:inherit;font-family:"JetBrains Mono",monospace;width:7.5rem;min-height:44px;padding:0 .7rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2);color:var(--text)}' +
+    'aside.dl button{font:inherit;font-weight:700;min-height:44px;padding:0 1rem;border:1px solid var(--gold);border-radius:var(--r-md);background:transparent;color:var(--gold);cursor:pointer}' +
     'aside.dl .dl-err{color:var(--red,#e0685f)}aside.ya.ya-n{display:none}';
   function get(u, opt) { return fetch(u, opt || { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   /* The radar file's 24-hour and 7-day readings at the spot, or null (no file, outside the lower 48, an old

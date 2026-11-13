@@ -49,14 +49,14 @@
 .dev-page{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 .dev-page h1{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.4rem);color:var(--gold);margin-bottom:.3rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
 .dev-page .sub{color:var(--text-dim);font-size:.95rem;margin-bottom:2rem;line-height:1.7;max-width:640px}
-.dev-page h2{font-size:1.05rem;color:var(--text);margin:2.5rem 0 .85rem;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:.4rem;font-family:var(--font-display);text-transform:uppercase;letter-spacing:.05em}
+.dev-page h2{font-size:1.05rem;color:var(--text);margin:2.5rem 0 .85rem;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:.4rem;font-family:var(--font-display);text-transform:none;letter-spacing:0}
 .dev-page p,.dev-page li{color:var(--text-dim);line-height:1.8;font-size:.9rem}
 .dev-page ul{padding-left:1.5rem;margin:.5rem 0 1rem}
 .dev-page a{color:var(--gold)}
 .dev-page code{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:.1rem .35rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text)}
-.dev-page pre{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;margin:.75rem 0 0;font-family:'JetBrains Mono',monospace;font-size:0.792rem;color:var(--text);line-height:1.75;-webkit-overflow-scrolling:touch;tab-size:2}
+.dev-page pre{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem 1.2rem;overflow-x:auto;margin:.75rem 0 0;font-family:'JetBrains Mono',monospace;font-size:0.792rem;color:var(--text);line-height:1.75;-webkit-overflow-scrolling:touch;tab-size:2}
 
-.dev-lead{background:rgba(var(--green-rgb),.06);border:2px solid rgba(var(--green-rgb),.3);border-radius:8px;padding:.95rem 1.1rem;margin:1.4rem 0 .4rem;font-size:1rem;color:var(--text-dim)}
+.dev-lead{background:rgba(var(--green-rgb),.06);border:2px solid rgba(var(--green-rgb),.3);border-radius:var(--r-md);padding:.95rem 1.1rem;margin:1.4rem 0 .4rem;font-size:1rem;color:var(--text-dim)}
 .dev-lead strong{color:var(--green)}
 
 /* widget cards */
@@ -67,7 +67,7 @@
 .wc-meta{flex:1;min-width:0}
 .wc-title-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.3rem}
 .wc-name{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--text);letter-spacing:.02em}
-.wc-tag{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .45rem;border-radius:4px;border:1px solid}
+.wc-tag{font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.12rem .45rem;border-radius:4px;border:1px solid}
 .wc-tag--live{color:var(--green);background:rgba(var(--green-rgb),.06);border-color:rgba(var(--green-rgb),.4)}
 .wc-tag--soon{color:var(--text-muted);background:var(--surface2);border-color:var(--border)}
 .wc-desc{font-size:1rem;color:var(--text-dim);line-height:1.68}
@@ -79,25 +79,25 @@
 .wc-footer a:hover{opacity:.8}
 [data-theme="light"] .wc-footer{background:var(--surface2)}
 [data-theme="light"] .dev-lead{background:var(--surface)}
-.wc-snip-lbl{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);margin:1rem 0 0}
+.wc-snip-lbl{font-family:var(--font-body);font-size:.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin:1rem 0 0}
 .wc-snip{position:relative;padding-top:2rem}
-.wc-copy{position:absolute;top:0;right:0;min-height:36px;padding:0 .7rem;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font:600 .78rem Inter,sans-serif;cursor:pointer}
+.wc-copy{position:absolute;top:0;right:0;min-height:36px;padding:0 .7rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2);color:var(--text);font:600 .78rem Inter,sans-serif;cursor:pointer}
 .wc-copy:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .wc-prev{margin-top:1rem}
-.wc-prev iframe{width:100%;max-width:480px;height:560px;border:1px solid var(--border);border-radius:8px;display:block;background:var(--surface)}
+.wc-prev iframe{width:100%;max-width:480px;height:560px;border:1px solid var(--border);border-radius:var(--r-md);display:block;background:var(--surface)}
 .dev-page code{font-family:'JetBrains Mono',monospace;font-size:.86em}
 .wc-endpoint{font-family:'JetBrains Mono',monospace;font-size:0.785rem;color:var(--text-muted)}
 
 /* data feed endpoints */
 .ep-list{margin:1rem 0}
-.ep-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;margin-bottom:.75rem}
+.ep-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem 1rem;margin-bottom:.75rem}
 .ep-top{display:flex;align-items:flex-start;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem}
 .ep-method{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;padding:.18rem .5rem;border-radius:4px;background:rgba(var(--green-rgb),.06);color:var(--green);border:1px solid rgba(var(--green-rgb),.4);white-space:nowrap;flex-shrink:0}
 .ep-path{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text);flex:1;min-width:0;word-break:break-all}
 .ep-desc{font-size:1rem;color:var(--text-dim);margin:0 0 .5rem;line-height:1.7}
 
 /* contact card */
-.contact-card{background:var(--surface);border:1px solid var(--border-g);border-radius:8px;padding:1.25rem 1.4rem;margin-top:.75rem;display:flex;flex-direction:column;gap:.35rem}
+.contact-card{background:var(--surface);border:1px solid var(--border-g);border-radius:var(--r-md);padding:1.25rem 1.4rem;margin-top:.75rem;display:flex;flex-direction:column;gap:.35rem}
 .cc-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);letter-spacing:.02em}
 .cc-title{font-size:.82rem;color:var(--gold);font-weight:600}
 .cc-links{display:flex;flex-direction:column;gap:.45rem;margin-top:.5rem}
@@ -145,7 +145,7 @@
 <h1>Embed tools and data feeds</h1>
 <p class="sub page-lede">AGSIST publishes embeddable agricultural tools, a USDA report calendar and the Daily feed for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or add the calendar or the feed to your reader.</p>
 
-<div class="dev-lead">Three are live: the GDU calculator, the ARC or PLC calculator and the county rain box. All load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
+<div class="dev-lead">Three are live: the GDU calculator, the ARC or PLC calculator and the county rain box. All load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;From AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
 
 <h2 id="widgets" style="scroll-margin-top:80px">Embeddable widgets</h2>
 <p>Run a co-op, elevator, ag-retail or extension site? Copy a snippet, paste it into your page, and your visitors get the live tool. It's free and needs no account or API key.</p>
@@ -169,7 +169,7 @@
   style="width:100%;max-width:480px;height:560px;border:0"
   loading="lazy"&gt;&lt;/iframe&gt;
 &lt;p style="font:600 11px sans-serif;text-align:right;max-width:480px"&gt;
-  &lt;a href="https://agsist.com/gdu-calculator"&gt;Powered by AGSIST&lt;/a&gt;
+  &lt;a href="https://agsist.com/gdu-calculator"&gt;From AGSIST&lt;/a&gt;
 &lt;/p&gt;</pre></div>
     <p class="wc-snip-lbl">Option B: script (resizes itself, adds the link for you)</p>
     <div class="wc-snip"><button type="button" class="wc-copy" data-copy="scr-gdu">Copy</button>
@@ -254,7 +254,7 @@
   </div>
 </div>
 
-<p class="wc-desc">The script places a &ldquo;Powered by AGSIST&rdquo; link in your page, and the iframe snippet carries the same link under it. Please keep it; links like that are how people find the site. Nothing tracks your visitors beyond standard, anonymized usage stats on the tool itself. Problem with a widget? <a href="mailto:sig@agsist.com?subject=AGSIST%20embed%20widget">Email sig@agsist.com</a>.</p>
+<p class="wc-desc">The script places a &ldquo;From AGSIST&rdquo; link in your page, and the iframe snippet carries the same link under it. Please keep it; links like that are how people find the site. Nothing tracks your visitors beyond standard, anonymized usage stats on the tool itself. Problem with a widget? <a href="mailto:sig@agsist.com?subject=AGSIST%20embed%20widget">Email sig@agsist.com</a>.</p>
 
 
 <h2 id="calendar" style="scroll-margin-top:80px">Calendar</h2>
@@ -302,7 +302,7 @@
       <span class="ep-method">TXT</span>
       <span class="ep-path">https://agsist.com/llms.txt</span>
     </div>
-    <p class="ep-desc">A plain-text map of the site for answer engines and AI assistants: every main page grouped by the question it answers, the latest headline numbers each with its date, and how to cite AGSIST. <a href="/llms.txt">Read llms.txt</a></p>
+    <p class="ep-desc">A plain-text map of the site for search and answer engines: every main page grouped by the question it answers, the latest headline numbers each with its date, and how to cite AGSIST. <a href="/llms.txt">Read llms.txt</a></p>
   </div>
 
 </div>
@@ -313,7 +313,7 @@
   <li>Non-commercial use by farms, extension offices, and co-ops is welcome at no charge.</li>
   <li>Commercial licensing and white-labeling require a written agreement: <a href="mailto:sig@agsist.com">contact me</a>.</li>
   <li>Cache files on your end. Please fetch no more than once every 15 minutes.</li>
-  <li>If you use the widget script, please keep the &ldquo;Powered by AGSIST&rdquo; link.</li>
+  <li>If you use the widget script, please keep the &ldquo;From AGSIST&rdquo; link.</li>
   <li>Nothing here is for live trading decisions, and nothing on the site is financial or trading advice.</li>
 </ul>
 

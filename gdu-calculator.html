@@ -57,7 +57,7 @@
 .gdu-page { max-width: 1060px; margin: 0 auto; padding: 0 1rem 3rem; }
 
 .gdu-hero { padding: 1rem 0 .8rem; border-bottom: 1px solid var(--border); margin-bottom: 1.1rem; }
-.gdu-eyebrow { font-size:0.755rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:.25rem; }
+.gdu-eyebrow { font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); margin-bottom:.25rem; }
 .gdu-hero h1 { font-family:var(--font-display); font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
 .gdu-hero p { font-size:1rem; color:var(--text-dim); line-height:1.6; max-width:660px; margin:0; }
 
@@ -69,13 +69,13 @@
 
 /* ── INPUTS ──────────────────────────────────────────────────────────── */
 .gdu-card { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:var(--card-r); padding:1.1rem 1.2rem; }
-.gdu-card-title { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
+.gdu-card-title { font-family:var(--font-body); font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); margin-bottom:.9rem; display:flex; align-items:center; gap:.4rem; }
 
 .f-group { margin-bottom:.85rem; }
-.f-label { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:.3rem; }
-.f-input { background:var(--bg); border:2px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; box-sizing:border-box; }
+.f-label { font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); display:block; margin-bottom:.3rem; }
+.f-input { background:var(--bg); border:2px solid var(--border); border-radius:var(--r-md); color:var(--text); font-family:'JetBrains Mono',monospace; font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; box-sizing:border-box; }
 .f-input:focus { border-color:var(--gold); }
-.f-select { background:var(--bg); border:2px solid var(--border); border-radius:6px; color:var(--text); font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; cursor:pointer; box-sizing:border-box; }
+.f-select { background:var(--bg); border:2px solid var(--border); border-radius:var(--r-md); color:var(--text); font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; cursor:pointer; box-sizing:border-box; }
 .f-select:focus { border-color:var(--gold); }
 .f-hint { font-size:0.755rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
 /* 2026-11-09: the maturity note is empty until the first calculation fills it with the example's two (three on a phone)
@@ -99,7 +99,7 @@
 
 /* Crop switcher pills */
 .crop-pills { display:flex; gap:.4rem; margin-bottom:1rem; }
-.crop-pill { flex:1; padding:.5rem .6rem; border-radius:8px; border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:0.775rem; font-weight:700; letter-spacing:.04em; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.3rem; }
+.crop-pill { flex:1; padding:.5rem .6rem; border-radius:var(--r-md); border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:0.775rem; font-weight:700; letter-spacing:.04em; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.3rem; }
 .crop-pill:hover { border-color:var(--gold); }
 .crop-pill.active { border-color:var(--gold); background:rgba(230,176,66,.12); color:var(--text); }
 
@@ -113,7 +113,7 @@
 
 .method-divider { display:flex; align-items:center; gap:.5rem; margin:.75rem 0; }
 .method-divider::before,.method-divider::after { content:''; flex:1; height:1px; background:var(--border); }
-.method-divider span { font-size:0.755rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); white-space:nowrap; }
+.method-divider span { font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-muted); white-space:nowrap; }
 
 /* Result rows */
 .r-row { display:flex; justify-content:space-between; align-items:baseline; padding:.3rem 0; border-bottom:1px solid rgba(255,255,255,.04); }
@@ -134,13 +134,13 @@ html.gdu-late #gdu-mat-card{order:-1}
 .gauge-center-val { position:absolute; bottom:0; left:50%; transform:translateX(-50%); text-align:center; width:160px; }
 .gauge-num { font-family:var(--font-display); font-size:2.4rem; font-weight:800; color:var(--text); line-height:1; }
 .gauge-unit { font-size:0.755rem; color:var(--text-dim); }
-.gauge-stage { display:inline-flex; align-items:center; gap:.4rem; margin-top:.65rem; padding:.3rem .9rem; background:rgba(230,176,66,.12); border:1px solid rgba(230,176,66,.35); border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:700; color:var(--gold); }
+.gauge-stage { display:inline-flex; align-items:center; gap:.4rem; margin-top:.65rem; padding:.3rem .9rem; background:rgba(230,176,66,.12); border:1px solid rgba(230,176,66,.35); border-radius:var(--r-lg); font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:700; color:var(--gold); }
 
 /* Progress bar */
 .prog-wrap { margin:1rem 0 .4rem; }
-.prog-track { height:10px; background:var(--border); border-radius:5px; position:relative; overflow:visible; }
-.prog-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,var(--green) 0%,var(--gold) 65%,#e05c5c 100%); transition:width .6s ease; }
-.prog-marker { position:absolute; top:-5px; width:4px; height:20px; background:#fff; border-radius:2px; transition:left .6s ease; box-shadow:0 0 4px rgba(0,0,0,.4); }
+.prog-track { height:10px; background:var(--border); border-radius:var(--r-md); position:relative; overflow:visible; }
+.prog-fill { height:100%; border-radius:var(--r-md); background:var(--green); transition:width .6s ease; }
+.prog-marker { position:absolute; top:-5px; width:4px; height:20px; background:#fff; border-radius:2px; transition:left .6s ease; box-shadow:none; }
 .prog-labels { position:relative; height:1.1rem; font-size:0.755rem; color:var(--text-muted); margin-top:.4rem; }
 .prog-labels span { position:absolute; top:0; transform:translateX(-50%); white-space:nowrap; }
 .prog-labels span.l0 { transform:none; }
@@ -148,14 +148,14 @@ html.gdu-late #gdu-mat-card{order:-1}
 
 /* Maturity dates */
 .mat-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; margin:.75rem 0; }
-.mat-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:.65rem .6rem; text-align:center; }
-.mat-card-lbl { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.25rem; }
+.mat-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-md); padding:.65rem .6rem; text-align:center; }
+.mat-card-lbl { font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-muted); margin-bottom:.25rem; }
 .mat-card-val { font-family:'JetBrains Mono',monospace; font-size:.95rem; font-weight:800; color:var(--gold); line-height:1.2; }
 .mat-card-sub { font-size:0.755rem; color:var(--text-muted); margin-top:.15rem; }
 
 /* ── MILESTONES ───────────────────────────────────────────────────────── */
 .milestones-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:.5rem; margin-top:.75rem; }
-.ms { background:var(--bg); border:2px solid var(--border); border-radius:8px; padding:.65rem .7rem; text-align:center; transition:all .2s; }
+.ms { background:var(--bg); border:2px solid var(--border); border-radius:var(--r-md); padding:.65rem .7rem; text-align:center; transition:all .2s; }
 .ms.reached { border-color:var(--green); background:rgba(58,139,60,.07); }
 .ms.current { border-color:var(--gold); background:rgba(230,176,66,.1); }
 .ms-icon { font-size:.9rem; margin-bottom:.15rem; }
@@ -178,7 +178,7 @@ html.gdu-late #gdu-mat-card{order:-1}
 .ref-table tr:hover td { background:rgba(255,255,255,.03); }
 
 /* ── INFO BOXES ───────────────────────────────────────────────────────── */
-.info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 6px 6px 0; padding:.65rem .9rem; font-size:0.79rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
+.info-box { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 var(--r-md) var(--r-md) 0; padding:.65rem .9rem; font-size:0.79rem; color:var(--text-dim); line-height:1.6; margin:.5rem 0; }
 .info-box.green { border-color:var(--green); }
 .info-box.red   { border-color:#e05c5c; }
 .info-box strong { color:var(--text); }
@@ -195,14 +195,14 @@ html.gdu-late #gdu-mat-card{order:-1}
 .formula-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:.75rem; margin-top:.75rem; }
 @media(min-width:580px){ .formula-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(min-width:900px){ .formula-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
-.formula-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:.85rem .9rem; }
-.formula-card-title { font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.5rem; }
+.formula-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-md); padding:.85rem .9rem; }
+.formula-card-title { font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); margin-bottom:.5rem; }
 .formula-card p { font-size:0.787rem; color:var(--text-dim); line-height:1.6; margin:0; }
 .formula-card code { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--green); background:rgba(58,139,60,.1); padding:.1rem .3rem; border-radius:3px; }
 html[data-theme="light"] .formula-card code { color:#276c43; }
 
 /* ── LIVE BADGE ───────────────────────────────────────────────────────── */
-.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.755rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:20px; padding:.15rem .5rem; }
+.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:var(--r-lg); padding:.15rem .5rem; }
 
 
 /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
@@ -317,11 +317,11 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <div class="gdu-layout">
   <div>
     <div class="gdu-card" style="margin-bottom:1.1rem">
-      <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sun"/></svg> Setup</div>
+      <div class="gdu-card-title">Setup</div>
 
       <div class="crop-pills">
-        <button class="crop-pill active" id="pill-corn" data-crop="corn" aria-pressed="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
-        <button class="crop-pill" id="pill-bean" data-crop="bean" aria-pressed="false"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
+        <button class="crop-pill active" id="pill-corn" data-crop="corn" aria-pressed="true">Corn</button>
+        <button class="crop-pill" id="pill-bean" data-crop="bean" aria-pressed="false">Soybeans</button>
       </div>
 
       <div class="f-group">
@@ -348,20 +348,20 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     </div>
 
     <div class="gdu-card" style="margin-bottom:1.1rem">
-      <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Your weather since planting</div>
+      <div class="gdu-card-title">Your weather since planting</div>
       <p style="font-size:.9rem;color:var(--text-dim);line-height:1.5;margin:0 0 .85rem">Pulls the daily high and low for every day since planting from the PRISM daily weather grid (Oregon State University) and adds up your GDUs.</p>
 
       <div class="f-group">
         <label class="f-label" for="g-zip">Your location (ZIP or city)</label>
         <div style="display:flex;gap:.4rem">
           <input class="f-input" id="g-zip" type="text" placeholder="ZIP code or city name" maxlength="40" style="flex:1">
-          <button id="g-locate-btn" style="padding:.42rem .75rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px" aria-label="Use my current location" title="Use my location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> Auto</button>
+          <button id="g-locate-btn" style="padding:.42rem .75rem;border-radius:var(--r-md);border:2px solid var(--border);background:var(--surface);color:var(--gold);font-size:0.775rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:44px" aria-label="Use my current location" title="Use my location">Auto</button>
         </div>
         <div class="f-hint" id="g-loc-display">Your location appears here after fetching</div>
       </div>
 
       <button class="fetch-btn" id="g-fetch-btn">
-        <span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch GDUs from weather data
+         Fetch GDUs from weather data
       </button>
       <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Until you fetch, the results are an example from the hand-entry temperatures below (82/58&deg;F to start, a midsummer day, so it runs ahead of a real season), not your weather.</div>
 
@@ -446,7 +446,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
     <!-- Maturity Estimates -->
     <div class="gdu-card" id="gdu-mat-card" style="margin-bottom:1.1rem">
-      <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Maturity Projection</div>
+      <div class="gdu-card-title">Maturity Projection</div>
       <div class="mat-grid">
         <div class="mat-card"><div class="mat-card-lbl">GDU Target</div><div class="mat-card-val" id="r-target">-</div><div class="mat-card-sub" id="r-target-sub">to maturity</div></div>
         <div class="mat-card"><div class="mat-card-lbl">GDUs Left</div><div class="mat-card-val" id="r-remaining">-</div><div class="mat-card-sub">remaining</div></div>
@@ -456,13 +456,13 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div class="r-row" id="r-mat-row"><span class="r-lbl" id="r-mat-lbl">Est. black layer, Wisconsin rates</span><span class="r-val green" id="r-mat-date">-</span></div>
       <div class="r-row" id="r-frost-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">-</span></div>
       <div class="f-hint" id="r-mat-note" style="margin-top:.5rem"></div>
-      <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy shareable link to this field</button>
+      <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px">Copy shareable link to this field</button>
       <div class="f-hint" id="g-share-status" style="text-align:center;margin-top:.3rem" role="status" aria-live="polite"></div>
     </div>
 
     <!-- Milestones -->
     <div class="gdu-card">
-      <div class="gdu-card-title" id="ms-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Growth stage milestones</div>
+      <div class="gdu-card-title" id="ms-title">Growth stage milestones</div>
       <div class="milestones-grid" id="milestones"></div>
       <div class="f-hint" style="margin-top:.65rem">Scaled to your selected RM/MG. GDU requirements still vary &plusmn;100&ndash;200 by hybrid. Verify with your seed company&#8217;s published GDU chart.</div>
     </div>
@@ -490,7 +490,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <div class="ref-layout">
     <!-- WI Monthly Averages -->
   <div class="gdu-card">
-      <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Upper Midwest GDU Reference (WI example)</div>
+      <div class="gdu-card-title">Upper Midwest GDU Reference (WI example)</div>
       <div class="tblscroll" tabindex="0" role="region" aria-label="Wisconsin monthly GDU averages, scrollable table"><table class="wi-avg-table">
         <thead><tr><th>Month</th><th>Avg Hi</th><th>Avg Lo</th><th>GDU/Day</th><th>Monthly</th></tr></thead>
         <tbody>
@@ -504,7 +504,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <div class="f-hint" style="margin-top:.4rem">WI 30-year NOAA normals shown as one reference. Southern WI runs ~5&ndash;8% higher; central Corn Belt (IA/IL/IN) runs ~15&ndash;20% higher; Northern Plains similar to WI. For your exact location, use the Fetch GDUs button above.</div>
     </div>
   <div class="gdu-card">
-    <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn stage reference</div>
+    <div class="gdu-card-title">Corn stage reference</div>
     <div class="ref-table-wrap" tabindex="0" role="region" aria-label="Corn stage reference, scrollable table">
     <table class="ref-table">
     <thead><tr><th>Stage</th><th>GDUs</th><th>Key Event</th><th>Management</th></tr></thead>
@@ -529,7 +529,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   </div>
 
   <div class="gdu-card">
-    <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybean stage reference</div>
+    <div class="gdu-card-title">Soybean stage reference</div>
     <div class="ref-table-wrap" tabindex="0" role="region" aria-label="Soybean stage reference, scrollable table">
     <table class="ref-table">
     <thead><tr><th>Stage</th><th>GDUs</th><th>Key Event</th><th>Management</th></tr></thead>
@@ -553,7 +553,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 </div>
 
 <div class="gdu-card" style="margin-top:1.25rem">
-  <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg> GDU formula and method</div>
+  <div class="gdu-card-title">GDU formula and method</div>
   <div class="formula-grid">
     <div class="formula-card">
       <div class="formula-card-title">Corn Formula</div>
@@ -579,13 +579,13 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 </div>
 
 <div class="gdu-card" style="margin-top:1.25rem">
-  <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Related Tools</div>
+  <div class="gdu-card-title">Related Tools</div>
   <div style="display:flex;flex-wrap:wrap;gap:.5rem">
-    <a href="/fast-facts#stages" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Crop stage explorer</a>
-    <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Yield Estimator</a>
-    <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-Even Calculator</a>
-    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Fast facts</a>
-    <a href="/planting-date" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Planting date tool</a>
+    <a href="/fast-facts#stages" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px">Crop stage explorer</a>
+    <a href="/yield-estimator" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px">Yield Estimator</a>
+    <a href="/breakeven" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px">Break-Even Calculator</a>
+    <a href="/fast-facts" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px">Fast facts</a>
+    <a href="/planting-date" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:.4rem .8rem;font-size:0.785rem;font-weight:600;color:var(--text);text-decoration:none;min-height:44px">Planting date tool</a>
   </div>
 </div>
 
@@ -594,7 +594,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <!--FAQ:START-->
 <style>
 .agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
-.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}
 .agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
@@ -651,7 +651,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 /* ─── DATA ─────────────────────────────────────────────────────────── */
 // The corn and soybean stage table lives in components/gdu-stages.js (sources
 // and the history of its fixes are there). /fast-facts reads the same file.
-function spIcon(n){return n?'<svg class="ic-sp" aria-hidden="true"><use href="#sp-'+n+'"/></svg>':'';}
+function spIcon(){return '';}
 function withIcons(a){return a.map(function(o){var c={};for(var k in o)c[k]=o[k];c.icon=spIcon(o.icon);return c;});}
 var CORN_STAGES=withIcons(window.AgGduStages.corn);
 var BEAN_STAGES=withIcons(window.AgGduStages.bean);
@@ -803,7 +803,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
   if(todayD<=plantD){setStatus('End date must be after planting date','err');return;}
 
   var btn=document.getElementById('g-fetch-btn');
-  btn.disabled=true;btn.innerHTML='<span><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></span> Fetching weather data&hellip;';
+  btn.disabled=true;btn.innerHTML=' Fetching weather data&hellip;';
   setStatus('Loading\u2026','');
 
   var zipVal=(document.getElementById('g-zip').value||'').trim();
@@ -852,7 +852,7 @@ document.getElementById('g-fetch-btn').addEventListener('click',function(){
     setStatus('\u2717 '+err.message,'err');
   }).finally(function(){
     btn.disabled=false;
-    btn.innerHTML='<span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch GDUs from weather data';
+    btn.innerHTML=' Fetch GDUs from weather data';
   });
 });
 

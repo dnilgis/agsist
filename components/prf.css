@@ -407,7 +407,7 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
   .prf-ph { display: flex !important; align-items: center; gap: .18in; padding: 0 0 .08in; border-bottom: 2.5px solid #000; margin: 0 0 .08in; }
   .prf-ph-logo { width: .95in; height: auto; flex: none; }
   .prf-ph-t { flex: 1 1 auto; min-width: 0; }
-  .prf-ph-k { margin: 0; font-size: 10pt; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+  .prf-ph-k { margin: 0; font-size: 10pt; font-weight: 600; letter-spacing:0; text-transform:none; }
   .prf-ph-g { margin: .02in 0 0; font-size: 16pt; font-weight: 700; line-height: 1.15; }
   .prf-ph-d { margin: .02in 0 0; font-size: 9.5pt; line-height: 1.3; }
   /* the policy as chosen, one band of five */
@@ -468,7 +468,7 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
   .prf-pq svg { display: block; width: .85in; height: .85in; flex: none; }
   .prf-pq-t { margin: 0; font-size: 9pt; line-height: 1.3; }
   .prf-spon-p:not([hidden]) { display: flex !important; gap: .14in; align-items: baseline; margin: .06in 0 0; padding: .04in .1in; border: 1.5px solid #000; font-size: 9.5pt; line-height: 1.35; break-inside: avoid; }
-  .prf-spon-p .psp-tag { flex: none; font-size: 9pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border: 1px solid #000; padding: 0 .05in; }
+  .prf-spon-p .psp-tag { flex: none; font-size: 9pt; font-weight: 700; letter-spacing:0; text-transform:none; border: 1px solid #000; padding: 0 .05in; }
   .prf-spon-p .psp-name { font-size: 11pt; font-weight: 700; }
   .prf-spon-p .psp-contact { font-weight: 600; white-space: nowrap; }
   .prf-spon-p .psp-no { font-size: 9pt; color: #333; margin-left: .3em; }
@@ -510,8 +510,8 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
    beside the result on /prf, always labelled Sponsor in ad orange. The band
    never prints; a sold state's sponsor prints on the /prf sheet (.prf-spon-p). On a phone the middle sentence (.prf-spon-x) drops so the band
    stays two short lines. */
-.prf-spon-band { display: block; margin: .2rem 0 1.1rem; padding: .45rem .8rem; font-size: .8rem; line-height: 1.55; color: var(--text-dim); background: var(--surface, transparent); border: 1px solid var(--border); border-left: 3px solid var(--ad-orange, #e8743a); border-radius: 8px; }
-.prf-spon-band .prf-spon-tag { font-family: var(--font-mono); font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ad-orange-ink, #a8380a); white-space: nowrap; margin-right: .4rem; }
+.prf-spon-band { display: block; margin: .2rem 0 1.1rem; padding: .45rem .8rem; font-size: .8rem; line-height: 1.55; color: var(--text-dim); background: var(--surface, transparent); border: 1px solid var(--border); border-left: 3px solid var(--ad-orange, #e8743a); border-radius:var(--r-md); }
+.prf-spon-band .prf-spon-tag { font-family:var(--font-body); font-size: .66rem; font-weight: 700; letter-spacing:0; text-transform:none; color: var(--ad-orange-ink, #a8380a); white-space: nowrap; margin-right: .4rem; }
 html:not([data-theme="light"]) .prf-spon-band .prf-spon-tag { color: var(--ad-orange, #e8743a); }
 /* the link: a taller hit area (padding, pulled back by the margin) without a taller band */
 .prf-spon-band a[href] { display: inline-block; padding: .55rem 0; margin: -.55rem 0 -.55rem .3rem; color: var(--brand); font-weight: 600; white-space: nowrap; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }

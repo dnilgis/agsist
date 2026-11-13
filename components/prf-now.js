@@ -172,7 +172,7 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
-  var CSS = '.prf-now{margin:1.2rem 0;padding:1rem 1.1rem;border:1px solid var(--border,#333);border-radius:10px;background:var(--surface,transparent)}' +
+  var CSS = '.prf-now{margin:1.2rem 0;padding:1rem 1.1rem;border:1px solid var(--border,#333);border-radius:var(--r-lg);background:var(--surface,transparent)}' +
     '.prf-now h2,.prf-now>h3{margin:0 0 .35rem;font-size:1.15rem}.pn-sub{margin:0 0 .6rem;font-size:.9rem;color:var(--text-muted,#999)}' +
     '.pn-iv{padding:.7rem 0;border-top:1px solid var(--border,#333)}.pn-iv-h{margin:0 0 .2rem;font-size:1rem}' +
     '.pn-when{margin:0 0 .5rem;font-size:.9rem;color:var(--text-muted,#999)}' +

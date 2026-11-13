@@ -1241,7 +1241,7 @@ function placeOf(elev){
   Object.keys(elev.commodities||{}).some(function(k){return(elev.commodities[k]||[]).some(function(b){if(b.zip){z=b.zip;return true;}return false;});});
   return cbRank.placeTown(t,z);
 }
-/* "Mid-Iowa Cooperative — Des Moines (28 mi)" */
+/* "Mid-Iowa Cooperative Des Moines (28 mi)" */
 function bannerName(elev){
   var t=placeOf(elev);
   return elev.facility+(t?', '+t:'')+(elev.distance!=null?' ('+elev.distance.toFixed(0)+' mi)':'');

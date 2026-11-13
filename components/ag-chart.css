@@ -1,7 +1,7 @@
 /* components/ag-chart.css: the shared chart kit's styles (components/ag-chart.js). */
 .agc{min-width:0}
 .agc-ctl{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 .4rem}
-.agc-rg{font:inherit;font-size:.8rem;font-weight:700;color:var(--text-dim);background:none;border:1px solid var(--border);border-radius:var(--r-pill);padding:.25rem .8rem;min-height:34px;min-width:44px;cursor:pointer}
+.agc-rg{font:inherit;font-size:.8rem;font-weight:700;color:var(--text-dim);background:none;border:1px solid var(--border);border-radius:var(--r-lg);padding:.25rem .8rem;min-height:34px;min-width:44px;cursor:pointer}
 .agc-rg[aria-pressed="true"]{color:var(--bg,#0a0c0d);background:var(--gold,#d4a23f);border-color:var(--gold,#d4a23f)}
 .agc-rg:focus-visible,.agc-btn:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:2px}
 .agc-plot{position:relative;width:100%;height:280px}

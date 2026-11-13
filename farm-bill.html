@@ -88,7 +88,7 @@ img{display:block}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
 
 .hero{padding:52px 0 36px;border-bottom:1px solid var(--hair)}
-.eyebrow{font-family:var(--mono);font-size:13.2px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.eyebrow{font-family:var(--mono);font-size:13.2px;letter-spacing:0;text-transform:none;color:var(--accent);margin-bottom:18px}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(31px,5.4vw,52px);line-height:1.04;letter-spacing:-.01em;margin-bottom:14px}
 h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(15px,2.2vw,20px);letter-spacing:.01em;margin-top:14px;line-height:1.35}
 .bill-id{font-family:var(--mono);color:var(--accent)}
@@ -105,31 +105,31 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .pill .mk{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:1px}
 .pill.live .mk{background:var(--pos)}.pill.warn .mk{background:var(--accent)}
 .pill b{color:var(--text);font-weight:600}
-.tldr{margin:30px 0 6px;border:1px solid var(--hair-strong);border-radius:8px;overflow:hidden;background:var(--surface)}
+.tldr{margin:30px 0 6px;border:1px solid var(--hair-strong);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
 .tldr-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--hair)}
-.tldr-head .tag{font-family:var(--mono);font-size:12.9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.tldr-head .tag{font-family:var(--mono);font-size:12.9px;letter-spacing:0;text-transform:none;color:var(--accent)}
 .tldr-head .stamp{margin-left:auto;font-family:var(--mono);font-size:12.9px;color:var(--dim)}
 .tldr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:1px;background:var(--hair)}
 @media (min-width:1000px){.tldr-grid{grid-template-columns:repeat(3,1fr)}}
 .tldr-cell{background:var(--surface);padding:15px 20px}
-.tldr-cell .k{font-family:var(--mono);font-size:12.8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.tldr-cell .k{font-family:var(--mono);font-size:12.8px;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:6px}
 .tldr-cell .vv{font-size:14.5px;color:var(--text);line-height:1.45}
 .tldr-cell .vv b{font-weight:600}
 .tldr-cell .num{font-family:var(--mono);font-weight:700;color:var(--accent)}
-.oct1{margin:26px 0 4px;border:1px solid var(--hair-strong);border-radius:10px;
+.oct1{margin:26px 0 4px;border:1px solid var(--hair-strong);border-radius:var(--r-lg);
   background:var(--surface);padding:20px 22px}
-.oct1 .o1-tag{font-family:var(--mono);font-size:12.9px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.oct1 .o1-tag{font-family:var(--mono);font-size:12.9px;letter-spacing:0;
+  text-transform:none;color:var(--accent);margin-bottom:10px}
 .oct1 h3{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:8px;line-height:1.25}
 .oct1 .o1-lede{font-size:15px;line-height:1.6;color:var(--text);opacity:.9;max-width:70ch;margin-bottom:18px}
 .oct1 .o1-lede b{opacity:1;font-weight:600}
 .o1-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:820px){.o1-grid{grid-template-columns:1fr}}
-.o1-card{border:1px solid var(--hair);border-radius:8px;padding:14px 16px;background:var(--raised)}
+.o1-card{border:1px solid var(--hair);border-radius:var(--r-md);padding:14px 16px;background:var(--raised)}
 .o1-card.keep{border-left:2px solid var(--pos)}
 .o1-card.stop{border-left:2px solid var(--neg)}
 .o1-card.real{grid-column:1/-1;border-left:2px solid var(--accent)}
-.o1-card h4{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}
+.o1-card h4{font-family:var(--mono);font-size:12px;letter-spacing:0;text-transform:none;margin-bottom:9px}
 .o1-card.keep h4{color:var(--pos)} .o1-card.stop h4{color:var(--neg)} .o1-card.real h4{color:var(--accent)}
 .o1-card ul{list-style:none;display:grid;gap:8px}
 .o1-card li{font-size:14.2px;line-height:1.55;color:var(--text);opacity:.9}
@@ -139,16 +139,16 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .o1-card .big{font-family:var(--mono);font-weight:700;color:var(--accent)}
 .o1-src{font-size:12.6px;line-height:1.6;color:var(--dim);margin-top:14px}
 .o1-src a{color:var(--accent)}
-.foryou{margin:16px 0 6px;border:1px solid var(--hair-strong);border-left:2px solid var(--pos);border-radius:8px;background:var(--surface);padding:16px 20px}
-.foryou .fy-tag{font-family:var(--mono);font-size:12.9px;letter-spacing:.14em;text-transform:uppercase;color:var(--pos);margin-bottom:9px}
+.foryou{margin:16px 0 6px;border:1px solid var(--hair-strong);border-left:2px solid var(--pos);border-radius:var(--r-md);background:var(--surface);padding:16px 20px}
+.foryou .fy-tag{font-family:var(--mono);font-size:12.9px;letter-spacing:0;text-transform:none;color:var(--pos);margin-bottom:9px}
 .foryou ul{list-style:none;display:grid;gap:10px}
 .foryou li{font-size:14.5px;line-height:1.55;color:var(--text);opacity:.9}
 .foryou li b{opacity:1;font-weight:600}
 .foryou a{color:var(--accent);border-bottom:1px solid rgba(212,162,63,.35)}
 .foryou a:hover{border-bottom-color:var(--accent)}
 /* next 90 days */
-.n90{margin:22px 0 0;border:1px solid var(--hair-strong);border-radius:8px;background:var(--surface);padding:14px 20px}
-.n90-tag{font-family:var(--mono);font-size:12.9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.n90{margin:22px 0 0;border:1px solid var(--hair-strong);border-radius:var(--r-md);background:var(--surface);padding:14px 20px}
+.n90-tag{font-family:var(--mono);font-size:12.9px;letter-spacing:0;text-transform:none;color:var(--accent);margin-bottom:10px}
 .n90-dates{list-style:none;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:14px}
 .n90-dates li{font-size:14px;line-height:1.45;color:var(--text);opacity:.9}
 .n90-dates time{display:block;font-family:var(--mono);font-weight:700;font-size:15px;color:var(--accent)}
@@ -162,7 +162,7 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .fy-pick{margin-top:14px;padding-top:12px;border-top:1px solid var(--hair)}
 .fy-pick-h{font-weight:700;font-size:15px;margin-bottom:8px}
 .fy-btns{display:flex;flex-wrap:wrap;gap:8px}
-.fy-btns button,.fb-more{font:inherit;font-size:14px;min-height:44px;padding:8px 14px;border-radius:6px;border:1px solid var(--hair-strong);background:var(--page);color:var(--text);cursor:pointer}
+.fy-btns button,.fb-more{font:inherit;font-size:14px;min-height:44px;padding:8px 14px;border-radius:var(--r-md);border:1px solid var(--hair-strong);background:var(--page);color:var(--text);cursor:pointer}
 .fy-btns button:hover,.fb-more:hover{border-color:var(--accent)}
 .fy-btns button[aria-pressed="true"]{border-color:var(--pos);background:var(--raised);font-weight:600}
 .fy-op{margin-top:12px}
@@ -179,16 +179,16 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .updlog .d{font-family:var(--mono);color:var(--accent);font-size:12.9px;white-space:nowrap}
 @media (max-width:640px){.updlog .u{grid-template-columns:1fr;gap:4px}}
 .subnav{position:sticky;top:var(--nav-h);z-index:50;background:color-mix(in srgb,var(--page) 92%,transparent);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);margin-top:8px}
-.subnav::after{content:"";position:absolute;right:0;top:0;bottom:1px;width:34px;background:linear-gradient(to left,var(--page),transparent);pointer-events:none}
+  border-bottom:1px solid var(--hair);margin-top:8px}
+.subnav::after{content:"";position:absolute;right:0;top:0;bottom:1px;width:34px;background:var(--page);pointer-events:none}
 @media (min-width:920px){.subnav::after{display:none}}
 .subnav-inner{max-width:1080px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 24px;height:var(--subnav-h);align-items:center;scrollbar-width:none}
 .subnav-inner::-webkit-scrollbar{display:none}
-.subnav a{font-family:var(--mono);font-size:13.2px;letter-spacing:.03em;color:var(--dim);padding:12px 11px;border-radius:5px;white-space:nowrap;border:1px solid transparent}
+.subnav a{font-family:var(--mono);font-size:13.2px;letter-spacing:.03em;color:var(--dim);padding:12px 11px;border-radius:var(--r-md);white-space:nowrap;border:1px solid transparent}
 .subnav a:hover{color:var(--text);background:var(--surface)}
 .subnav a.active{color:var(--accent);border-color:var(--hair-strong);background:var(--surface)}
 section{padding:46px 0;border-bottom:1px solid var(--hair);scroll-margin-top:calc(var(--nav-h) + var(--subnav-h) + 8px)}
-.sec-eyebrow{font-family:var(--mono);font-size:13.2px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sec-eyebrow{font-family:var(--mono);font-size:13.2px;letter-spacing:0;text-transform:none;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:10px}
 .sec-eyebrow .n{color:var(--accent)}
 h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);letter-spacing:-.01em;margin-bottom:14px}
 .sec-intro{max-width:700px;color:var(--text);opacity:.82;margin-bottom:28px}
@@ -199,7 +199,7 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .bignum{background:var(--surface);padding:22px 20px}
 .bignum .v{font-family:var(--mono);font-weight:700;font-size:30px;letter-spacing:-.01em;color:var(--text)}
 .bignum .v.accent{color:var(--accent)}
-.bignum .l{font-family:var(--mono);font-size:13.1px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:8px;line-height:1.4}
+.bignum .l{font-family:var(--mono);font-size:13.1px;letter-spacing:0;text-transform:none;color:var(--dim);margin-top:8px;line-height:1.4}
 .note{font-family:var(--mono);font-size:14px;color:var(--dim);margin-top:18px;line-height:1.6}
 .note b{color:var(--text);font-weight:600}
 .alloc{margin:6px 0 26px}
@@ -217,7 +217,7 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 @media(max-width:600px){.bignum-grid,.alloc-legend{grid-template-columns:1fr 1fr}.bignum{padding:14px 12px}.bignum .l{font-size:11.5px;letter-spacing:.03em}.bignum:last-child:nth-child(odd),.lg:last-child:nth-child(odd){grid-column:1/-1}.lg{padding:10px 12px}}
 .cmp{display:grid;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:3px;overflow:hidden}
 .cmp-head,.cmp-row{display:grid;grid-template-columns:200px 1fr 1fr;gap:1px;background:var(--hair)}
-.cmp-head>div{background:var(--raised);padding:13px 18px;font-family:var(--mono);font-size:12.9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.cmp-head>div{background:var(--raised);padding:13px 18px;font-family:var(--mono);font-size:12.9px;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .cmp-head .ch{color:var(--accent)}.cmp-head .cs{color:#7fb0d6}
 .cmp-row>div{background:var(--surface);padding:15px 18px;font-size:13.8px;line-height:1.45}
 .cmp-row .rk{font-weight:600;color:var(--text)}
@@ -236,7 +236,7 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .tr-figs{text-align:right;min-width:120px}
 .tr-figs .amt{font-family:var(--mono);font-weight:700;font-size:18px}
 .tr-figs .share{font-family:var(--mono);font-size:13.2px;color:var(--dim);margin-top:3px}
-.tr-figs .disc{font-family:var(--mono);font-size:12.9px;color:var(--accent);margin-top:6px;text-transform:uppercase;letter-spacing:.04em}
+.tr-figs .disc{font-family:var(--mono);font-size:12.9px;color:var(--accent);margin-top:6px;text-transform:none;letter-spacing:0}
 .tr-mini{height:4px;background:var(--hair);border-radius:2px;margin-top:9px;overflow:hidden;max-width:130px;margin-left:auto}
 .tr-mini i{display:block;height:100%;background:var(--accent);border-radius:2px}
 .chg{display:grid;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:3px;overflow:hidden}
@@ -245,7 +245,7 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .chg-row .what span{display:block;color:var(--dim);font-size:13.4px;margin-top:3px}
 .chg-row .amt{font-family:var(--mono);font-weight:700;font-size:16px;white-space:nowrap}
 .chg-row .amt.neg{color:var(--neg)}.chg-row .amt.pos{color:var(--pos)}.chg-row .amt.flat{color:var(--dim)}
-.fb-holdups{border:1px solid var(--border,rgba(132,160,168,.2));border-radius:10px;padding:.85rem 1rem;margin:0 0 1.1rem}
+.fb-holdups{border:1px solid var(--border,rgba(132,160,168,.2));border-radius:var(--r-lg);padding:.85rem 1rem;margin:0 0 1.1rem}
     .fb-holdups h3{font-size:.95rem;margin:0 0 .5rem}
     .fb-holdups ul{margin:.2rem 0 .55rem;padding-left:1.15rem}
     .fb-holdups li{line-height:1.7;margin:.32rem 0;font-size:.9rem}
@@ -254,23 +254,23 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .step{background:var(--surface);padding:16px 20px;display:grid;grid-template-columns:140px 1fr auto;gap:16px;align-items:center}
 .step .stage{font-family:var(--mono);font-size:13.3px;letter-spacing:.04em;color:var(--text);font-weight:600}
 .step .desc{font-size:14.5px;color:var(--dim)}
-.step .mk{font-family:var(--mono);font-size:12.9px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:2px;white-space:nowrap}
+.step .mk{font-family:var(--mono);font-size:12.9px;letter-spacing:0;text-transform:none;padding:4px 9px;border-radius:2px;white-space:nowrap}
 .step .mk.done{color:var(--pos);border:1px solid rgba(95,194,138,.3)}
 .step .mk.now{color:var(--accent);border:1px solid rgba(212,162,63,.4);background:rgba(212,162,63,.06)}
 .step .mk.next{color:var(--dim);border:1px solid var(--hair-strong)}
 .step .mk.miss{color:var(--neg);border:1px solid rgba(217,83,79,.4);background:rgba(217,83,79,.06)}
-.notify{display:grid;grid-template-columns:1.1fr 1fr;gap:22px;align-items:center;background:var(--surface);border:1px solid var(--hair-strong);border-radius:10px;padding:26px}
+.notify{display:grid;grid-template-columns:1.1fr 1fr;gap:22px;align-items:center;background:var(--surface);border:1px solid var(--hair-strong);border-radius:var(--r-lg);padding:26px}
 .notify h3{font-family:var(--display);font-weight:700;font-size:21px;margin-bottom:8px}
 .notify p{color:var(--dim);font-size:14px;max-width:420px}
 .notify p a{color:var(--accent)}
 .nf{display:flex;gap:8px;flex-wrap:wrap}
-.nf input[type=email]{flex:1;min-width:200px;min-height:44px;background:var(--page);border:1px solid var(--hair-strong);border-radius:6px;padding:12px 14px;color:var(--text);font-family:var(--body);font-size:16px}
+.nf input[type=email]{flex:1;min-width:200px;min-height:44px;background:var(--page);border:1px solid var(--hair-strong);border-radius:var(--r-md);padding:12px 14px;color:var(--text);font-family:var(--body);font-size:16px}
 .nf input[type=email]:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
 .nf button{background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:0;border-radius:var(--btn-r);padding:12px 18px;min-height:44px;font-family:var(--font-body);font-weight:700;font-size:var(--btn-fs);letter-spacing:0;cursor:pointer;white-space:nowrap;text-transform:none}
 .nf button:hover{opacity:.92}
 .nf-note{font-family:var(--mono);font-size:13px;color:var(--text-muted);margin-top:10px}
 .share{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.share button,.share a{display:inline-flex;align-items:center;gap:7px;background:var(--page);border:1px solid var(--hair-strong);border-radius:6px;padding:9px 13px;min-height:44px;font-family:var(--mono);font-size:13.2px;color:var(--dim);cursor:pointer}
+.share button,.share a{display:inline-flex;align-items:center;gap:7px;background:var(--page);border:1px solid var(--hair-strong);border-radius:var(--r-md);padding:9px 13px;min-height:44px;font-family:var(--mono);font-size:13.2px;color:var(--dim);cursor:pointer}
 .share button:hover,.share a:hover{color:var(--text);border-color:var(--accent)}
 .faq{display:grid;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:3px;overflow:hidden}
 .faq details{background:var(--surface)}
@@ -294,8 +294,8 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
   .cmp-head{display:none}
   .cmp-row{grid-template-columns:1fr;gap:0}
   .cmp-row>div{border-bottom:1px solid var(--hair)}
-  .cmp-row .rk{font-family:var(--mono);font-size:12.9px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
-  .cmp-row .cv::before{font-family:var(--mono);font-size:12.7px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:4px}
+  .cmp-row .rk{font-family:var(--mono);font-size:12.9px;letter-spacing:0;text-transform:none;color:var(--accent)}
+  .cmp-row .cv::before{font-family:var(--mono);font-size:12.7px;letter-spacing:0;text-transform:none;color:var(--text-muted);display:block;margin-bottom:4px}
   .cmp-row .cv.h::before{content:"House · H.R. 7567"}
   .cmp-row .cv.s::before{content:"Senate · S. 5526"}
 }
@@ -311,15 +311,15 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .byline b{color:var(--text-dim,#c3ccc4)}
 .byline a{color:var(--gold)}
 /* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
-details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
-details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
+details.fold{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:var(--r-lg);color:var(--text)}
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary>*{grid-column:1}
 details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
 details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
 details.fold>summary:hover{background:var(--surface2)}
 details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:10px 10px 0 0}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0}
 details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
 .fold-title{display:block;font-weight:700;line-height:1.35}
 .fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
@@ -382,7 +382,7 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
         <!--/FB:next90out-->
 </div>
 </div>
-<!-- ai-answer:farm-bill-status --><section class="ai-answer" id="answer-farm-bill-status" aria-labelledby="answer-farm-bill-status-h" data-checked="2026-11-12" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-farm-bill-status-h" style="font-size:1.1rem;margin:0 0 .4rem">Where does the 2026 farm bill stand?</h2><p style="margin:0 0 .5rem">It has not passed. The House passed H.R. 7567, the Farm, Food, and National Security Act of 2026, 224 to 200 on April 30, 2026, and the Senate received it May 19. The Senate Agriculture Committee held its business meeting on its own bill, S. 5526, the Agricultural Act of 2026, on September 16; the bill was reported to the Senate, read twice and placed on the legislative calendar, Calendar No. 683, on September 24, 2026. Being on the calendar does not schedule a vote. We found no next step on either committee&#x27;s schedule or in Senate floor information as of November 12. Whether the two become one law, and when, is not decided.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Nov 12, 2026. Sources: <a href="https://www.congress.gov/bill/119th-congress/senate-bill/5526" rel="noopener" style="text-decoration:underline">S. 5526 all actions (Congress.gov, checked against GPO records and the Senate Agriculture Committee)</a> &middot; <a href="https://www.congress.gov/bill/119th-congress/house-bill/7567" rel="noopener" style="text-decoration:underline">H.R. 7567 all actions (Congress.gov)</a></p></section><!-- /ai-answer:farm-bill-status -->
+<!-- answer:farm-bill-status --><section class="qa-answer" id="answer-farm-bill-status" aria-labelledby="answer-farm-bill-status-h" data-checked="2026-11-12" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-farm-bill-status-h" style="font-size:1.1rem;margin:0 0 .4rem">Where does the 2026 farm bill stand?</h2><p style="margin:0 0 .5rem">It has not passed. The House passed H.R. 7567, the Farm, Food, and National Security Act of 2026, 224 to 200 on April 30, 2026, and the Senate received it May 19. The Senate Agriculture Committee held its business meeting on its own bill, S. 5526, the Agricultural Act of 2026, on September 16; the bill was reported to the Senate, read twice and placed on the legislative calendar, Calendar No. 683, on September 24, 2026. Being on the calendar does not schedule a vote. We found no next step on either committee&#x27;s schedule or in Senate floor information as of November 12. Whether the two become one law, and when, is not decided.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Nov 12, 2026. Sources: <a href="https://www.congress.gov/bill/119th-congress/senate-bill/5526" rel="noopener" style="text-decoration:underline">S. 5526 all actions (Congress.gov, checked against GPO records and the Senate Agriculture Committee)</a> &middot; <a href="https://www.congress.gov/bill/119th-congress/house-bill/7567" rel="noopener" style="text-decoration:underline">H.R. 7567 all actions (Congress.gov)</a></p></section><!-- /answer:farm-bill-status -->
 <div class="tldr" aria-label="Key facts">
       <div class="tldr-head"><span class="tag">The 60-second read</span><span class="stamp"><!--FB:stamp-->Updated Nov 12, 2026<!--/FB:stamp--></span></div>
 <div class="tldr-grid">

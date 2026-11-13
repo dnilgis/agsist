@@ -49,8 +49,8 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   /* ============ DAIRY PAGE ============ */
   .dp-wrap{max-width:1100px;margin:0 auto;padding:var(--sp-xl) var(--sp-lg);min-width:0;}
   .dp-head{margin-bottom:var(--sp-xl);}
-  .dp-eyebrow{display:inline-flex;align-items:center;gap:.45rem;font-family:'JetBrains Mono',monospace;
-    font-size:0.755rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+  .dp-eyebrow{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-body);
+    font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);
     margin-bottom:.6rem;}
   .dp-eyebrow .ic{width:1em;height:1em;}
   .dp-h1{font-family:var(--font-display);font-weight:800;font-size:clamp(1.7rem,5.2vw,2.7rem);
@@ -75,7 +75,7 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-area-wait #dp-area-out>:not(.dp-area-skel){display:none;}.dp-area-pend #dp-area-out{visibility:hidden;}
   .dp-herd-pend #dp-now-herd{visibility:hidden;}
   .dp-area-skel p,.dp-area-skel span{color:transparent;user-select:none;}
-  .dp-area-skel p{background:var(--surface2);border-radius:6px;}
+  .dp-area-skel p{background:var(--surface2);border-radius:var(--r-md);}
   /* read my check */
   .dp-check{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.6rem .8rem;margin:.6rem 0 .4rem;}
   .dp-check label{display:flex;flex-direction:column;gap:.25rem;font-size:.9rem;color:var(--text-dim);min-width:0;}
@@ -138,8 +138,8 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   #dp-mpp .dp-tbl{font-size:.9rem;}
   #dp-mpp .dp-tbl th,#dp-mpp .dp-tbl td{padding:.4rem .5rem;white-space:nowrap;}
   .dp-sec{margin:var(--sp-2xl) 0 0;}
-  .dp-sec-label{display:inline-flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;
-    font-size:0.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);
+  .dp-sec-label{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-body);
+    font-size:0.76rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);
     margin-bottom:.9rem;padding-bottom:.55rem;border-bottom:1px solid var(--border);width:100%;}
   .dp-sec-label .ic{width:1.05em;height:1.05em;color:var(--gold);}
   .dp-sec-intro{font-size:1rem;line-height:1.65;color:var(--text-dim);max-width:64ch;margin:0 0 1.2rem;}
@@ -150,8 +150,8 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
     .dp-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
     background:var(--border);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:1rem;}
   .dp-cell{background:var(--surface);padding:.8rem .9rem;display:flex;flex-direction:column;gap:.3rem;min-width:0;}
-  .dp-cell-name{font-family:'JetBrains Mono',monospace;font-size:0.745rem;font-weight:700;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--text-muted);}
+  .dp-cell-name{font-family:var(--font-body);font-size:0.745rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-muted);}
   .dp-cell-val{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text);
     line-height:1;letter-spacing:-.01em;}
   .dp-cell-unit{font-size:0.755rem;color:var(--text-muted);font-weight:600;}
@@ -198,13 +198,13 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
     padding:1.1rem 1.15rem 1.2rem;position:relative;overflow:hidden;}
   .dp-fall-toggle{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
   .dp-fall-tab{font-family:'JetBrains Mono',monospace;font-size:0.765rem;font-weight:700;letter-spacing:.04em;
-    padding:.5rem .8rem;border-radius:7px;border:1px solid var(--border-2);background:var(--surface2);
+    padding:.5rem .8rem;border-radius:var(--r-md);border:1px solid var(--border-2);background:var(--surface2);
     color:var(--text-dim);cursor:pointer;min-height:38px;transition:border-color .15s,color .15s,background .15s;}
   .dp-fall-tab.on{background:var(--gold-fill,var(--gold));color:#0a1206;border-color:transparent;}
   .dp-fall-tab:not(.on):hover{border-color:var(--gold);color:var(--text);}
 
-  .dp-fall-month{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--text-muted);margin-bottom:.9rem;}
+  .dp-fall-month{font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-muted);margin-bottom:.9rem;}
   .dp-fall-month b{color:var(--gold);}
 
   /* each row of the waterfall */
@@ -234,12 +234,12 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-result .dp-row-name{color:var(--text);}
   .dp-result .dp-row-val{font-size:1.15rem;color:var(--gold);}
   .dp-final{background:rgba(var(--gold-rgb),.1);margin:.4rem -.55rem 0;padding:.9rem .55rem;
-    border:1px solid var(--border-g);border-radius:8px;}
+    border:1px solid var(--border-g);border-radius:var(--r-md);}
   .dp-final .dp-row-name{font-size:.9rem;}
   .dp-final .dp-row-val{font-size:1.5rem;color:var(--gold);}
 
   /* sandbox sliders (hidden until sandbox tab) */
-  .dp-sandbox{display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  .dp-sandbox{display:none;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-lg);
     padding:.9rem 1rem;margin-bottom:1rem;}
   .dp-sandbox.on{display:block;}
   .dp-slider-row{display:flex;align-items:center;gap:.8rem;margin:.55rem 0;}
@@ -261,13 +261,13 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem;}
   .dp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
     padding:1rem 1.05rem;min-width:0;}
-  .dp-card-h{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.45rem;}
+  .dp-card-h{font-family:var(--font-body);font-size:0.78rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-dim);margin-bottom:.5rem;display:flex;align-items:center;gap:.45rem;}
   .dp-card-h .ic{width:1em;height:1em;}
   .dp-card p{font-size:.82rem;line-height:1.6;color:var(--text-dim);margin:0;}
   .dp-card p+p{margin-top:.55rem;}
-  .dp-card .when{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-muted);
-    letter-spacing:.06em;text-transform:uppercase;display:block;margin-top:.55rem;}
+  .dp-card .when{font-family:var(--font-body);font-size:0.75rem;font-weight:700;color:var(--text-muted);
+    letter-spacing:0;text-transform:none;display:block;margin-top:.55rem;}
 
   /* ---- timeline (2025 reform) ---- */
   .dp-timeline{display:flex;flex-direction:column;gap:0;}
@@ -277,8 +277,8 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-tl-dot{width:11px;height:11px;border-radius:50%;background:var(--gold-fill,var(--gold));margin-top:5px;flex-shrink:0;
     box-shadow:0 0 0 3px rgba(var(--gold-rgb),.15);position:relative;z-index:1;}
   .dp-tl-body{min-width:0;}
-  .dp-tl-date{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:.2rem;}
+  .dp-tl-date{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-dim);margin-bottom:.2rem;}
   .dp-tl-title{font-family:var(--font-display);font-size:.98rem;font-weight:700;color:var(--text);margin-bottom:.28rem;}
   .dp-tl-desc{font-size:1rem;line-height:1.6;color:var(--text-dim);}
   .dp-tl-effect{font-size:0.785rem;line-height:1.5;margin-top:.35rem;font-family:'JetBrains Mono',monospace;}
@@ -298,24 +298,24 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-sources a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
   .dp-sources a:hover{text-decoration:underline;}
   .dp-disclaim{font-size:0.78rem;line-height:1.6;color:var(--text-muted);margin-top:.8rem;
-    padding:.7rem .85rem;background:var(--surface2);border-radius:8px;border-left:3px solid var(--border-2);}
+    padding:.7rem .85rem;background:var(--surface2);border-radius:var(--r-md);border-left:3px solid var(--border-2);}
 
 
   /* ---- v2: jump nav ---- */
   .dp-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin:1.1rem 0 0;padding:.85rem 0 0;border-top:1px solid var(--border);}
   .dp-nav a{font-family:'JetBrains Mono',monospace;font-size:0.765rem;font-weight:700;letter-spacing:.03em;
     color:var(--text-dim);text-decoration:none;padding:.4rem .65rem;border:1px solid var(--border-2);
-    border-radius:6px;transition:border-color .15s,color .15s;min-height:32px;display:inline-flex;align-items:center;}
+    border-radius:var(--r-md);transition:border-color .15s,color .15s;min-height:32px;display:inline-flex;align-items:center;}
   .dp-nav a:hover{border-color:var(--gold);color:var(--text);}
 
   /* ---- v2: the "wound" callout — big honest number ---- */
-  .dp-gap{background:linear-gradient(135deg,rgba(var(--red-rgb),.07) 0%,var(--surface) 60%);
+  .dp-gap{background:var(--surface);
     border:1px solid rgba(var(--red-rgb),.28);border-left:4px solid var(--red);border-radius:var(--r-md);
     padding:1.1rem 1.15rem;margin:1rem 0;}
   .dp-gap-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.2rem;}
   .dp-gap-item{display:flex;flex-direction:column;gap:.15rem;}
-  .dp-gap-lbl{font-family:'JetBrains Mono',monospace;font-size:0.745rem;font-weight:700;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--text-muted);}
+  .dp-gap-lbl{font-family:var(--font-body);font-size:0.745rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-muted);}
   .dp-gap-num{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;line-height:1;color:var(--text);}
   .dp-gap-arrow{align-self:center;color:var(--text-muted);font-size:1.1rem;}
   .dp-gap-num.hit{color:var(--red);}
@@ -326,20 +326,20 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-ppd{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.15rem;}
   .dp-ppd-toggle{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
   .dp-ppd-tab{font-family:'JetBrains Mono',monospace;font-size:0.765rem;font-weight:700;padding:.5rem .8rem;
-    border-radius:7px;border:1px solid var(--border-2);background:var(--surface2);color:var(--text-dim);
+    border-radius:var(--r-md);border:1px solid var(--border-2);background:var(--surface2);color:var(--text-dim);
     cursor:pointer;min-height:38px;transition:all .15s;}
   .dp-ppd-tab.on{background:var(--gold-fill,var(--gold));color:#0a1206;border-color:transparent;}
   .dp-ppd-tab:not(.on):hover{border-color:var(--gold);color:var(--text);}
   .dp-ppd-scene{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem;}
-  .dp-ppd-class{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.75rem .85rem;}
-  .dp-ppd-class-name{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--text-muted);margin-bottom:.35rem;}
+  .dp-ppd-class{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem .85rem;}
+  .dp-ppd-class-name{font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-muted);margin-bottom:.35rem;}
   .dp-ppd-class-val{font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:700;color:var(--text);line-height:1;}
   .dp-ppd-class-tag{font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:700;margin-top:.4rem;
     padding:.15rem .4rem;border-radius:3px;display:inline-block;}
   .dp-ppd-class-tag.pooled{background:rgba(var(--green-rgb),.14);color:var(--green);}
   .dp-ppd-class-tag.depooled{background:rgba(var(--red-rgb),.14);color:var(--red);}
-  .dp-ppd-out{background:rgba(var(--gold-rgb),.08);border:1px solid var(--border-g);border-radius:8px;
+  .dp-ppd-out{background:rgba(var(--gold-rgb),.08);border:1px solid var(--border-g);border-radius:var(--r-md);
     padding:.8rem .9rem;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.5rem;}
   .dp-ppd-out-lbl{font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;color:var(--text-dim);}
   .dp-ppd-out-val{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);}
@@ -358,10 +358,10 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
 
   /* ---- v3: split-the-dollar bar ---- */
   .dp-dollar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1.05rem 1.1rem;}
-  .dp-dollar-cap{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--text-muted);margin-bottom:.55rem;}
-  .dp-split{display:flex;height:46px;border-radius:7px;overflow:hidden;border:1px solid var(--border-2);}
-  .dp-split-farm{background:linear-gradient(90deg,rgba(var(--green-rgb),.55),rgba(var(--green-rgb),.75));
+  .dp-dollar-cap{font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-muted);margin-bottom:.55rem;}
+  .dp-split{display:flex;height:46px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border-2);}
+  .dp-split-farm{background:rgba(var(--green-rgb),.55);
     display:flex;align-items:center;justify-content:center;min-width:0;}
   .dp-split-chain{background:var(--surface3);display:flex;align-items:center;justify-content:center;min-width:0;
     border-left:1px solid var(--border-2);}
@@ -378,7 +378,7 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   /* ---- v3: erosion spar04 (share over time) ---- */
   .dp-erode{display:flex;align-items:flex-end;gap:.5rem;height:120px;margin:.9rem 0 .3rem;padding:0 .2rem;}
   .dp-erode-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.35rem;min-width:0;}
-  .dp-erode-bar{width:100%;max-width:46px;background:linear-gradient(180deg,rgba(var(--gold-rgb),.7),rgba(var(--gold-rgb),.35));
+  .dp-erode-bar{width:100%;max-width:46px;background:rgba(var(--gold-rgb),.7);
     border-radius:4px 4px 0 0;}
   .dp-erode-yr{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-muted);}
   .dp-erode-pct{font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;color:var(--text);}
@@ -386,10 +386,10 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
 
 
   /* ---- v4: TL;DR card ---- */
-  .dp-tldr{background:linear-gradient(135deg,rgba(var(--gold-rgb),.08),var(--surface) 55%);
+  .dp-tldr{background:var(--surface);
     border:1px solid var(--border-g);border-radius:var(--r-lg);padding:1.05rem 1.15rem;margin:1.2rem 0 0;}
-  .dp-tldr-h{font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;letter-spacing:.12em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:.7rem;display:flex;align-items:center;gap:.45rem;}
+  .dp-tldr-h{font-family:var(--font-body);font-size:0.76rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-dim);margin-bottom:.7rem;display:flex;align-items:center;gap:.45rem;}
   .dp-tldr-h .ic{width:1em;height:1em;}
   .dp-tldr ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem;}
   .dp-tldr li{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:start;font-size:.86rem;
@@ -403,8 +403,8 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   /* ---- v4: worked example ---- */
   .dp-example{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);
     border-radius:var(--r-md);padding:1rem 1.1rem;margin:1rem 0;}
-  .dp-example-h{font-family:'JetBrains Mono',monospace;font-size:0.765rem;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+  .dp-example-h{font-family:var(--font-body);font-size:0.765rem;font-weight:700;letter-spacing:0;
+    text-transform:none;color:var(--text-dim);margin-bottom:.6rem;}
   .dp-example-line{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px dashed var(--border);
     font-size:.84rem;color:var(--text-dim);}
   .dp-example-line:last-of-type{border-bottom:none;}
@@ -420,14 +420,14 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-lever-top{display:flex;align-items:center;gap:.55rem;margin-bottom:.5rem;flex-wrap:wrap;}
   .dp-lever-ic{width:1.15rem;height:1.15rem;color:var(--gold);flex-shrink:0;}
   .dp-lever-name{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--text);}
-  .dp-lever-tag{font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;padding:.18rem .45rem;border-radius:4px;background:var(--surface3);color:var(--text-muted);}
+  .dp-lever-tag{font-family:var(--font-body);font-size:0.74rem;font-weight:700;letter-spacing:0;
+    text-transform:none;padding:.18rem .45rem;border-radius:4px;background:var(--surface3);color:var(--text-muted);}
   .dp-lever p{font-size:.83rem;line-height:1.6;color:var(--text-dim);margin:0;}
   .dp-lever .catch{font-size:0.797rem;line-height:1.55;color:var(--text-dim);margin:.5rem 0 0;padding:.5rem .7rem;
-    background:rgba(var(--red-rgb),.06);border-left:2px solid rgba(var(--red-rgb),.4);border-radius:0 5px 5px 0;}
-  .dp-lever .catch b{color:var(--red);font-weight:700;font-family:'JetBrains Mono',monospace;font-size:0.775rem;
-    letter-spacing:.04em;text-transform:uppercase;}
-  .dp-lever-control{background:linear-gradient(135deg,rgba(var(--green-rgb),.08),var(--surface) 55%);
+    background:rgba(var(--red-rgb),.06);border-left:2px solid rgba(var(--red-rgb),.4);border-radius:0 var(--r-md) var(--r-md) 0;}
+  .dp-lever .catch b{color:var(--red);font-weight:700;font-family:var(--font-body);font-size:0.775rem;
+    letter-spacing:0;text-transform:none;}
+  .dp-lever-control{background:var(--surface);
     border-color:rgba(var(--green-rgb),.3);border-left:3px solid var(--green);}
   .dp-lever-control .dp-lever-ic{color:var(--green);}
 
@@ -488,17 +488,17 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-now-year{font-size:.82rem;color:var(--text-dim);line-height:1.5;margin:.5rem 0 0;}
   .dp-now-t{margin:0;padding:.1rem .6rem .1rem 0;display:flex;flex-direction:column;gap:.1rem;min-width:0;}
   .dp-now-t+.dp-now-t{border-left:1px solid var(--border);padding-left:.55rem;}
-  .dp-now-k{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);}
+  .dp-now-k{font-family:var(--font-body);font-size:.72rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);}
   .dp-now-v{font-family:'JetBrains Mono',monospace;font-size:clamp(1.12rem,5vw,1.45rem);font-weight:800;line-height:1.15;color:var(--text);font-variant-numeric:tabular-nums;}
   .dp-now-c{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;font-variant-numeric:tabular-nums;}
   .dp-now-m{font-size:.78rem;color:var(--text-muted);}
   .dp-now-src,.dp-now-note{margin:.45rem 0 0;font-size:.85rem;line-height:1.5;color:var(--text-dim);}
   .dp-now-herd,.dp-now-p,.dp-now-mean{margin:.55rem 0 0;line-height:1.5;color:var(--text);font-variant-numeric:tabular-nums;}
   .dp-now-dim{color:var(--text-dim);font-size:.93rem;}
-  .dp-now-herd input{width:4.6em;min-height:36px;font:inherit;padding:.15rem .35rem;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:6px;}
+  .dp-now-herd input{width:4.6em;min-height:36px;font:inherit;padding:.15rem .35rem;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);}
   .dp-now-herd #dp-now-lb{width:5.2em;}
   .dp-now-mean{padding:.55rem 0 0;border-top:1px solid var(--border);}
-  .dp-now-sub{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:.95rem 0 0;padding-top:.7rem;border-top:1px solid var(--border);}
+  .dp-now-sub{font-family:var(--font-body);font-size:.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin:.95rem 0 0;padding-top:.7rem;border-top:1px solid var(--border);}
   .dp-now-tbl{width:100%;border-collapse:collapse;margin:.35rem 0 0;font-variant-numeric:tabular-nums;}
   .dp-now-tbl th,.dp-now-tbl td{padding:.38rem .3rem;border-bottom:1px solid var(--border);text-align:left;font-size:.95rem;}
   .dp-now-tbl thead th{font-size:.72rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;}
@@ -566,20 +566,20 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
 
   <!-- HEADER -->
   <header class="dp-head">
-    <span class="dp-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg> Dairy Markets</span>
+    <span class="dp-eyebrow page-kicker">Dairy Markets</span>
     <h1 class="dp-h1">Milk prices and your milk check</h1>
     <p class="dp-lede page-lede">This month first, the rest folded below. Every number carries its month and its source.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: USDA AMS, USDA NASS and CME. Sources and terms are at the bottom.</p>
   </header>
 
   <section class="dp-now" id="dp-now" aria-labelledby="dp-now-h">
-    <h2 class="dp-now-h" id="dp-now-h"><svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg> This month for your milk</h2>
+    <h2 class="dp-now-h" id="dp-now-h">This month for your milk</h2>
     <!--
 --><!--SEED:milknowtop--><div class="dp-now-tiles"><p class="dp-now-t"><span class="dp-now-k">Class III</span><span class="dp-now-v">$15.16</span><span class="dp-now-c dp-neg">▼ −$0.88</span><span class="dp-now-m">Oct · announced</span></p><p class="dp-now-t"><span class="dp-now-k">Class IV</span><span class="dp-now-v">$20.54</span><span class="dp-now-c dp-pos">▲ +$1.60</span><span class="dp-now-m">Oct · announced</span></p><p class="dp-now-t"><span class="dp-now-k">All-milk</span><span class="dp-now-v">$19.50</span><span class="dp-now-c dp-neg">▼ −$0.30</span><span class="dp-now-m">Sep · NASS</span></p></div><p class="dp-now-src" id="dp-now-src" data-am-month="September 2026" data-am-states="AZ CA CO FL GA IA ID IL IN KS MI MN NM NY OH OR PA SD TX UT VA VT WA WI">Class prices: USDA AMS, October 2026. All-milk: USDA NASS Agricultural Prices, before hauling.</p><!--/SEED--><!--
 --><!--SEED:milkyear--><p class="dp-now-year" id="dp-now-year"><strong>2025 all-milk price:</strong> $21.18 per hundredweight, the simple average of USDA&rsquo;s 12 monthly U.S. all-milk prices for 2025 (high $24.10 in January, low $19.00 in December). USDA NASS&rsquo;s own annual figure weights each month by milk marketed, so it can differ a little. Monthly prices: USDA NASS, as listed by FSA for Dairy Margin Coverage.</p><!--/SEED--><!--
 -->
   <section class="dp-area" id="dp-area" aria-labelledby="dp-area-h">
-    <div class="dp-area-top"><h2 class="dp-area-h" id="dp-area-h"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Your area</h2>
+    <div class="dp-area-top"><h2 class="dp-area-h" id="dp-area-h">Your area</h2>
       <label class="dp-area-pick"><span class="dp-sr">Mailbox price area</span><select id="dp-area-sel"><option value="">Pick your area</option><option value="New England States">New England States</option><option value="New York">New York</option><option value="Eastern Pennsylvania">Eastern Pennsylvania</option><option value="Appalachian States">Appalachian States</option><option value="Southeast States">Southeast States</option><option value="Southern Missouri">Southern Missouri</option><option value="Florida">Florida</option><option value="Western Pennsylvania">Western Pennsylvania</option><option value="Ohio">Ohio</option><option value="Indiana">Indiana</option><option value="Michigan">Michigan</option><option value="Wisconsin">Wisconsin</option><option value="Minnesota">Minnesota</option><option value="Iowa">Iowa</option><option value="Illinois">Illinois</option><option value="Corn Belt States">Corn Belt States</option><option value="Western Texas">Western Texas</option><option value="New Mexico">New Mexico</option><option value="Northwest States">Northwest States</option><option value="California">California</option></select></label></div>
     <div id="dp-area-out" aria-live="polite"><!--
 --><!--SEED:milkarea--><p class="dp-area-sum" id="dp-area-sum">Mailbox price, July 2026, against Jul 2025: fell most in Wisconsin −$2.39, California −$2.11, Minnesota −$1.41; rose most in Florida +$2.53, Western Pennsylvania +$2.46. All federal order areas: $19.23 (−$0.91).</p><p class="dp-note-src">Pick your area for its own price first. Source: AMS mailbox report.</p><!--/SEED--><!--
@@ -642,7 +642,7 @@ if(s&&s.cows>0&&s.lb>=500){c.value=s.cows;l.value=s.lb;run(false);}
 c.addEventListener('input',function(){run(true);});l.addEventListener('input',function(){run(true);});})(document);}catch(_){}try{document.documentElement.classList.remove('dp-herd-pend');}catch(_){}</script>
 
   <section class="dp-dmc" id="dp-dmc" aria-labelledby="dp-dmc-h"><details class="dp-fold" id="dp-dmc-fold"><summary>
-    <h2 class="dp-sec-label dp-dmc-h" id="dp-dmc-h"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> DMC signup and the farm bill</h2><span class="dp-fold-hint">The 2027 signup, the 2031 lock-in, and what DMC paid each year since 2019</span></summary>
+    <h2 class="dp-sec-label dp-dmc-h" id="dp-dmc-h">DMC signup and the farm bill</h2><span class="dp-fold-hint">The 2027 signup, the 2031 lock-in, and what DMC paid each year since 2019</span></summary>
     <!--
 --><!--SEED:milkdmccard--><p class="dp-dmc-line"><strong id="dp-dmc-words" data-open="2026-10-05" data-close="2026-12-18" data-year="2027">2027 DMC signup is open now, to Friday, Dec 18, 2026, at your FSA office. 35 days left.</strong><span class="dp-dmc-src"> Source: <a href="https://www.fsa.usda.gov/news-events/news/09-30-2026/usda-announces-2027-dairy-margin-coverage-enrollment" rel="noopener">FSA, Sep 30, 2026</a>.</span></p>
     <ul class="dp-dmc-fb"><li><b>Dairy Margin Coverage runs through 2031.</b> The 2025 law renewed it and raised Tier 1 to 6 million pounds. In FSA's words, a dairy operation that makes a one-time election of coverage level and coverage percentage that are applicable to each of calendar years 2026 through 2031 "will receive a 25 percent discount on premium rates." <span class="dp-dmc-src">(FSA DMC fact sheet, January 2026, page 2, read from the Internet Archive copy of Apr 14, 2026)</span></li><li>Dairy Forward Pricing and the Dairy Indemnity Payment Program are paused since Oct 1. <span class="dp-dmc-src">(<a href="https://farmpolicynews.illinois.edu/2026/10/farm-bill-expires-again-as-lawmakers-continue-negotiations/" rel="noopener">Farm Policy News, Oct 2026</a>)</span></li><li>The Senate text renews both <b>through 2031</b>, not permanently. <span class="dp-dmc-src">(<a href="https://www.fb.org/intel/policy/time-to-finish-the-job-2026-farm-bill" rel="noopener">AFBF Market Intel on the Senate text and Aug 6 markup</a>)</span></li><li><b>Jan 1, 2027 is your date.</b> Milk is first to fall back to permanent law if nothing passes. CRS put the parity support price at 252% of the market price in July 2025. Both bills fix it; neither is law. <span class="dp-dmc-src">(CRS R48775)</span></li></ul><!--/SEED--><!--
@@ -659,7 +659,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
 
   <!-- 1. RIGHT NOW: verdict + live strip -->
   <section class="dp-sec" aria-labelledby="dp-mkt" id="dp-mkt-sec" data-seed-month="2026-10">
-    <details class="dp-fold" id="dp-mkt-fold"><summary><h2 class="dp-sec-label" id="dp-mkt"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg> What milk pays right now</h2><span class="dp-fold-hint">Class III, IV and II, futures, component and product prices, all-milk by state</span></summary>
+    <details class="dp-fold" id="dp-mkt-fold"><summary><h2 class="dp-sec-label" id="dp-mkt">What milk pays right now</h2><span class="dp-fold-hint">Class III, IV and II, futures, component and product prices, all-milk by state</span></summary>
 
     <div class="dp-tldr" style="margin-top:0">
       <div class="dp-verdict" id="dp-verdict"><!--
@@ -780,7 +780,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-o30-h" id="dp-o30">
-    <details class="dp-fold" id="dp-o30-h-fold"><summary><h2 class="dp-sec-label" id="dp-o30-h"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Upper Midwest order (Federal Order 30)</h2><span class="dp-fold-hint">The Upper Midwest order&rsquo;s own prices and PPD</span></summary>
+    <details class="dp-fold" id="dp-o30-h-fold"><summary><h2 class="dp-sec-label" id="dp-o30-h">Upper Midwest order (Federal Order 30)</h2><span class="dp-fold-hint">The Upper Midwest order&rsquo;s own prices and PPD</span></summary>
     <p class="dp-sec-intro">The Upper Midwest federal order, home to Wisconsin and Minnesota. These are the order&rsquo;s own numbers for the month, beside a year earlier.</p>
     <!--
 --><!--SEED:milko30--><div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-tbl"><caption class="dp-sr">Federal Order 30 monthly prices, dollars per hundredweight</caption><thead><tr><th scope="col">Order 30</th><th scope="col" class="num">Oct 2026</th><th scope="col" class="num">Oct 2025</th></tr></thead><tbody><tr><th scope="row">Class I price (3.5% fat)</th><td class="num">$22.08</td><td class="num">$21.24</td></tr><tr><th scope="row">Class I skim mover</th><td class="num">$14.12</td><td class="num">$10.03</td></tr><tr><th scope="row">Advanced Class III skim</th><td class="num">$11.18</td><td class="num">$10.03</td></tr><tr><th scope="row">Advanced Class IV skim</th><td class="num">$14.12</td><td class="num">$9.26</td></tr><tr><th scope="row">Statistical uniform price</th><td class="num">$15.91</td><td class="num">$17.05</td></tr><tr><th scope="row">Producer price differential (PPD)</th><td class="num">+$0.75</td><td class="num">+$0.14</td></tr><tr><th scope="row">SCC adjustment, per 1,000 cells</th><td class="num">$0.00072</td><td class="num">$0.00087</td></tr></tbody></table></div><p class="dp-note-src" id="dp-o30-next">Class I ahead, announced in advance: Nov 2026 $23.47/cwt.</p><p class="dp-note-src" id="dp-o30-src">Source: Upper Midwest Market Administrator, monthly class price and producer price differential releases, read 2026-11-13. Prices at the order&rsquo;s base zone; your plant&rsquo;s zone adds or takes a little. Base zone: Cook County, IL. The Class I skim mover is the higher of the two advanced skim prices beside it. The PPD is what the order adds to (or takes from) the component value of your milk, before hauling and co-op deductions. A dash: not in the release read for that month.</p><details class="dp-states" id="dp-o30-hist"><summary>Order 30 PPD by month, Jan 2025 to Oct 2026</summary><div class="dp-tbl-wrap"><table class="dp-tbl" id="dp-o30-hist-tbl"><caption class="dp-sr">Order 30 producer price differential, dollars per hundredweight, by month and year</caption><thead><tr><th scope="col">PPD, $/cwt</th><th scope="col" class="num">2025</th><th scope="col" class="num">2026</th></tr></thead><tbody><tr><th scope="row">Jan</th><td class="num">+$0.13</td><td class="num">+$0.46</td></tr><tr><th scope="row">Feb</th><td class="num">+$0.13</td><td class="num">+$0.58</td></tr><tr><th scope="row">Mar</th><td class="num">+$0.20</td><td class="num">+$0.50</td></tr><tr><th scope="row">Apr</th><td class="num">+$0.27</td><td class="num">+$0.61</td></tr><tr><th scope="row">May</th><td class="num">+$0.07</td><td class="num">+$0.69</td></tr><tr><th scope="row">Jun</th><td class="num">+$0.28</td><td class="num">+$0.87</td></tr><tr><th scope="row">Jul</th><td class="num">+$0.63</td><td class="num">+$0.88</td></tr><tr><th scope="row">Aug</th><td class="num">+$0.58</td><td class="num">+$0.60</td></tr><tr><th scope="row">Sep</th><td class="num">+$0.35</td><td class="num">+$0.58</td></tr><tr><th scope="row">Oct</th><td class="num">+$0.14</td><td class="num">+$0.75</td></tr><tr><th scope="row">Nov</th><td class="num">−$0.56</td><td class="num"></td></tr><tr><th scope="row">Dec</th><td class="num">+$0.35</td><td class="num"></td></tr></tbody></table></div><p class="dp-note-src">Source: Upper Midwest Market Administrator, each month&rsquo;s producer price differential release, at the base zone, checked so the statistical uniform price equals that month&rsquo;s Class III plus the PPD. 21 of these months were also checked against the Central Order&rsquo;s yearly summary of all orders (the Central Market Administrator) and matched. 2 months in the window are left out. Their releases did not read or did not check out, or their year could not be matched to the summary. How much milk was left out of the pool is not published by order and month, so I do not show it.</p></details><p class="dp-o30-depool" id="dp-o30-depool"><strong>Depooling watch, Oct 2026:</strong> Class IV was $5.38/cwt over Class III (USDA AMS, $20.54 against $15.16). When Class IV runs this far above Class III, a butter and powder plant would owe the pool for its milk, so it can do better by leaving the pool for the month (depooling). The higher-valued milk it takes out is value the pool, and so the PPD, does not get. Whether any plant did shows up later in the order&rsquo;s pooled volume, not in this line. I say it when Class IV is more than $1.00 over Class III.</p><!--/SEED--><!--
@@ -788,7 +788,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-check-h" id="dp-check-sec">
-    <details class="dp-fold" id="dp-check-h-fold"><summary><h2 class="dp-sec-label" id="dp-check-h"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Read my check</h2><span class="dp-fold-hint">Type your tests and see what your milk is worth</span></summary>
+    <details class="dp-fold" id="dp-check-h-fold"><summary><h2 class="dp-sec-label" id="dp-check-h">Read my check</h2><span class="dp-fold-hint">Type your tests and see what your milk is worth</span></summary>
     <p class="dp-sec-intro">Type in your own milk. I work out the federal minimum value of that milk at your tests from USDA&rsquo;s announced component prices, then the same at the next two Class III futures months. What you type is saved on this device only.</p>
     <form class="dp-check" id="dp-check" autocomplete="off">
       <label><span>Milk shipped this month</span><span class="dp-in"><input type="number" inputmode="decimal" id="ck-cwt" min="1" step="any" placeholder="2170"><em>cwt</em></span></label>
@@ -807,7 +807,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-fall-h">
-    <details class="dp-fold" id="dp-fall-h-fold"><summary><h2 class="dp-sec-label" id="dp-fall-h"><svg class="ic" aria-hidden="true"><use href="#i-git-branch"/></svg> How your milk check is built</h2><span class="dp-fold-hint">Cheese, butter, powder and whey to your Class III price, step by step</span></summary>
+    <details class="dp-fold" id="dp-fall-h-fold"><summary><h2 class="dp-sec-label" id="dp-fall-h">How your milk check is built</h2><span class="dp-fold-hint">Cheese, butter, powder and whey to your Class III price, step by step</span></summary>
     <p class="dp-sec-intro">One hundredweight of milk, top to bottom. Four commodities set the prices: cheese, dry whey and butter set Class III (butter through the butterfat price); butter and nonfat dry milk set Class IV. <span style="color:var(--green);font-weight:700">Green</span> is a credit, <span style="color:var(--red);font-weight:700">red</span> is a deduction. Switch to the sandbox to move the prices yourself.</p>
 
     <div class="dp-fall">
@@ -847,19 +847,19 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
 
       <div id="dp-fall-body"><!--
 --><!--SEED:milkfallbody-->
-        <div class="dp-row "><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Cheese price</div><div class="dp-row-desc">The USDA survey price for 40-lb cheddar blocks. Barrels left this survey in June 2025, so it is no longer a block-and-barrel weighted average.</div></div><div class="dp-row-val">$1.4444<span class="u">/lb</span></div></div>
+        <div class="dp-row "><div class="dp-row-main"><div class="dp-row-name">Cheese price</div><div class="dp-row-desc">The USDA survey price for 40-lb cheddar blocks. Barrels left this survey in June 2025, so it is no longer a block-and-barrel weighted average.</div></div><div class="dp-row-val">$1.4444<span class="u">/lb</span></div></div>
 
         <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&minus; Make allowance (cheese)</div><div class="dp-row-desc">A fixed credit for turning milk into cheese, subtracted before the value reaches the farmer: a standard assumed cost across the order, not any one plant’s actual cost. Raised in 2025.</div></div><div class="dp-row-val">&minus;$0.2519<span class="u">/lb</span></div></div>
 
         <div class="dp-row dp-result"><div class="dp-row-main"><div class="dp-row-name">Protein price</div><div class="dp-row-desc">What’s left of the cheese value, converted to a per-pound milk-protein price by the federal yield formula.</div></div><div class="dp-row-val">$2.3991<span class="u">/lb</span></div></div>
 
-        <div class="dp-row "><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Dry whey price</div><div class="dp-row-desc">The other cheese-plant output; its value becomes "other solids", the lactose and minerals in milk.</div></div><div class="dp-row-val">$0.7191<span class="u">/lb</span></div></div>
+        <div class="dp-row "><div class="dp-row-main"><div class="dp-row-name">Dry whey price</div><div class="dp-row-desc">The other cheese-plant output; its value becomes "other solids", the lactose and minerals in milk.</div></div><div class="dp-row-val">$0.7191<span class="u">/lb</span></div></div>
 
         <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&minus; Make allowance (whey)</div><div class="dp-row-desc">The processing credit for drying whey, subtracted the same way.</div></div><div class="dp-row-val">&minus;$0.2668<span class="u">/lb</span></div></div>
 
         <div class="dp-row dp-result"><div class="dp-row-main"><div class="dp-row-name">Other solids price</div></div><div class="dp-row-val">$0.4659<span class="u">/lb</span></div></div>
 
-        <div class="dp-row "><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg> Butterfat price</div><div class="dp-row-desc">Derived from the butter market (shared with Class IV). The fat in your milk.</div></div><div class="dp-row-val">$1.3780<span class="u">/lb</span></div></div>
+        <div class="dp-row "><div class="dp-row-main"><div class="dp-row-name">Butterfat price</div><div class="dp-row-desc">Derived from the butter market (shared with Class IV). The fat in your milk.</div></div><div class="dp-row-val">$1.3780<span class="u">/lb</span></div></div>
 
         <div class="dp-row dp-op credit"><div class="dp-row-main"><div class="dp-row-name">Component math &middot; per cwt at test</div><div class="dp-row-desc">Skim milk price = protein $2.3991 × 3.30 lb + other solids $0.4659 × 6.00 lb = $10.7124, which the federal order rounds to $10.71. Class III = 0.965 × $10.71, plus butterfat $1.3780 × 3.50 lb.</div></div><div class="dp-row-val">+ sum</div></div>
 
@@ -870,11 +870,11 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-mailbox">
-    <details class="dp-fold" id="dp-mailbox-fold"><summary><h2 class="dp-sec-label" id="dp-mailbox"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Why your check is not the headline price</h2><span class="dp-fold-hint">Mailbox price by area, and when better milk pays less</span></summary>
+    <details class="dp-fold" id="dp-mailbox-fold"><summary><h2 class="dp-sec-label" id="dp-mailbox">Why your check is not the headline price</h2><span class="dp-fold-hint">Mailbox price by area, and when better milk pays less</span></summary>
     <p class="dp-sec-intro">The class price is a <strong>starting point, not your paycheck</strong>. Three more layers sit between it and your account.</p>
 
     <div class="dp-fall">
-      <div class="dp-row"><div class="dp-row-main"><div class="dp-row-name"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg> Blend / uniform price</div><div class="dp-row-desc">Your order pools all four classes and pays a weighted average, so the blend leans toward whichever class takes most of your order&rsquo;s milk. Your order&rsquo;s market administrator publishes it monthly.</div></div><div class="dp-row-val">varies<span class="u">/cwt</span></div></div>
+      <div class="dp-row"><div class="dp-row-main"><div class="dp-row-name">Blend / uniform price</div><div class="dp-row-desc">Your order pools all four classes and pays a weighted average, so the blend leans toward whichever class takes most of your order&rsquo;s milk. Your order&rsquo;s market administrator publishes it monthly.</div></div><div class="dp-row-val">varies<span class="u">/cwt</span></div></div>
       <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&plusmn; Producer price differential (PPD)</div><div class="dp-row-desc">The plug number that reconciles the blend with what you're paid. Positive in normal months. It can go sharply negative (see below), and then it comes right off your check.</div></div><div class="dp-row-val">varies<span class="u">/cwt</span></div></div>
 
       <div class="dp-row dp-op deduct"><div class="dp-row-main"><div class="dp-row-name">&minus; Hauling &amp; co-op deductions</div><div class="dp-row-desc">Trucking your milk to the plant, plus your cooperative's marketing, capital, and promotion assessments. Pulled before the check is cut. They differ by farm, haul and co-op, so read yours off your stub and put it in the check reader above.</div></div><div class="dp-row-val">your stub</div></div>
@@ -914,18 +914,18 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
 
   <!-- 4. THE DMC MARGIN AND YOUR COST -->
   <section class="dp-sec" aria-labelledby="dp-margin">
-    <details class="dp-fold" id="dp-margin-fold"><summary><h2 class="dp-sec-label" id="dp-margin"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> The DMC margin and your own cost</h2><span class="dp-fold-hint">What the DMC margin sees and what it cannot</span></summary>
+    <details class="dp-fold" id="dp-margin-fold"><summary><h2 class="dp-sec-label" id="dp-margin">The DMC margin and your own cost</h2><span class="dp-fold-hint">What the DMC margin sees and what it cannot</span></summary>
     <p class="dp-sec-intro">Dairy Margin Coverage pays when the national all-milk price minus a national feed cost falls below the level you elect. It cannot see your own feed, labor, fuel or interest, so it can read fine while a farm loses money.</p>
     <div class="dp-margin"><!--
 --><!--SEED:milkdmcmargin--><p class="dp-dmc-m"><strong>DMC margin, August 2026: $9.34/cwt</strong> ($19.80 all-milk minus $10.46 feed), as USDA Farm Service Agency, Dairy Margin Coverage prices and updates published it (read 2026-10-28 from a screen capture of FSA&rsquo;s live page).</p><!--/SEED--><!--
 --></div>
     <div class="dp-cards" style="margin-top:1rem">
-      <div class="dp-card"><div class="dp-card-h"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Run your own number</div><p>The only cost of production that matters is yours, so this page prints no national cost figure. Put your own tests, deductions and cost in the <a href="#dp-check-h" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">check reader</a>. Selling manure to a neighbor? See <a href="/manure-value" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">what it is worth</a>.</p></div>
+      <div class="dp-card"><div class="dp-card-h">Run your own number</div><p>The only cost of production that matters is yours, so this page prints no national cost figure. Put your own tests, deductions and cost in the <a href="#dp-check-h" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">check reader</a>. Selling manure to a neighbor? See <a href="/manure-value" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">what it is worth</a>.</p></div>
     </div>
   </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-herds-h" id="dp-herds">
-    <details class="dp-fold" id="dp-herds-h-fold"><summary><h2 class="dp-sec-label" id="dp-herds-h"><svg class="ic" aria-hidden="true"><use href="#i-activity"/></svg> Licensed dairy herds (NASS)</h2><span class="dp-fold-hint">Licensed dairy herds by state, year by year</span></summary>
+    <details class="dp-fold" id="dp-herds-h-fold"><summary><h2 class="dp-sec-label" id="dp-herds-h">Licensed dairy herds (NASS)</h2><span class="dp-fold-hint">Licensed dairy herds by state, year by year</span></summary>
     <!--
 --><!--SEED:milkherds--><p class="dp-sec-intro" id="dp-herds-lead"><strong>23,609 licensed dairy herds in the US in 2025</strong>, &minus;1,036 from 2024 and &minus;46,766 since 2003 (70,375). Wisconsin, October 1, 2026: 4,944, &minus;229 from a year earlier.</p><p class="dp-note-src" id="dp-herds-caveat">A drop is net licences, not the exact number of farms that quit: a herd that sells, merges or changes hands can leave the list while another joins it.</p><p class="dp-note-src" id="dp-herds-src">Source: USDA NASS, licensed dairy herds, the yearly average of farms licensed to sell milk (Milk Production report, newest year released Feb 20, 2026), as NASS has the years now. NASS's yearly series starts in 2003; 2002 is not in it. Wisconsin by month: USDA NASS Wisconsin, herds on the state&rsquo;s Dairy Producer License list on the first of each month. Read 2026-11-13.</p><!--/SEED--><!--
 -->
@@ -940,25 +940,25 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-cull" id="dp-cull-sec">
-    <details class="dp-fold" id="dp-cull-fold"><summary><h2 class="dp-sec-label" id="dp-cull"><svg class="ic" aria-hidden="true"><use href="#i-receipt"/></svg> Cull cows this week</h2><span class="dp-fold-hint">Slaughter cow prices at the sale barns USDA reports</span></summary>
+    <details class="dp-fold" id="dp-cull-fold"><summary><h2 class="dp-sec-label" id="dp-cull">Cull cows this week</h2><span class="dp-fold-hint">Slaughter cow prices at the sale barns USDA reports</span></summary>
     <p class="dp-sec-intro">The cull cow check is part of what the herd brings in. These are slaughter cow prices at the sale barns USDA reports, each barn with its own sale day. USDA does not report the Wisconsin or Minnesota barns, so the numbers come from the states it does.</p>
     <div class="cc" data-cull-cows="dairy"><div data-cc="body"><p class="dp-sec-intro">Cull cow prices from USDA sale barn reports load here. The full list is on <a href="/cattle-auction-prices#cull-cows" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">sale barn prices</a>.</p></div></div>
   </details></section>
 
   <!-- 5. WHAT YOU CAN DO -->
   <section class="dp-sec" aria-labelledby="dp-do">
-    <details class="dp-fold" id="dp-do-fold"><summary><h2 class="dp-sec-label" id="dp-do"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg> What you can actually do about it</h2><span class="dp-fold-hint">DRP, DMC, LGM and contracts: what each does, and its catch</span></summary>
+    <details class="dp-fold" id="dp-do-fold"><summary><h2 class="dp-sec-label" id="dp-do">What you can actually do about it</h2><span class="dp-fold-hint">DRP, DMC, LGM and contracts: what each does, and its catch</span></summary>
     <p class="dp-sec-intro">You can't set the price, but you can manage the <strong>risk</strong> around it. Each tool has a catch, and none raises the price. This is a map of the tools, not advice: run your own numbers and talk to your advisor. AGSIST sells none of these; see <a href="https://www.rma.usda.gov/" style="color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px">USDA RMA</a> and your cooperative.</p>
 
     <div class="dp-levers">
       <div class="dp-lever">
-        <div class="dp-lever-top"><svg class="dp-lever-ic" aria-hidden="true"><use href="#i-shield"/></svg><span class="dp-lever-name">Dairy Revenue Protection (DRP)</span><span class="dp-lever-tag">Insurance &middot; RMA</span></div>
+        <div class="dp-lever-top"><span class="dp-lever-name">Dairy Revenue Protection (DRP)</span><span class="dp-lever-tag">Insurance &middot; RMA</span></div>
         <p>Quarterly revenue insurance backed by USDA's Risk Management Agency. You pick a coverage level off the Class III/IV (or component) futures curve; if the actual price lands below it, the policy pays the difference. No brokerage account, no margin calls. You pay a premium and you're covered.</p>
         <p class="catch"><b>The catch</b>: DRP locks a floor off the <em>futures curve as it stands today</em>. If that curve is already below your cost of production, you're insuring a loss. It protects you from things getting <em>worse</em>, not from a market that's already underwater.</p>
       </div>
 
       <div class="dp-lever">
-        <div class="dp-lever-top"><svg class="dp-lever-ic" aria-hidden="true"><use href="#i-list-checks"/></svg><span class="dp-lever-name">Dairy Margin Coverage (DMC)</span><span class="dp-lever-tag">Federal &middot; FSA</span></div>
+        <div class="dp-lever-top"><span class="dp-lever-name">Dairy Margin Coverage (DMC)</span><span class="dp-lever-tag">Federal &middot; FSA</span></div>
         <p>The federal margin backstop: it pays when the national milk-minus-feed margin falls below the level you elected. For 2026 the first tier was raised to 6 million pounds and the program reauthorized through 2031. It's cheap for smaller herds and it did pay out as margins fell into 2026.</p>
         <p class="catch"><b>The catch</b>: it only counts milk price minus <em>national feed cost</em>. Your labor, fuel, vet, and interest are invisible to it, so the margin can read "fine" while your farm loses money. <!--
 --><!--SEED:milkdmc--><span class="dp-dmc-now" id="dp-dmc-lever" data-open="2026-10-05" data-close="2026-12-18" data-year="2027">2027 DMC signup is open now, to Friday, Dec 18, 2026, at your FSA office. 35 days left.</span> Farms that took the one-time lock-in through 2031 at the 2026 signup keep that coverage at a 25% premium discount.<!--/SEED--><!--
@@ -966,7 +966,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
       </div>
 
       <div class="dp-lever">
-        <div class="dp-lever-top"><svg class="dp-lever-ic" aria-hidden="true"><use href="#i-lock"/></svg><span class="dp-lever-name">Forward contract or hedge</span><span class="dp-lever-tag">Co-op or CME</span></div>
+        <div class="dp-lever-top"><span class="dp-lever-name">Forward contract or hedge</span><span class="dp-lever-tag">Co-op or CME</span></div>
         <p>Lock a Class III price for future months: either through a forward contract your cooperative offers, or by hedging directly on the CME through a broker. You fix the price now instead of taking whatever the auction prints later.</p>
         <p class="catch"><b>The catch</b>: a CME milk contract is 200,000 lb (about 90 cows' monthly output), so it's coarse for small herds; hedging means a margin account and margin calls if the market rises; and if you lock and the market climbs, you gave up that gain. Extension guidance is blunt: don't lock it all in at once.</p>
       </div>
@@ -975,7 +975,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
 
   <!-- 6. WHAT CHANGED IN 2025 -->
   <section class="dp-sec" aria-labelledby="dp-reform">
-    <details class="dp-fold" id="dp-reform-fold"><summary><h2 class="dp-sec-label" id="dp-reform"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> What changed in 2025</h2><span class="dp-fold-hint">The 2025 federal order changes, with dates</span></summary>
+    <details class="dp-fold" id="dp-reform-fold"><summary><h2 class="dp-sec-label" id="dp-reform">What changed in 2025</h2><span class="dp-fold-hint">The 2025 federal order changes, with dates</span></summary>
     <p class="dp-sec-intro">The formulas were rewritten in <strong>2025: the biggest overhaul of federal milk pricing since 2000</strong>, approved by producer vote in all eleven marketing orders. Five changes, each moving your price in a specific direction.</p>
     <details class="dp-states" id="dp-reform-list"><summary>The five changes, with dates</summary>
     <div class="dp-timeline">
@@ -989,16 +989,16 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </details></section>
 
   <section class="dp-sec" aria-labelledby="dp-bg">
-    <details class="dp-fold" id="dp-bg-fold"><summary><h2 class="dp-sec-label" id="dp-bg"><svg class="ic" aria-hidden="true"><use href="#i-gavel"/></svg> Background: who sets the price, and where the dollar goes</h2><span class="dp-fold-hint">Who sets the price, and where your milk dollar goes</span></summary>
+    <details class="dp-fold" id="dp-bg-fold"><summary><h2 class="dp-sec-label" id="dp-bg">Background: who sets the price, and where the dollar goes</h2><span class="dp-fold-hint">Who sets the price, and where your milk dollar goes</span></summary>
     <div class="dp-bgd">
       <details id="dp-who">
         <summary>Who actually sets the price<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
         <div class="dp-bgd-body">
     <p class="dp-sec-intro">The commodity prices at the top of the waterfall are USDA survey averages of what plants actually sold. The <strong>CME spot market</strong> is the public daily auction for the same four products: four short daily auctions where processors buy and sell physical loads of cheese, butter, powder, and whey.</p>
     <div class="dp-cards">
-      <div class="dp-card"><div class="dp-card-h"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg> Ten minutes a day</div><p>Each product trades in its own window, Central time: dry whey 10:45&ndash;10:55, cheese 11:00&ndash;11:10, butter 11:15&ndash;11:25, nonfat dry milk 11:30&ndash;11:40. Some days only a handful of loads change hands. That thin trade sets the number.</p></div>
-      <div class="dp-card"><div class="dp-card-h"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg> What's public, what isn't</div><p>The bids, offers, sale prices, and number of trades are published every day. The <em>identity</em> of who bought or sold is not: traders act on behalf of dairy companies managing inventory, not for themselves.</p><p>For positioning, the CFTC Commitments of Traders report shows commercial vs. managed-money holdings in Class III futures.</p></div>
-      <div class="dp-card"><div class="dp-card-h"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg> Physical, not speculative</div><p>Every spot trade ends in physical delivery of a rail-car load meeting USDA grade. It's an inventory tool for processors, yet its prices flow straight through to what a farmer 1,500 miles away is paid for milk.</p></div>
+      <div class="dp-card"><div class="dp-card-h">Ten minutes a day</div><p>Each product trades in its own window, Central time: dry whey 10:45&ndash;10:55, cheese 11:00&ndash;11:10, butter 11:15&ndash;11:25, nonfat dry milk 11:30&ndash;11:40. Some days only a handful of loads change hands. That thin trade sets the number.</p></div>
+      <div class="dp-card"><div class="dp-card-h">What's public, what isn't</div><p>The bids, offers, sale prices, and number of trades are published every day. The <em>identity</em> of who bought or sold is not: traders act on behalf of dairy companies managing inventory, not for themselves.</p><p>For positioning, the CFTC Commitments of Traders report shows commercial vs. managed-money holdings in Class III futures.</p></div>
+      <div class="dp-card"><div class="dp-card-h">Physical, not speculative</div><p>Every spot trade ends in physical delivery of a rail-car load meeting USDA grade. It's an inventory tool for processors, yet its prices flow straight through to what a farmer 1,500 miles away is paid for milk.</p></div>
     </div>
         </div>
       </details>
@@ -1046,7 +1046,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
 
   <!-- FAQ (visible; mirrors FAQPage JSON-LD) -->
   <section class="dp-sec" aria-labelledby="dp-faq-h">
-    <h2 class="dp-sec-label" id="dp-faq-h"><svg class="ic" aria-hidden="true"><use href="#i-circle-help"/></svg> Common questions</h2>
+    <h2 class="dp-sec-label" id="dp-faq-h">Common questions</h2>
     <div class="dp-faq">
       <details>
         <summary>How is the price of milk set for dairy farmers?<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
@@ -1199,7 +1199,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
 
   function rowHTML(cls,icon,name,desc,val,unit){
     return '<div class="dp-row '+cls+'"><div class="dp-row-main"><div class="dp-row-name">'+
-      (icon?'<svg class="ic" aria-hidden="true"><use href="#'+icon+'"/></svg> ':'')+name+'</div>'+
+      name+'</div>'+
       (desc?'<div class="dp-row-desc">'+desc+'</div>':'')+
       '</div><div class="dp-row-val">'+val+(unit?'<span class="u">'+unit+'</span>':'')+'</div></div>';
   }

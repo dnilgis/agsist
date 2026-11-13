@@ -25,10 +25,10 @@ a{color:var(--accent)}
 .dim,.src{color:var(--dim)}
 .src{font-size:.78rem;margin:.15rem 0 0}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-section,.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin:12px 0}
+section,.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);padding:12px;margin:12px 0}
 label{display:block;font-size:.85rem;font-weight:600;margin:.4rem 0 .15rem}
-input,select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text)}
-button,.btn{font:inherit;font-weight:600;min-height:44px;padding:0 1rem;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+input,select{font:inherit;font-size:16px;width:100%;min-height:44px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg);color:var(--text)}
+button,.btn{font:inherit;font-weight:600;min-height:44px;padding:0 1rem;border-radius:var(--r-md);border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
 button.quiet,.btn.quiet{background:none;color:var(--accent)}
 :root[data-theme="dark"] button:not(.quiet){color:#10151a}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet){color:#10151a}}
@@ -39,7 +39,7 @@ button.quiet,.btn.quiet{background:none;color:var(--accent)}
 #tok-state{font-size:.9rem;margin:12px 0 0}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
 @media(min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.tile{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:96px;display:block;color:inherit;text-decoration:none}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);padding:8px 10px;min-height:96px;display:block;color:inherit;text-decoration:none}
 .tile .k{font-size:.78rem;color:var(--dim);font-weight:600}
 .tile .v{font-size:1.25rem;font-weight:700;line-height:1.2;margin:.1rem 0}
 .tile .s{font-size:.78rem;color:var(--dim)}
