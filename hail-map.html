@@ -415,7 +415,6 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     "description":"Interactive heatmap of five years of US National Weather Service hail Local Storm Reports, showing the geographic frequency of hail across the country.",
     "url":"https://agsist.com/hail-map",
     "creator":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},
-    "isAccessibleForFree":true,
     "license":"https://agsist.com/terms",
     "creditText":"AGSIST (agsist.com). Built from National Weather Service Local Storm Reports (public domain) via the Iowa Environmental Mesonet.",
     "isBasedOn":{"@type":"Dataset","name":"NWS Local Storm Reports (hail)","publisher":{"@type":"Organization","name":"National Weather Service"}},
@@ -529,7 +528,6 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
           <h2 id="hm-point-title">Hail history at this spot</h2>
           <div class="hm-point-acts">
             <button type="button" id="hm-point-print"><svg class="ic-sp" aria-hidden="true"><use href="#sp-printer"/></svg> Print report</button>
-            <button type="button" id="hm-point-csv"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> CSV</button>
             <button type="button" id="hm-point-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy link</button>
           </div>
         </div>
@@ -1150,7 +1148,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
       /* A DATE OF LOSS. The adjuster's question is "was there hail here on
          the 14th", not "in the last five years". When a day is set the
          panel answers for that day; the full list stays in lastLookup so
-         the CSV, the print report and the radar check still see everything. */
+         the print report and the radar check still see everything. */
       var ev = lookupDay ? evAll.filter(function(e){ return e.date===lookupDay; }) : evAll;
       var dayMode = !!lookupDay;
       var days={}; ev.forEach(function(e){ if(e.date) days[e.date]=1; });
@@ -1210,7 +1208,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
         }
       }
       /* ev is what the panel shows -- the chosen day when there is one, so
-         the CSV and the print report describe the same thing the reader is
+         the print report describes the same thing the reader is
          looking at. evAll keeps the unfiltered set beside it. */
       lastLookup={lat:lat,lon:lon,label:label,ev:ev,evAll:evAll,day:lookupDay,nDays:nDays,maxMag:maxMag};
       wireLookupQuery();
@@ -1249,7 +1247,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
       if(isNaN(d.getTime())) return s;   // never print "Invalid Date" — the raw string beats a lie
       return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
     }
-    /* YEAR-BY-YEAR TREND. Same evAll the panel and the CSV already use —
+    /* YEAR-BY-YEAR TREND. Same evAll the panel already uses —
        radius-filtered, not day-filtered, so the chart answers "how has this
        spot trended" even when a date-of-loss narrows the table above it.
        Bars come from manifest.years, the same file list the heatmap loads,
@@ -1685,25 +1683,6 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
           '<p class="foot">Prepared by <strong>Sigurd Lindquist</strong> &middot; AGSIST &middot; sig@agsist.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. It summarizes public reports and does not replace an engineering or insurance inspection.</p>'+
           '</body></html>');
         w.document.close(); setTimeout(function(){ w.print(); },300);
-      });
-      var cs=document.getElementById('hm-point-csv');
-      if(cs) cs.addEventListener('click', function(){
-        if(!lastLookup) return;
-        ga('hm_report_csv',{});
-        var L=lastLookup;
-        var lines=['date,size_in,distance_mi,near_place,source'];
-        L.ev.forEach(function(e){
-          lines.push([e.date,(e.mag!=null?e.mag.toFixed(2):''),e.mi.toFixed(1),'"'+String(e.place||'').replace(/"/g,'""')+'"',(e.pre?'LSR preliminary':'LSR')].join(','));
-        });
-        lines.push(''); lines.push('# NWS Local Storm Reports (hail) within '+lookupMi+' mi of '+L.lat.toFixed(4)+','+L.lon.toFixed(4)+
-          ' \u00b7 '+(L.day?fmtDate(L.day):(manifest&&manifest.years?manifest.years.length:5)+' years, '+(manifest&&manifest.years&&manifest.years.length?manifest.years[0]+'\u2013'+manifest.years[manifest.years.length-1]:'')));
-        lines.push('# source = LSR (NWS Local Storm Report); "LSR preliminary" = from the NWS daily feed, not yet in the checked monthly archive; this list carries no MESH radar or NCEI long-term events');
-        lines.push('# Source: NWS LSRs via Iowa Environmental Mesonet \u00b7 agsist.com/hail-map \u00b7 town-level precision, not parcel-exact');
-        var blob=new Blob([lines.join('\n')],{type:'text/csv'});
-        var a=document.createElement('a');
-        a.href=URL.createObjectURL(blob);
-        a.download='hail-history_'+L.lat.toFixed(4)+'_'+L.lon.toFixed(4)+'.csv';
-        document.body.appendChild(a); a.click(); a.remove();
       });
     }
 
