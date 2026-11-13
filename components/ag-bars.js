@@ -8,7 +8,7 @@
   var PAGE = K.PAGE, CARD = K.CARD, FONT = K.FONT, tools = K.tools;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function f1(v) { return v.toFixed(1); }
-  function widthOf(s, fs) { return String(s).length * fs * 0.56; }
+  function widthOf(s, fs) { return String(s).length * fs * 0.64; }
   function txt(x, y, s, st, anchor) { return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + ' style="' + st + '">' + esc(s) + '</text>'; }
   var NORM = { page: 'var(--agc-norm,#5b6870)', card: '#7d8b93' }, barN = 0;
   function nice(lo, hi, steps) {

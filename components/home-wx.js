@@ -37,6 +37,18 @@
      day (the date it ends on); the hourly figure stands in only when the grid has no official one. */
   function hr12(iso) { var h = +String(iso).slice(11, 13); return h === 0 ? '12 am' : h === 12 ? 'noon' : (h % 12) + (h < 12 ? ' am' : ' pm'); }
   function hrAfter(iso) { var h = (+String(iso).slice(11, 13) + 1) % 24; return h === 0 ? '12 am' : h === 12 ? 'noon' : (h % 12) + (h < 12 ? ' am' : ' pm'); }
+  /* the 12Z to 00Z daytime period is the one the CONUS forecast offices use; no grid from Alaska, Hawaii or the territories has been checked against it, so there the chance, amount and wind are withheld */
+  var CONUS = /^America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Detroit|Boise|Menominee|Indiana\/[A-Za-z_]+|Kentucky\/[A-Za-z_]+|North_Dakota\/[A-Za-z_]+)$/;
+  /* the sentence under the day rows: what the percent covers, said for the rows it covers */
+  function srcText(R) {
+    var first = R.rows.filter(function (r) { return !r.tonight; })[0], kind = R.snow ? 'rain or snow' : 'rain';
+    if (!R.conus) return 'High, then the low of the night after it. The chance of rain and the wind are not shown for this region.';
+    var t = 'High, then the low of the night after it. Percent: chance of ' + kind;
+    t += R.mixed && first ? ' in the forecast\'s daytime period (' + R.window + ' on ' + (first.label === 'Today' ? 'today' : first.label) + ')' : R.window ? ', ' + R.window : '';
+    if (R.rows.length && R.rows[0].label === 'Today') t += ' (Today: the hours left)';
+    if (R.rows.length && R.rows[0].tonight) t += ' (Tonight: now to ' + (R.nightTo || 'morning') + ')';
+    return t + '. Rain in inches, wind in mph, for the same hours.';
+  }
   function snowCode(cc) { return (cc >= 71 && cc <= 77) || cc === 85 || cc === 86; }
   function dayRows(f) {
     f = f || {};
@@ -50,7 +62,6 @@
     }
     function keyOf(q) { return String(HT[q]).slice(0, 10); }
     function dayIdx(key, fromNow) { var o = []; for (var q = 0; q < HT.length; q++) if (keyOf(q) === key && isDay(q) && (!fromNow || String(HT[q]).slice(0, 13) >= nowHr)) o.push(q); return o; }
-    function dateIdx(key, fromNow) { var o = []; for (var q = 0; q < HT.length; q++) if (keyOf(q) === key && (!fromNow || String(HT[q]).slice(0, 13) >= nowHr)) o.push(q); return o; }
     function tonightIdx() {
       var o = [], q = 0; while (q < HT.length && String(HT[q]).slice(0, 13) < nowHr) q++;
       for (; q < HT.length; q++) { if (isDay(q) && keyOf(q) !== todayKey) break; o.push(q); }
@@ -63,29 +74,35 @@
       for (var q = a[a.length - 1] + 1; q < b[0]; q++) if (num(HTe[q]) && (m == null || HTe[q] < m)) m = HTe[q];
       return m;
     }
-    var rows = [], win = null, snowAny = false, i0 = Math.max(0, times.indexOf(todayKey));
+    var conus = CONUS.test(String(f.timezone || ''));
+    var rows = [], win = null, snowAny = false, mixed = false, nightTo = null, i0 = Math.max(0, times.indexOf(todayKey));
     for (var i = i0; i < times.length && rows.length < 7; i++) {
       var key = times[i], isToday = key === todayKey, hi = (D.temperature_2m_max || [])[i];
-      if (!num(hi)) continue;   /* a day with no high (past the grid's end, or today's high already gone) is left out */
-      var idx = dayIdx(key, isToday), tonight = false;
-      if (isToday && !idx.length) { idx = tonightIdx(); tonight = true; }
-      var pp = maxOf(HP, idx), worst = maxOf(HC, idx), snow = idx.some(function (q) { return snowCode(HC[q]); });
       var next = times[i + 1], lo = next != null ? (D.temperature_2m_min || [])[i + 1] : null;
       if (!num(lo)) lo = nightFromHours(key, next);
-      var di = dateIdx(key, isToday), amt = 0, got = false;
-      di.forEach(function (q) { if (num(HQ[q])) { amt += HQ[q]; got = true; } });
-      var spd = maxOf(HW, di), gst = maxOf(HG, di), dir = (D.winddirection_10m_dominant || [])[i];
+      var idx = dayIdx(key, isToday), tonight = false;
+      if (isToday && !idx.length) {
+        /* the day's hours are gone: the row is Tonight, whether or not the grid still holds today's high */
+        idx = tonightIdx(); tonight = true;
+        if (!idx.length && !num(lo)) continue;
+        nightTo = idx.length ? hrAfter(HT[idx[idx.length - 1]]) : null;
+      } else if (!num(hi)) continue;   /* a day with no high (past the grid's end) is left out */
+      /* the chance, the rain amount and the wind are all for the same hours: the forecast's daytime period (Tonight: now to morning) */
+      var pp = maxOf(HP, idx), worst = maxOf(HC, idx), snow = idx.some(function (q) { return snowCode(HC[q]); });
+      var amt = 0, got = false;
+      idx.forEach(function (q) { if (num(HQ[q])) { amt += HQ[q]; got = true; } });
+      var spd = maxOf(HW, idx), gst = maxOf(HG, idx), dir = (D.winddirection_10m_dominant || [])[i];
       var d = utc(key);
-      var whole = dayIdx(key, false);   /* the printed window is the whole period, even on a Today card that counts only what is left of it */
-      if (!tonight && win == null && whole.length) win = hr12(HT[whole[0]]) + ' to ' + hrAfter(HT[whole[whole.length - 1]]);
+      var whole = dayIdx(key, false), w = whole.length ? hr12(HT[whole[0]]) + ' to ' + hrAfter(HT[whole[whole.length - 1]]) : null;
+      if (!tonight && w) { if (win == null) win = w; else if (w !== win) mixed = true; }
       if (snow) snowAny = true;
       rows.push({ key: key, label: tonight ? 'Tonight' : isToday ? 'Today' : DOW[d.getUTCDay()], tonight: tonight, hi: tonight ? null : hi, lo: num(lo) ? lo : null,
-        pp: num(pp) ? pp : null, word: snow ? 'snow' : 'rain', code: worst == null ? (D.weather_code || [])[i] : worst, amt: got ? Math.round(amt * 100) / 100 : null,
-        wind: num(spd) ? { spd: spd, gust: gst, dir: dir } : null });
+        pp: conus && num(pp) ? pp : null, word: snow ? 'snow' : 'rain', code: worst == null ? (D.weather_code || [])[i] : worst, amt: conus && got ? Math.round(amt * 100) / 100 : null,
+        wind: conus && num(spd) ? { spd: spd, gust: gst, dir: dir } : null });
     }
-    return { rows: rows, window: win, snow: snowAny };
+    return { rows: rows, window: conus ? win : null, snow: snowAny, mixed: mixed, nightTo: nightTo, conus: conus };
   }
-  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows };
+  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows, srcText: srcText };
   if (!doc || !doc.getElementById('hp-wxb')) return;
 
   function ctDay(t) {
@@ -220,8 +237,7 @@
         cells.push('<div><b>' + (j === h0 ? 'Now' : hr12(ht[j])) + '</b>' + wxIcon((H.weather_code || [])[j], (H.is_day || [])[j]) + (num(tt) ? Math.round(tt) + '°' : '-') + '<span class="pp">' + (num(hp) ? Math.round(hp) + '%<span class="visually-hidden"> chance of rain or snow</span>' : '-') + '</span></div>');
       }
       var hr = $('hp-hourly'); if (hr) hr.hidden = !cells.length; if (cells.length) html('hp-hr', cells.join(''));
-      var src = 'High, then the low of the night after it. Percent: chance of ' + (R.snow ? 'rain or snow' : 'rain') + (R.window ? ', ' + R.window : '')
-        + (R.rows.length && R.rows[0].label === 'Today' ? ' (Today: the hours left)' : '') + '. Rain in inches, wind in mph. National Weather Service';
+      var src = srcText(R).replace(/\.$/, '') + '. National Weather Service';
       try { var n = f._nws; if (n && n.updated) src += ', issued ' + new Date(n.updated).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: f.timezone || undefined, timeZoneName: 'short' }); } catch (e) {}
       txt('hp-fc-src', src + '.');
       fcFail(''); var m = $('hp-fc-msg'); if (m) m.style.background = '';
@@ -305,7 +321,11 @@
   /* a message in a chart box: the old bars go, the box's tools go with them */
   function msgIn(id, t) {
     var b = $(id); if (!b) return; var m = b.querySelector('.hp-msg'); if (m) m.textContent = t || '';
-    if (t) { var x = b.querySelector('.hp-bx'); if (x) x.innerHTML = ''; var tl = b.parentNode && b.parentNode.querySelector('.hp-tools'); if (tl) tl.innerHTML = ''; }
+    b.classList.toggle('empty', !!t); if (b.parentNode) b.parentNode.classList.toggle('nochart', !!t);
+    if (t) {
+      var x = b.querySelector('.hp-bx'); if (x) x.innerHTML = ''; var tl = b.parentNode && b.parentNode.querySelector('.hp-tools'); if (tl) tl.innerHTML = '';
+      var sr = b.parentNode && b.parentNode.querySelector('.hp-src'); if (sr) sr.textContent = '';   /* no chart, so no method or source line under it */
+    }
   }
   function placeCheck(z) {
     return getJSON('/data/places/zip/' + z.slice(0, 2) + '.json', 8000).then(function (t) { return t && Array.isArray(t[z]) ? 'ok' : 'unknown'; },
@@ -339,6 +359,7 @@
     var box = $(boxId), x = box && box.querySelector('.hp-bx'), tl = box && box.parentNode.querySelector('.hp-tools');
     if (!x || !root.AgChart || !root.AgChart.mountBars) { msgIn(boxId, 'The chart did not load. Try again in a few minutes.'); return; }
     var m = box.querySelector('.hp-msg'); if (m) m.textContent = '';
+    box.classList.remove('empty'); box.parentNode.classList.remove('nochart');
     if (tl) tl.innerHTML = '';
     var iso = o.end ? o.end.toISOString().slice(0, 10) : ctDay().toISOString().slice(0, 10);
     root.AgChart.mountBars(x, { groups: G, steps: o.steps, fmt: o.fmt, topUnit: o.topUnit, vfmt: o.vfmt, names: o.names, label: o.label,
@@ -377,14 +398,15 @@
     var miss = num(c.missing) && c.missing > 0 ? c.missing : 0;
     var missText = miss ? miss + ' day' + (miss === 1 ? '' : 's') + ' not reported' : '';
     /* the picture has no big line under it, so its heading carries the percent too; on the page the percent is said once, in the big line */
-    var head = 'Rain this year: ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' : '') + (end ? ' to ' + md(end) : '') + (missText ? '; ' + missText : '');
+    var place = (cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state;
+    var head = place + ': rain this year ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' : '') + (end ? ' to ' + md(end) : '') + (missText ? '; ' + missText : '');
     txt('hp-rain-h', 'Rain this year: ' + f1(c.total) + ' in' + (end ? ' to ' + md(end) : ''));
     var normKey = hasN ? (miss ? 'Normal for the days reported, 1991 to 2020' : 'Normal 1991 to 2020') : '';
     var onDays = miss && num(c.reported) ? ' on the ' + c.reported + ' days reported' : '';
     /* rain's percent in a neutral colour: more rain is not good or bad by itself */
     html('hp-rain-pct', num(pct) ? '<b>' + pct + '%</b> of normal (' + f1(c.usual) + ' in' + onDays + ')'
-      : hasN ? '<b>' + f1(c.total, 2) + ' in</b> since Jan 1; normal ' + f1(c.usual, 2) + ' in' + onDays + ', too small for a percent'
-      : '<b>' + f1(c.total) + ' in</b> since Jan 1; no normal on file for this gauge');
+      : hasN ? 'Normal ' + f1(c.usual, 2) + ' in' + onDays + ', too small for a percent.'
+      : 'No normal on file for this gauge.');
     var G = monthRows(Array.isArray(c.months) ? c.months : [], 0, yr, end, hasN);
     if (!G.length) { msgIn('hp-rain-ch', 'No month totals for this county yet.'); return; }
     var gaps = G.some(function (r) { return r.gap; });
@@ -396,9 +418,9 @@
       + (num(pct) ? ', ' + pct + ' percent of normal.' : hasN ? '; normal ' + f1(c.usual, 2) + ' inches, too small for a percent.' : '; no normal on file for this gauge.');
     mountChart('hp-rain-ch', G, { steps: [0.5, 1, 2, 5, 10], fmt: function (v) { return v + ' in'; }, vfmt: function (v) { return f1(v, 2) + ' in'; },
       names: { a: String(yr), n: hasN ? 'Normal 1991 to 2020' : '' }, label: label, end: end, file: 'rain',
-      cardHead: head + (cf.near ? ', nearest gauge to ' : ' at ') + countyName(p.county, p.state) + ', ' + p.state,
+      cardHead: head,
       sub: String(yr) + ' by month (gold)' + (hasN ? ' against the 1991 to 2020 normal for the same days (slate)' : ', no normal on file for this gauge') + ', inches',
-      kicker: 'Rain ' + (cf.near ? 'near ' : '') + countyName(p.county, p.state) + ', ' + p.state,
+      kicker: cf.near ? 'Rain near ' + countyName(p.county, p.state) + ', ' + p.state : 'Rain, ' + countyName(p.county, p.state) + ', ' + p.state,
       source: borrowed + gauge + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.' });
     txt('hp-rain-src', 'Jan 1 to ' + (end ? md(end) : '') + '. ' + (missText ? missText[0].toUpperCase() + missText.slice(1) + '. ' : '') + borrowed + gauge + 'NOAA daily records via RCC-ACIS.');
   }
@@ -423,11 +445,12 @@
     /* the file's own percent, never one worked out here: it is withheld on a small normal or missing days */
     var now = g[0], norm = num(g[2]) && g[2] > 0 ? g[2] : null, gp = norm && num(g[4]) ? g[4] : null;
     var gmiss = num(g[1]) && g[1] > 0 ? g[1] : 0, gmissText = gmiss ? gmiss + ' day' + (gmiss === 1 ? '' : 's') + ' not reported' : '';
-    var head = 'Corn GDUs since May 1: ' + comma(now) + (norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal' : '') + (gmissText ? '; ' + gmissText : '');
+    var place = (cf && cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state;
+    var head = place + ': corn GDUs since May 1, ' + comma(now) + (norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal' : '') + (gmissText ? '; ' + gmissText : '');
     txt('hp-gdu-h', 'Corn GDUs since May 1: ' + comma(now));
     var gap = norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead' : ' behind') : '';
     /* no big percent on a season normal under 100 GDUs (a few May days make a wild percent) or when the file withholds it */
-    html('hp-gdu-pct', norm && norm >= 100 && num(gp) ? '<b class="' + (gp >= 100 ? 'up' : 'dn') + '">' + gp + '%</b> of normal (' + comma(norm) + ')' + gap : norm ? '<b>' + comma(now) + '</b> GDUs; normal ' + comma(norm) + ' so far' + gap : '<b>' + comma(now) + '</b> GDUs; no normal on file for this station');
+    html('hp-gdu-pct', norm && norm >= 100 && num(gp) ? '<b class="' + (gp >= 100 ? 'up' : 'dn') + '">' + gp + '%</b> of normal (' + comma(norm) + ')' + gap : norm ? 'Normal ' + comma(norm) + ' so far' + gap + '.' : 'No normal on file for this station.');
     keyFor('hp-gdu-key', yr, hasNM ? (gmiss ? 'Normal for the days reported, 1991 to 2020' : 'Normal 1991 to 2020') : '', gaps.length > 0, G[G.length - 1].part ? G[G.length - 1].lab : '');
     var fz = c.fr && Array.isArray(c.fr.f28) ? mmddDate(c.fr.f28[0], yr) : null;
     var tail = (gaps.length ? ' Not enough days reported in ' + gaps.join(', ') + ' to draw ' + (gaps.length === 1 ? 'that month' : 'those months') + '; the season total counts the days reported in ' + (gaps.length === 1 ? 'it' : 'them') + (gmiss ? ' (' + gmiss + ' day' + (gmiss === 1 ? '' : 's') + ' missing)' : '') + '.' : '')
@@ -435,10 +458,11 @@
     readoutFor(G, comma, ' GDUs', 50);
     var s = c.s && c.s[0] ? stationText(c.s[0], wst || p.state) : '';
     var label = 'Corn growing degree units by month since May 1, ' + yr + ': ' + comma(now) + (norm && norm >= 100 && num(gp) ? ', ' + gp + ' percent of normal' : norm ? '; normal ' + comma(norm) + ' so far' : '; no 1991 to 2020 normal on file for this station') + '.';
-    mountChart('hp-gdu-ch', G, { steps: [50, 100, 200, 250, 500], fmt: comma, topUnit: ' GDUs', vfmt: comma, names: { a: String(yr), n: hasNM ? 'Normal 1991 to 2020' : '' }, label: label, end: end, file: 'gdu',
-      cardHead: head + (borrowed ? ', nearest station to ' : ', ') + countyName(p.county, p.state) + ', ' + p.state,
+    mountChart('hp-gdu-ch', G, { steps: [50, 100, 200, 250, 500], fmt: comma, topUnit: ' GDUs', vfmt: function (v) { return comma(v) + ' GDUs'; }, names: { a: String(yr), n: hasNM ? 'Normal 1991 to 2020' : '' }, label: label, end: end, file: 'gdu',
+      cardHead: head,
       sub: String(yr) + ' by month (gold)' + (hasNM ? ' against the 1991 to 2020 normal for the same days (slate)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
-      kicker: 'Corn GDUs ' + (cf && cf.near ? 'near ' : '') + countyName(p.county, p.state) + ', ' + p.state, source: borrowed + s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.' });
+      kicker: cf && cf.near ? 'Corn GDUs near ' + countyName(p.county, p.state) + ', ' + p.state : 'Corn GDUs, ' + countyName(p.county, p.state) + ', ' + p.state,
+      source: borrowed + s + (fz && end && fz < end ? 'First 28°F freeze ' + md(fz) + '; the count runs past it. ' : '') + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', by month.' });
     txt('hp-gdu-src', 'Counted May 1 through ' + (end ? md(end) : '') + ', 86/50 method, by month.' + (gmissText && !gaps.length ? ' ' + gmissText[0].toUpperCase() + gmissText.slice(1) + '.' : '') + tail + ' ' + borrowed + s + 'NOAA daily records via RCC-ACIS.');
   }
 
