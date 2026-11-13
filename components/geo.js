@@ -1493,8 +1493,7 @@ function loadDailyBriefing() {
               surpriseNames.push(s.commodity + ' ' + arrow + Math.abs(s.pct_change).toFixed(1) + '%');
             });
           }
-          surpriseBanner.innerHTML = '<span class="surprise-icon">\u26A1</span>'
-            + '<span class="surprise-text">'
+          surpriseBanner.innerHTML = '<span class="surprise-text">'
             + '<strong>Overnight Surprise' + (surpriseCount > 1 ? 's' : '') + ':</strong> '
             + (surpriseNames.length ? surpriseNames.join(' \u00B7 ') : surpriseCount + ' unusual move' + (surpriseCount > 1 ? 's' : ''))
             + '</span>';
