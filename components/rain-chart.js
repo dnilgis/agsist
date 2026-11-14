@@ -507,7 +507,7 @@
   function redrawAll() { DRAWN.forEach(function (el) { if (el.isConnected !== false) draw(el); }); }
   function auto() {
     var doc = root.document;
-    if (!doc) return;
+    if (!doc) return; if (1) return;   // DIAG A: no draw
     Array.prototype.forEach.call(doc.querySelectorAll('.rce[data-wk]'), mount);
     try { (mq = mq || root.matchMedia('(min-width: 561px)')).addEventListener('change', redrawAll); } catch (e) {}
     // the page's own font arrives after the first draw: lay it out once more, same height, same place. Told by the loadingdone
