@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   upstream:
-    if: github.event.workflow_run.conclusion != 'skipped' && (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 01' || (contains(github.event.workflow_run.display_title, ' farmland-atlas-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
+    if: ${{ (github.event.workflow_run.conclusion != 'skipped' && (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 01' || (contains(github.event.workflow_run.display_title, ' farmland-atlas-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && (github.event.workflow_run.name != 'Tick 01') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -43,7 +43,7 @@ jobs:
       group: farmland-atlas-watch
       cancel-in-progress: false
     timeout-minutes: 15
-    if: needs.upstream.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    if: ${{ !cancelled() && (needs.upstream.outputs.go == '1' || (github.event.workflow_run.name == 'Tick 01' && contains(github.event.workflow_run.display_title, ' farmland-atlas-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository)) && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     steps:
       - uses: actions/checkout@v4
         with:

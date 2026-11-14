@@ -25,6 +25,7 @@ jobs:
       - id: h
         env:
           IN_FORCE: ${{ inputs.force }}
+          EVENT: ${{ github.event_name }}
         run: |
           DOW=$(TZ=America/Chicago date +%u)              # 1=Mon .. 7=Sun
           HM=$(( 10#$(TZ=America/Chicago date +%H%M) ))
@@ -35,6 +36,10 @@ jobs:
             5)       { [ "$HM" -lt 1400 ] || [ "$HM" -ge 2330 ]; } && OPEN=1 ;;
             6)       [ "$HM" -lt 200 ] && OPEN=1 ;;
           esac
+          MIN=$(( 10#$(TZ=America/Chicago date +%M) ))
+          if [ "$EVENT" = "workflow_dispatch" ] && [ "$IN_FORCE" != "true" ] && [ "$MIN" -ge 15 ]; then
+            { [ "$DOW" -le 5 ] && [ "$HM" -ge 745 ] && [ "$HM" -lt 1400 ]; } || { OPEN=0; echo "off the day session: only the first dispatch of each hour fetches"; }
+          fi
           [ "$IN_FORCE" = "true" ] && OPEN=1
           echo "CT day $DOW, $HM -> open=$OPEN"
           echo "open=$OPEN" >> "$GITHUB_OUTPUT"

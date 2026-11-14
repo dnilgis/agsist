@@ -35,12 +35,14 @@ jobs:
       contents: read
     outputs:
       go: ${{ steps.g.outputs.go }}
+      repeat: ${{ steps.r.outputs.repeat }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
           sparse-checkout: |
             scripts/cron_gate.py
+            /.github/workflows/main-checks.yml
             /.github/actions/engine/
             /.github/engine-paths
           sparse-checkout-cone-mode: false
@@ -55,6 +57,12 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow main-checks.yml --max-lag 100
           --cron "17 */2 * * *"
+      - id: r
+        if: steps.g.outputs.go == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+        run: python3 scripts/dev/main_repeat.py
 
   generated:
     name: generated pages whose builder changed
@@ -138,7 +146,7 @@ jobs:
 
   checks:
     needs: [gate, rebuild]
-    if: needs.gate.outputs.go == '1'
+    if: needs.gate.outputs.go == '1' && (needs.gate.outputs.repeat != '1')
     concurrency:
       group: main-checks
       cancel-in-progress: false
