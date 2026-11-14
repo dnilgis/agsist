@@ -5,19 +5,19 @@
  "counts": {
   "live_boards": 2180,
   "with_parent": 133,
-  "with_dest": 109,
+  "with_dest": 111,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
    "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 25,
+   "ADM": 26,
    "AGP": 26,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
-   "Cargill": 15,
+   "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
@@ -66,6 +66,16 @@
   "balkgrain-viseriongrain": {
    "elevId": "e30jm2y0nd",
    "dest": "Viserion",
+   "dv": "location"
+  },
+  "cedarcountycoop-admclinton": {
+   "elevId": "eym4ymyfs4",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "cedarcountycoop-cargillcr": {
+   "elevId": "eavzhpjmg7",
+   "dest": "Cargill",
    "dv": "location"
   },
   "chs-texoma-frederick": {
