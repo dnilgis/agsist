@@ -13,29 +13,13 @@
    "to": "/rain/arkansas",
    "since": "2026-10-14"
   },
-  "rain/arkansas/ouachita-county.html": {
-   "to": "/rain/arkansas",
-   "since": "2026-11-10"
-  },
   "rain/california/sutter-county.html": {
    "to": "/rain/california",
    "since": "2026-11-12"
   },
-  "rain/florida/lafayette-county.html": {
-   "to": "/rain/florida",
-   "since": "2026-11-10"
-  },
   "rain/georgia/bacon-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
-  },
-  "rain/georgia/candler-county.html": {
-   "to": "/rain/georgia",
-   "since": "2026-11-11"
-  },
-  "rain/georgia/charlton-county.html": {
-   "to": "/rain/georgia",
-   "since": "2026-11-12"
   },
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
@@ -69,10 +53,6 @@
    "to": "/rain/kentucky",
    "since": "2026-10-14"
   },
-  "rain/louisiana/franklin-parish.html": {
-   "to": "/rain/louisiana",
-   "since": "2026-10-26"
-  },
   "rain/louisiana/st-helena-parish.html": {
    "to": "/rain/louisiana",
    "since": "2026-11-10"
@@ -85,17 +65,9 @@
    "to": "/rain/michigan",
    "since": "2026-11-12"
   },
-  "rain/michigan/wexford-county.html": {
-   "to": "/rain/michigan",
-   "since": "2026-11-11"
-  },
   "rain/minnesota/jackson-county.html": {
    "to": "/rain/minnesota",
    "since": "2026-11-12"
-  },
-  "rain/minnesota/pope-county.html": {
-   "to": "/rain/minnesota",
-   "since": "2026-11-11"
   },
   "rain/mississippi/copiah-county.html": {
    "to": "/rain/mississippi",
@@ -108,10 +80,6 @@
   "rain/mississippi/jefferson-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-11-13"
-  },
-  "rain/mississippi/union-county.html": {
-   "to": "/rain/mississippi",
-   "since": "2026-11-12"
   },
   "rain/missouri/clark-county.html": {
    "to": "/rain/missouri",
@@ -213,16 +181,8 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
-  "rain/texas/san-augustine-county.html": {
-   "to": "/rain/texas",
-   "since": "2026-10-14"
-  },
   "rain/texas/sutton-county.html": {
    "to": "/rain/texas",
-   "since": "2026-11-12"
-  },
-  "rain/virginia/fredericksburg-city.html": {
-   "to": "/rain/virginia",
    "since": "2026-11-12"
   },
   "rain/virginia/richmond-county.html": {
