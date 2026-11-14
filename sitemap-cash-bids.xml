@@ -20,7 +20,7 @@
   <url><loc>https://agsist.com/cash-bids/new-york/</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/north-dakota/</loc><lastmod>2026-11-14T02:26:41Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/ohio/</loc><lastmod>2026-11-14T01:10:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/oklahoma/</loc><lastmod>2026-11-14T09:32:27Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/oklahoma/</loc><lastmod>2026-11-14T11:50:27Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/oregon/</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/pennsylvania/</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/south-dakota/</loc><lastmod>2026-11-14T01:10:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -209,7 +209,7 @@
   <url><loc>https://agsist.com/cash-bids/illinois/rankin</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/illinois/ransom</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/illinois/rantoul</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/illinois/raymond</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/illinois/raymond</loc><lastmod>2026-11-14T11:30:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/illinois/red-bud</loc><lastmod>2026-11-13T21:00:35Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/illinois/riverton</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/illinois/roanoke</loc><lastmod>2026-11-13T22:15:28Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -325,7 +325,7 @@
   <url><loc>https://agsist.com/cash-bids/indiana/union-mills</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/indiana/wheatfield</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/indiana/williamsport</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/indiana/winamac</loc><lastmod>2026-11-14T10:10:27Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/indiana/winamac</loc><lastmod>2026-11-14T12:10:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/indiana/winchester</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/indiana/woodburn</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/indiana/yoder</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -571,8 +571,8 @@
   <url><loc>https://agsist.com/cash-bids/iowa/montezuma</loc><lastmod>2026-11-13T22:08:31Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/iowa/monticello</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/iowa/morning-sun</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/iowa/morton-mills</loc><lastmod>2026-11-14T10:17:49Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/iowa/mount-ayr</loc><lastmod>2026-11-14T10:17:49Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/iowa/morton-mills</loc><lastmod>2026-11-14T12:17:35Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/iowa/mount-ayr</loc><lastmod>2026-11-14T12:17:35Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/iowa/muscatine</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/iowa/nashua</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/iowa/nemaha</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1088,7 +1088,7 @@
   <url><loc>https://agsist.com/cash-bids/missouri/adrian</loc><lastmod>2026-11-14T01:10:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/missouri/baring</loc><lastmod>2026-11-13T22:50:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/missouri/butterfield</loc><lastmod>2026-11-14T01:10:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/missouri/cainsville</loc><lastmod>2026-11-14T10:17:49Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/missouri/cainsville</loc><lastmod>2026-11-14T12:17:35Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/missouri/cameron</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/missouri/campbell</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/missouri/cape-girardeau</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1161,7 +1161,7 @@
   <url><loc>https://agsist.com/cash-bids/nebraska/blue-springs</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/nebraska/bradshaw</loc><lastmod>2026-11-13T22:22:20Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/nebraska/brainard</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/nebraska/bridgeport</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/nebraska/bridgeport</loc><lastmod>2026-11-14T11:30:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/nebraska/broken-bow</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/nebraska/brule</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/nebraska/bruno</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1471,7 +1471,7 @@
   <url><loc>https://agsist.com/cash-bids/ohio/west-mansfield</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/ohio/wilmington</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/ohio/winchester</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/oklahoma/afton</loc><lastmod>2026-11-14T09:32:27Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/oklahoma/afton</loc><lastmod>2026-11-14T11:50:27Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/oklahoma/aline</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/oklahoma/altus</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/oklahoma/alva</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1634,7 +1634,7 @@
   <url><loc>https://agsist.com/cash-bids/south-dakota/valley-springs</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/south-dakota/vermillion</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/south-dakota/viborg</loc><lastmod>2026-11-13T20:41:22Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/south-dakota/wagner</loc><lastmod>2026-11-14T09:32:27Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/south-dakota/wagner</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/south-dakota/wall</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/south-dakota/wallace</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/south-dakota/warner</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1688,7 +1688,7 @@
   <url><loc>https://agsist.com/cash-bids/wisconsin/cadott</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/wisconsin/cameron</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/wisconsin/chilton</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/wisconsin/chippewa-falls</loc><lastmod>2026-11-13T19:08:50Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/wisconsin/chippewa-falls</loc><lastmod>2026-11-14T01:10:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/wisconsin/clintonville</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/wisconsin/coleman</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/wisconsin/columbus</loc><lastmod>2026-11-14T01:00:36Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1775,7 +1775,7 @@
   <url><loc>https://agsist.com/cash-bids/company/ag-valley-co-op</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/agmark</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/agri-trails-coop</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/company/agrowstar</loc><lastmod>2026-11-14T10:17:49Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/company/agrowstar</loc><lastmod>2026-11-14T12:17:35Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/agtegra</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/agwrx-coop</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/alcivia</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1792,7 +1792,7 @@
   <url><loc>https://agsist.com/cash-bids/company/cendak-cooperative</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/central-farmers-cooperative</loc><lastmod>2026-11-13T20:41:22Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/central-ohio-farmers-co-op</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/company/central-united-coop</loc><lastmod>2026-11-14T10:17:49Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/company/central-united-coop</loc><lastmod>2026-11-14T12:17:35Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/central-valley-ag</loc><lastmod>2026-11-13T22:22:20Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/chs-ag-services</loc><lastmod>2026-11-13T20:03:56Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/chs-brandon-south-dakota-minnesota</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
@@ -1861,7 +1861,7 @@
   <url><loc>https://agsist.com/cash-bids/company/mid-iowa-cooperative</loc><lastmod>2026-11-14T00:10:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/minn-kota-ag-products</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/minnesota-valley-grain</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/cash-bids/company/new-cooperative</loc><lastmod>2026-11-14T10:17:49Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/cash-bids/company/new-cooperative</loc><lastmod>2026-11-14T12:17:35Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/new-vision-co-op</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/nexus-cooperative</loc><lastmod>2026-11-13T21:20:29Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/cash-bids/company/niewohner-farms</loc><lastmod>2026-11-13T19:52:51Z</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
