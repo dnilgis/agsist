@@ -3,27 +3,27 @@
  "generated": "2026-11-14",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2216,
+  "live_boards": 1875,
   "with_parent": 133,
-  "with_dest": 116,
+  "with_dest": 91,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
    "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 26,
-   "AGP": 27,
-   "Big River": 4,
+   "ADM": 19,
+   "AGP": 25,
+   "Big River": 3,
    "Bunge": 4,
-   "CGB": 9,
-   "Cargill": 16,
+   "CGB": 8,
+   "Cargill": 11,
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 11,
-   "Valero": 4,
-   "Viserion": 6
+   "POET": 4,
+   "Valero": 3,
+   "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
@@ -933,21 +933,6 @@
    "dest": "ADM",
    "dv": "location"
   },
-  "fsgrain-admmorris": {
-   "elevId": "e3ej6cs9hz",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "fsgrain-admnortherncrossing": {
-   "elevId": "ecm7acw3qj",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "fsgrain-admottawa": {
-   "elevId": "ezqh7mnh0v",
-   "dest": "ADM",
-   "dv": "location"
-  },
   "fsgrain-cgbalbany": {
    "elevId": "e9xs287xs7",
    "dest": "CGB",
@@ -978,76 +963,6 @@
    "dest": "AGP",
    "dv": "location"
   },
-  "innovativeag-admclint": {
-   "elevId": "e8sr5vk66t",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "innovativeag-admcr": {
-   "elevId": "e4ycsntf4k",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "innovativeag-agpeagle": {
-   "elevId": "e4q853gs8j",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "innovativeag-agpmason": {
-   "elevId": "e49yjwzwvv",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "innovativeag-bigriver": {
-   "elevId": "eyty9ww9kr",
-   "dest": "Big River",
-   "dv": "location"
-  },
-  "innovativeag-cargillcr": {
-   "elevId": "edjnjd3gx5",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "innovativeag-cargillif": {
-   "elevId": "epdpaqe1wa",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "innovativeag-cgbclay": {
-   "elevId": "esrgeggxpx",
-   "dest": "CGB",
-   "dv": "location"
-  },
-  "innovativeag-poetfbk": {
-   "elevId": "eyp1m2cfrh",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "innovativeag-poetif": {
-   "elevId": "e5tej6jg1t",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "innovativeag-poetjewel": {
-   "elevId": "ebcc2fef9a",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "innovativeag-poetsr": {
-   "elevId": "e9p55ffjrh",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "innovativeag-valero": {
-   "elevId": "enz2da1fzv",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "innovativeag-viserion": {
-   "elevId": "ec1etj4w76",
-   "dest": "Viserion",
-   "dv": "location"
-  },
   "jamesvalleygrain-agpaberdeensd": {
    "elevId": "ex6cpvw8za",
    "dest": "AGP",
@@ -1076,46 +991,6 @@
   "linncoop-ingredion": {
    "elevId": "edwt7p1qfc",
    "dest": "Ingredion",
-   "dv": "location"
-  },
-  "midiowa-admcedarrapids": {
-   "elevId": "e8r6epcwxx",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "midiowa-admdsm": {
-   "elevId": "ed8t81yfds",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "midiowa-cargillcedarrapids": {
-   "elevId": "eh3h1rt6vs",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-cargilliafalls": {
-   "elevId": "ebsda0a9n2",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-cargillstarch": {
-   "elevId": "ee0f5cb22n",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-poetfb": {
-   "elevId": "e62xehfm81",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "midiowa-poetiafalls": {
-   "elevId": "exmrbmcrn2",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "midiowa-poetsr": {
-   "elevId": "exkn7rhbek",
-   "dest": "POET",
    "dv": "location"
   },
   "newvision-admmankato": {
