@@ -474,7 +474,7 @@
     if (!box) return null;
     var m = fromData(D);
     if (!m) { el.classList.add('rce-off'); return null; }
-    injectCss();
+    /* DIAG C: no injectCss */
     var cs = root.getComputedStyle(el), fam = cs.fontFamily || 'system-ui, sans-serif';
     var spec = Object.assign({}, designFor(el, box) === 'wide' ? WIDE : PHONE, { allowPlain: true, measureFamily: { serif: fam, sans: fam } });
     var title = 'Running total of rain, ' + D.year, id = 'rce-' + (D.fips || D.year);
