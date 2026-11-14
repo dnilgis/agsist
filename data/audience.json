@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-14T11:25:47+00:00",
+ "built": "2026-11-14T16:10:24+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5863,8 +5863,8 @@
     "d": "2026-11-11",
     "users": null,
     "engaged": null,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 364,
+    "gImpr": 19359,
     "bClicks": 141,
     "bImpr": 3265
    },
@@ -5886,69 +5886,69 @@
    "rows": [
     {
      "q": "agsist",
-     "clicks": 45,
-     "impr": 90,
+     "clicks": 46,
+     "impr": 93,
      "pos": 1
     },
     {
      "q": "grain prices at local elevators",
-     "clicks": 34,
-     "impr": 902,
+     "clicks": 35,
+     "impr": 943,
      "pos": 3.7
     },
     {
      "q": "cash rents by county per acre",
      "clicks": 14,
-     "impr": 248,
+     "impr": 258,
      "pos": 3.6
     },
     {
      "q": "adm winona cash bids",
-     "clicks": 8,
-     "impr": 139,
-     "pos": 7.6
+     "clicks": 9,
+     "impr": 145,
+     "pos": 7.5
     },
     {
      "q": "cash rents by county",
      "clicks": 7,
-     "impr": 49,
-     "pos": 6.6
+     "impr": 51,
+     "pos": 6.4
     },
     {
      "q": "usda cash rent by county",
      "clicks": 7,
-     "impr": 76,
-     "pos": 2.5
+     "impr": 78,
+     "pos": 2.4
     },
     {
      "q": "usda land rental rates by county",
      "clicks": 7,
-     "impr": 30,
+     "impr": 31,
      "pos": 3.3
     },
     {
      "q": "chs french cash bids",
      "clicks": 6,
-     "impr": 114,
+     "impr": 122,
      "pos": 5.1
+    },
+    {
+     "q": "custom farming rates 2026 per acre",
+     "clicks": 6,
+     "impr": 163,
+     "pos": 8.4
     },
     {
      "q": "grain bin calculator",
      "clicks": 6,
-     "impr": 132,
-     "pos": 10.5
+     "impr": 137,
+     "pos": 10.4
     },
     {
      "q": "prf insurance calculator",
      "clicks": 6,
-     "impr": 84,
-     "pos": 14.2
-    },
-    {
-     "q": "custom farming rates 2026 per acre",
-     "clicks": 5,
-     "impr": 153,
-     "pos": 8.5
+     "impr": 94,
+     "pos": 13.4
     },
     {
      "q": "free grain bin calculator with cone",
@@ -5957,52 +5957,52 @@
      "pos": 1
     },
     {
+     "q": "louis dreyfus upper sandusky cash bids",
+     "clicks": 5,
+     "impr": 27,
+     "pos": 4.3
+    },
+    {
      "q": "poet grain cash bids today",
      "clicks": 5,
-     "impr": 203,
+     "impr": 211,
      "pos": 5.8
+    },
+    {
+     "q": "poet preston",
+     "clicks": 5,
+     "impr": 79,
+     "pos": 8.6
     },
     {
      "q": "soybean yield calculator",
      "clicks": 5,
-     "impr": 130,
-     "pos": 4.1
+     "impr": 134,
+     "pos": 4.2
+    },
+    {
+     "q": "arc plc calculator 2026",
+     "clicks": 4,
+     "impr": 22,
+     "pos": 5.6
+    },
+    {
+     "q": "arc plc payments 2026 calculator",
+     "clicks": 4,
+     "impr": 54,
+     "pos": 7.8
     },
     {
      "q": "average corn yield per acre by state",
      "clicks": 4,
-     "impr": 185,
-     "pos": 6.2
+     "impr": 191,
+     "pos": 6.1
     },
     {
      "q": "bunge grain bids",
      "clicks": 4,
-     "impr": 91,
-     "pos": 7.5
-    },
-    {
-     "q": "custom combine rates",
-     "clicks": 4,
-     "impr": 123,
-     "pos": 5.9
-    },
-    {
-     "q": "free grain bin calculator",
-     "clicks": 4,
-     "impr": 39,
-     "pos": 2.5
-    },
-    {
-     "q": "hail tracker",
-     "clicks": 4,
-     "impr": 26,
-     "pos": 4.8
-    },
-    {
-     "q": "poet preston",
-     "clicks": 4,
-     "impr": 72,
-     "pos": 8.3
+     "impr": 100,
+     "pos": 7.6
     }
    ],
    "country": "US"
@@ -6116,8 +6116,9 @@
   }
  },
  "email": {
-  "subscribers": 247,
-  "asOf": "2026-11-14"
+  "subscribers": 249,
+  "asOf": "2026-11-14",
+  "people": 292
  },
  "returns": {
   "through": "2026-11-12",
@@ -6973,36 +6974,36 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-12",
-   "fetched": "2026-11-14T11:25:47+00:00"
+   "fetched": "2026-11-14T16:10:24+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-14T11:25:47+00:00"
+   "fetched": "2026-11-14T16:10:24+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-14T11:25:47+00:00"
+   "fetched": "2026-11-14T16:10:24+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-14T11:25:47+00:00"
+   "fetched": "2026-11-14T16:10:24+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-12",
-   "fetched": "2026-11-14T11:25:47+00:00"
+   "fetched": "2026-11-14T16:10:24+00:00"
   },
   "cotKit": {
    "ok": true,
    "through": "2026-11-12",
-   "fetched": "2026-11-14T11:25:47+00:00"
+   "fetched": "2026-11-14T16:10:24+00:00"
   },
   "aiVisits": {
    "ok": true,
    "through": "2026-11-12",
-   "fetched": "2026-11-14T11:25:47+00:00"
+   "fetched": "2026-11-14T16:10:24+00:00"
   }
  }
 }
