@@ -483,7 +483,7 @@
     var ms = measurer(el);
     var out = build(m, ms.measure, spec);
     if (!out) { el.classList.add('rce-off'); return null; }
-    box.innerHTML = out.svg;
+    box.innerHTML = out.svg; Array.prototype.forEach.call(box.querySelectorAll("text"), function (t) { t.remove(); });   // DIAG E: no text
     el.classList.remove('rce-off');
     el.setAttribute('data-rce', spec.name);
     return out;
