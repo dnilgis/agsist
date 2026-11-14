@@ -882,6 +882,7 @@
     "Share images",
     "Sitemap lastmod",
     "Build State Stats (USDA NASS)",
+    "storage",
     "yield-panel"
    ],
    "cadence": "1 launch on a fixed schedule at about 9am Central, and more on set days of each month",
@@ -913,7 +914,8 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Fetch Prices"
+    "Fetch Prices",
+    "storage"
    ],
    "cadence": "1 launch on a fixed schedule at about 9am Central, and more on set days of each month",
    "curated": false,
@@ -998,7 +1000,8 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
-    "Sitemap lastmod"
+    "Sitemap lastmod",
+    "storage"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
@@ -1026,7 +1029,8 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Fetch Prices"
+    "Fetch Prices",
+    "storage"
    ],
    "cadence": "1 launch every day at about 7am Central",
    "curated": false,
@@ -1142,6 +1146,7 @@
     "Rebuild Feed Manifest",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "storage",
     "yield-panel"
    ],
    "cadence": "maintained by hand, not on a schedule",
@@ -1373,6 +1378,7 @@
     "Report day live: graded result within a minute",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "storage",
     "Tools hub dates",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
@@ -2052,7 +2058,8 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "The wire",
-    "Fetch Prices"
+    "Fetch Prices",
+    "storage"
    ],
    "cadence": "2 launches on a fixed schedule at about 5pm Central",
    "curated": false,
@@ -2395,6 +2402,7 @@
     "Rebuild Feed Manifest",
     "Report day live: graded result within a minute",
     "Report day \u2014 USDA vs the trade email",
+    "storage",
     "Tools hub dates"
    ],
    "cadence": "every 15 minutes while CBOT trades, started by cron-job.org (the workflow's own hourly :11 cron is the fallback)",
@@ -2760,6 +2768,7 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
+    "storage",
     "transport"
    ],
    "cadence": "1 launch Fridays at about 6am Central",
@@ -2875,6 +2884,7 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
     "Report day live: graded result within a minute",
+    "storage",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
     "yield-panel"
@@ -2938,6 +2948,7 @@
     "Fetch Prices",
     "Rebuild Call Scorecard",
     "Report day live: graded result within a minute",
+    "storage",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
