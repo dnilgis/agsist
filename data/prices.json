@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-11-14T06:46:09Z",
+  "fetched": "2026-11-14T07:01:18Z",
   "ok": 76,
   "failed": 1,
   "stale_keys": [],
@@ -2517,10 +2517,10 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 67260.70312,
+      "close": 67293.75,
       "open": 71342.96875,
-      "netChange": -4082.26563,
-      "pctChange": -5.722,
+      "netChange": -4049.21875,
+      "pctChange": -5.6757,
       "wk52_hi": 97860.6016,
       "wk52_lo": 57747.7656,
       "close_date": "2026-11-14",
