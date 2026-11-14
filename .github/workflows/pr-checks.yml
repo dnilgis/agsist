@@ -210,6 +210,11 @@ jobs:
         run: |
           git fetch -q --no-tags --depth=100 origin "+refs/heads/$PICK_BASE:refs/remotes/origin/$PICK_BASE"
           git fetch -q --no-tags --deepen=100 origin
+      - name: stop here when the guard already failed
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/dev/guard_failed.sh
       - name: node tests, shard ${{ matrix.shard }} of 8
         env:
           TMPDIR: ${{ runner.temp }}
@@ -229,6 +234,14 @@ jobs:
           echo "::notice title=node test counts, shard ${{ matrix.shard }}::$(wc -l < "$T") files; $C"
           echo "::notice title=node test times, shard ${{ matrix.shard }}::$(sort -rn "$T" | tr '\t\n' ': ')"
           sort -rn "$T"
+      - name: Upload the test times
+        if: always() && inputs.full
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: node-test-times-${{ matrix.shard }}
+          path: ${{ runner.temp }}/agsist-checks/nt-*.out.times
+          if-no-files-found: ignore
+          retention-days: 2
       - name: Upload the test log
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
@@ -301,6 +314,11 @@ jobs:
         run: bash scripts/pull_raw.sh data/fsa
       - name: origin/main
         run: git fetch -q --no-tags --depth=100 origin +refs/heads/main:refs/remotes/origin/main
+      - name: stop here when the guard already failed
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/dev/guard_failed.sh
       - name: every check but the node tests
         env:
           TMPDIR: ${{ runner.temp }}
