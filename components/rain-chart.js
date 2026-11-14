@@ -510,8 +510,11 @@
     if (!doc) return;
     Array.prototype.forEach.call(doc.querySelectorAll('.rce[data-wk]'), mount);
     try { (mq = mq || root.matchMedia('(min-width: 561px)')).addEventListener('change', redrawAll); } catch (e) {}
-    // the page's own font arrives after the first draw: lay it out once more, same height, same place
-    if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(redrawAll, function () {});
+    // the page's own font arrives after the first draw: lay it out once more, same height, same place. Told by the loadingdone
+    // event, never by reading document.fonts.ready: Chromium answers that read with a forced style and layout pass, and right
+    // after a web font has loaded that pass can take the layout the font set waits for to say it is done, so on a page whose
+    // later scripts are still coming (Chromium 141) document.fonts stayed "loading" with every face loaded (CI, Nov 14 2026)
+    if (doc.fonts && doc.fonts.addEventListener) doc.fonts.addEventListener('loadingdone', redrawAll);
   }
   if (root.document) {
     if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', auto); else auto();
