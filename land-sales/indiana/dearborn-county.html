@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0a0c0d">
-<link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/land-sales.css?v=4">
+<link rel="stylesheet" href="/components/styles.css?v=29">
+<link rel="stylesheet" href="/components/land-sales.css?v=5">
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <title>Dearborn County, IN Farmland Sales: Price per Acre, Last 12 Months</title>
@@ -62,7 +62,7 @@
 <script>(function(){var t=0,n=0,id='',k=0;function find(){var r=document.getElementById('s-'+id);if(r)return r;var b=document.querySelector('#ls-all button.ls-nm[data-ls-id="'+id+'"]');return b?b.closest('tr'):null;}function show(r){try{r.scrollIntoView({block:'center'});}catch(e){}}function step(my){if(my!==k)return;var r=find();if(r){r.classList.add('ls-hit');show(r);[600,1600].forEach(function(d){setTimeout(function(){if(my===k&&r.isConnected)show(r);},d);});return;}var mo=document.querySelector('.ls-more button.ls-mo');if(mo&&!mo.hidden&&mo.getAttribute('aria-busy')!=='true'&&n<80){n++;mo.click();}if(++t<160)setTimeout(function(){step(my);},250);}function go(){var m=/^#s-([0-9a-f]{10})$/.exec(location.hash||'');Array.prototype.forEach.call(document.querySelectorAll('#ls-all tr.ls-hit'),function(r){r.classList.remove('ls-hit');});if(!m)return;id=m[1];t=0;step(++k);}window.addEventListener('hashchange',go);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
 </main>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=19" defer></script>
-<script src="/components/land-sales.js?v=6" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
+<script src="/components/land-sales.js?v=7" defer></script>
 </body>
 </html>

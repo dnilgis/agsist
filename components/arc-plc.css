@@ -70,13 +70,13 @@
 .ap-grid-t td,.ap-grid-t th[scope=row]{font-family:var(--font-mono)}
 .ap-pct{font-weight:400}
 .ap-tag{display:block;font-size:.68rem;font-weight:600;color:var(--text-muted);line-height:1.1}
-.ap-w-plc{background:rgba(var(--gold-rgb),.16)}
-.ap-w-arc{background:rgba(var(--green-rgb),.16)}
+.ap-w-plc{background:var(--surface2)}
+.ap-w-arc{background:var(--surface2)}
 .ap-verdict.ap-w-plc{border-color:rgba(var(--gold-rgb),.5)}
 .ap-verdict.ap-w-arc{border-color:rgba(var(--green-rgb),.5)}
 /* a lean, a close call and no answer each look different from a pick */
-.ap-w-lean-plc{background:rgba(var(--gold-rgb),.07)}
-.ap-w-lean-arc{background:rgba(var(--green-rgb),.07)}
+.ap-w-lean-plc{background:var(--surface2)}
+.ap-w-lean-arc{background:var(--surface2)}
 .ap-verdict.ap-w-lean-plc{border-color:rgba(var(--gold-rgb),.5);border-style:dashed}
 .ap-verdict.ap-w-lean-arc{border-color:rgba(var(--green-rgb),.5);border-style:dashed}
 .ap-verdict.ap-w-close,.ap-verdict.ap-w-neither{background:var(--bg)}
@@ -98,7 +98,7 @@
 .ap-dl div{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:var(--card-r);padding:.5rem .7rem;min-width:0}
 .ap-dl span{display:block;font-size:var(--fs-xs);color:var(--text-muted)}
 .ap-dl b{font-family:var(--font-mono);font-size:1rem}
-.ap-warn{color:var(--text);background:rgba(var(--gold-rgb),.12);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:.4rem .6rem;margin:.4rem 0;font-size:var(--fs-sm)}
+.ap-warn{color:var(--text);background:var(--surface2);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:.4rem .6rem;margin:.4rem 0;font-size:var(--fs-sm)}
 .ap-card .ap-warn{display:block;margin-top:.4rem}
 .ap-tools{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0}
 .ap-tools .btn{white-space:normal;text-align:center}

@@ -14,7 +14,7 @@
 .skbs-bar{height:5pt;background:#8a6514}
 .skbs-top{display:flex;align-items:center;gap:.18in;padding:.08in 0 .07in;border-bottom:2.5pt solid #000}
 .skbs-ttl{flex:1;min-width:0}
-.skbs-kick{font-size:9pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8a6514}
+.skbs-kick{font-size:9pt;font-weight:800;letter-spacing:0;text-transform:none;color:#8a6514}
 .skbs-h1{font-size:26pt;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:.02in 0 .04in!important}
 .skbs-date{font-size:11pt;font-weight:600}
 .skbs-brand{flex:none;text-align:right;align-self:flex-start;padding-right:.04in}
@@ -26,7 +26,7 @@
 .skbs-crop{margin-top:.12in;break-inside:avoid;page-break-inside:avoid}
 .skbs-h{font-size:15pt;font-weight:800;line-height:1.2;padding-bottom:.03in;border-bottom:1.5pt solid #000}
 .skbs-t{width:100%;border-collapse:collapse;margin-top:.02in}
-.skbs-t th{font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:.06em;text-align:left;color:#333;padding:.05in .06in .03in;border-bottom:.75pt solid #000}
+.skbs-t th{font-size:8pt;font-weight:800;text-transform:none;letter-spacing:0;text-align:left;color:#333;padding:.05in .06in .03in;border-bottom:.75pt solid #000}
 .skbs-t td{padding:.05in .06in;border-bottom:.5pt solid #bbb;vertical-align:baseline;font-size:10.5pt;line-height:1.25}
 .skbs-t td b{font-weight:800}
 .skbs-t .skbs-n{text-align:right;white-space:nowrap}

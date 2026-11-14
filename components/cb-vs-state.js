@@ -70,7 +70,7 @@
 
   var BS = null, asked = false, last = null;
   var css = root.document.createElement('style');
-  css.textContent = '#cb-vs-state{margin:.5rem 0 0;padding:.5rem .7rem;border-left:3px solid var(--green);background:var(--surface);border-radius:6px;font-size:.84rem;line-height:1.5;color:var(--text-dim)}#cb-vs-state b{color:var(--text)}#cb-vs-state .cb-vs-s{display:block;margin-top:.2rem;font-size:.74rem;color:var(--text-muted)}#cb-vs-state a{color:var(--gold)}';
+  css.textContent = '#cb-vs-state{margin:.5rem 0 0;padding:.5rem .7rem;border-left:3px solid var(--green);background:var(--surface);border-radius:var(--r-md);font-size:.84rem;line-height:1.5;color:var(--text-dim)}#cb-vs-state b{color:var(--text)}#cb-vs-state .cb-vs-s{display:block;margin-top:.2rem;font-size:.74rem;color:var(--text-muted)}#cb-vs-state a{color:var(--gold)}';
   root.document.head.appendChild(css);
   function load() {
     if (asked) return;

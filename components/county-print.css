@@ -19,7 +19,7 @@
 .cprs-map{flex:none;width:1.05in}
 .cprs-map svg{display:block;width:100%;height:auto;max-height:.95in}
 .cprs-ttl{flex:1;min-width:0}
-.cprs-kick{font-size:9pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8a6514}
+.cprs-kick{font-size:9pt;font-weight:800;letter-spacing:0;text-transform:none;color:#8a6514}
 .cprs-h1{font-size:24pt;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:.02in 0 .03in!important}
 .cprs-date{font-size:10.5pt;font-weight:600}
 .cprs-brand{flex:none;text-align:right;align-self:flex-start;padding-right:.04in}
@@ -38,7 +38,7 @@
 .cprs-col>*+*{margin-top:.1in}
 .cprs-b{break-inside:avoid;page-break-inside:avoid}
 .cprs-h{font-size:12.5pt;font-weight:800;line-height:1.2;padding-bottom:.03in;border-bottom:1.5pt solid #000}
-.cprs-sh{font-size:7.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#333;margin:.06in 0 0!important;padding-top:.03in;border-top:.75pt solid #bbb}
+.cprs-sh{font-size:7.5pt;font-weight:800;text-transform:none;letter-spacing:0;color:#333;margin:.06in 0 0!important;padding-top:.03in;border-top:.75pt solid #bbb}
 .cprs-r{display:grid;grid-template-columns:1.02in 1fr;column-gap:.08in;align-items:baseline;padding:.045in 0;border-bottom:.5pt solid #e0e0e0}
 .cprs-r:last-child{border-bottom:0}
 .cprs-r b{font-size:12pt;font-weight:800;line-height:1.12;letter-spacing:-.01em;text-align:right}

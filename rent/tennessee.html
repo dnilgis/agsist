@@ -12,8 +12,8 @@
        Same files as scripts/inject_static_nav.py FONTS. -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -148,14 +148,13 @@
   </script>
   <style>
     .rs-wrap{max-width:1060px;margin:0 auto;padding:0 16px}
-    .rs-hero{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0}
-    /* 2026-10-06: these panels stay dark in light mode; gold inside them stays bright */
-    [data-theme="light"] .rs-stat,[data-theme="light"] .rs-note,[data-theme="light"] div[style*="background:#101415"]{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f}
-    .rs-stat{background:#101415;border:1px solid #1a1f20;border-radius:10px;padding:12px 16px;min-width:150px;flex:1}
-    .rs-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.45rem;color:#e6ebe9}
-    .rs-stat .l{font-size:.72rem;color:#8a948f;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
-    .rs-stat .s{font-size:.72rem;color:#8a948f;margin-top:2px}
-    .up{color:#5fc28a}.dn{color:#e0685f}
+    .rs-answer{font-size:1rem;line-height:1.7;color:var(--text);max-width:640px;margin:14px 0}
+    .rs-hero{margin:14px 0;border-top:1px solid var(--border)}
+    .rs-stat{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 14px;padding:9px 0;border-bottom:1px solid var(--border)}
+    .rs-stat .v{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--text);min-width:8.5rem}
+    .rs-stat .l{font-size:.88rem;color:var(--text)}
+    .rs-stat .s{font-size:.82rem;color:var(--text-dim)}
+    .up{color:var(--green)}.dn{color:var(--red)}
     /* 2026-10-08: the table, bars, cloud and FAQ sit on the page background, so they use the
        site tokens (light and dark) instead of fixed dark-theme hex. The table scrolls inside
        .rs-tw on phones (the page itself clips sideways overflow) with the name column pinned. */
@@ -175,7 +174,7 @@
        cell wraps so the three rent columns fit a 390 px phone (pasture was cut off at 558 to 615 px) */
     .rs-filter{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-height:44px;margin:10px 0 2px}
     .rs-filter label{font-size:.85rem;color:var(--text-muted)}
-    .rs-filter input{min-height:40px;padding:0 10px;font-size:16px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface,var(--bg));color:var(--text);width:13rem;max-width:100%;box-sizing:border-box}
+    .rs-filter input{min-height:40px;padding:0 10px;font-size:16px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface,var(--bg));color:var(--text);width:13rem;max-width:100%;box-sizing:border-box}
     .rs-qn{font-size:.8rem;color:var(--text-muted);flex-basis:100%;min-height:1.25em;line-height:1.25}
     .rs-t td.old{white-space:normal;min-width:5.5em;font-size:.72rem;line-height:1.25}
     .rs-tnote{font-size:.78rem;margin:4px 0 10px}
@@ -191,12 +190,12 @@
     .rs-bars{margin:8px 0}
     .rs-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
     .rs-bar .y{flex:none;width:3.2em;white-space:nowrap;color:var(--text-muted)}
-    .rs-bar .b{height:13px;background:linear-gradient(90deg,#2c4a3a,#5fc28a);border-radius:3px;min-width:2px}
+    .rs-bar .b{height:13px;background:#2c4a3a;border-radius:1px;min-width:2px}
     .rs-bar .v{color:var(--text)}
     .rs-bar .mut{color:var(--text-muted);font-size:.7rem;white-space:nowrap}
     .rs-bar .gap{color:var(--text-muted);font-style:italic;font-size:.74rem}
-    .rs-note{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:#8a948f;margin:14px 0}
-    .rs-note b{color:#e6ebe9}
+    .rs-note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);padding:12px 15px;font-size:.85rem;line-height:1.65;color:var(--text-dim);margin:14px 0}
+    .rs-note b{color:var(--text)}
     .rs-links a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
     .rs-cloud{font-size:.78rem;line-height:2;color:var(--text-muted)}
     .rs-cloud a{color:var(--text-muted);text-decoration:none;border-bottom:1px dotted var(--border-2)}
@@ -219,10 +218,10 @@
     .rs-faq p{color:var(--text-muted);font-size:.88rem;line-height:1.65;margin:8px 0 4px}
     /* Farmland Atlas look (farmland-atlas/atlas-pages.css .read): this page is a door into the Atlas */
     .rs-rel{font-size:.8rem;color:#8a948f;margin-top:6px}
-    .rs-gr{border:1px solid var(--border-2);border-radius:10px;padding:12px 16px;margin:14px 0}
+    .rs-gr{border:1px solid var(--border-2);border-radius:var(--r-md);padding:12px 16px;margin:14px 0}
     .rs-gr h2{margin:2px 0 6px}
     .rs-gr label{display:inline-flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--text-muted);margin:4px 12px 4px 0}
-    .rs-gr select,.rs-gr input{font:inherit;font-size:1rem;padding:7px 9px;border-radius:7px;border:1px solid var(--border-2);background:var(--bg);color:var(--text);min-height:40px}
+    .rs-gr select,.rs-gr input{font:inherit;font-size:1rem;padding:7px 9px;border-radius:var(--r-md);border:1px solid var(--border-2);background:var(--bg);color:var(--text);min-height:40px}
     .rs-gr input{width:7.5em}
     .rs-gr select{max-width:16em}
     .rs-gr-out{font-size:1.02rem;line-height:1.6;color:var(--text);margin:8px 0 4px}
@@ -247,11 +246,7 @@
   <p class="sub">Tennessee cash rent by county, per acre per year: every USDA-published county rate, free, from
   the NASS Cash Rents Survey. <span id="rs-seed"><!--SEED:rentstate-->88 Tennessee counties with a published 2026 non-irrigated cropland rent &middot; median $65/acre &middot; state median +5.7% vs 2025 (same counties), not a typical county&rsquo;s change &middot; data refreshed 2026-10-06<!--/SEED--></span></p>
   
-  <div style="background:#101415;border:1px solid #1a1f20;border-radius:14px;padding:20px 24px;margin:14px 0;display:flex;gap:22px;flex-wrap:wrap;align-items:center">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:#e0685f">$65</div>
-    <div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:#e0685f">MIDDLE COUNTY ROSE</div>
-      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median Tennessee county paid <b style="color:#e0685f">$65 an acre</b> for non-irrigated cropland in 2026. Across the same 81 counties the state median went from $61.50 to $65, <b style='color:#e0685f'>+5.7&#37; vs 2025</b>: the change in the median, not in a typical county. Highest county: Lake at $196. For irrigated cropland the middle county paid $188.50 (4 counties). Every county is in the table below.</div><div class="rs-rel">That is the middle county on this page, not USDA NASS&rsquo;s statewide average, which is not on this page yet.</div>
+  <p class="rs-answer"><b>Middle county rose.</b> The median Tennessee county paid <b>$65 an acre</b> for non-irrigated cropland in 2026. Across the same 81 counties the state median went from $61.50 to $65, <b>+5.7&#37; vs 2025</b>: the change in the median, not in a typical county. Highest county: Lake at $196. For irrigated cropland the middle county paid $188.50 (4 counties). Every county is in the table below.</p><div class="rs-rel">That is the middle county on this page, not USDA NASS&rsquo;s statewide average, which is not on this page yet.</div>
     </div>
   </div>
   <div data-signup-ask="Email me when USDA updates Tennessee cash rents." data-topic="rent:tn" data-ok="Done. One email when USDA puts out the 2027 Tennessee county rents, usually in August."></div>
@@ -261,9 +256,9 @@
     <div class="rs-stat"><div class="v">$65</div><div class="l">median rent /ac &middot; 2026</div><div class="s">non-irrigated cropland, 88 counties</div></div>
     <div class="rs-stat"><div class="v up">+5.7%</div><div class="l">state median vs 2025</div><div class="s">median of 81 matched counties</div></div>
     <div class="rs-stat"><div class="v up">+10.2%</div><div class="l">vs 2016</div><div class="s">median of 76 matched counties</div></div>
-    <div class="rs-stat"><div class="v">$196</div><div class="l">top county</div><div class="s">Lake</div></div>
+    <div class="rs-stat"><div class="v">$196</div><div class="l">top county</div><div class="s">Lake</div></div><div class="rs-stat"><div class="v">$188.50</div><div class="l">irrigated median &middot; 2026</div><div class="s">irrigated cropland, 4 counties, shown apart</div></div><div class="rs-stat"><div class="v">$28.25</div><div class="l">pasture median &middot; 2026</div><div class="s">permanent pasture, 84 counties, shown apart</div></div>
   </div>
-  <div class="rs-hero"><div class="rs-stat"><div class="v">$188.50</div><div class="l">irrigated median &middot; 2026</div><div class="s">irrigated cropland, 4 counties, shown apart</div></div><div class="rs-stat"><div class="v">$28.25</div><div class="l">pasture median &middot; 2026</div><div class="s">permanent pasture, 84 counties, shown apart</div></div></div>
+  
   <p class="sub">Insuring pasture or hay ground? See <a href="/prf/tennessee" style="color:var(--gold)">PRF rainfall insurance in Tennessee</a>: county values, what each pair of months costs, and every year since 1951.</p>
   <div class="state-spot" data-state-spot="TN"></div>
   <aside class="ag-sponsor-ribbon" data-slot="rent-tn"></aside>
@@ -334,8 +329,8 @@
 </main>
 <nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1"><span style="color:var(--text-dim);font-weight:700">Land:</span> <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/farmland-atlas#foreign" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a><br><span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/markets" style="color:var(--text-muted);text-decoration:none">Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/usda-calendar#priced-in" style="color:var(--text-muted);text-decoration:none">What&rsquo;s Priced In</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT</a><br><span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/rain#drought" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">Daily Briefing</a></nav>
 <div id="site-footer"></div>
-<script src="/components/loader.js?v=19"></script>
-<script src="/components/rain-print-promo.js?v=6" defer></script>
+<script src="/components/loader.js?v=20"></script>
+<script src="/components/rain-print-promo.js?v=7" defer></script>
 <script>
 (function(){var t=document.getElementById('rs-table');if(!t)return;
 var ths=t.tHead.rows[0].cells,dir=1,last=-1;

@@ -113,19 +113,12 @@ jobs:
           python scripts/check_seo.py
           python scripts/check_site_budget.py
 
-      - name: Newsletter block
-        continue-on-error: true
-        run: |
-          python scripts/build_newsletter_block.py --selftest
-          python scripts/build_newsletter_block.py
-
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A data/atlas/pct
           git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
-          git add -A data/newsletter 2>/dev/null || true
           python scripts/generated_sets.py dependents rain --stage || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           N=$(ls data/rain/*.json 2>/dev/null | wc -l)

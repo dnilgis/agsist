@@ -1,7 +1,7 @@
 {
  "id": "2026-11-04-funds",
  "date": "2026-11-04",
- "title": "Fund positions at a glance",
+ "title": "Fund positions in one line each",
  "line": "The COT page and the home card now open with one plain line per market: long or short, how heavy, and the week's buying or selling. Get it every Friday by email.",
  "link": "/cot"
 }

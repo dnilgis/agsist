@@ -161,7 +161,7 @@
     if (root.AgPxStamp && root.AgPxStamp.cell) return Promise.resolve(root.AgPxStamp);
     return new Promise(function (ok) {
       var s = doc.createElement('script');
-      s.src = '/components/price-local.js?v=14';
+      s.src = '/components/price-local.js?v=15';
       s.onload = function () { ok(root.AgPxStamp || null); };
       s.onerror = function () { ok(null); };
       doc.head.appendChild(s);

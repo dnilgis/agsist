@@ -110,7 +110,7 @@
   }
   var CSS = '.cc-line{font-size:1.02rem;line-height:1.5;margin:.4rem 0 .6rem;color:var(--text)}' +
     '.cc-late{color:var(--text-muted);font-size:.86rem;margin:.2rem 0}' +
-    '.cc-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;margin:.5rem 0}' +
+    '.cc-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);margin:.5rem 0}' +
     '.cc-t{border-collapse:collapse;width:100%;min-width:520px;font-size:.88rem}' +
     '.cc-t th,.cc-t td{padding:.45rem .55rem;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}' +
     '.cc-t th:first-child,.cc-t td:first-child{text-align:left}' +
@@ -120,7 +120,7 @@
     '.cc-t td.cc-no{color:var(--text-dim);font-size:.8rem}' +
     '.cc-t a{color:var(--text);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}' +
     '.cc-bar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.4rem 0;font-size:.88rem;color:var(--text-muted)}' +
-    '.cc-bar select{font:inherit;padding:.3rem .4rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)}' +
+    '.cc-bar select{font:inherit;padding:.3rem .4rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text)}' +
     '.cc-words{font-size:.9rem;line-height:1.5;color:var(--text-muted);margin:.5rem 0}' +
     '.cc-words b{color:var(--text)}' +
     '.cc details{margin:.5rem 0;font-size:.88rem;color:var(--text-muted)}' +

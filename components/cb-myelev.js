@@ -455,7 +455,7 @@
   /* The homepage has no alert script of its own; Watch needs it. */
   function loadAlerts(){
     if(document.querySelector('script[src*="cb-alerts.js"]')) return;
-    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=2'; document.head.appendChild(l);
+    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=3'; document.head.appendChild(l);
     var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=6'; s.defer = true;
     s.onload = function(){ mounts.forEach(function(m){ m.force = true; draw(m); }); }; document.head.appendChild(s);
   }

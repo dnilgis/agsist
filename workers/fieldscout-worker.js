@@ -36,7 +36,7 @@
  */
 
 // Build stamp — bump on every paste so /health proves which code is live.
-const BUILD = 'fs-2026-09-30a';
+const BUILD = 'fs-2026-11-13a';
 
 const CDSE_TOKEN_URL = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token';
 const SH_PROCESS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/process';
@@ -65,21 +65,32 @@ function setup() {
   };
 }
 function evaluatePixel(s) {
-  var bad = (s.SCL==0||s.SCL==1||s.SCL==3||s.SCL==8||s.SCL==9||s.SCL==10||s.SCL==11);
-  var m   = (s.dataMask==1 && !bad) ? 1 : 0;
   var d   = function(a,b){ return (a+b)===0 ? 0 : (a-b)/(a+b); };
+  var ndsi = d(s.B03, s.B11);
+  // SCL misses thin or patchy snow (it can label it vegetation or bare soil), so snow is also
+  // caught by its own signature: NDSI over 0.4 with a bright near-infrared band.
+  var snow = (ndsi > 0.4 && s.B08 > 0.11);
+  var bad = (s.SCL==0||s.SCL==1||s.SCL==3||s.SCL==8||s.SCL==9||s.SCL==10||s.SCL==11||snow);
+  var m   = (s.dataMask==1 && !bad) ? 1 : 0;
   var ndvi = d(s.B08, s.B04);
   var ndre = d(s.B08, s.B05);
   var ndmi = d(s.B08, s.B11);
   var nmdi = (s.B08+(s.B11-s.B12))===0 ? 0 : (s.B08-(s.B11-s.B12))/(s.B08+(s.B11-s.B12));
   var msi  = s.B08===0 ? 0 : s.B11/s.B08;
   var ndwi = d(s.B03, s.B08);
-  var ndsi = d(s.B03, s.B11);
   var bsi  = (((s.B11+s.B04)+(s.B08+s.B03))===0) ? 0
              : ((s.B11+s.B04)-(s.B08+s.B03))/((s.B11+s.B04)+(s.B08+s.B03));
   return { ndvi:[ndvi], ndre:[ndre], ndmi:[ndmi], nmdi:[nmdi],
            msi:[msi], ndwi:[ndwi], ndsi:[ndsi], bsi:[bsi], dataMask:[m] };
 }`;
+
+// A pass is a field average only when most of the field was clear, and no field average of
+// Sentinel-2 reaches 0.95. Under half clear, the survivors can be a tree line or a ditch left
+// after snow or haze was masked, and they read like a dense canopy (Nov 2026: NDVI 0.92 on a
+// harvested field). The page vets the series again, so an older cached answer is held back too.
+const MIN_CLEAR_SHARE = 0.5;
+const NDVI_CEILING = 0.95;
+const SNOW_NDSI = 0.4;
 
 // Allow only the AGSIST origins to use this worker (prevents others piggybacking
 // on your processing units). Add localhost for local testing.
@@ -950,7 +961,7 @@ async function indicesStats(request, env, ctx, cors) {
   const from = isoDay.test(body.from || '') ? body.from : (today.getUTCFullYear() + '-04-01');
 
   // Edge-cache by geometry + window (warm repeat views are free, and bank history).
-  const ck = new Request('https://fs-cache/indices/' + (await sha1(JSON.stringify(geometry) + from + to)));
+  const ck = new Request('https://fs-cache/indices/v2/' + (await sha1(JSON.stringify(geometry) + from + to)));   // v2: snow test, clear share 0.5, ceiling
   const cache = caches.default;
   const hit = await cache.match(ck);
   if (hit) return withCors(hit, cors);
@@ -1036,7 +1047,7 @@ async function ndviNormal(geometry, token, toDateStr) {
       if (!ns || !isFinite(ns.mean)) continue;
       const ms = bs(o.dataMask);
       const valid = (ms && isFinite(ms.mean)) ? ms.mean : 1;
-      if (valid < 0.2) continue;
+      if (valid < MIN_CLEAR_SHARE || ns.mean > NDVI_CEILING) continue;
       out.push(ns.mean);
     }
     return out;
@@ -1071,18 +1082,21 @@ function shapeIndices(raw) {
     return bk ? out.bands[bk].stats : null;
   };
   const out = [];
+  let held = 0;
   for (const iv of data) {
     const o = iv.outputs || {};
     const ns = stats(o.ndvi);
     if (!ns || !isFinite(ns.mean)) continue;          // an interval is real only if NDVI read
     const ms = stats(o.dataMask);
     const valid = (ms && isFinite(ms.mean)) ? ms.mean : 1;
-    if (valid < 0.2) continue;                          // skip mostly-cloud passes only
+    if (valid < MIN_CLEAR_SHARE) { held++; continue; }   // under half the field clear: not the field's average
     const row = { date: ((iv.interval && iv.interval.from) || '').slice(0, 10), valid: Math.round(valid * 100) / 100 };
     for (const k of keys) { const st = stats(o[k]); row[k] = (st && isFinite(st.mean)) ? r3(st.mean) : null; }
     row.ndvi_sd = isFinite(ns.stDev) ? r3(ns.stDev) : null;
+    if (row.ndvi > NDVI_CEILING || (row.ndsi != null && row.ndsi > SNOW_NDSI)) { held++; continue; }   // not crop: snow, haze or an image problem
     if (row.date) out.push(row);
   }
+  if (held) console.log('indices passes held back');
   out.sort((a, b) => (a.date < b.date ? -1 : 1));
   return out;
 }

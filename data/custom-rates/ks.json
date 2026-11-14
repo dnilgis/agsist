@@ -15,7 +15,9 @@
  "spread": "minmax",
  "spread_label": "lowest to highest answer",
  "includes": "The prices include charges for machinery, power, fuel, and the operator. They do not include chemicals, seeds, and other materials unless specified; hay baling materials are the one exception. KDA and K-State say the prices should not be regarded as official or established rates.",
- "range_note": "Rows are the report's STATE lines (district tables are in the report). The range is the lowest and highest rate reported. The report's table for hauling round bales by the ton disagrees with its own text (which calls it per hour), so that line is left out. The report's text gives mowing or swathing forage as $17.74 an acre; its table prints $17.47, the number used here.",
+ "range_note": "Rows are the report's STATE lines (district tables are in the report). The range is the lowest and highest rate reported. The report's table for hauling round bales by the ton disagrees with its own text (which calls it per hour), so that line is left out. The report's text gives mowing or swathing forage as $17.74 an acre; its table prints $17.47, the number used here. The report's text gives skid loader rental as $95.96 an hour; its table prints $95.56, the number used here.",
+ "listed": "2026-10-17",
+ "typed": "2026-10-17",
  "rows": [
   {
    "s": "Grain harvesting",
@@ -58,6 +60,14 @@
   },
   {
    "s": "Grain harvesting",
+   "o": "Grain sorghum, extra charge for high yield (above 42 bushels an acre)",
+   "u": "bushel",
+   "a": 0.297,
+   "n": 91,
+   "c": "harvest"
+  },
+  {
+   "s": "Grain harvesting",
    "o": "Grain sorghum, flat rate",
    "u": "acre",
    "a": 38.62,
@@ -74,6 +84,14 @@
    "n": 80,
    "lo": 21.0,
    "hi": 55.0,
+   "c": "harvest"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Corn, extra charge for high yield (above 69 bushels an acre)",
+   "u": "bushel",
+   "a": 0.279,
+   "n": 65,
    "c": "harvest"
   },
   {
@@ -105,6 +123,14 @@
    "n": 63,
    "lo": 25.0,
    "hi": 57.0,
+   "c": "harvest"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Soybeans, extra charge for high yield (above 29 bushels an acre)",
+   "u": "bushel",
+   "a": 0.301,
+   "n": 39,
    "c": "harvest"
   },
   {

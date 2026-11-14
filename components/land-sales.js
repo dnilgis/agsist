@@ -51,7 +51,7 @@
   }
   function css() {
     if (document.querySelector('link[href^="/components/land-sales.css"]')) return;
-    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/land-sales.css?v=2';
+    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/land-sales.css?v=5';
     (document.head || document.documentElement).appendChild(l);
   }
 

@@ -138,7 +138,7 @@
     var st = doc.createElement('style'); st.id = 'rp-promo-css';
     st.textContent = '.rp-promo{margin:1.2rem 0 .8rem;font-size:.9rem;line-height:1.5;color:var(--text-dim)}' +
       '.rp-promo a{color:var(--brand);text-decoration:underline;text-underline-offset:2px}' +
-      '.rp-card{display:flex;align-items:center;gap:14px;margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);text-decoration:none;color:var(--text)}' +
+      '.rp-card{display:flex;align-items:center;gap:14px;margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);text-decoration:none;color:var(--text)}' +
       'a.rp-card:hover,a.rp-card:focus-visible{border-color:var(--brand)}' +
       'a.rp-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}' +
       '.rp-card-i{position:relative;flex:0 0 auto;width:132px}' +

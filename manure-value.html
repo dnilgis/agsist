@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>How Much Is Manure Worth? Manure Value at Posted Fertilizer Prices</title>
   <meta name="description" content="Kansas and Wisconsin co-op prices, Oct 1 to Nov 11, 2026: all the N, P and K in liquid dairy manure is worth about $30.56 per 1,000 gal; $18.11 usable the first year.">
-  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/manure-value">
 
@@ -34,12 +34,12 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/manure-value.css?v=3">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="stylesheet" href="/components/manure-value.css?v=4">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <script src="/components/util.js?v=19"></script>
+  <script src="/components/util.js?v=21"></script>
   <style>
     .mv{max-width:760px;margin:0 auto;padding:1.4rem 1rem 4rem}
     .mv h1{font-size:clamp(1.55rem,4.6vw,2.2rem);line-height:1.2;margin:0 0 .4rem;color:var(--text)}
@@ -52,10 +52,10 @@
     .mv li{margin:.4rem 0}
     .mv li b,.mv p b{color:var(--text)}
     .mv a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
-    .mv-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1rem 1.1rem;margin:0 0 1rem}
+    .mv-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:1rem 1.1rem;margin:0 0 1rem}
     .mv-answer .mv-num{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(2rem,8vw,2.6rem);font-weight:800;color:var(--gold);line-height:1.1}
     .mv-pair{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;align-items:flex-end}
-    .mv-k{display:block;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+    .mv-k{display:block;font-size:.76rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
     .mv-answer .mv-num2{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(1.4rem,5.5vw,1.7rem);font-weight:800;color:var(--text);line-height:1.15}
     .mv-answer .mv-num2 small{font-size:.86rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
     .mv-answer .mv-num small{font-size:1rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
@@ -66,19 +66,19 @@
     .mv-answer p.fine{font-size:.86rem;color:var(--text-muted)}
     .mv p.mv-nh3{font-size:.86rem;line-height:1.5;color:var(--text-muted);margin:.2rem 0 .5rem}
     .mv .mv-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .4rem;padding:0;list-style:none}
-    .mv .mv-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
+    .mv .mv-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
     .mv .mv-prices b{display:block;margin:.1rem 0;font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--text)}
     .mv-src{font-size:.84rem!important;color:var(--text-muted)!important}
     .mv-math summary{cursor:pointer;color:var(--gold);font-weight:600;padding:.3rem 0}
     .mv-math ul{margin:.3rem 0 .5rem 1.1rem;padding:0}.mv-math li{margin:.2rem 0;line-height:1.45}
     .mv .mv-toc{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0;padding:0;list-style:none}
     .mv-toc li{margin:0}
-    .mv-toc a{display:inline-flex;align-items:center;min-height:40px;padding:0 .8rem;border:1px solid var(--border);border-radius:20px;font-size:.88rem;text-decoration:none!important;color:var(--text-dim)!important;background:var(--surface)}
-    .mv-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;margin:.4rem 0 .8rem;background:var(--surface)}
+    .mv-toc a{display:inline-flex;align-items:center;min-height:40px;padding:0 .8rem;border:1px solid var(--border);border-radius:var(--r-lg);font-size:.88rem;text-decoration:none!important;color:var(--text-dim)!important;background:var(--surface)}
+    .mv-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);margin:.4rem 0 .8rem;background:var(--surface)}
     .mv-tw:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     .mv-t{border-collapse:collapse;width:100%;min-width:560px;font-size:.88rem}
     .mv-t th,.mv-t td{padding:.5rem .6rem;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
-    .mv-t thead th{min-width:6.2rem;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);white-space:normal;vertical-align:bottom}
+    .mv-t thead th{min-width:6.2rem;font-size:.78rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--text-muted);white-space:normal;vertical-align:bottom}
     .mv-t th[scope="row"],.mv-t td.tl,.mv-t thead th:first-child,.mv-t thead tr:first-child th.tl{text-align:left}
     .mv-t th[scope="row"]{font-weight:600;color:var(--text)}
     .mv-t th[scope="row"] span{display:block;font-size:.76rem;font-weight:400;color:var(--text-muted)}
@@ -86,7 +86,7 @@
     .mv-t td.tl{font-family:var(--font-body);color:var(--text-dim)}
     .mv-t td.hi{color:var(--gold);font-weight:700}
     .mv-t td.mv-same{font-family:var(--font-body);color:var(--text-muted);font-size:.8rem}
-    .mv-t tr.mv-g th,.mv-t tr.mv-g td{background:var(--bg);text-align:left;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-family:var(--font-body)}
+    .mv-t tr.mv-g th,.mv-t tr.mv-g td{background:var(--bg);text-align:left;font-size:.76rem;font-weight:800;text-transform:none;letter-spacing:0;color:var(--gold);font-family:var(--font-body)}
     .mv-lb{min-width:680px}
     .mv-val{min-width:470px}
     .mv-val th[scope="row"]{white-space:normal;min-width:8.5rem}
@@ -94,12 +94,12 @@
     .mv-t thead th.mv-cg{text-align:center;border-bottom:1px solid var(--border)}
     .mv-val td.hi small{display:block;font-size:.74rem;font-weight:400;color:var(--text-muted)}
     @media(max-width:480px){.mv-val{min-width:0;font-size:.8rem}.mv-val th,.mv-val td{padding:.4rem .3rem}.mv-val thead th{font-size:.64rem;letter-spacing:0}.mv-val th[scope="row"]{min-width:0;font-size:.8rem}.mv-val th[scope="row"] span{font-size:.7rem}.mv-val td.hi small{font-size:.66rem}}
-    .mv-ex{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin:1rem 0}
+    .mv-ex{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;margin:1rem 0}
     .mv-ex h3{margin-top:0}
     .mv-ex ol{margin-bottom:.4rem}
     .mv-ex .n{font-family:'JetBrains Mono',monospace;color:var(--text);font-weight:700;white-space:nowrap}
     .mv-ex .big{display:block;margin:.6rem 0 .2rem;font-size:1.1rem;color:var(--text);font-weight:700}
-    .mv details.mv-more{border:1px solid var(--border);border-radius:10px;padding:.2rem .9rem;margin:.6rem 0 1rem;background:var(--surface)}
+    .mv details.mv-more{border:1px solid var(--border);border-radius:var(--r-lg);padding:.2rem .9rem;margin:.6rem 0 1rem;background:var(--surface)}
     .mv details.mv-more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--text)}
     .mv-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .mv-faq details:last-child{border-bottom:1px solid var(--border)}
@@ -110,7 +110,7 @@
     .mv-fine{font-size:.84rem!important;color:var(--text-muted)!important}
     @media(max-width:420px){.mv .mv-prices li{font-size:.74rem;padding:.45rem .5rem}.mv .mv-prices b{font-size:1rem}}
   </style>
-  <script type="application/ld+json" id="mv-ld">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/manure-value#webpage","url":"https://agsist.com/manure-value","name":"How Much Is Manure Worth? Dairy, Hog, Beef and Poultry Manure Value at Today's Fertilizer Prices","description":"Kansas and Wisconsin co-op prices, Oct 1 to Nov 11, 2026: all the N, P and K in liquid dairy manure is worth about $30.56 per 1,000 gal; $18.11 usable the first year.","inLanguage":"en-US","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com/"},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-14","dateModified":"2026-10-14","isAccessibleForFree":true,"image":"https://agsist.com/img/og/manure-value.jpg"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Fast Facts","item":"https://agsist.com/fast-facts"},{"@type":"ListItem","position":3,"name":"Manure value","item":"https://agsist.com/manure-value"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much is dairy manure worth per 1,000 gallons?","acceptedAnswer":{"@type":"Answer","text":"At Kansas and Wisconsin co-op fertilizer prices posted Oct 1 to Nov 11, 2026, all the N, P2O5 and K2O in 1,000 gallons of liquid dairy manure at 4 to 11% dry matter is worth about $30.56. That is 24 lb of N, 8 lb of P2O5 and 21 lb of K2O, the typical totals in UW Extension A2809 (Table 9.2). The part a crop can use the first year is worth about $18.11 if it is worked into the soil within 3 days, $19.43 injected or worked in within an hour, and $16.12 left on top longer. A lab test of your own manure beats the book."}},{"@type":"Question","name":"How much is manure worth per ton?","acceptedAnswer":{"@type":"Answer","text":"At Kansas and Wisconsin co-op fertilizer prices posted Oct 1 to Nov 11, 2026, all the N, P2O5 and K2O in a ton of solid dairy manure over 20% dry matter is worth about $11.92, beef manure about $19.74, hog manure about $26.28, and chicken litter about $80.72, by UW Extension A2809's typical totals. Liquid dairy manure at 4 to 11% dry matter works out to about $7.33 a ton, since 1,000 gallons weighs a little over 4 tons."}},{"@type":"Question","name":"Is this the value of all the nutrients in the manure?","acceptedAnswer":{"@type":"Answer","text":"Yes. The headline numbers price every pound of N, P2O5 and K2O in the manure, using UW Extension A2809's typical totals for Wisconsin manure tested from 1998 to 2012 (Table 9.2). The crop does not get it all the first year. UW counts 80% of the P2O5 and K2O and 25 to 65% of the N, depending on the manure and how fast it is worked in (Table 9.1), so the first-year value is shown beside each total. Your own manure test beats the book: type it into the calculator under Use my manure test."}},{"@type":"Question","name":"What is the manure on a whole field worth?","acceptedAnswer":{"@type":"Answer","text":"Liquid dairy manure at 4 to 11% dry matter, 6,000 gallons an acre, puts on 144 lb of N, 48 lb of P2O5 and 126 lb of K2O an acre by UW's typical totals. At Kansas and Wisconsin co-op prices posted Oct 1 to Nov 11, 2026 that is $95.48 of N, $38.50 of P2O5 and $49.39 of K2O, $183.37 an acre, or $14,669 for 80 acres. Worked in within 3 days, the part a crop can use the first year is worth $108.64 an acre, $8,691 for the 80 acres."}},{"@type":"Question","name":"Why is phosphorus priced with the nitrogen taken out?","acceptedAnswer":{"@type":"Answer","text":"Phosphate here is priced from MAP 11-52-0, which carries 220 lb of N in every ton along with its P2O5. Charging the whole price to phosphorus makes P2O5 look about $0.94 a pound. Crediting the N at the urea price, about $146 a ton, puts P2O5 at about $0.80 a pound. MAP is used when co-ops or USDA price it, DAP when they do not."}},{"@type":"Question","name":"How do I get manure tested and what does it cost?","acceptedAnswer":{"@type":"Answer","text":"Use a lab certified for manure analysis in your state and ask for total N, ammonium N, P2O5, K2O and dry matter. Sample during hauling, after the pit is well agitated: take a cup from several loads, mix them in a clean pail, fill a plastic jar about three quarters full, keep it cold and ship it early in the week. For solid manure, take 10 to 20 handfuls from different spots or loads and mix. Tests commonly run $25 to $60 a sample. Test every year for a few years to learn your own manure."}}]}]}</script>
+  <script type="application/ld+json" id="mv-ld">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/manure-value#webpage","url":"https://agsist.com/manure-value","name":"How Much Is Manure Worth? Dairy, Hog, Beef and Poultry Manure Value at Today's Fertilizer Prices","description":"Kansas and Wisconsin co-op prices, Oct 1 to Nov 11, 2026: all the N, P and K in liquid dairy manure is worth about $30.56 per 1,000 gal; $18.11 usable the first year.","inLanguage":"en-US","isPartOf":{"@type":"WebSite","name":"AGSIST","url":"https://agsist.com/"},"author":{"@id":"https://agsist.com/#organization"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-14","dateModified":"2026-10-14","isAccessibleForFree":true,"image":"https://agsist.com/img/og/manure-value.jpg"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Fast Facts","item":"https://agsist.com/fast-facts"},{"@type":"ListItem","position":3,"name":"Manure value","item":"https://agsist.com/manure-value"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much is dairy manure worth per 1,000 gallons?","acceptedAnswer":{"@type":"Answer","text":"At Kansas and Wisconsin co-op fertilizer prices posted Oct 1 to Nov 11, 2026, all the N, P2O5 and K2O in 1,000 gallons of liquid dairy manure at 4 to 11% dry matter is worth about $30.56. That is 24 lb of N, 8 lb of P2O5 and 21 lb of K2O, the typical totals in UW Extension A2809 (Table 9.2). The part a crop can use the first year is worth about $18.11 if it is worked into the soil within 3 days, $19.43 injected or worked in within an hour, and $16.12 left on top longer. A lab test of your own manure beats the book."}},{"@type":"Question","name":"How much is manure worth per ton?","acceptedAnswer":{"@type":"Answer","text":"At Kansas and Wisconsin co-op fertilizer prices posted Oct 1 to Nov 11, 2026, all the N, P2O5 and K2O in a ton of solid dairy manure over 20% dry matter is worth about $11.92, beef manure about $19.74, hog manure about $26.28, and chicken litter about $80.72, by UW Extension A2809's typical totals. Liquid dairy manure at 4 to 11% dry matter works out to about $7.33 a ton, since 1,000 gallons weighs a little over 4 tons."}},{"@type":"Question","name":"Is this the value of all the nutrients in the manure?","acceptedAnswer":{"@type":"Answer","text":"Yes. The headline numbers price every pound of N, P2O5 and K2O in the manure, using UW Extension A2809's typical totals for Wisconsin manure tested from 1998 to 2012 (Table 9.2). The crop does not get it all the first year. UW counts 80% of the P2O5 and K2O and 25 to 65% of the N, depending on the manure and how fast it is worked in (Table 9.1), so the first-year value is shown beside each total. Your own manure test beats the book: type it into the calculator under Use my manure test."}},{"@type":"Question","name":"What is the manure on a whole field worth?","acceptedAnswer":{"@type":"Answer","text":"Liquid dairy manure at 4 to 11% dry matter, 6,000 gallons an acre, puts on 144 lb of N, 48 lb of P2O5 and 126 lb of K2O an acre by UW's typical totals. At Kansas and Wisconsin co-op prices posted Oct 1 to Nov 11, 2026 that is $95.48 of N, $38.50 of P2O5 and $49.39 of K2O, $183.37 an acre, or $14,669 for 80 acres. Worked in within 3 days, the part a crop can use the first year is worth $108.64 an acre, $8,691 for the 80 acres."}},{"@type":"Question","name":"Why is phosphorus priced with the nitrogen taken out?","acceptedAnswer":{"@type":"Answer","text":"Phosphate here is priced from MAP 11-52-0, which carries 220 lb of N in every ton along with its P2O5. Charging the whole price to phosphorus makes P2O5 look about $0.94 a pound. Crediting the N at the urea price, about $146 a ton, puts P2O5 at about $0.80 a pound. MAP is used when co-ops or USDA price it, DAP when they do not."}},{"@type":"Question","name":"How do I get manure tested and what does it cost?","acceptedAnswer":{"@type":"Answer","text":"Use a lab certified for manure analysis in your state and ask for total N, ammonium N, P2O5, K2O and dry matter. Sample during hauling, after the pit is well agitated: take a cup from several loads, mix them in a clean pail, fill a plastic jar about three quarters full, keep it cold and ship it early in the week. For solid manure, take 10 to 20 handfuls from different spots or loads and mix. Tests commonly run $25 to $60 a sample. Test every year for a few years to learn your own manure."}}]}]}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -292,9 +292,8 @@
         <li><a href="/milk-prices">Milk prices</a></li>
         <li><a href="/breakeven">Break-even</a></li>
       </ul>
-      <p class="mv-fine" style="margin-top:2rem">Book values are averages, not a guarantee of what a field will respond to. Questions or a number that looks wrong: <a href="/contact">contact me</a>. Sig</p>
+      <p class="mv-fine" style="margin-top:2rem">Book values are averages, not a guarantee of what a field will respond to. Questions or a number that looks wrong: <a href="/contact">contact us</a>.</p>
     </article>
-  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
   <div id="site-footer">
 <!-- static-nav:footer -->
@@ -306,15 +305,15 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/fert-pick.js?v=1" defer></script>
   <script src="/components/manure-value.js?v=10" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

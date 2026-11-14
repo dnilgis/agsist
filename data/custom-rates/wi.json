@@ -15,6 +15,8 @@
  "spread_label": "lowest to highest answer",
  "includes": "The reported rates include fuel. Average is the mean of all reported rates; range is the lowest and highest; median is the middle answer; responses is how many usable answers each line had.",
  "range_note": "The range is the lowest and highest answer. The report's fertilizer and chemical table is headed 2024; it reads as a slip, since every other table and its percent changes are 2025. Its small round bale and 4x5 round bale lines print the same five numbers, so neither is lined up with other states. Its \"maximum one-way mileage\" lines are miles, not dollars, and are left out. Wisconsin's April 2025 preliminary release (2024 answers raised to 2025 with Iowa's year-over-year changes) is not used: nothing here is inflated.",
+ "listed": "2026-10-17",
+ "typed": "2026-10-17",
  "rows": [
   {
    "s": "Land tillage",

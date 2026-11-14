@@ -1,6 +1,6 @@
 /* harvest-clock.css -- the harvest price clock block (components/harvest-clock.js). */
-.hclock{margin:.9rem 0 0;padding:.75rem 1rem;background:var(--surface2,var(--surface));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px}
-.hclock-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .35rem}
+.hclock{margin:.9rem 0 0;padding:.75rem 1rem;background:var(--surface2,var(--surface));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md)}
+.hclock-label{font-family:var(--font-body);font-size:.72rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin:0 0 .35rem}
 .hclock-line{margin:.15rem 0;font-size:.94rem;line-height:1.5;color:var(--text)}
 .hclock-note{margin:.4rem 0 0;font-size:.8rem;line-height:1.5;color:var(--text-muted)}
 .hclock-note a{color:var(--gold);white-space:nowrap}

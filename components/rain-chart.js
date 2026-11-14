@@ -134,7 +134,7 @@
     // rows of the key, then the two ends of the axis
     rows.forEach(function (r, ri) { texts.push({ t: r.t, x: X0 + sw + 12, y: bandTop + FS + 2 + ri * rowH, size: FS, w: r.w, fill: r.fill, k: r.k }); });
     var AF = spec.axisFS, ay = PB + AF + 8;
-    texts.push({ t: m.startText, x: X0, y: ay, size: AF, w: 500, fill: 'mute', k: 'start' });
+    texts.push({ t: m.startText, x: X0 + 3, y: ay, size: AF, w: 500, fill: 'mute', k: 'start' });
     if (m.endText) texts.push({ t: m.endText, x: X1 + 2, y: ay, size: AF, w: 500, fill: 'mute', anchor: 'end', k: 'end-date' });
     // the months' first letters, quiet, one row under the two ends of the axis (one text element: one x for each letter)
     var ly = ay + AF + 6, H = ly + 14;
@@ -281,7 +281,8 @@
 
     // the start of the year, under the left end of the baseline; the last day under the right end
     var AF = spec.axisFS, ay = PB + AF + 8;
-    texts.push({ t: m.startText, x: X0, y: ay, size: AF, w: 500, fam: SANSF, fill: 'mute', k: 'start' });
+    // 'Jan 1' sits 3 units in from the edge: a fallback face's J reaches left of its origin (the web font loads optional)
+    texts.push({ t: m.startText, x: X0 + 3, y: ay, size: AF, w: 500, fam: SANSF, fill: 'mute', k: 'start' });
     if (m.endText) texts.push({ t: m.endText, x: X1 + 2, y: ay, size: AF, w: 500, fam: SANSF, fill: 'mute', anchor: 'end', k: 'end-date' });
 
     // ---- the foot: the year big, the place under it
@@ -351,7 +352,8 @@
   }
 
   /* The model for one figure. D carries: year, place, total, usual (empty: no normal), pct (empty: no fair percent),
-     asof (the last day reported, ISO), days, miss (days not reported), noun, wk ("doy,total,usual;..." in hundredths,
+     asof (the last day reported, ISO), days, miss (days not reported), noun, over ("1": the season is over, as the Field
+     Scout card says after the freeze, so the words say "through <last day>", never "so far"), wk ("doy,total,usual;..." in hundredths,
      one point a week and the last day, the points the page's old chart drew). */
   function fromData(D) {
     var year = +D.year, total = +D.total, hasU = numOk(D.usual), usual = hasU ? +D.usual : null;
@@ -372,9 +374,11 @@
       yText: T + ' in this year',
       startText: 'Jan 1', endText: fmtDate(D.asof)
     };
-    // the headline says the page's own sentence: "150% of normal" (the page prints the percent that way), then "so far"
-    if (pctOk) { m.headBig = (+D.pct) + '% of normal'; m.headSmall = preview ? 'so far' : 'this year'; }
-    else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain so far' : 'of rain this year'; }
+    // the headline says the page's own sentence: "150% of normal" (the page prints the percent that way), then "so far";
+    // once the season is over (D.over), "through Nov 5": the year is not done, but the season it describes is
+    var upTo = D.over === '1' ? 'through ' + fmtDate(D.asof) : 'so far';
+    if (pctOk) { m.headBig = (+D.pct) + '% of normal'; m.headSmall = preview ? upTo : 'this year'; }
+    else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain ' + upTo : 'of rain this year'; }
     if (ncum) {
       var gap = usual - total, U = commas(usual.toFixed(dp)), gAbs = Math.abs(gap), gmin = numOk(D.gapmin) ? +D.gapmin : 0.5;   // D.gapmin: the smallest difference the page itself prints (Field Scout: 0.25)
       m.uText = preview ? U + ' in normal by ' + fmtDate(D.asof) : U + ' in a normal year' + (+D.miss > 0 ? ', same days' : '');
@@ -401,7 +405,7 @@
     var gap = m.ncum ? (+D.usual) - (+D.total) : 0, gAbs = Math.abs(gap);
     return 'Running total of rain ' + (D.where || 'at the ' + noun + ' in ' + D.place) + ', ' + D.year + ': ' + m.total + ' inches through ' + fmtDate(D.asof) + up +
       (m.ncum && gAbs >= 0.005 ? ', ' + commas(gAbs.toFixed(dp)) + ' inches ' + (gap > 0 ? 'less' : 'more') + ' than a normal year' : '') +
-      (m.pct != null ? '. ' + m.pct + '% of normal' + (+D.days < (isLeap(+D.year) ? 366 : 365) ? ' so far' : '') + '.' : '.');
+      (m.pct != null ? '. ' + m.pct + '% of normal' + (+D.days < (isLeap(+D.year) ? 366 : 365) ? (D.over === '1' ? ' through ' + fmtDate(D.asof) : ' so far') : '') + '.' : '.');
   }
 
   var CSS = '.rce-art svg{display:block;width:100%;height:auto}.rce svg text{font-family:var(--font-body,system-ui,sans-serif)}' +

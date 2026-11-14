@@ -60,17 +60,15 @@
 
         if(top.length === 0){
           area.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.82rem;color:var(--text-muted)">'
-            + '<div style="font-size:1.2rem;margin-bottom:.3rem">📍</div>'
             + 'No elevator bids found nearby.<br><a href="/cash-bids" style="color:var(--gold)">Search any ZIP →</a>'
             + '</div>';
           return;
         }
 
-        if(geoTxt && label) geoTxt.textContent = '📍 Bids near ' + label;
+        if(geoTxt && label) geoTxt.textContent = 'Bids near ' + label;
 
         var html = '';
         top.forEach(function(b){
-          var ci = (b.category==='corn')?'🌽':(b.category==='soybeans')?'🫘':(b.category==='wheat')?'🌾':'🌱';
           var cashStr = b.cashPrice != null ? '$' + b.cashPrice.toFixed(2) : '—';
           var bN = b.basis, bStr = '—', bColor = 'var(--text-muted)';
           if(bN != null){
@@ -81,7 +79,6 @@
           var distStr = b._d != null ? b._d.toFixed(0) + ' mi' : '';
 
           html += '<div style="display:flex;align-items:center;gap:.65rem;padding:.55rem 0;border-bottom:1px solid var(--border)">'
-            + '<span style="font-size:1rem;flex-shrink:0">' + ci + '</span>'
             + '<div style="flex:1;min-width:0">'
               + '<div style="font-size:.8rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (b.facility||'Unknown') + '</div>'
               + '<div style="font-size:.68rem;color:var(--text-muted)">' + (b.commodity||'') + (distStr ? ' · ' + distStr : '') + '</div>'

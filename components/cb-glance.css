@@ -2,8 +2,8 @@
    Colours are the site tokens, so light and dark follow [data-theme]. */
 #cb-glance{display:grid;gap:.75rem;margin:0 0 1rem;min-width:0}
 #cb-glance .cbg-slot:empty{display:none}
-#cb-glance .cbg-slot{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem .85rem;min-width:0}
-.cbg-h{font-family:'JetBrains Mono',monospace;font-size:.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem}
+#cb-glance .cbg-slot{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.7rem .85rem;min-width:0}
+.cbg-h{font-family:var(--font-body);font-size:.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.4rem}
 .cbg-sub,.cbg-foot,.cbg-none{font-size:.85rem;line-height:1.45;color:var(--text-dim,var(--text-muted));margin:.2rem 0 .45rem}
 .cbg-foot{margin:.45rem 0 0}
 .cbg-none{margin:0}
@@ -23,7 +23,7 @@
 
 /* 4. freshness */
 .cbg-fresh{display:grid;grid-template-columns:repeat(auto-fit,minmax(5.6rem,1fr));gap:.4rem}
-.cbg-fb{display:flex;flex-direction:column;align-items:flex-start;gap:.1rem;min-height:52px;padding:.4rem .55rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);cursor:pointer;text-align:left;font:inherit}
+.cbg-fb{display:flex;flex-direction:column;align-items:flex-start;gap:.1rem;min-height:52px;padding:.4rem .55rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2);color:var(--text);cursor:pointer;text-align:left;font:inherit}
 .cbg-fb b{font-family:'JetBrains Mono',monospace;font-size:1.1rem;line-height:1.1}
 .cbg-fb span{font-size:.74rem;color:var(--text-muted);line-height:1.2}
 .cbg-fb.on{border-color:var(--gold,#d4a23f);box-shadow:inset 0 0 0 1px var(--gold,#d4a23f)}
@@ -34,7 +34,7 @@
 
 /* 2. grid: the table scrolls inside its own box; the page never does */
 .cbg-best-key{background:rgba(var(--green-rgb,95,194,138),.18);padding:0 .25rem;border-radius:3px}
-.cbg-grid-wrap{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;border:1px solid var(--border);border-radius:8px}
+.cbg-grid-wrap{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;border:1px solid var(--border);border-radius:var(--r-md)}
 .cbg-grid{border-collapse:separate;border-spacing:0;font-size:.85rem;width:max-content;min-width:100%}
 .cbg-grid th,.cbg-grid td{padding:.4rem .55rem;border-bottom:1px solid var(--border);white-space:nowrap;text-align:right}
 .cbg-grid thead th{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--text-muted);background:var(--surface2);position:sticky;top:0}
@@ -56,7 +56,7 @@
 .cbg-cnum,.cbg-net{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted)}
 .cbg-net.cbg-up{color:var(--green)}.cbg-net.cbg-dn{color:var(--red,#ef4444)}
 .cbg-stor{display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap;margin-top:.25rem}
-.cbg-stor input{width:4.5rem;min-height:36px;padding:.2rem .4rem;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font:inherit;font-size:16px}
+.cbg-stor input{width:4.5rem;min-height:36px;padding:.2rem .4rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2);color:var(--text);font:inherit;font-size:16px}
 
 /* 6. basis tone on the cards: better or worse than this search's median */
 .bid-basis.bz-up{color:var(--green)}

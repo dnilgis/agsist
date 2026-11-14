@@ -21,7 +21,7 @@
   'use strict';
   var CSS = '.rate-hint{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .2rem}' +
     '.rate-hint b{color:var(--text);font-weight:700}' +
-    '.rate-hint button{display:inline-flex;align-items:center;min-height:44px;margin:.25rem .5rem 0 0;padding:0 .8rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer}' +
+    '.rate-hint button{display:inline-flex;align-items:center;min-height:44px;margin:.25rem .5rem 0 0;padding:0 .8rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer}' +
     '.rate-hint a{color:var(--link,var(--brand));text-decoration:underline;text-underline-offset:2px}' +
     '.rate-hint:empty{display:none}';
   var blend = null, wait = [];

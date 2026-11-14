@@ -348,7 +348,7 @@
     mk.style.visibility = ''; if (gm) gm.textContent = 'Break-Even';
     var pct = ((Math.max(-200, Math.min(200, profit)) + 200) / 400 * 100);
     mk.style.left = pct + '%'; fill.style.width = pct + '%';
-    fill.style.background = profit >= 0 ? 'linear-gradient(90deg,var(--border) 50%,var(--green) ' + pct + '%)' : 'linear-gradient(90deg,var(--red) 0%,var(--border) ' + pct + '%)';
+    fill.style.background = profit >= 0 ? 'var(--green)' : 'var(--red)';
   }
   function updateSensitivity(baseYield, basePrice, net, basis) {
     basis = basis || 0;

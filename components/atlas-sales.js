@@ -202,11 +202,11 @@
 
   // ── on the page ────────────────────────────────────────────────────
   var CSS = '.as-lead{font-size:.95rem;line-height:1.6;margin:.2rem 0 .6rem;max-width:75ch}'
-    + '.as-h{font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:1.2rem 0 .4rem}'
+    + '.as-h{font-family:var(--font-body);font-size:.74rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin:1.2rem 0 .4rem}'
     + '.as-t td.as-m{font-family:inherit;white-space:normal;text-align:left}.as-t th:nth-child(5),.as-t th:nth-child(6){text-align:left}'
     + '.as-tw{display:none}@media (max-width:600px){.as-t .as-wide{display:none}.as-tw{display:block;font-size:.74rem;color:var(--text-muted);white-space:normal}.as-t td,.as-t th{padding-left:.25rem;padding-right:.25rem}}'
     + '.as-d summary{cursor:pointer;font-size:.85rem;color:var(--text-dim);margin:.4rem 0}.as-cmp{max-width:75ch}'
-    + '.as-go{font:inherit;font-size:.85rem;font-weight:700;color:var(--text);background:var(--surface,#12161a);border:1px solid var(--border);border-radius:8px;padding:.5rem .85rem;min-height:40px;cursor:pointer}';
+    + '.as-go{font:inherit;font-size:.85rem;font-weight:700;color:var(--text);background:var(--surface,#12161a);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .85rem;min-height:40px;cursor:pointer}';
   function style(d) { if (d.getElementById('as-css')) return; var s = d.createElement('style'); s.id = 'as-css'; s.textContent = CSS; d.head.appendChild(s); }
   var cache = {};
   S.load = function (st) {

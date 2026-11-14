@@ -67,6 +67,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Pillow, for the selftest
+        run: pip install --quiet pillow==12.3.0
+
       - name: Selftest (gate)
         run: python scripts/build_cash_bid_pages.py --selftest
 

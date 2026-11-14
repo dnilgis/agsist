@@ -12,8 +12,8 @@
        Same files as scripts/inject_static_nav.py FONTS. -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -192,14 +192,13 @@
   </script>
   <style>
     .rs-wrap{max-width:1060px;margin:0 auto;padding:0 16px}
-    .rs-hero{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0}
-    /* 2026-10-06: these panels stay dark in light mode; gold inside them stays bright */
-    [data-theme="light"] .rs-stat,[data-theme="light"] .rs-note,[data-theme="light"] div[style*="background:#101415"]{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f}
-    .rs-stat{background:#101415;border:1px solid #1a1f20;border-radius:10px;padding:12px 16px;min-width:150px;flex:1}
-    .rs-stat .v{font-family:'JetBrains Mono',monospace;font-size:1.45rem;color:#e6ebe9}
-    .rs-stat .l{font-size:.72rem;color:#8a948f;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
-    .rs-stat .s{font-size:.72rem;color:#8a948f;margin-top:2px}
-    .up{color:#5fc28a}.dn{color:#e0685f}
+    .rs-answer{font-size:1rem;line-height:1.7;color:var(--text);max-width:640px;margin:14px 0}
+    .rs-hero{margin:14px 0;border-top:1px solid var(--border)}
+    .rs-stat{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 14px;padding:9px 0;border-bottom:1px solid var(--border)}
+    .rs-stat .v{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--text);min-width:8.5rem}
+    .rs-stat .l{font-size:.88rem;color:var(--text)}
+    .rs-stat .s{font-size:.82rem;color:var(--text-dim)}
+    .up{color:var(--green)}.dn{color:var(--red)}
     /* 2026-10-08: the table, bars, cloud and FAQ sit on the page background, so they use the
        site tokens (light and dark) instead of fixed dark-theme hex. The table scrolls inside
        .rs-tw on phones (the page itself clips sideways overflow) with the name column pinned. */
@@ -219,7 +218,7 @@
        cell wraps so the three rent columns fit a 390 px phone (pasture was cut off at 558 to 615 px) */
     .rs-filter{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-height:44px;margin:10px 0 2px}
     .rs-filter label{font-size:.85rem;color:var(--text-muted)}
-    .rs-filter input{min-height:40px;padding:0 10px;font-size:16px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface,var(--bg));color:var(--text);width:13rem;max-width:100%;box-sizing:border-box}
+    .rs-filter input{min-height:40px;padding:0 10px;font-size:16px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface,var(--bg));color:var(--text);width:13rem;max-width:100%;box-sizing:border-box}
     .rs-qn{font-size:.8rem;color:var(--text-muted);flex-basis:100%;min-height:1.25em;line-height:1.25}
     .rs-t td.old{white-space:normal;min-width:5.5em;font-size:.72rem;line-height:1.25}
     .rs-tnote{font-size:.78rem;margin:4px 0 10px}
@@ -235,12 +234,12 @@
     .rs-bars{margin:8px 0}
     .rs-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
     .rs-bar .y{flex:none;width:3.2em;white-space:nowrap;color:var(--text-muted)}
-    .rs-bar .b{height:13px;background:linear-gradient(90deg,#2c4a3a,#5fc28a);border-radius:3px;min-width:2px}
+    .rs-bar .b{height:13px;background:#2c4a3a;border-radius:1px;min-width:2px}
     .rs-bar .v{color:var(--text)}
     .rs-bar .mut{color:var(--text-muted);font-size:.7rem;white-space:nowrap}
     .rs-bar .gap{color:var(--text-muted);font-style:italic;font-size:.74rem}
-    .rs-note{background:#101415;border:1px solid #1a1f20;border-left:3px solid #d4a23f;border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:#8a948f;margin:14px 0}
-    .rs-note b{color:#e6ebe9}
+    .rs-note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);padding:12px 15px;font-size:.85rem;line-height:1.65;color:var(--text-dim);margin:14px 0}
+    .rs-note b{color:var(--text)}
     .rs-links a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
     .rs-cloud{font-size:.78rem;line-height:2;color:var(--text-muted)}
     .rs-cloud a{color:var(--text-muted);text-decoration:none;border-bottom:1px dotted var(--border-2)}
@@ -263,10 +262,10 @@
     .rs-faq p{color:var(--text-muted);font-size:.88rem;line-height:1.65;margin:8px 0 4px}
     /* Farmland Atlas look (farmland-atlas/atlas-pages.css .read): this page is a door into the Atlas */
     .rs-rel{font-size:.8rem;color:#8a948f;margin-top:6px}
-    .rs-gr{border:1px solid var(--border-2);border-radius:10px;padding:12px 16px;margin:14px 0}
+    .rs-gr{border:1px solid var(--border-2);border-radius:var(--r-md);padding:12px 16px;margin:14px 0}
     .rs-gr h2{margin:2px 0 6px}
     .rs-gr label{display:inline-flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--text-muted);margin:4px 12px 4px 0}
-    .rs-gr select,.rs-gr input{font:inherit;font-size:1rem;padding:7px 9px;border-radius:7px;border:1px solid var(--border-2);background:var(--bg);color:var(--text);min-height:40px}
+    .rs-gr select,.rs-gr input{font:inherit;font-size:1rem;padding:7px 9px;border-radius:var(--r-md);border:1px solid var(--border-2);background:var(--bg);color:var(--text);min-height:40px}
     .rs-gr input{width:7.5em}
     .rs-gr select{max-width:16em}
     .rs-gr-out{font-size:1.02rem;line-height:1.6;color:var(--text);margin:8px 0 4px}
@@ -290,12 +289,12 @@
   2026 rate, history to 2008, and the statutory lease-termination deadline where the state has one.
   <span id="rs-seed"><!--SEED:renthub-->47 states &middot; non-irrigated cropland, highest state median: Iowa $266/ac &middot; lowest: New Mexico $19/ac &middot; no dryland rent published for 2 (Arizona, Nevada) &middot; data refreshed 2026-10-06<!--/SEED--></span></p>
   <style>
-    .rh-find{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:10px 0 4px;padding:10px 12px;border:1px solid var(--border);border-left:3px solid #d4a23f;border-radius:8px;background:var(--surface)}
+    .rh-find{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:10px 0 4px;padding:10px 12px;border:1px solid var(--border);border-left:3px solid #d4a23f;border-radius:var(--r-md);background:var(--surface)}
     .rh-find label{font-weight:700;color:var(--text);font-size:.92rem}
     .rh-fr{display:flex;gap:8px;flex:1 1 260px}
-    .rh-find select{flex:1;min-height:42px;font-size:1rem;padding:0 8px;border:1px solid var(--border-2);border-radius:7px;background:var(--bg);color:var(--text)}
-    .rh-find button{min-height:42px;padding:0 14px;border:0;border-radius:7px;background:#a8823c;color:#fff;font-weight:700;cursor:pointer}
-    .rh-sw{display:inline-flex;margin:14px 0 0;border:1px solid var(--border-2);border-radius:8px;overflow:hidden}
+    .rh-find select{flex:1;min-height:42px;font-size:1rem;padding:0 8px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--bg);color:var(--text)}
+    .rh-find button{min-height:42px;padding:0 14px;border:0;border-radius:var(--r-md);background:#a8823c;color:#fff;font-weight:700;cursor:pointer}
+    .rh-sw{display:inline-flex;margin:14px 0 0;border:1px solid var(--border-2);border-radius:var(--r-md);overflow:hidden}
     .rh-sw button{min-height:38px;padding:0 16px;border:0;background:transparent;color:var(--text-muted);font-weight:700;cursor:pointer}
     .rh-sw button.on{background:#a8823c;color:#fff}
     .rh-pcap{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px}
@@ -346,7 +345,7 @@
 <div id="site-footer"></div>
 <script src="/components/usmap.js?v=1" defer></script>
 <script>document.addEventListener('DOMContentLoaded',function(){var h=document.getElementById('rh-map');if(!h||!window.AgUSMap)return;var d=JSON.parse(h.getAttribute('data-map')),p=false,m;function st(){var o={};for(var k in d){var x=d[k];o[k]=p?{fill:x.pc||'',text:x.pv==='n/a'?'no pasture rent published':x.pv+' an acre, pasture',href:x.h}:{fill:x.c,text:x.v+' an acre, cropland',href:x.h};}return o;}m=AgUSMap.mount(h,{states:st(),hint:'Tap a state for every county.',name:'Map of median county cash rent by state'});var sw=document.querySelector('.rh-sw');if(!sw)return;var cc=document.querySelector('.rh-ccap'),pc=document.querySelector('.rh-pcap');sw.addEventListener('click',function(e){var b=e.target.closest('button[data-rh]');if(!b)return;p=b.getAttribute('data-rh')==='p';Array.prototype.forEach.call(sw.querySelectorAll('button'),function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});if(cc)cc.hidden=p;if(pc)pc.hidden=!p;m.update(st());});});</script>
-<script src="/components/loader.js?v=19"></script>
+<script src="/components/loader.js?v=20"></script>
 <script>
 (function(){var t=document.getElementById('rs-table');if(!t)return;
 var ths=t.tHead.rows[0].cells,dir=1,last=-1;
@@ -368,6 +367,6 @@ if(q){q.disabled=false;q.addEventListener('input',function(){
 });}
 })();
 </script>
-<script src="/components/next-links.js?v=3" defer></script>
+<script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

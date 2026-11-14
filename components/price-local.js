@@ -596,7 +596,7 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', folds); else folds();
 
   var css = doc.createElement('style');
-  css.textContent = '.pl-line.pl-wait{visibility:hidden}.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
+  css.textContent = '.pl-line.pl-wait{visibility:hidden}.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:var(--r-md);font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
     '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
   (doc.head || doc.documentElement).appendChild(css);
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();
