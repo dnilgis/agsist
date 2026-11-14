@@ -5,9 +5,17 @@
    "to": "/cash-bids/company/",
    "since": "2026-10-28"
   },
+  "cash-bids/illinois/green-valley.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-14"
+  },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
    "since": "2026-10-16"
+  },
+  "cash-bids/iowa/corning.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-14"
   },
   "cash-bids/iowa/emerson.html": {
    "to": "/cash-bids/iowa/",
