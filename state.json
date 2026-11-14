@@ -6868,6 +6868,7 @@
   "2026_ADMLivestockLrp_Daily_20261111.zip": 28230,
   "2026_ADMLivestockLrp_Daily_20261112.zip": 19599,
   "2026_ADMLivestockLrp_Daily_20261113.zip": 19608,
+  "2026_ADMLivestockLrp_Daily_20261114.zip": 19650,
   "2027_ADMLivestockLrp_Daily_20260701.zip": 1432416,
   "2027_ADMLivestockLrp_Daily_20260702.zip": 1430101,
   "2027_ADMLivestockLrp_Daily_20260706.zip": 1433495,
@@ -6967,11 +6968,10 @@
   "2027_ADMLivestockLrp_Daily_20261110.zip": 1453369,
   "2027_ADMLivestockLrp_Daily_20261111.zip": 1458736,
   "2027_ADMLivestockLrp_Daily_20261112.zip": 1462378,
-  "2027_ADMLivestockLrp_Daily_20261113.zip": 1463162
+  "2027_ADMLivestockLrp_Daily_20261113.zip": 1463162,
+  "2027_ADMLivestockLrp_Daily_20261114.zip": 6706
  },
  "listed": {
-  "2026_ADMLivestockLrp_Daily_20251031.zip": "2025-10-31T14:22",
-  "2026_ADMLivestockLrp_Daily_20251101.zip": "2025-11-01T08:36",
   "2026_ADMLivestockLrp_Daily_20251103.zip": "2025-11-03T14:20",
   "2026_ADMLivestockLrp_Daily_20251104.zip": "2025-11-04T14:21",
   "2026_ADMLivestockLrp_Daily_20251105.zip": "2025-11-05T14:56",
@@ -7270,6 +7270,7 @@
   "2026_ADMLivestockLrp_Daily_20261111.zip": "2026-11-11T08:36",
   "2026_ADMLivestockLrp_Daily_20261112.zip": "2026-11-12T08:36",
   "2026_ADMLivestockLrp_Daily_20261113.zip": "2026-11-13T08:36",
+  "2026_ADMLivestockLrp_Daily_20261114.zip": "2026-11-14T08:35",
   "2027_ADMLivestockLrp_Daily_20260701.zip": "2026-07-01T14:58",
   "2027_ADMLivestockLrp_Daily_20260702.zip": "2026-07-02T14:23",
   "2027_ADMLivestockLrp_Daily_20260706.zip": "2026-07-06T14:29",
@@ -7369,7 +7370,8 @@
   "2027_ADMLivestockLrp_Daily_20261110.zip": "2026-11-10T14:19",
   "2027_ADMLivestockLrp_Daily_20261111.zip": "2026-11-11T14:18",
   "2027_ADMLivestockLrp_Daily_20261112.zip": "2026-11-12T14:21",
-  "2027_ADMLivestockLrp_Daily_20261113.zip": "2026-11-13T14:54"
+  "2027_ADMLivestockLrp_Daily_20261113.zip": "2026-11-13T14:54",
+  "2027_ADMLivestockLrp_Daily_20261114.zip": "2026-11-14T08:35"
  },
  "sob": {
   "lrp_2003.zip": {
@@ -7476,12 +7478,12 @@
  "stats": {
   "aev_deleted": 0,
   "aev_restated": 923,
-  "aev_rows": 734241,
+  "aev_rows": 734395,
   "last_run": {
    "failed": 0,
    "left": 0,
-   "read": 1,
-   "seconds": 2,
+   "read": 2,
+   "seconds": 0,
    "stopped_for_time": false,
    "unreadable": 0
   },
@@ -7504,5 +7506,5 @@
    "tries": 3
   }
  },
- "updated": "2026-11-13T21:11:29Z"
+ "updated": "2026-11-14T15:10:03Z"
 }
