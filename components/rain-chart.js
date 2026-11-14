@@ -509,6 +509,7 @@
     var doc = root.document;
     if (!doc) return;
     Array.prototype.forEach.call(doc.querySelectorAll('.rce[data-wk]'), mount);
+    if (doc.fonts && doc.fonts.load) { var fam0 = root.getComputedStyle(doc.body).fontFamily; ['400', '500', '700'].forEach(function (w0) { doc.fonts.load(w0 + ' 16px ' + fam0).catch(function () {}); }); }   // DIAG M
     try { (mq = mq || root.matchMedia('(min-width: 561px)')).addEventListener('change', redrawAll); } catch (e) {}
     // the page's own font arrives after the first draw: lay it out once more, same height, same place. Told by the loadingdone
     // event, never by reading document.fonts.ready: Chromium answers that read with a forced style and layout pass, and right
