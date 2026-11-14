@@ -480,7 +480,7 @@
     var title = 'Running total of rain, ' + D.year, id = 'rce-' + (D.fips || D.year);
     m.svgAttrs = ' aria-labelledby="' + id + '-t ' + id + '-d"';
     m.svgHead = '<title id="' + id + '-t">' + esc(title + ', ' + D.place) + '</title><desc id="' + id + '-d">' + esc(describe(D, m)) + '</desc>';
-    var ms = measurer(el);
+    var ms = { measure: function (t, font) { var f = /^(\d+) (\d+(?:\.\d+)?)px/.exec(font); return t.length * f[2] * 0.56; } };   // DIAG B: no DOM measure
     var out = build(m, ms.measure, spec);
     if (!out) { el.classList.add('rce-off'); return null; }
     box.innerHTML = out.svg;
