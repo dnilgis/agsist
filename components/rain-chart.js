@@ -510,14 +510,17 @@
     if (!doc) return;
     Array.prototype.forEach.call(doc.querySelectorAll('.rce[data-wk]'), mount);
     try { (mq = mq || root.matchMedia('(min-width: 561px)')).addEventListener('change', redrawAll); } catch (e) {}
-    // the page's own font arrives after the first draw: lay it out once more, same height, same place. Told by the loadingdone
-    // event, never by reading document.fonts.ready: Chromium answers that read with a forced style and layout pass, and right
-    // after a web font has loaded that pass can take the layout the font set waits for to say it is done, so on a page whose
-    // later scripts are still coming (Chromium 141) document.fonts stayed "loading" with every face loaded (CI, Nov 14 2026)
-    if (doc.fonts && doc.fonts.addEventListener) doc.fonts.addEventListener('loadingdone', redrawAll);
+    // the page's own font arrives after the first draw: lay it out once more, same height, same place
+    if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(redrawAll, function () {});
   }
+  /* The first exact drawing waits for the page's own scripts (DOMContentLoaded) when this file is one of them (a deferred script);
+     until then the inline drawing the builder wrote, the same design in the same room, is what shows. Drawing while a later
+     deferred script was still on its way kept document.fonts "loading" for as long as that script was held, with every face loaded or never asked for,
+     while the page kept painting (Chromium 141 in CI, Nov 14 2026: the same run passed with the chart not drawn, and failed
+     with it drawn even when nothing was measured). Loaded any other way (Field Scout, Fast Facts), it draws at once. */
   if (root.document) {
-    if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', auto); else auto();
+    var cur = root.document.currentScript, deferred = !!(cur && cur.defer && !cur.async);
+    if (root.document.readyState === 'loading' || (deferred && root.document.readyState === 'interactive')) root.document.addEventListener('DOMContentLoaded', auto); else auto();
   }
 
   return { build: build, splitVerdict: splitVerdict, verdictOf: verdictOf, fromData: fromData, describe: describe, mount: mount, draw: draw,
