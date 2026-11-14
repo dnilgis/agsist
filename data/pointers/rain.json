@@ -17,6 +17,10 @@
    "to": "/rain/california",
    "since": "2026-11-12"
   },
+  "rain/florida/okeechobee-county.html": {
+   "to": "/rain/florida",
+   "since": "2026-11-14"
+  },
   "rain/georgia/bacon-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
@@ -24,10 +28,6 @@
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
-  },
-  "rain/georgia/whitfield-county.html": {
-   "to": "/rain/georgia",
-   "since": "2026-11-10"
   },
   "rain/idaho/lewis-county.html": {
    "to": "/rain/idaho",
@@ -69,6 +69,10 @@
    "to": "/rain/minnesota",
    "since": "2026-11-12"
   },
+  "rain/minnesota/watonwan-county.html": {
+   "to": "/rain/minnesota",
+   "since": "2026-11-14"
+  },
   "rain/mississippi/copiah-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-10-14"
@@ -93,9 +97,17 @@
    "to": "/rain/missouri",
    "since": "2026-10-14"
   },
+  "rain/missouri/pemiscot-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-11-14"
+  },
   "rain/missouri/ripley-county.html": {
    "to": "/rain/missouri",
    "since": "2026-10-14"
+  },
+  "rain/montana/wheatland-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-11-14"
   },
   "rain/nevada/churchill-county.html": {
    "to": "/rain/nevada",
@@ -108,6 +120,14 @@
   "rain/north-carolina/stanly-county.html": {
    "to": "/rain/north-carolina",
    "since": "2026-11-12"
+  },
+  "rain/north-dakota/divide-county.html": {
+   "to": "/rain/north-dakota",
+   "since": "2026-11-14"
+  },
+  "rain/north-dakota/foster-county.html": {
+   "to": "/rain/north-dakota",
+   "since": "2026-11-14"
   },
   "rain/north-dakota/grant-county.html": {
    "to": "/rain/north-dakota",
