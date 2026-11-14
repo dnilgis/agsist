@@ -201,7 +201,7 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
-          git fetch -q --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          git fetch -q --no-tags --depth=100 origin +refs/heads/main:refs/remotes/origin/main
           bash scripts/fetch_private.sh references
       - name: the replay's pick base
         if: github.event_name == 'workflow_dispatch' && inputs.pick_base != ''

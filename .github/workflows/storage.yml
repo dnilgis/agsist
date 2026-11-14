@@ -93,7 +93,8 @@ jobs:
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             mkdir -p data/storage && cp -r /tmp/st/storage/. data/storage/
-            git add -A data/storage
+            python scripts/seed_static.py --only storage
+            git add -A data/storage basis.html
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "data: grain storage capacity vs production"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
