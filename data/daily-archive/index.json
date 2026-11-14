@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-14",
+      "date_display": "Saturday, November 14, 2026",
+      "headline": "Soybeans gain 3.2% on the week; cattle and hogs rise too",
+      "teaser": "Beans, cattle and hogs all finished the week higher; corn and wheat barely moved.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-14",
+      "market_closed": true
+    },
+    {
       "date": "2026-11-13",
       "date_display": "Friday, November 13, 2026",
       "headline": "Corn, beans and wheat firm overnight after Thursday's drop",
@@ -2800,5 +2811,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-13T11:48:36.848637+00:00"
+  "updated": "2026-11-14T12:11:10.539481+00:00"
 }

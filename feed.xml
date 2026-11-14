@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Nov 2026 11:49:31 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 14 Nov 2026 12:11:54 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Soybeans gain 3.2% on the week; cattle and hogs rise too</title>
+      <link>https://agsist.com/daily/2026-11-14</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-14</guid>
+      <pubDate>Sat, 14 Nov 2026 12:11:03 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>Jan soybeans settled Friday at $12.31½, up 37¾ cents on the week. Corn added only 4 cents. Beans did the lifting while the other grains stood nearly still, and that gap is what a bushel of beans earned this week.
+• Beans lead the grains
+• Cattle and hogs gain
+Read more: https://agsist.com/daily/2026-11-14</description>
+    </item>
     <item>
       <title>Corn, beans and wheat firm overnight after Thursday's drop</title>
       <link>https://agsist.com/daily/2026-11-13</link>
@@ -348,18 +359,5 @@ Read more: https://agsist.com/daily/2026-10-17</description>
 • Crude holds near $99 on tanker risk
 Read more: https://agsist.com/daily/2026-10-16</description>
     </item>
-    <item>
-      <title>Grain holds steady overnight ahead of export sales report</title>
-      <link>https://agsist.com/daily/2026-10-15</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-15</guid>
-      <pubDate>Thu, 15 Oct 2026 10:47:41 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Corn is trading at $4.80 overnight, barely off Wednesday's $4.80¾ settle. Beans sit at $12.73¼, down 4 cents, with weekly export sales due Thursday at 7:30 a.m. CT. Nothing has moved yet, so the board is sitting right where harvest left it.
-• Corn and beans wait on export sales
-• Cattle and hogs ease back slightly
-• Crude slips as Trump weighs easing tanker sanctions
-Read more: https://agsist.com/daily/2026-10-15</description>
-    </item>
-
   </channel>
 </rss>
