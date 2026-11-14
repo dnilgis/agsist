@@ -509,11 +509,18 @@
     var doc = root.document;
     if (!doc) return;
     Array.prototype.forEach.call(doc.querySelectorAll('.rce[data-wk]'), mount);
+    // then ask the font set for the faces the chart's text uses (the page's own family at the chart's three weights). They are
+    // loaded already or come from the page's own stylesheet, so this waits on nothing and the answer is not used: the ask is what
+    // lets the font set say it is done. Without it, text drawn here while a later deferred script was still on its way left
+    // document.fonts "loading" with every face loaded or never asked for, until that script came (Chromium 141 in CI, Nov 14
+    // 2026: not drawing at all passed, drawing with or without measuring failed, drawing and then this ask passed).
+    if (doc.fonts && doc.fonts.load && doc.body) {
+      var fam = root.getComputedStyle(doc.body).fontFamily;
+      ['400', '500', '700'].forEach(function (w) { doc.fonts.load(w + ' 16px ' + fam).catch(function () {}); });
+    }
     try { (mq = mq || root.matchMedia('(min-width: 561px)')).addEventListener('change', redrawAll); } catch (e) {}
-    // the page's own font arrives after the first draw: lay it out once more, same height, same place. Told by the loadingdone
-    // event, never by reading document.fonts.ready: Chromium answers that read with a forced style and layout pass, and right
-    // after a web font has loaded that pass can take the layout the font set waits for to say it is done, so on a page whose
-    // later scripts are still coming (Chromium 141) document.fonts stayed "loading" with every face loaded (CI, Nov 14 2026)
+    // the page's own font arrives after the first draw: lay it out once more, same height, same place (told by the event, so
+    // nothing here reads document.fonts.ready)
     if (doc.fonts && doc.fonts.addEventListener) doc.fonts.addEventListener('loadingdone', redrawAll);
   }
   if (root.document) {
