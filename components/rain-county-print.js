@@ -29,7 +29,7 @@
   var doc = root.document;
   /* mount(fig): the same drawing for any figure carrying these data- fields (2026-10-19:
      /here draws the nearest county station's year with it). It resolves true once the
-     print is drawn, false when it is not (the plain chart stays). The county page's own
+     print is drawn, false when it is not (the enhanced chart stays). The county page's own
      #rc-print mounts itself, as before. */
   root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf, mount: mount };   // for test/rain-county-print.test.mjs
   var ART = '/components/rain-print-art.js?v=24', ENGINE = '/components/rain-print.js?v=94';
@@ -208,11 +208,11 @@
         var lead = doc.getElementById('rc-sell-lead'), plain = doc.querySelector('.rc-sell-plain');
         if (lead) { lead.hidden = false; if (plain) plain.hidden = true; }
         return true;
-      }).catch(function () { return false; /* the plain chart stays */ });
+      }).catch(function () { return false; /* the enhanced chart stays */ });
     }
     return new Promise(function (done) {
-      /* not drawn (no days file, a mismatch, a failure): the plain chart stays, and on the county page the
-         room held for the print, its picker and its caption is let go (rain-county.css .rc-print-off) */
+      /* not drawn (no days file, a mismatch, a failure): the enhanced chart stays, and on the county page the
+         room held for the print, its picker and its caption is let go on a phone and held wider (rain-county.css .rc-print-off) */
       function off() { fig.classList.add('rc-print-off'); return false; }
       function run() { go().then(function (ok) { done(ok || off()); }, function () { done(off()); }); }
       if ('IntersectionObserver' in root) {
