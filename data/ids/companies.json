@@ -2,7 +2,7 @@
 "schema": "agsist-companies/1",
 "generated": "2026-11-14",
 "note": "Company ids for elevator facilities (data/ids/elevators.json), on evidence only (Sig, Nov 9 2026): a shared phone, a shared website or domain, the board's own parent page (board-parents.json board-page) or a dated ownership change (ownership-changes.json), never a name alone. links: [type, value, facilities], facilities left out when the link covers the whole company; a phone value is # plus the first 10 hex of sha256 of its 10 digits. held: shared values that link nothing (a hub on 3+ posted names, or one phone between two posted names). A facility with no company id has no evidence linking it, which does not mean it is its own firm. Company names are the facilities' posted names. Ids are never reused: ledger.retired lists every id gone (into = merged into that id). Rules: scripts/company_ids.py.",
-"counts": {"facilities":3766,"facilities_with_company":2234,"companies":209,"links_by_type":{"phone":110,"website":169,"board-page":1,"change":1},"held":34,"held_hub":3,"chs_brand_boards_not_linked_by_brand":128,"dest_phones_skipped":100,"rows_other_name_skipped":0,"ids_minted_ever":209,"ids_retired_ever":0},
+"counts": {"facilities":3766,"facilities_with_company":2234,"companies":209,"links_by_type":{"phone":110,"website":169,"board-page":1,"change":1},"held":34,"held_hub":3,"chs_brand_boards_not_linked_by_brand":128,"dest_phones_skipped":101,"rows_other_name_skipped":0,"ids_minted_ever":209,"ids_retired_ever":0},
 "companies": {
 "c00001":{"name":"Central Ohio Farmers Co-op","n":8,"facilities":["e00cpqxj90","e0mv8tf68w","e29qvpet42","e35rfwe0gt","eds6cf6y38","enwkbwsts6","eq5mf12xbw","ew0tjn8t41"],"links":[["website","centralohfarm.com"]]},
 "c00002":{"name":"Central Valley Ag","n":54,"facilities":["e00w7ppz45","e051gbnvdf","e15mgbs2z5","e2dg9nyj06","e2wpf097yj","e3h4axwq99","e44wmedd48","e755rekvav","e7a8e6w3fb","e7gev8azn7","e7ypfba2pe","e81s1eq1kq","e8cn1h5e90","e8wzw056ez","e8xn1zzf15","e9hs0d43t2","eb8vahbb3g","ebd9r9wx9b","ebj4qpp7wn","ebnp6gk2jk","ecz0t4a47j","ee38qxr4x3","eej3pmgtam","eerke3kk8y","efccjbxr03","efd3ytck4w","ehatracrgx","ehc0rzfqah","ehexg1ag19","ehsrvvn1qw","ejtjhb7qmd","eked3j8yt2","ekz4vr8164","ekzkxv3j8v","en3dz2yq6g","enp9j6a638","epqwdcya3x","epzeyg4f7b","er21x0m4ne","esmw1tgbwf","et8pb6f9cm","et8wdvavbv","etd6raa3jg","ev40hbxaxp","evbepn2ts7","evbm6txk6d","eve9m9j40k","evj4086djn","evtk24w7zq","ewmhgbzwhx","ewn4h7m4tc","ex6d4ekq86","exe1cgmmw4","exem3r28g1"],"links":[["website","cvacoop365.agricharts.com"]]},
@@ -221,7 +221,7 @@
 ["phone","#1ee3443e7d",["ee112y1sgb","ezgsht4rp8"],"one shared phone between two posted names"],
 ["phone","#2b26af15d5",["efx2gvsbyc","en2k2ctf78"],"one shared phone between two posted names"],
 ["phone","#31c155f740",["e22btjxy6d","eg4wpqkzm1"],"one shared phone between two posted names"],
-["phone","#35bce825af",["e2x804dgnf","e8zct696td","e9gkehvc9m","eb7basm4qy","ebn7vhdmrb","edtjc79v8v"],"hub: 5 posted names"],
+["phone","#35bce825af",["e2x804dgnf","e8zct696td","e9gkehvc9m","eb7basm4qy","edtjc79v8v"],"hub: 4 posted names"],
 ["phone","#38677f1c98",["e3v5asc6es","ezmjqr2av0"],"one shared phone between two posted names"],
 ["phone","#4572a8ae3a",["ecn7caw7xs","eq3wveqj17"],"one shared phone between two posted names"],
 ["phone","#4b1a167d98",["etzgyj9bd6","exdwtm1xwm"],"one shared phone between two posted names"],

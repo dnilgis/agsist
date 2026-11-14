@@ -5,7 +5,7 @@
  "counts": {
   "live_boards": 2217,
   "with_parent": 133,
-  "with_dest": 115,
+  "with_dest": 116,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
@@ -13,7 +13,7 @@
   },
   "dest_by_brand": {
    "ADM": 26,
-   "AGP": 26,
+   "AGP": 27,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
@@ -966,6 +966,11 @@
   "fsgrain-viserionsavanna": {
    "elevId": "eq4pgrxk46",
    "dest": "Viserion",
+   "dv": "location"
+  },
+  "fullcircleag-agpaberdeen": {
+   "elevId": "ebn7vhdmrb",
+   "dest": "AGP",
    "dv": "location"
   },
   "hovenequity-agpdirectship": {
