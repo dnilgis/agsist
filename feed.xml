@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 14 Nov 2026 12:11:54 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 Nov 2026 11:56:45 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>USDA reports Monday and Thursday open a week of mild rain</title>
+      <link>https://agsist.com/daily/2026-11-15</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-15</guid>
+      <pubDate>Sun, 15 Nov 2026 11:55:58 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>Dec corn settled Friday at $4.45½ and Jan beans at $12.31½, both higher on the day. The farm states ran dry last week, so harvest and fieldwork kept moving without rain delays.
+• Grains settle higher Friday
+• Cattle firm, hogs edge up
+Read more: https://agsist.com/daily/2026-11-15</description>
+    </item>
     <item>
       <title>Soybeans gain 3.2% on the week; cattle and hogs rise too</title>
       <link>https://agsist.com/daily/2026-11-14</link>
@@ -346,18 +357,6 @@ Read more: https://agsist.com/daily/2026-10-18</description>
 • Cattle firm on cash hopes
 • Crude tops $101 on tight supply
 Read more: https://agsist.com/daily/2026-10-17</description>
-    </item>
-    <item>
-      <title>Corn and beans break lower as harvest pressure builds</title>
-      <link>https://agsist.com/daily/2026-10-16</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-16</guid>
-      <pubDate>Fri, 16 Oct 2026 10:47:49 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Corn is at $4.74¼ overnight, down 4 cents, and beans are off 3¾ cents at $12.60½. China bought more US beans this week, its first cargoes since the Trump-Xi summit, but harvest supply is still winning. Every bushel coming out of the field right now is being sold into a market that already has plenty.
-• Corn and beans break lower
-• Cattle firm, feeders hold
-• Crude holds near $99 on tanker risk
-Read more: https://agsist.com/daily/2026-10-16</description>
     </item>
   </channel>
 </rss>

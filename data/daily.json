@@ -1,42 +1,50 @@
 {
-  "headline": "Soybeans gain 3.2% on the week; cattle and hogs rise too",
-  "lead": "Jan soybeans settled Friday at $12.31½, up 37¾ cents on the week. Corn added only 4 cents. Beans did the lifting while the other grains stood nearly still, and that gap is what a bushel of beans earned this week.",
-  "teaser": "Beans, cattle and hogs all finished the week higher; corn and wheat barely moved.",
+  "headline": "USDA reports Monday and Thursday open a week of mild rain",
+  "lead": "Dec corn settled Friday at $4.45½ and Jan beans at $12.31½, both higher on the day. The farm states ran dry last week, so harvest and fieldwork kept moving without rain delays.",
+  "teaser": "Crop Progress Monday and export sales Thursday headline the week; last week ran dry across farm states.",
   "one_number": {
-    "value": "489,000",
-    "unit": "hogs killed Friday, USDA estimate",
-    "context": "That is 4,000 more than a week ago, and cattle slaughter was 106,000 head, up from 93,000. Packers are running steady on both."
+    "value": "0.13 inch",
+    "unit": "average farm-state rain, past week",
+    "context": "That is against a 0.52 inch normal for the same week across 586 county gauges in 12 farm states. Ohio was wettest at 0.52 inch."
   },
   "sections": [
     {
-      "title": "Beans lead the grains",
-      "body": "- Meal rose 1.4% to $329.80, which gave beans support.\n- Chicago wheat gained 9 cents to $5.93¼.",
-      "conviction_level": "medium",
+      "title": "Grains settle higher Friday",
+      "body": "- Dec corn settled up 3 cents at **$4.45½**, and Jan soybeans gained 12½ cents to $12.31½.\n- Agweb's Friday recap called it a rally for the week in grain and cattle, and Feedstuffs credited demand buyers in beans.",
+      "conviction_level": "low",
       "overnight_surprise": false
     },
     {
-      "title": "Cattle and hogs gain",
-      "body": "- Dec live cattle settled at **$220.65**, up 0.8%, and Nov feeders rose 1.0% to $339.03.\n- Dec lean hogs gained 0.5% to $55.45, well above the $43.75 cash carcass base reported Nov 12.",
-      "conviction_level": "medium",
+      "title": "Cattle firm, hogs edge up",
+      "body": "- Dec lean hogs added 0.5% to $55.45, and Nov Class III milk slipped 0.7% to $17.58.\n- USDA put the October Class III price at $15.16 per hundredweight, down 88 cents from September.",
+      "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Barge fleet is shrinking faster than it is rebuilt",
-      "body": "CoBank says retirements outpace new builds, which could strain grain exports and margins over the next decade.",
-      "tag": "LOGISTICS",
-      "link": "https://farmpolicynews.illinois.edu/2026/11/shrinking-us-barge-fleet-could-strain-grain-exports-farm-margins/",
-      "source": "farmpolicynews.illinois.edu",
-      "news_id": "N8"
+      "title": "HPAI spreads to new states as dairy herd cases climb",
+      "body": "More dairy herds are testing positive, which means milk loss and movement limits for affected dairies.",
+      "tag": "DISEASE",
+      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNT0Z5WW1lRl9iSzZnMTlmTmc1MlJpMGl1VlIzMG8wLWFyazZVc2lYYnUzMTVXdVRUTUxzMU4xWXpQWmpXTW9mZjRmNndUTndSNkRQdUdzbFR6RWpLV2pfNy1ZbFV3SG1YYWNwOThxZjNmNVNMQWVieGxqdzBYc3ppVm91bXBGQQ?oc=5",
+      "source": "Dairy Herd",
+      "news_id": "N1"
     },
     {
-      "title": "Screwworm cases in animals reach 128",
-      "body": "USDA's APHIS says confirmed cases in domestic animals rose to 128. Cattle owners should expect more movement rules.",
-      "tag": "DISEASE",
-      "link": "https://www.thefencepost.com/news/new-world-screwworm-cases-now-total-128/",
+      "title": "Biofuel groups oppose governors' 2027 RFS petition",
+      "body": "Four governors want partial exemptions from fuel blending rules, which could trim demand for soybean oil.",
+      "tag": "POLICY",
+      "link": "https://www.thefencepost.com/news/biofuels-groups-oppose-governors-rfs-petition/",
       "source": "thefencepost.com",
-      "news_id": "N2"
+      "news_id": "N16"
+    },
+    {
+      "title": "USDA proposes wider access to grazing allotments",
+      "body": "A proposed rule would change who can hold federal grazing permits, which matters for western ranchers.",
+      "tag": "LAND",
+      "link": "https://www.thefencepost.com/news/usda-proposes-federal-rule-to-expand-access-to-grazing-allotments-for-american-ranchers/",
+      "source": "thefencepost.com",
+      "news_id": "N24"
     }
   ],
   "watch_list": [
@@ -49,25 +57,25 @@
       "desc": "USDA weekly export sales."
     }
   ],
-  "source_summary": "CME settlements, USDA AMS, AGSIST news digest",
-  "date": "Saturday, November 14, 2026",
+  "source_summary": "CME settlements, USDA, NOAA, AgWeb, Feedstuffs, CoBank, APHIS",
+  "date": "Sunday, November 15, 2026",
   "meta": {
     "market_mood": "cautious",
     "heat_section": 0,
     "overnight_surprises_count": 0,
-    "word_count": 187,
+    "word_count": 225,
     "news_coverage": {
       "ok": 19,
       "total": 26,
-      "items": 114,
+      "items": 99,
       "dark": [
         "nass.usda.gov",
         "agproud.com",
         "brownfieldagnews.com",
-        "dairyherd.com",
         "porkbusiness.com",
         "extension.iastate.edu",
-        "extension.umn.edu"
+        "extension.umn.edu",
+        "extension.purdue.edu"
       ]
     }
   },
@@ -278,12 +286,12 @@
         "crop": "corn",
         "wow": 7.0,
         "n": 55,
-        "moved": 36,
+        "moved": 35,
         "companies": 18
       }
     ],
     "why": "the same states within 5 cents of the last print",
-    "snapshot": "2026-11-14T10:17:49Z"
+    "snapshot": "2026-11-15T10:16:17Z"
   },
   "chart_series": {
     "corn": [
@@ -299,15 +307,11 @@
       4.455
     ],
     "soybeans": [
-      12.14,
-      12.0225,
-      11.8825,
-      11.9375,
-      11.8825,
-      12.28,
-      12.3075,
-      12.19,
-      12.315
+      11.89,
+      12.245,
+      12.29,
+      12.27,
+      12.43
     ]
   },
   "chart_dates": [
@@ -336,11 +340,7 @@
       "2026-11-13"
     ],
     "soybeans": [
-      "2026-11-03",
-      "2026-11-04",
-      "2026-11-05",
       "2026-11-06",
-      "2026-11-09",
       "2026-11-10",
       "2026-11-11",
       "2026-11-12",
@@ -413,158 +413,40 @@
       ]
     }
   ],
-  "week_review": {
-    "title": "The week in review",
-    "head": "Friday vs last Friday",
-    "stamp": "settle each Friday",
-    "friday": "2026-11-13",
-    "prior": "2026-11-06",
-    "rows": [
+  "week_ahead": {
+    "title": "The week ahead",
+    "head": "Reports this week",
+    "monday": "2026-11-16",
+    "items": [
       {
-        "key": "corn-dec26",
-        "name": "Corn (Dec)",
-        "now": 445.5,
-        "prev": 441.5,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$4.45 1/2",
-        "change": "up 4 cents",
-        "pct": "+0.9%",
-        "line": "Corn (Dec) $4.45 1/2, up 4 cents (+0.9%)"
+        "date": "2026-11-16",
+        "day": "Mon Nov 16",
+        "text": "COT report for Nov 10, 2:30 PM CT (moved by Veterans Day)"
       },
       {
-        "key": "beans-jan27",
-        "name": "Soybeans (Jan)",
-        "now": 1231.5,
-        "prev": 1193.75,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$12.31 1/2",
-        "change": "up 37 3/4 cents",
-        "pct": "+3.2%",
-        "line": "Soybeans (Jan) $12.31 1/2, up 37 3/4 cents (+3.2%)"
+        "date": "2026-11-16",
+        "day": "Mon Nov 16",
+        "text": "Crop Progress, 3:00 PM CT"
       },
       {
-        "key": "wheat-dec26",
-        "name": "Chicago wheat (Dec)",
-        "now": 593.25,
-        "prev": 591.25,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$5.93 1/4",
-        "change": "up 2 cents",
-        "pct": "+0.3%",
-        "line": "Chicago wheat (Dec) $5.93 1/4, up 2 cents (+0.3%)"
+        "date": "2026-11-19",
+        "day": "Thu Nov 19",
+        "text": "Export Sales, 7:30 AM CT"
       },
       {
-        "key": "cattle-dec26",
-        "name": "Live cattle (Dec)",
-        "now": 220.65,
-        "prev": 214.05,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$220.65",
-        "change": "up $6.60",
-        "pct": "+3.1%",
-        "line": "Live cattle (Dec) $220.65, up $6.60 (+3.1%)"
-      },
-      {
-        "key": "feeders-nov26",
-        "name": "Feeder cattle (Nov)",
-        "now": 339.025,
-        "prev": 322.325,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$339.03",
-        "change": "up $16.70",
-        "pct": "+5.2%",
-        "line": "Feeder cattle (Nov) $339.03, up $16.70 (+5.2%)"
-      },
-      {
-        "key": "hogs-dec26",
-        "name": "Lean hogs (Dec)",
-        "now": 55.45,
-        "prev": 53.525,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$55.45",
-        "change": "up $1.93",
-        "pct": "+3.6%",
-        "line": "Lean hogs (Dec) $55.45, up $1.93 (+3.6%)"
+        "date": "2026-11-20",
+        "day": "Fri Nov 20",
+        "text": "COT report, 2:30 PM CT"
       }
     ],
     "lines": [
-      "Corn (Dec) $4.45 1/2, up 4 cents (+0.9%)",
-      "Soybeans (Jan) $12.31 1/2, up 37 3/4 cents (+3.2%)",
-      "Chicago wheat (Dec) $5.93 1/4, up 2 cents (+0.3%)",
-      "Live cattle (Dec) $220.65, up $6.60 (+3.1%)",
-      "Feeder cattle (Nov) $339.03, up $16.70 (+5.2%)",
-      "Lean hogs (Dec) $55.45, up $1.93 (+3.6%)"
+      "Mon Nov 16: COT report for Nov 10, 2:30 PM CT (moved by Veterans Day)",
+      "Mon Nov 16: Crop Progress, 3:00 PM CT",
+      "Thu Nov 19: Export Sales, 7:30 AM CT",
+      "Fri Nov 20: COT report, 2:30 PM CT"
     ],
     "notes": [],
-    "source": "CME futures via Yahoo Finance, delayed",
-    "closes": {
-      "corn-dec26": {
-        "root": "corn",
-        "name": "Corn",
-        "contract": "Dec '26",
-        "date": "2026-11-13",
-        "px": 445.5,
-        "kind": "settle",
-        "wk52_hi": 549.75,
-        "wk52_lo": 425.75
-      },
-      "beans-jan27": {
-        "root": "beans",
-        "name": "Soybeans",
-        "contract": "Jan '27",
-        "date": "2026-11-13",
-        "px": 1231.5,
-        "kind": "settle",
-        "wk52_hi": 1350.25,
-        "wk52_lo": 1067.25
-      },
-      "wheat-dec26": {
-        "root": "wheat",
-        "name": "Chicago wheat",
-        "contract": "Dec '26",
-        "date": "2026-11-13",
-        "px": 593.25,
-        "kind": "settle",
-        "wk52_hi": 795.0,
-        "wk52_lo": 557.25
-      },
-      "cattle-dec26": {
-        "root": "cattle",
-        "name": "Live cattle",
-        "contract": "Dec '26",
-        "date": "2026-11-13",
-        "px": 220.65,
-        "kind": "settle",
-        "wk52_hi": 245.9,
-        "wk52_lo": 197.05
-      },
-      "feeders-nov26": {
-        "root": "feeders",
-        "name": "Feeder cattle",
-        "contract": "Nov '26",
-        "date": "2026-11-13",
-        "px": 339.025,
-        "kind": "settle",
-        "wk52_hi": 372.8,
-        "wk52_lo": 284.0
-      },
-      "hogs-dec26": {
-        "root": "hogs",
-        "name": "Lean hogs",
-        "contract": "Dec '26",
-        "date": "2026-11-13",
-        "px": 55.45,
-        "kind": "settle",
-        "wk52_hi": 85.275,
-        "wk52_lo": 53.175
-      }
-    }
+    "source": "USDA and CFTC release calendars"
   },
   "sponsor": {
     "active": false,
@@ -577,7 +459,7 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "generated_at": "2026-11-14T12:11:03.320410+00:00",
+  "generated_at": "2026-11-15T11:55:58.375175+00:00",
   "generator_version": "5.5.0",
   "surprise_count": 0,
   "surprises": [],
@@ -593,58 +475,58 @@
     "headline": "",
     "lead": [],
     "figure": null,
-    "date": "2026-11-14",
+    "date": "2026-11-15",
     "move_date": null,
     "ledger": [],
     "withheld": []
   },
   "weather_line": {
-    "text": "Rain in the week to Nov. 12: an average of 0.13 inch across 637 county gauges in 12 farm states; the 1991-2020 average for the same week is 0.52 inch (NOAA).",
-    "as_of": "2026-11-12",
-    "sample": 637
+    "text": "Rain in the week to Nov. 13: an average of 0.13 inch across 586 county gauges in 12 farm states; the 1991-2020 average for the same week is 0.52 inch; Ohio was wettest at an average of 0.52 inch (NOAA).",
+    "as_of": "2026-11-13",
+    "sample": 586
   },
   "critic_pass": {
     "version": "2.0",
-    "ran_at": "2026-11-14T12:11:10.511769+00:00",
+    "ran_at": "2026-11-15T11:56:03.836618+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 6,
-      "rule_2_conviction_earned": 5,
-      "rule_3_lede_no_deferral": 8,
+      "rule_1_lead_so_what": 3,
+      "rule_2_conviction_earned": 8,
+      "rule_3_lede_no_deferral": 4,
       "rule_4_watch_conditional": 9,
       "rule_5_so_what_synthesizes": 9,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_yc_honesty": 10,
       "rule_8_word_budget": 9,
-      "rule_9_voice": 7,
-      "rule_10_forward_test": 4,
+      "rule_9_voice": 4,
+      "rule_10_forward_test": 3,
       "rule_11_action_thresholded": 10,
-      "rule_12_one_fact_one_home": 4,
-      "rule_13_level_coherence": 6,
-      "rule_14_one_number_coherence": 9,
+      "rule_12_one_fact_one_home": 3,
+      "rule_13_level_coherence": 2,
+      "rule_14_one_number_coherence": 3,
       "rule_15_markdown_not_html": 10,
       "rule_16_macro_anchoring": 10
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "trim: lead, sections[0].body, sections[1].body",
-        "rule": "rule_12_one_fact_one_home",
+        "target": "lead",
+        "rule": "rule_13_level_coherence",
         "scores_before": {
-          "rule_1_lead_so_what": 6,
-          "rule_2_conviction_earned": 5,
-          "rule_3_lede_no_deferral": 8,
+          "rule_1_lead_so_what": 3,
+          "rule_2_conviction_earned": 8,
+          "rule_3_lede_no_deferral": 4,
           "rule_4_watch_conditional": 9,
           "rule_5_so_what_synthesizes": 9,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_yc_honesty": 10,
           "rule_8_word_budget": 9,
-          "rule_9_voice": 7,
-          "rule_10_forward_test": 4,
+          "rule_9_voice": 4,
+          "rule_10_forward_test": 3,
           "rule_11_action_thresholded": 10,
-          "rule_12_one_fact_one_home": 4,
-          "rule_13_level_coherence": 6,
-          "rule_14_one_number_coherence": 9,
+          "rule_12_one_fact_one_home": 3,
+          "rule_13_level_coherence": 2,
+          "rule_14_one_number_coherence": 3,
           "rule_15_markdown_not_html": 10,
           "rule_16_macro_anchoring": 10
         }

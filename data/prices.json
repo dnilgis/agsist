@@ -169,19 +169,19 @@
     },
     "beans": {
       "ticker": "ZS=F",
-      "close": 1243.0,
-      "open": 1227.0,
-      "netChange": 16.0,
-      "pctChange": 1.304,
+      "close": 1231.5,
+      "open": 1219.0,
+      "netChange": 12.5,
+      "pctChange": 1.0254,
       "wk52_hi": 1332.25,
       "wk52_lo": 1022.0,
       "close_date": "2026-11-13",
       "prev_date": "2026-11-12",
       "close_kind": "settle",
       "prev_kind": "settle",
-      "settle": 1243.0,
+      "settle": 1231.5,
       "settle_date": "2026-11-13",
-      "settle_net": 16.0,
+      "settle_net": 12.5,
       "settles_v": 2,
       "settles": {
         "2026-11-11": 1229.0,
@@ -201,6 +201,17 @@
           "px": 1232.75,
           "at": "2026-11-13T19:20:00Z"
         }
+      },
+      "repaired_from": "beans-jan27",
+      "repair_reason": "continuous-roll-contamination",
+      "_orig": {
+        "ticker": "ZS=F",
+        "close": 1243.0,
+        "open": 1227.0,
+        "netChange": 16.0,
+        "pctChange": 1.304,
+        "close_date": "2026-11-13",
+        "prev_date": "2026-11-12"
       }
     },
     "beans-nov": {

@@ -1,6 +1,6 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-11-14T12:10:28Z",
+ "generated": "2026-11-15T11:55:20Z",
  "label": "Only on AGSIST",
  "note": "From the elevator boards AGSIST reads.",
  "facts": [
@@ -8,14 +8,14 @@
    "id": "cash_change_corn",
    "crop": "corn",
    "kind": "cash_change",
-   "sentence": "On Friday, Nov 13, 1,603 of the 1,830 elevators AGSIST reads with the same delivery month both days posted a lower cash corn bid than Thursday, 194 a higher one; 158 changed their basis, 6 weaker and 152 stronger.",
-   "key": "1,603 of the 1,830 elevators",
+   "sentence": "On Friday, Nov 13, 1,615 of the 1,842 elevators AGSIST reads with the same delivery month both days posted a lower cash corn bid than Thursday, 194 a higher one; 158 changed their basis, 6 weaker and 152 stronger.",
+   "key": "1,615 of the 1,842 elevators",
    "detail": "33 unchanged; median change 1¢ lower. Biggest state move: Ohio, 1¼¢ lower (76 elevators).",
    "value": -1.0,
    "unit": "cents per bushel, median change in cash bid",
    "comparison": "last posted bid on 2026-11-13 vs 2026-11-12, same board, crop and delivery period",
-   "n": 1830,
-   "down": 1603,
+   "n": 1842,
+   "down": 1615,
    "up": 194,
    "unchanged": 33,
    "basis_changed": 158,
@@ -44,7 +44,7 @@
     {
      "state": "IA",
      "name": "Iowa",
-     "n": 385,
+     "n": 395,
      "median_cents": -1.0
     },
     {
@@ -70,16 +70,16 @@
    "id": "cash_change_soybeans",
    "crop": "soybeans",
    "kind": "cash_change",
-   "sentence": "On Friday, Nov 13, 940 of the 1,581 elevators AGSIST reads with the same delivery month both days posted a higher cash soybean bid than Thursday, 26 a lower one; 103 changed their basis, 28 weaker and 75 stronger.",
-   "key": "940 of the 1,581 elevators",
-   "detail": "615 unchanged; median change ¼¢ higher. Biggest state move: Illinois, 1¢ higher (205 elevators).",
+   "sentence": "On Friday, Nov 13, 953 of the 1,592 elevators AGSIST reads with the same delivery month both days posted a higher cash soybean bid than Thursday, 26 a lower one; 103 changed their basis, 28 weaker and 75 stronger.",
+   "key": "953 of the 1,592 elevators",
+   "detail": "613 unchanged; median change ¼¢ higher. Biggest state move: Illinois, 1¢ higher (205 elevators).",
    "value": 0.25,
    "unit": "cents per bushel, median change in cash bid",
    "comparison": "last posted bid on 2026-11-13 vs 2026-11-12, same board, crop and delivery period",
-   "n": 1581,
+   "n": 1592,
    "down": 26,
-   "up": 940,
-   "unchanged": 615,
+   "up": 953,
+   "unchanged": 613,
    "basis_changed": 103,
    "basis_weaker": 28,
    "basis_stronger": 75,
@@ -127,53 +127,13 @@
    "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
-  },
-  {
-   "id": "over_futures_corn",
-   "crop": "corn",
-   "kind": "over_futures",
-   "sentence": "Of 1,832 elevators AGSIST reads with a fresh corn bid on Nov 14, 202 were paying over futures, most of them in Kansas (33).",
-   "key": "202 were paying over futures",
-   "detail": "1,582 under futures, 48 even. Each board against the futures month it names.",
-   "value": 202,
-   "unit": "elevators bidding over futures",
-   "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
-   "n": 1832,
-   "over": 202,
-   "under": 1582,
-   "even": 48,
-   "states": [
-    {
-     "state": "KS",
-     "name": "Kansas",
-     "n": 33
-    },
-    {
-     "state": "IN",
-     "name": "Indiana",
-     "n": 28
-    },
-    {
-     "state": "CO",
-     "name": "Colorado",
-     "n": 25
-    },
-    {
-     "state": "NE",
-     "name": "Nebraska",
-     "n": 23
-    },
-    {
-     "state": "IL",
-     "name": "Illinois",
-     "n": 19
-    }
-   ],
-   "as_of": "2026-11-14",
-   "source": "AGSIST elevator network, live board basis (merged-index.json)",
-   "url": "/cash-bids",
-   "link_text": "Cash bids near you"
   }
  ],
- "withheld": []
+ "withheld": [
+  {
+   "id": "over_futures_corn",
+   "why": "sample",
+   "detail": "115 fresh boards, need 200"
+  }
+ ]
 }
