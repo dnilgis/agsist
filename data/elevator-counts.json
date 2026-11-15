@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-11-15T12:15:39Z",
+ "generated": "2026-11-15T14:17:50Z",
  "note": "Elevators with a current bid on a cash bids page, and boards read on the latest coverage pass.",
  "bids": {
-  "elevators": 2062,
-  "towns": 1622
+  "elevators": 2100,
+  "towns": 1648
  },
  "states": {
   "AL": {
@@ -16,28 +16,36 @@
    "towns": 13
   },
   "CO": {
-   "elevators": 25,
-   "towns": 19
+   "elevators": 26,
+   "towns": 20
+  },
+  "FL": {
+   "elevators": 1,
+   "towns": 1
   },
   "GA": {
    "elevators": 2,
    "towns": 2
   },
   "IA": {
-   "elevators": 442,
-   "towns": 316
+   "elevators": 443,
+   "towns": 317
+  },
+  "ID": {
+   "elevators": 1,
+   "towns": 1
   },
   "IL": {
-   "elevators": 255,
-   "towns": 187
+   "elevators": 256,
+   "towns": 188
   },
   "IN": {
    "elevators": 86,
    "towns": 67
   },
   "KS": {
-   "elevators": 253,
-   "towns": 183
+   "elevators": 261,
+   "towns": 186
   },
   "KY": {
    "elevators": 11,
@@ -52,32 +60,32 @@
    "towns": 25
   },
   "MN": {
-   "elevators": 164,
-   "towns": 137
+   "elevators": 166,
+   "towns": 139
   },
   "MO": {
-   "elevators": 30,
-   "towns": 29
+   "elevators": 42,
+   "towns": 37
   },
   "MT": {
-   "elevators": 8,
-   "towns": 8
+   "elevators": 9,
+   "towns": 9
   },
   "ND": {
-   "elevators": 66,
-   "towns": 61
+   "elevators": 67,
+   "towns": 62
   },
   "NE": {
-   "elevators": 254,
-   "towns": 195
+   "elevators": 259,
+   "towns": 198
   },
   "NY": {
    "elevators": 1,
    "towns": 1
   },
   "OH": {
-   "elevators": 85,
-   "towns": 74
+   "elevators": 88,
+   "towns": 77
   },
   "OK": {
    "elevators": 81,
@@ -108,7 +116,7 @@
    "towns": 8
   },
   "WI": {
-   "elevators": 106,
+   "elevators": 107,
    "towns": 95
   },
   "WY": {
@@ -117,9 +125,9 @@
   }
  },
  "coverage": {
-  "generated": "2026-11-14T12:39:40.326Z",
-  "read": 2151,
-  "quiet": 181,
+  "generated": "2026-11-15T12:39:25.874Z",
+  "read": 2152,
+  "quiet": 180,
   "known": 5874,
   "elevators": 8206
  }
