@@ -5,7 +5,7 @@
  "counts": {
   "live_boards": 2206,
   "with_parent": 133,
-  "with_dest": 116,
+  "with_dest": 114,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
@@ -22,8 +22,8 @@
    "Ingredion": 1,
    "Marquis": 5,
    "POET": 11,
-   "Valero": 4,
-   "Viserion": 6
+   "Valero": 3,
+   "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
@@ -1182,16 +1182,6 @@
    "elevId": "ef7wxjzrp7",
    "parent": "Stephenson Service Company",
    "pv": "change:oc01"
-  },
-  "premiercooperative-valerocc": {
-   "elevId": "ehysxd2cqp",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "premiercooperative-viserionmcgregor": {
-   "elevId": "e67nm42geg",
-   "dest": "Viserion",
-   "dv": "location"
   },
   "procooperative-agpeaglegrove": {
    "elevId": "ezah1nyyw4",
