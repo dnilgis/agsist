@@ -5,6 +5,10 @@
    "to": "/rain/alabama",
    "since": "2026-10-14"
   },
+  "rain/arkansas/arkansas-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-11-15"
+  },
   "rain/arkansas/bradley-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -36,6 +40,10 @@
   "rain/indiana/orange-county.html": {
    "to": "/rain/indiana",
    "since": "2026-11-08"
+  },
+  "rain/indiana/scott-county.html": {
+   "to": "/rain/indiana",
+   "since": "2026-11-15"
   },
   "rain/iowa/worth-county.html": {
    "to": "/rain/iowa",
@@ -108,6 +116,10 @@
   "rain/montana/wheatland-county.html": {
    "to": "/rain/montana",
    "since": "2026-11-14"
+  },
+  "rain/nebraska/perkins-county.html": {
+   "to": "/rain/nebraska",
+   "since": "2026-11-15"
   },
   "rain/nevada/churchill-county.html": {
    "to": "/rain/nevada",
@@ -200,6 +212,10 @@
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/texas/somervell-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-15"
   },
   "rain/texas/sutton-county.html": {
    "to": "/rain/texas",
