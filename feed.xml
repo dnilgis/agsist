@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Nov 2026 11:56:45 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 16 Nov 2026 11:49:53 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Crude slips on supply glut fears; corn flat at $4.46 overnight</title>
+      <link>https://agsist.com/daily/2026-11-16</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-16</guid>
+      <pubDate>Mon, 16 Nov 2026 11:49:15 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>WTI crude is at $88.23 overnight, down 0.4%, after Goldman Sachs said supply could outrun demand by 2 million barrels a day in 2027. Two more tankers hit mines in the Strait of Hormuz, yet oil still fell.
+• Grains quiet before Crop Progress
+• Cattle and hogs after Friday
+Read more: https://agsist.com/daily/2026-11-16</description>
+    </item>
     <item>
       <title>USDA reports Monday and Thursday open a week of mild rain</title>
       <link>https://agsist.com/daily/2026-11-15</link>
@@ -345,18 +356,6 @@ Read more: https://agsist.com/daily/2026-10-19</description>
 • Grains ease into the weekend
 • Cattle firm, packers in focus
 Read more: https://agsist.com/daily/2026-10-18</description>
-    </item>
-    <item>
-      <title>Corn and beans break lower; crude tops $101 on tight supply</title>
-      <link>https://agsist.com/daily/2026-10-17</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-17</guid>
-      <pubDate>Sat, 17 Oct 2026 10:54:24 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Corn settled Friday at $4.74¼, down 3¾ cents, and beans closed at $12.61¼, off 1¾ cents, both pressured by harvest supply all week. Crude gained 3.5% to $101.41 after the IEA pushed emergency stock releases and the US offered another 17 million barrels from the reserve.
-• Corn and beans ease into the weekend
-• Cattle firm on cash hopes
-• Crude tops $101 on tight supply
-Read more: https://agsist.com/daily/2026-10-17</description>
     </item>
   </channel>
 </rss>

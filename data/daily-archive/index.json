@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-16",
+      "date_display": "Monday, November 16, 2026",
+      "headline": "Crude slips on supply glut fears; corn flat at $4.46 overnight",
+      "teaser": "Oil slips on glut talk despite new tanker hits; grains barely move before Crop Progress.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 2,
+      "url": "/daily/2026-11-16",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-15",
       "date_display": "Sunday, November 15, 2026",
       "headline": "USDA reports Monday and Thursday open a week of mild rain",
@@ -2822,5 +2833,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-15T11:56:03.868065+00:00"
+  "updated": "2026-11-16T11:49:20.369375+00:00"
 }
