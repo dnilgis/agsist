@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-16T20:09:47Z",
+ "updated": "2026-11-16T20:54:54Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -906,9 +906,9 @@
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-11-16T20:09:47Z",
+  "computed": "2026-11-16T20:54:54Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
-  "source_built": "rebuild 2006–2026",
+  "source_built": "append 2026-11-10",
   "cutoff": "2026-10-02",
   "rules_version": "bot-v1.1",
   "rules_tested": 1,
@@ -1281,7 +1281,8 @@
    "fewer than 156 prior reports": 624,
    "report held back by a federal shutdown (release date unknown)": 116,
    "exit after the backtest cutoff": 24,
-   "exit close missing or not yet known": 16
+   "exit close missing or not yet known": 16,
+   "entry close missing": 4
   },
   "calls_file": "data/predictions-backtest.json"
  }
