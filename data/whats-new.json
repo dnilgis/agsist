@@ -149,6 +149,13 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-12-atlas-charts",
+   "date": "2026-11-12",
+   "title": "Farmland Atlas charts you can read and share",
+   "line": "Each county's rent, corn yield, insurance loss ratio, drought and CRP charts now say what changed, name every line and save as a picture.",
+   "link": "/farmland-atlas/iowa/story-county"
+  },
+  {
    "id": "2026-11-12-bin-hopper-eave",
    "date": "2026-11-12",
    "title": "Grain bin calculator: hopper tape readings",
@@ -210,6 +217,13 @@
    "title": "Rain by county: find any county",
    "line": "Type a county or a ZIP on any rain page to open that county's rain. More neighbors under Next door, and the site search now finds every county rain page.",
    "link": "/rain"
+  },
+  {
+   "id": "2026-11-12-rent-chart",
+   "date": "2026-11-12",
+   "title": "State cash rent by year, as a chart",
+   "line": "Each state rent page draws median county rent since 2008, says how much it moved in the same counties, and saves as a picture to share.",
+   "link": "/rent/iowa#rent-history"
   },
   {
    "id": "2026-11-12-state-sales-pages",
