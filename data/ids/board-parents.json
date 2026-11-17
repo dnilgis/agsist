@@ -3,26 +3,27 @@
  "generated": "2026-11-17",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 1978,
+  "live_boards": 2092,
   "with_parent": 133,
-  "with_dest": 88,
+  "with_dest": 98,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
    "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 20,
-   "AGP": 20,
-   "Big River": 3,
-   "Bunge": 2,
+   "ADM": 22,
+   "AGP": 23,
+   "Big River": 4,
+   "Bunge": 3,
    "CGB": 9,
-   "Cargill": 10,
+   "Cargill": 13,
+   "Green Plains": 1,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 8,
-   "Valero": 4,
-   "Viserion": 6
+   "POET": 9,
+   "Valero": 3,
+   "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
@@ -45,6 +46,11 @@
   "archercoopgrain-directshipagpsheldon": {
    "elevId": "erxv00cfb4",
    "dest": "AGP",
+   "dv": "location"
+  },
+  "atkinsongrain-bigriver": {
+   "elevId": "etdfatymxy",
+   "dest": "Big River",
    "dv": "location"
   },
   "balkgrain-adm": {
@@ -807,29 +813,34 @@
    "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-agpmasoncity": {
-   "elevId": "e8jam8a9cw",
+  "farmerscooperative-admlincoln": {
+   "elevId": "edb03ytxwb",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "farmerscooperative-agpdavidcity": {
+   "elevId": "ebbb1axj14",
    "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-poetfairbank": {
-   "elevId": "ez7yaq8md0",
-   "dest": "POET",
+  "farmerscooperative-agphastings": {
+   "elevId": "e6jj2wjrkv",
+   "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-poetshellrock": {
-   "elevId": "ek6gke6bgx",
-   "dest": "POET",
+  "farmerscooperative-agpstjo": {
+   "elevId": "ed9cmnj2vn",
+   "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-valero": {
-   "elevId": "ebsf77fnha",
-   "dest": "Valero",
+  "farmerscooperative-bungeemporia": {
+   "elevId": "ej6psryg26",
+   "dest": "Bunge",
    "dv": "location"
   },
-  "farmerswin-viserion": {
-   "elevId": "ey734h2jkj",
-   "dest": "Viserion",
+  "farmerscooperative-greenplainsyork": {
+   "elevId": "e3ma049fmc",
+   "dest": "Green Plains",
    "dv": "location"
   },
   "fsgrain-admclintoncorn": {
@@ -952,6 +963,11 @@
    "dest": "Viserion",
    "dv": "location"
   },
+  "jamesvalleygrain-agpaberdeensd": {
+   "elevId": "ex6cpvw8za",
+   "dest": "AGP",
+   "dv": "location"
+  },
   "lesyoungfarms-cargillon": {
    "elevId": "e3gc84e8mw",
    "dest": "Cargill",
@@ -975,6 +991,46 @@
   "linncoop-ingredion": {
    "elevId": "edwt7p1qfc",
    "dest": "Ingredion",
+   "dv": "location"
+  },
+  "midiowa-admcedarrapids": {
+   "elevId": "e8r6epcwxx",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "midiowa-admdsm": {
+   "elevId": "ed8t81yfds",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "midiowa-cargillcedarrapids": {
+   "elevId": "eh3h1rt6vs",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "midiowa-cargilliafalls": {
+   "elevId": "ebsda0a9n2",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "midiowa-cargillstarch": {
+   "elevId": "ee0f5cb22n",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "midiowa-poetfb": {
+   "elevId": "e62xehfm81",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "midiowa-poetiafalls": {
+   "elevId": "exmrbmcrn2",
+   "dest": "POET",
+   "dv": "location"
+  },
+  "midiowa-poetsr": {
+   "elevId": "exkn7rhbek",
+   "dest": "POET",
    "dv": "location"
   },
   "newvision-admmankato": {
@@ -1095,11 +1151,6 @@
   "seatonvilleelevator-marquis": {
    "elevId": "efaz6et1h4",
    "dest": "Marquis",
-   "dv": "location"
-  },
-  "tamabentoncoop-dsadm": {
-   "elevId": "ehttvjy7g2",
-   "dest": "ADM",
    "dv": "location"
   },
   "tettensgrain-admclinton": {
