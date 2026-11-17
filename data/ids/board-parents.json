@@ -3,31 +3,32 @@
  "generated": "2026-11-17",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 1459,
-  "with_parent": 131,
-  "with_dest": 45,
+  "live_boards": 1355,
+  "with_parent": 132,
+  "with_dest": 38,
   "parent_by_rule": {
+   "board-page": 1,
    "change": 3,
    "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 8,
-   "AGP": 12,
+   "ADM": 9,
+   "AGP": 10,
    "Big River": 1,
-   "CGB": 6,
-   "Cargill": 8,
+   "CGB": 5,
+   "Cargill": 3,
    "Marquis": 3,
    "POET": 1,
    "Valero": 2,
    "Viserion": 4
   },
-  "board_pages_with_other_firms": 0
+  "board_pages_with_other_firms": 1
  },
  "boards": {
-  "archercoopgrain-directshipagpsheldon": {
-   "elevId": "erxv00cfb4",
-   "dest": "AGP",
-   "dv": "location"
+  "alciviacoop-burlington": {
+   "elevId": "etykedhvfk",
+   "parent": "ALCIVIA",
+   "pv": "board-page:alciviacoop.agricharts.com"
   },
   "balkgrain-adm": {
    "elevId": "e7fnj8a7m3",
@@ -709,6 +710,31 @@
    "dest": "Cargill",
    "dv": "location"
   },
+  "efgi-admmendota": {
+   "elevId": "e3d08ww7sm",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "farmerswin-agpmasoncity": {
+   "elevId": "e8jam8a9cw",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "farmerswin-viserion": {
+   "elevId": "ey734h2jkj",
+   "dest": "Viserion",
+   "dv": "location"
+  },
+  "fsgrain-admmorris": {
+   "elevId": "e3ej6cs9hz",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "fsgrain-admottawa": {
+   "elevId": "ezqh7mnh0v",
+   "dest": "ADM",
+   "dv": "location"
+  },
   "fsgrain-cgbalbany": {
    "elevId": "e9xs287xs7",
    "dest": "CGB",
@@ -727,61 +753,6 @@
   "fullcircleag-agpaberdeen": {
    "elevId": "ebn7vhdmrb",
    "dest": "AGP",
-   "dv": "location"
-  },
-  "innovativeag-admclint": {
-   "elevId": "e8sr5vk66t",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "innovativeag-agpeagle": {
-   "elevId": "e4q853gs8j",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "innovativeag-agpmason": {
-   "elevId": "e49yjwzwvv",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "innovativeag-cargillcr": {
-   "elevId": "edjnjd3gx5",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "innovativeag-cargillif": {
-   "elevId": "epdpaqe1wa",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "innovativeag-cgbclay": {
-   "elevId": "esrgeggxpx",
-   "dest": "CGB",
-   "dv": "location"
-  },
-  "innovativeag-viserion": {
-   "elevId": "ec1etj4w76",
-   "dest": "Viserion",
-   "dv": "location"
-  },
-  "lesyoungfarms-cargillon": {
-   "elevId": "e3gc84e8mw",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-admdsm": {
-   "elevId": "ed8t81yfds",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "midiowa-cargillcedarrapids": {
-   "elevId": "eh3h1rt6vs",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-cargilliafalls": {
-   "elevId": "ebsda0a9n2",
-   "dest": "Cargill",
    "dv": "location"
   },
   "nexus-agpeaglegroveia": {
