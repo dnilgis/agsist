@@ -32,6 +32,10 @@
 .ap .leg span{display:inline-flex;align-items:center;gap:.35rem}.ap .leg i{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--border-2)}
 .ap .mp{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;margin:.4rem 0}.ap .mp select{font:inherit;font-size:16px;min-height:40px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface);color:var(--text);padding:.3rem .6rem}
 .ap .ch{width:100%;height:auto;display:block;margin:.4rem 0 .2rem}
+.ap .ach{margin:.5rem 0 .2rem;container-type:inline-size}.ap .ach-h{font-weight:800;font-size:1rem;line-height:1.3;margin:0 0 .1rem;color:var(--text)}
+.ap .ach-t{font-size:.84rem;line-height:1.45;margin:0 0 .4rem;color:var(--text-dim)}
+.ap .ach-c{min-height:288px}.ap .ach-1 .ach-c{min-height:224px}.ap .ach-tools{min-height:62px;margin:.3rem 0}@media(min-width:561px){.ap .ach-tools{min-height:34px}}
+@container (min-width:520px){.ap .ach-c{min-height:305px}.ap .ach-1 .ach-c{min-height:265px}}
 .ap .note{font-size:.8rem;color:var(--text-muted);line-height:1.55;margin:.2rem 0 .6rem}
 .ap .warn{border:1px solid var(--border);border-left:2px solid var(--gold);padding:.6rem .8rem;border-radius:var(--r-md);font-size:.85rem;color:var(--text-dim);margin:.6rem 0;line-height:1.55}
 .ap table{width:100%;border-collapse:collapse;font-size:.84rem}
