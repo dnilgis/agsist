@@ -5,9 +5,9 @@
  "publicFrom":"2026-10-12",
  "states":{
   "AL":{
-   "rows":9,
+   "rows":10,
    "facilities":1,
-   "kb":0.6
+   "kb":0.7
   },
   "AR":{
    "rows":56,
@@ -50,9 +50,9 @@
    "kb":52.7
   },
   "KS":{
-   "rows":5492,
+   "rows":5456,
    "facilities":263,
-   "kb":243.8
+   "kb":242.4
   },
   "KY":{
    "rows":129,
@@ -85,14 +85,14 @@
    "kb":5.5
   },
   "ND":{
-   "rows":7646,
+   "rows":7648,
    "facilities":68,
-   "kb":319.8
+   "kb":319.9
   },
   "NE":{
-   "rows":9387,
+   "rows":9555,
    "facilities":255,
-   "kb":426.3
+   "kb":433.5
   },
   "NY":{
    "rows":10,
@@ -102,7 +102,7 @@
   "OH":{
    "rows":4324,
    "facilities":91,
-   "kb":184.9
+   "kb":184.8
   },
   "OK":{
    "rows":3148,
@@ -125,9 +125,9 @@
    "kb":0.5
   },
   "SD":{
-   "rows":2090,
+   "rows":2070,
    "facilities":116,
-   "kb":91.7
+   "kb":90.8
   },
   "TN":{
    "rows":51,
