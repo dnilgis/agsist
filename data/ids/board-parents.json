@@ -3,25 +3,24 @@
  "generated": "2026-11-17",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2197,
-  "with_parent": 131,
-  "with_dest": 116,
+  "live_boards": 1978,
+  "with_parent": 133,
+  "with_dest": 88,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
-   "chs-brand": 126
+   "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 26,
-   "AGP": 27,
-   "Big River": 4,
-   "Bunge": 4,
+   "ADM": 20,
+   "AGP": 20,
+   "Big River": 3,
+   "Bunge": 2,
    "CGB": 9,
-   "Cargill": 16,
-   "Green Plains": 3,
+   "Cargill": 10,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 11,
+   "POET": 8,
    "Valero": 4,
    "Viserion": 6
   },
@@ -46,11 +45,6 @@
   "archercoopgrain-directshipagpsheldon": {
    "elevId": "erxv00cfb4",
    "dest": "AGP",
-   "dv": "location"
-  },
-  "atkinsongrain-bigriver": {
-   "elevId": "etdfatymxy",
-   "dest": "Big River",
    "dv": "location"
   },
   "balkgrain-adm": {
@@ -325,6 +319,16 @@
   },
   "chsdrayton-manvel": {
    "elevId": "ec34b2ptz0",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsfarmersalliance-mitchell": {
+   "elevId": "epj7as59b3",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
+  "chsfarmersalliance-wagner": {
+   "elevId": "e0kxw7sga4",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
@@ -718,66 +722,6 @@
    "dest": "AGP",
    "dv": "location"
   },
-  "cvacoop365-admcolumbus": {
-   "elevId": "ejtjhb7qmd",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "cvacoop365-admfremont": {
-   "elevId": "ekz4vr8164",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "cvacoop365-admlincoln": {
-   "elevId": "ehexg1ag19",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "cvacoop365-agpdavidcity": {
-   "elevId": "e8wzw056ez",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "cvacoop365-agphastings": {
-   "elevId": "e81s1eq1kq",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "cvacoop365-agpsergeantbluff": {
-   "elevId": "e2dg9nyj06",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "cvacoop365-bungecouncilbluffs": {
-   "elevId": "ebnp6gk2jk",
-   "dest": "Bunge",
-   "dv": "location"
-  },
-  "cvacoop365-cargillalbion": {
-   "elevId": "e15mgbs2z5",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "cvacoop365-cargillblair": {
-   "elevId": "etd6raa3jg",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "cvacoop365-cargillsiouxcity": {
-   "elevId": "enp9j6a638",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "cvacoop365-greenplainscentralcity": {
-   "elevId": "en3dz2yq6g",
-   "dest": "Green Plains",
-   "dv": "location"
-  },
-  "cvacoop365-greenplainsyork": {
-   "elevId": "eerke3kk8y",
-   "dest": "Green Plains",
-   "dv": "location"
-  },
   "dunkertoncoop-admcedarrapidscorn": {
    "elevId": "e261bv72y7",
    "dest": "ADM",
@@ -861,36 +805,6 @@
   "farmerscoopelevator-agpdawson": {
    "elevId": "e2qvfpfwdh",
    "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerscooperative-admlincoln": {
-   "elevId": "edb03ytxwb",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "farmerscooperative-agpdavidcity": {
-   "elevId": "ebbb1axj14",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerscooperative-agphastings": {
-   "elevId": "e6jj2wjrkv",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerscooperative-agpstjo": {
-   "elevId": "ed9cmnj2vn",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerscooperative-bungeemporia": {
-   "elevId": "ej6psryg26",
-   "dest": "Bunge",
-   "dv": "location"
-  },
-  "farmerscooperative-greenplainsyork": {
-   "elevId": "e3ma049fmc",
-   "dest": "Green Plains",
    "dv": "location"
   },
   "farmerswin-agpmasoncity": {
@@ -1038,11 +952,6 @@
    "dest": "Viserion",
    "dv": "location"
   },
-  "jamesvalleygrain-agpaberdeensd": {
-   "elevId": "ex6cpvw8za",
-   "dest": "AGP",
-   "dv": "location"
-  },
   "lesyoungfarms-cargillon": {
    "elevId": "e3gc84e8mw",
    "dest": "Cargill",
@@ -1066,46 +975,6 @@
   "linncoop-ingredion": {
    "elevId": "edwt7p1qfc",
    "dest": "Ingredion",
-   "dv": "location"
-  },
-  "midiowa-admcedarrapids": {
-   "elevId": "e8r6epcwxx",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "midiowa-admdsm": {
-   "elevId": "ed8t81yfds",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "midiowa-cargillcedarrapids": {
-   "elevId": "eh3h1rt6vs",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-cargilliafalls": {
-   "elevId": "ebsda0a9n2",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-cargillstarch": {
-   "elevId": "ee0f5cb22n",
-   "dest": "Cargill",
-   "dv": "location"
-  },
-  "midiowa-poetfb": {
-   "elevId": "e62xehfm81",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "midiowa-poetiafalls": {
-   "elevId": "exmrbmcrn2",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "midiowa-poetsr": {
-   "elevId": "exkn7rhbek",
-   "dest": "POET",
    "dv": "location"
   },
   "newvision-admmankato": {
