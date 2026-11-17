@@ -633,10 +633,11 @@ window.__fsRead = function (FSX) {
     return Promise.all([getJSON('/data/rain/'+st+'.json'), getJSON('/data/rain/daily/'+st+'.json').catch(function(){ return null; })]).then(function(x){
       var R=x[0], D=x[1], f=String(cy.fips), rec=R&&R.counties&&R.counties[f], via=null;
       if(!rec && R && R.none && R.none[f] && R.none[f].near && R.counties[R.none[f].near]){ via=R.none[f].near; rec=R.counties[via]; }
-      if(!rec || rec.total==null || rec.usual==null || !rec.station) return null;
+      // Sig, Nov 17: a gauge with a total but no NOAA normal (a CoCoRaHS gauge, often) still gives the card its total; only the comparison goes
+      if(!rec || rec.total==null || !rec.station) return null;
       var ll=rec.station.ll, mi=(ll&&isFinite(ll[0]))?_hvsMi(FSX.FIELD.lat, FSX.FIELD.lng, ll[1], ll[0]):null;
       var dd=D&&D.counties&&D.counties[via||f], wk=dd?weekRain(dd.p, +(D.year||R.year)):null;
-      return { total:+rec.total, usual:+rec.usual, pct:rec.pct, thru:rec.as_of||R.edate, year:+R.year, days:rec.days, miss:rec.missing||0, cum:rec.cum||null,
+      return { total:+rec.total, usual:rec.usual==null?null:+rec.usual, pct:rec.usual==null?null:rec.pct, thru:rec.as_of||R.edate, year:+R.year, days:rec.days, miss:rec.missing||0, cum:rec.cum||null,
         station:rec.station.name, mi:mi, borrowed:via?(rec.name||'a neighboring county'):null, normals:R.normals||'1991-2020', wk:wk };
     });
   }
@@ -794,8 +795,8 @@ window.__fsRead = function (FSX) {
       // the heat units stop on the rain gauge's last day, so the two figures end on the same date
       var r=x[0], g=x[1] ? gduFromRows(x[1], new Date().getFullYear(), c.lat, r?r.thru:null) : null;
       if(!r && !g){ FSX.FIELD.season=null; recomputeInsight(); renderRisk(); setErr('fs-season','The county rain gauge record and the heat-unit grid did not answer just now.'); return; }
-      var se={ year:new Date().getFullYear(), n:g?g.n:null, gauge:!!r, pLbl: r ? r.normals+' normal' : null };
-      if(r){ se.pNow=r.total; se.pNorm=r.usual; se.pDep=r.total-r.usual; se.pct=r.pct; se.thru=r.thru; se.station=r.station; se.mi=r.mi; se.borrowed=r.borrowed; se.cum=r.cum; se.pYear=r.year; se.pDays=r.days; se.pMiss=r.miss; }
+      var se={ year:new Date().getFullYear(), n:g?g.n:null, gauge:!!r, pLbl: r&&r.usual!=null ? r.normals+' normal' : null, noNorm: !!(r&&r.usual==null) };
+      if(r){ se.pNow=r.total; se.pNorm=r.usual; se.pDep=r.usual!=null?r.total-r.usual:null; se.pct=r.usual!=null?r.pct:null; se.thru=r.thru; se.station=r.station; se.mi=r.mi; se.borrowed=r.borrowed; se.cum=r.cum; se.pYear=r.year; se.pDays=r.days; se.pMiss=r.miss; }
       else { se.pNow=null; se.pNorm=null; se.pDep=null; }
       if(g){ se.gNow=g.gNow; se.gNorm=g.gNorm; se.gDep=g.gDep; se.gPlant=g.gPlant; se.plantMD=g.plantMD; se.gCumMap=g.gCumMap; se.gThru=g.gThru; se.frost=g.frost; if(!se.thru) se.thru=g.gThru; }
       else { se.gNow=null; se.gNorm=null; se.gDep=null; se.gPlant=null; se.gCumMap=null; se.frost=null; }
@@ -814,13 +815,14 @@ window.__fsRead = function (FSX) {
     var depG=function(v){ if(Math.abs(v)<15) return '<span style="color:#9aa">≈ '+s.n+'-yr avg</span>';
       var up=v>0; return '<span style="color:'+(up?'#4aab4c':'#e0a32e')+'">'+(up?'+':'−')+Math.abs(v).toFixed(0)+' vs '+s.n+'-yr avg</span>'; };
     var blocks=[];
-    if(s.pNow!=null) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div><div class="fs-stat-l">Rain since Jan 1 &nbsp;·&nbsp; '+depIn(s.pDep)+(s.pct!=null?' ('+Math.round(s.pct)+'%)':'')+'</div></div>');
+    if(s.pNow!=null) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div><div class="fs-stat-l">Rain since Jan 1 &nbsp;·&nbsp; '+(s.pDep!=null ? depIn(s.pDep)+(s.pct!=null?' ('+Math.round(s.pct)+'%)':'') : 'no normal for this gauge')+'</div></div>');
     else blocks.push('<div class="fs-stat"><div class="fs-stat-v">-</div><div class="fs-stat-l">Rain since Jan 1 &nbsp;·&nbsp; no county gauge record</div></div>');
     if(s.gNow!=null) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+Math.round(s.gNow)+'</div><div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; '+depG(s.gDep)+'</div></div>');
     else blocks.push('<div class="fs-stat"><div class="fs-stat-v">-</div><div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; the grid did not answer</div></div>');
     var say=seasonSay(s, seasonPhase(todayIso(), s));
     var src=[];
-    if(s.pNow!=null) src.push('Rain: the '+esc(s.station)+' gauge'+(s.mi!=null?', '+Math.round(s.mi)+' mi from this field':'')+(s.borrowed?' (no gauge reports in this county; this is '+esc(s.borrowed)+'’s)':'')+', Jan 1 through '+fmtDate(s.thru)+', against its '+esc(s.pLbl)+' (NOAA daily records via RCC-ACIS)');
+    if(s.pNow!=null) src.push('Rain: the '+esc(s.station)+' gauge'+(s.mi!=null?', '+Math.round(s.mi)+' mi from this field':'')+(s.borrowed?' (no gauge reports in this county; this is '+esc(s.borrowed)+'’s)':'')+', Jan 1 through '+fmtDate(s.thru)+(s.pNorm!=null ? ', against its '+esc(s.pLbl)+' (NOAA daily records via RCC-ACIS)'
+      : ' (NOAA daily records via RCC-ACIS). This gauge has no 30-year NOAA normal, so there is no normal year to compare it with'));
     if(s.gNow!=null) src.push('GDUs: PRISM daily grid via RCC-ACIS, an estimate, this year vs the '+s.n+' before, Jan 1 through '+fmtDate(s.gThru)+', base 50°F');
     return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+blocks.join('')+'</div>'+
       (say?'<div class="fs-vigor-say" style="margin:.55rem 0 .2rem">'+say+'</div>':'')+
@@ -829,6 +831,7 @@ window.__fsRead = function (FSX) {
   }
   // The gauge's running total against its normal running total, week by week, Jan 1 to date.
   function gaugeSpark(s){
+    if(s.pNorm==null) return '';   // the chart is this year against the normal: a gauge with no normal draws none
     var cum=(s.cum||[]).filter(function(r){ return r && r[1]!=null && r[2]!=null; });
     if(cum.length<4) return '';
     var W=360, H=120, pl=32, pr=40, pt=10, pb=18, iw=W-pl-pr, ih=H-pt-pb;
@@ -1225,7 +1228,7 @@ window.__fsRead = function (FSX) {
     }
     // Season rainfall deficit vs the 5-yr normal (independent of the USDM snapshot —
     // a field can be tracking dry before it shows up as a drought category).
-    if(se && se.pDep <= -2){
+    if(se && se.pDep!=null && se.pDep <= -2){
       var md = se.pDep<=-5, mv = md?'High':'Elevated', mc = md?'#d9534f':'#ff9326';
       rows.push(riskRow('Moisture deficit', mv, mc, Math.abs(se.pDep).toFixed(1)+'″ below '+pLbl(se)+' at the county gauge, season to date'));
     }
@@ -1749,7 +1752,7 @@ window.__fsRead = function (FSX) {
     } else if(r===false || (r && !r.codes)) { lastV='-'; }
     var se=FSX.FIELD.season, rainV=null, rainSub=null;
     if(se===null || (se && se.pNow==null)){ rainV='-'; rainSub='no gauge record'; }
-    else if(se){ rainV=(se.pct!=null?Math.round(se.pct)+'%':se.pNow.toFixed(1)+'\u2033'); rainSub='of normal since Jan 1'+(se.mi!=null?' \u00b7 gauge '+Math.round(se.mi)+' mi':''); }
+    else if(se){ rainV=(se.pct!=null?Math.round(se.pct)+'%':se.pNow.toFixed(1)+'\u2033'); rainSub=(se.pct!=null?'of normal since Jan 1':se.pNorm==null?'since Jan 1, no normal':'since Jan 1')+(se.mi!=null?' \u00b7 gauge '+Math.round(se.mi)+' mi':''); }
     var cy=FSX.FIELD.county;
     var co=document.getElementById('fs-deck-co'); if(co) co.textContent = cy&&cy.name ? cy.name+' County, '+cy.abbr : '';
     renderPeek({acres:acres, nccpi:nccpiV, vig:vigSub, dr:(d?(d.cat==null?'no answer':(d.cat==='None'?'None':d.cat)):null), bid:bidV!=='-'?bidV:null, bidSub:bidSub,
@@ -2369,10 +2372,10 @@ window.__fsRead = function (FSX) {
     }
 
     // ── Season rain × GDU (skip a second moisture stressor if already in drought) ──
-    if(se && lateSeason && se.pDep<=-2){
+    if(se && lateSeason && se.pDep!=null && se.pDep<=-2){
       lines.push('The season ran '+Math.abs(se.pDep).toFixed(1)+'\u2033 drier than '+pLbl(se)+' at the county gauge; this late, rain no longer changes this year\u2019s crop, but it sets the soil profile for next spring.');
     } else if(se){
-      var dryEnough=se.pDep<=-2, wetEnough=se.pDep>=2, hot=se.gDep>=100, cool=se.gDep<=-100;
+      var dryEnough=se.pDep!=null&&se.pDep<=-2, wetEnough=se.pDep!=null&&se.pDep>=2, hot=se.gDep>=100, cool=se.gDep<=-100;
       if(dryEnough && hot && !inDrought && phase==='in'){
         push({ sev:4, act:true, topic:'moisture', tag:'a widening rain deficit',
           title:'the crop is developing fast into a moisture deficit. Watch it closely',
