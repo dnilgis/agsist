@@ -3,9 +3,9 @@
  "generated": "2026-11-17",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 1048,
+  "live_boards": 1028,
   "with_parent": 122,
-  "with_dest": 26,
+  "with_dest": 25,
   "parent_by_rule": {
    "chs-brand": 122
   },
@@ -15,7 +15,7 @@
    "Big River": 1,
    "CGB": 2,
    "Cargill": 2,
-   "Marquis": 2,
+   "Marquis": 1,
    "POET": 1,
    "Valero": 2,
    "Viserion": 2
@@ -750,11 +750,6 @@
   },
   "rivervalleycoop-marquisenergy": {
    "elevId": "em86kw2svr",
-   "dest": "Marquis",
-   "dv": "location"
-  },
-  "seatonvilleelevator-marquis": {
-   "elevId": "efaz6et1h4",
    "dest": "Marquis",
    "dv": "location"
   },
