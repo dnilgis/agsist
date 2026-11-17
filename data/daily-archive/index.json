@@ -1,6 +1,28 @@
 {
   "briefings": [
     {
+      "date": "2026-11-16",
+      "date_display": "Monday, November 16, 2026",
+      "headline": "Crude slips on supply glut fears; corn flat at $4.46 overnight",
+      "teaser": "Oil slips on glut talk despite new tanker hits; grains barely move before Crop Progress.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 2,
+      "url": "/daily/2026-11-16",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-15",
+      "date_display": "Sunday, November 15, 2026",
+      "headline": "USDA reports Monday and Thursday open a week of mild rain",
+      "teaser": "Crop Progress Monday and export sales Thursday headline the week; last week ran dry across farm states.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-15",
+      "market_closed": true
+    },
+    {
       "date": "2026-11-14",
       "date_display": "Saturday, November 14, 2026",
       "headline": "Soybeans gain 3.2% on the week; cattle and hogs rise too",
@@ -2811,5 +2833,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-14T12:11:10.539481+00:00"
+  "updated": "2026-11-16T11:49:20.369375+00:00"
 }

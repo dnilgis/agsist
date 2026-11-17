@@ -1,15 +1,15 @@
 {
- "checked": "2026-11-09",
+ "checked": "2026-11-16",
  "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
  "credit_url": "https://www.schraderauction.com/auctions/recent_auctions",
  "last_run": {
-  "captured": "2026-11-09",
+  "captured": "2026-11-16",
   "dropped_future_date": 0,
-  "dropped_no_county": 0,
-  "dropped_not_farmland": 3,
-  "kept": 2,
+  "dropped_no_county": 1,
+  "dropped_not_farmland": 2,
+  "kept": 3,
   "no_result": 0,
-  "pages": 5
+  "pages": 6
  },
  "records": [
   {
@@ -8246,6 +8246,61 @@
     }
    ],
    "url": "https://www.schraderauction.com/auctions/9630"
+  },
+  {
+   "auction_id": "9613",
+   "county": "Wyandot",
+   "county_fips": "39175",
+   "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
+   "date": "2026-11-10",
+   "headline_acres": 377,
+   "kind": "auction",
+   "source": "schrader",
+   "state": "OH",
+   "total_sold": 6520000,
+   "tracts": [
+    {
+     "per_acre": 17619,
+     "sold": 1480000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 17201,
+     "sold": 5040000,
+     "tracts": "2-5"
+    }
+   ],
+   "url": "https://www.schraderauction.com/auctions/9613"
+  },
+  {
+   "auction_id": "9642",
+   "county": "Madison",
+   "county_fips": "18095",
+   "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
+   "date": "2026-11-12",
+   "headline_acres": 79,
+   "kind": "auction",
+   "source": "schrader",
+   "state": "IN",
+   "total_sold": 815000,
+   "tracts": [
+    {
+     "per_acre": 10606,
+     "sold": 665000,
+     "tracts": "1+3"
+    },
+    {
+     "per_acre": 2899,
+     "sold": 40000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": null,
+     "sold": 110000,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.schraderauction.com/auctions/9642"
   }
  ],
  "source": "schrader"
