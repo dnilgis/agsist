@@ -101,7 +101,7 @@
     return doc._at;
   }
   function pick(docs, cfg, crop) {
-    var rows = [], prev = '', townOf = {}, away = [];
+    var rows = [], prev = '', townOf = {}, away = [], awayIn = false;
     Object.keys(docs || {}).sort().forEach(function (st) {
       var doc = docs[st]; if (!doc || !doc.cols) return;
       var ix = {}; doc.cols.forEach(function (k, i) { ix[k] = i; });
@@ -113,7 +113,7 @@
         var inTown = !!cfg.path && r[ix.path] === cfg.path, lat = r[ix.lat], lon = r[ix.lon];
         var d = typeof lat === 'number' && typeof lon === 'number' && cfg.ll ? miles(cfg.ll[0], cfg.ll[1], lat, lon) : null;
         if (!inTown && (d == null || d > NEAR_MI)) return;
-        if (at[j]) { away.push({ elevator: r[ix.elevator], site: r[ix.town], at: at[j] }); return; }
+        if (at[j]) { away.push({ elevator: r[ix.elevator], site: r[ix.town], at: at[j] }); awayIn = awayIn || inTown; return; }
         rows.push({ elevator: r[ix.elevator], site: r[ix.town], path: r[ix.path], cash: r[ix.cash], c: cents(r[ix.basis]),
           w: r[ix.wow_cents] == null ? null : Math.round(r[ix.wow_cents] * 10) / 10, mi: d, inTown: inTown, priced: r[ix.priced],
           dm: r[ix.dm] || '', vs: r[ix.vs] || '', flag: r[ix.flag] || '', st: st });
@@ -149,7 +149,7 @@
     var town = on.filter(function (r) { return r.inTown; }).sort(function (a, b) { return b.c - a.c || (b.w || 0) - (a.w || 0) || (a.name < b.name ? -1 : 1); });
     var out = on.filter(function (r) { return !r.inTown; }).sort(function (a, b) { return a.mi - b.mi || b.c - a.c || (a.name < b.name ? -1 : 1); });
     var c = CROPS.filter(function (x) { return x[0] === crop; })[0] || [crop, crop, crop];
-    return { crop: crop, Crop: c[1], adj: c[2], verb: c[3] || 'is', town: town, out: out, alt: alt, altDm: altDm, all: town.concat(out, alt), ref: ref, other: other, away: away, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
+    return { crop: crop, Crop: c[1], adj: c[2], verb: c[3] || 'is', town: town, out: out, alt: alt, altDm: altDm, all: town.concat(out, alt), ref: ref, other: other, away: away, awayIn: awayIn, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
              med: med && ref && med.label === ref.vs ? med : null, prev: prev };
   }
   /* A bid left off (another futures month) that pays more cash outside town than any drawn: the headline compares on
@@ -213,7 +213,11 @@
       head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + '. No other elevator within ' + NEAR_MI + ' miles posted a ' + p.adj + ' bid' +
         (elsewhere ? ' for ' + dmFull(p.ref.dm, yr) + ' delivery against ' + conMon(p.ref.vs) + ' futures.' : '.');
     } else {
-      var here = p.other.some(function (r) { return r.inTown; }) || p.leftIn;
+      /* a bid in town that is not drawn (another month, a misread, a price paid at another town's plant, or a
+         specialty grade the state table leaves out: cfg.own, the crops the town's own table bids) is still a bid
+         in town (Nov 17 accuracy pass: Princeton IL read "No corn bid in Princeton today" above two Princeton corn bids) */
+      var here = p.other.some(function (r) { return r.inTown; }) || p.leftIn || p.awayIn ||
+        (cfg.own || []).indexOf(p.crop) >= 0;
       head = 'No ' + (here ? 'comparable ' : '') + p.adj + ' bid in ' + place + ' today. The best within ' + NEAR_MI + ' miles is ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
     }
     var n = drawn(p), terms = (p.ref ? dmFull(p.ref.dm, yr) + ' delivery' : '') + (conFull(p.ref && p.ref.vs) ? ', against ' + conFull(p.ref.vs) + ' ' + p.adj + ' futures' : '');
