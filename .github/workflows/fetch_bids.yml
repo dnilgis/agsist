@@ -44,10 +44,19 @@ jobs:
         env:
           FORCE: ${{ github.event.inputs.force }}
           DRY: ${{ github.event.inputs.dry_run }}
+          SNAP: ${{ github.event.inputs.bid_snapshot }}
+          EVENT: ${{ github.event_name }}
         run: |
           python3 - <<'PY'
           import json, os, datetime as dt
+          from zoneinfo import ZoneInfo
           skip = "0"
+          ct = dt.datetime.now(ZoneInfo("America/Chicago"))
+          business = ct.isoweekday() <= 5 and 700 <= ct.hour * 100 + ct.minute < 1800
+          by_hand = "true" in (os.environ.get("FORCE"), os.environ.get("DRY"), os.environ.get("SNAP"))
+          if os.environ.get("EVENT") == "workflow_dispatch" and not business and ct.minute >= 15 and not by_hand:
+              skip = "1"
+              print("off-hours (nights and weekends, Central): only the first dispatch of each hour fetches; this one stops here")
           try:
               f = json.load(open("data/bids.json")).get("fetched", "")
               age = (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(f.replace("Z", "+00:00"))).total_seconds() / 60
