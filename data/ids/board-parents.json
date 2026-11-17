@@ -3,41 +3,31 @@
  "generated": "2026-11-17",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2108,
+  "live_boards": 1901,
   "with_parent": 133,
-  "with_dest": 110,
+  "with_dest": 105,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
    "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 26,
-   "AGP": 23,
-   "Big River": 4,
+   "ADM": 25,
+   "AGP": 22,
+   "Big River": 3,
    "Bunge": 4,
    "CGB": 9,
    "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
    "Marquis": 5,
-   "POET": 11,
+   "POET": 9,
    "Valero": 3,
    "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
  "boards": {
-  "agtegra-agpaberdeen": {
-   "elevId": "e3zc92fsa6",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "agtegra-agpdawson": {
-   "elevId": "e8w3055b00",
-   "dest": "AGP",
-   "dv": "location"
-  },
   "alciviacoop-burlington": {
    "elevId": "etykedhvfk",
    "parent": "ALCIVIA",
@@ -46,11 +36,6 @@
   "archercoopgrain-directshipagpsheldon": {
    "elevId": "erxv00cfb4",
    "dest": "AGP",
-   "dv": "location"
-  },
-  "atkinsongrain-bigriver": {
-   "elevId": "etdfatymxy",
-   "dest": "Big River",
    "dv": "location"
   },
   "balkgrain-adm": {
@@ -903,31 +888,6 @@
    "dest": "Green Plains",
    "dv": "location"
   },
-  "farmerswin-agpmasoncity": {
-   "elevId": "e8jam8a9cw",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerswin-poetfairbank": {
-   "elevId": "ez7yaq8md0",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-poetshellrock": {
-   "elevId": "ek6gke6bgx",
-   "dest": "POET",
-   "dv": "location"
-  },
-  "farmerswin-valero": {
-   "elevId": "ebsf77fnha",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "farmerswin-viserion": {
-   "elevId": "ey734h2jkj",
-   "dest": "Viserion",
-   "dv": "location"
-  },
   "fsgrain-admclintoncorn": {
    "elevId": "ekz8tqgy53",
    "dest": "ADM",
@@ -970,6 +930,11 @@
   },
   "fullcircleag-agpaberdeen": {
    "elevId": "ebn7vhdmrb",
+   "dest": "AGP",
+   "dv": "location"
+  },
+  "hovenequity-agpdirectship": {
+   "elevId": "e5x4qs87tx",
    "dest": "AGP",
    "dv": "location"
   },
@@ -1041,6 +1006,11 @@
   "innovativeag-viserion": {
    "elevId": "ec1etj4w76",
    "dest": "Viserion",
+   "dv": "location"
+  },
+  "jamesvalleygrain-agpaberdeensd": {
+   "elevId": "ex6cpvw8za",
+   "dest": "AGP",
    "dv": "location"
   },
   "lesyoungfarms-cargillon": {
@@ -1173,6 +1143,16 @@
    "parent": "Stephenson Service Company",
    "pv": "change:oc01"
   },
+  "premiercooperative-valerocc": {
+   "elevId": "ehysxd2cqp",
+   "dest": "Valero",
+   "dv": "location"
+  },
+  "premiercooperative-viserionmcgregor": {
+   "elevId": "e67nm42geg",
+   "dest": "Viserion",
+   "dv": "location"
+  },
   "procooperative-agpeaglegrove": {
    "elevId": "ezah1nyyw4",
    "dest": "AGP",
@@ -1216,11 +1196,6 @@
   "seatonvilleelevator-marquis": {
    "elevId": "efaz6et1h4",
    "dest": "Marquis",
-   "dv": "location"
-  },
-  "tamabentoncoop-dsadm": {
-   "elevId": "ehttvjy7g2",
-   "dest": "ADM",
    "dv": "location"
   },
   "tettensgrain-admclinton": {
