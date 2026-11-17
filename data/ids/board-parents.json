@@ -3,29 +3,28 @@
  "generated": "2026-11-17",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2200,
+  "live_boards": 1806,
   "with_parent": 133,
-  "with_dest": 116,
+  "with_dest": 108,
   "parent_by_rule": {
-   "board-page": 1,
    "change": 4,
-   "chs-brand": 128
+   "chs-brand": 129
   },
   "dest_by_brand": {
-   "ADM": 26,
+   "ADM": 24,
    "AGP": 27,
    "Big River": 4,
    "Bunge": 4,
-   "CGB": 9,
+   "CGB": 6,
    "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
-   "Marquis": 5,
+   "Marquis": 3,
    "POET": 11,
    "Valero": 4,
-   "Viserion": 6
+   "Viserion": 5
   },
-  "board_pages_with_other_firms": 1
+  "board_pages_with_other_firms": 0
  },
  "boards": {
   "agtegra-agpaberdeen": {
@@ -37,11 +36,6 @@
    "elevId": "e8w3055b00",
    "dest": "AGP",
    "dv": "location"
-  },
-  "alciviacoop-burlington": {
-   "elevId": "etykedhvfk",
-   "parent": "ALCIVIA",
-   "pv": "board-page:alciviacoop.agricharts.com"
   },
   "archercoopgrain-directshipagpsheldon": {
    "elevId": "erxv00cfb4",
@@ -583,6 +577,11 @@
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
+  "chsprimeland-chsprimeland": {
+   "elevId": "ekj0yxn1y2",
+   "parent": "CHS Inc.",
+   "pv": "chs-brand"
+  },
   "chsriverplains-ashley": {
    "elevId": "e41zb1vf15",
    "parent": "CHS Inc.",
@@ -928,11 +927,6 @@
    "dest": "Viserion",
    "dv": "location"
   },
-  "fsgrain-admclintoncorn": {
-   "elevId": "ekz8tqgy53",
-   "dest": "ADM",
-   "dv": "location"
-  },
   "fsgrain-admmorris": {
    "elevId": "e3ej6cs9hz",
    "dest": "ADM",
@@ -946,26 +940,6 @@
   "fsgrain-admottawa": {
    "elevId": "ezqh7mnh0v",
    "dest": "ADM",
-   "dv": "location"
-  },
-  "fsgrain-cgbalbany": {
-   "elevId": "e9xs287xs7",
-   "dest": "CGB",
-   "dv": "location"
-  },
-  "fsgrain-cgbhennepin": {
-   "elevId": "e11v66p39b",
-   "dest": "CGB",
-   "dv": "location"
-  },
-  "fsgrain-marquis": {
-   "elevId": "eww8kvctrk",
-   "dest": "Marquis",
-   "dv": "location"
-  },
-  "fsgrain-viserionsavanna": {
-   "elevId": "eq4pgrxk46",
-   "dest": "Viserion",
    "dv": "location"
   },
   "fullcircleag-agpaberdeen": {
@@ -1241,21 +1215,6 @@
   "tamabentoncoop-dsadm": {
    "elevId": "ehttvjy7g2",
    "dest": "ADM",
-   "dv": "location"
-  },
-  "tettensgrain-admclinton": {
-   "elevId": "eb1ye7qd7n",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "tettensgrain-cgbhennepin": {
-   "elevId": "etakxatpva",
-   "dest": "CGB",
-   "dv": "location"
-  },
-  "tettensgrain-marquisgrain": {
-   "elevId": "eggxhcvtx3",
-   "dest": "Marquis",
    "dv": "location"
   },
   "wdcoop-agpdlvdaberdeensd": {
