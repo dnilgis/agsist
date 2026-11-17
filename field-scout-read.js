@@ -633,7 +633,7 @@ window.__fsRead = function (FSX) {
     return Promise.all([getJSON('/data/rain/'+st+'.json'), getJSON('/data/rain/daily/'+st+'.json').catch(function(){ return null; })]).then(function(x){
       var R=x[0], D=x[1], f=String(cy.fips), rec=R&&R.counties&&R.counties[f], via=null;
       if(!rec && R && R.none && R.none[f] && R.none[f].near && R.counties[R.none[f].near]){ via=R.none[f].near; rec=R.counties[via]; }
-      // Sig, Nov 17: a gauge with a total but no NOAA normal (a CoCoRaHS gauge, often) still gives the card its total; only the comparison goes
+      // Nov 17: a gauge with a total but no NOAA normal (a CoCoRaHS gauge, often) still gives the card its total; only the comparison goes
       if(!rec || rec.total==null || !rec.station) return null;
       var ll=rec.station.ll, mi=(ll&&isFinite(ll[0]))?_hvsMi(FSX.FIELD.lat, FSX.FIELD.lng, ll[1], ll[0]):null;
       var dd=D&&D.counties&&D.counties[via||f], wk=dd?weekRain(dd.p, +(D.year||R.year)):null;
