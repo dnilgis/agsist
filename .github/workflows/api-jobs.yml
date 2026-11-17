@@ -54,6 +54,7 @@ jobs:
       - name: Selftest
         run: |
           python scripts/api_jobs.py selftest && python scripts/elevsites_job.py selftest
+          python scripts/apijobs_nov17.py selftest && python scripts/daily_stress.py selftest
           cd scripts && python schedules_job.py selftest && python landsrc_job.py selftest
       - name: Get the input and any earlier batch record from raw
         if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -102,7 +103,7 @@ jobs:
         if: ${{ inputs.mode == 'estimate' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/api_jobs.py estimate /tmp/bundle.json
+        run: python scripts/${{ startsWith(inputs.run, 'nov17') && 'apijobs_nov17.py' || 'api_jobs.py' }} estimate /tmp/bundle.json
       - name: Save the estimate to raw
         if: ${{ !cancelled() && inputs.mode == 'estimate' }}
         env:
@@ -112,7 +113,7 @@ jobs:
         if: ${{ inputs.mode == 'submit' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/api_jobs.py submit /tmp/bundle.json
+        run: python scripts/${{ startsWith(inputs.run, 'nov17') && 'apijobs_nov17.py' || 'api_jobs.py' }} submit /tmp/bundle.json
       - name: Save the batch record to raw
         if: ${{ !cancelled() && inputs.mode == 'submit' }}
         env:
@@ -122,7 +123,7 @@ jobs:
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: test -f "apijobs/$APIJOBS_RUN/batch.json" && python scripts/api_jobs.py collect "${{ inputs.wait_minutes }}"
+        run: test -f "apijobs/$APIJOBS_RUN/batch.json" && python scripts/${{ startsWith(inputs.run, 'nov17') && 'apijobs_nov17.py' || 'api_jobs.py' }} collect "${{ inputs.wait_minutes }}"
       - name: Save results to raw
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
         env:
