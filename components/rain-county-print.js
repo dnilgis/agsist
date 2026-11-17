@@ -31,7 +31,7 @@
   /* Nov 13, 2026 (Rain Print sales audit): a click on the Rain Print photo or either button in the county's Rain Print block
      sends one GA4 event, rain_print_click, with from=rain-county and which one. components/gauge-ask.js carries the same
      lines for pages where this file is not loaded; the flag keeps it to one listener. */
-  if (!root.__rcSellTrack) {
+  if (doc && !root.__rcSellTrack) {
     root.__rcSellTrack = 1;
     doc.addEventListener('click', function (e) {
       var a = e.target && e.target.closest ? e.target.closest('.rc-sell [data-from]') : null;
