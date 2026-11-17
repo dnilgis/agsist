@@ -27,6 +27,21 @@
 (function (root) {
   'use strict';
   var doc = root.document;
+
+  /* Nov 13, 2026 (Rain Print sales audit): a click on the Rain Print photo or either button in the county's Rain Print block
+     sends one GA4 event, rain_print_click, with from=rain-county and which one. components/gauge-ask.js carries the same
+     lines for pages where this file is not loaded; the flag keeps it to one listener. */
+  if (!root.__rcSellTrack) {
+    root.__rcSellTrack = 1;
+    doc.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('.rc-sell [data-from]') : null;
+      if (!a) return;
+      try {
+        if (typeof root.gtag === 'function') root.gtag('event', 'rain_print_click', { from: a.getAttribute('data-from'),
+          button: a.classList.contains('rc-sell-img') ? 'photo' : (a.textContent || '').trim().slice(0, 30), page: root.location.pathname });
+      } catch (x) {}
+    });
+  }
   /* mount(fig): the same drawing for any figure carrying these data- fields (2026-10-19:
      /here draws the nearest county station's year with it). It resolves true once the
      print is drawn, false when it is not (the plain chart stays). The county page's own

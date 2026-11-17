@@ -496,6 +496,14 @@
     var KEY = 'agsist_notices';
     var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     var forms = [].slice.call(document.querySelectorAll('.rg-form'));
+    // Where the reader came from (the ask on a rain page links here with ?src=<page kind>&fips=<state or county>):
+    // only a known page kind and a real-looking FIPS are kept; anything else is a plain rain-gauge signup.
+    var ASK = { src: 'rain-gauge', fips: '' };
+    try {
+      var qs = new URLSearchParams(location.search), sv = qs.get('src') || '', fv = qs.get('fips') || '';
+      if (['rain-county', 'rain-state', 'rain-hub', 'rain-print', 'field-scout', 'hail-map'].indexOf(sv) >= 0) ASK.src = sv;
+      if (/^\d{2}(\d{3})?$/.test(fv)) ASK.fips = fv;
+    } catch (e) {}
     var savedZip = '';
     try { var o = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); if (o && /^\d{5}$/.test(o.zip || '')) savedZip = o.zip; } catch (e) {}
     function onList() { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; return !!n['rain-gauge']; } catch (e) { return false; } }
@@ -547,7 +555,10 @@
         var biz = !!$('rg-biz').checked;
         if (!EMAIL_RE.test(email)) { say('That email does not look right. Check it and try again.', false); $('rg-email').focus(); return; }
         if (zip && !/^\d{5}$/.test(zip)) { say('A ZIP is five digits. Fix it or leave it blank.', false); zipIn.focus(); return; }
-        var body = { email: email, topic: 'rain-gauge', source: 'rain-gauge', _gotcha: $('rg-gotcha').value };
+        var body = { email: email, topic: 'rain-gauge', source: ASK.src, _gotcha: $('rg-gotcha').value };
+        if (ASK.fips) body.fips = ASK.fips;
+        if (count) body.n = count;
+        if (biz) body.biz = true;
         if (zip) body.zip = zip;
         var note = noteFor(count, use, biz);
         if (note) body.note = note;
@@ -567,7 +578,7 @@
               done();
               forms.forEach(function (g) { if (g !== f) lock(g, 'You are on the waitlist.'); });
               offerDaily(confirmIn(f), email, zip);
-              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : 'bottom', for_customers: biz ? 'yes' : 'no' }); } catch (e) {}
+              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: ASK.src, form: n === '1' ? 'top' : 'bottom', for_customers: biz ? 'yes' : 'no' }); } catch (e) {}
             } else {
               go.disabled = false;
               say(res.status === 429 && res.error === 'busy today' ? 'Lots of people are signing up today. Try again tomorrow, or write to me through /contact.'
