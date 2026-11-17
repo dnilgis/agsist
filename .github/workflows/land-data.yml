@@ -1,5 +1,8 @@
 name: Land data (parcel services + transfers)
 
+# The task is in the run name so a hand run can be told from a scheduled one.
+run-name: Land data (${{ github.event.inputs.task || github.event_name }})
+
 on:
   workflow_dispatch:
     inputs:
