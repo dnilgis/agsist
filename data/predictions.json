@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-16T20:54:54Z",
+ "updated": "2026-11-17T19:54:54Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -40,107 +40,83 @@
   }
  ],
  "latest": {
-  "date": "2026-11-09",
+  "date": "2026-11-17",
   "calls": [
    {
-    "id": "corn-2026-11-03",
+    "id": "corn-2026-11-10",
     "crop": "corn",
-    "made": "2026-11-09",
-    "exit_day": "2026-12-07",
+    "made": "2026-11-17",
+    "exit_day": "2026-12-14",
     "direction": "down",
     "signal": "trend_down",
-    "cot_pct": 62.2,
-    "cot_report": "2026-11-03",
-    "trend_pct": -4.32,
+    "cot_pct": 57.1,
+    "cot_report": "2026-11-10",
+    "trend_pct": -8.18,
     "contract": "Dec '26",
     "ticker": "ZCZ26.CBT",
-    "entry": 439.25,
-    "target": 439.0,
+    "entry": 446.75,
+    "target": 446.5,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry set to the settled 2026-11-09 close 439.25 (read 438.75 that evening).",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-11-16",
-     "close": 448.5
-    }
+    "graded_on": null
    },
    {
-    "id": "beans-2026-11-03",
+    "id": "beans-2026-11-10",
     "crop": "beans",
-    "made": "2026-11-09",
-    "exit_day": "2026-12-07",
-    "direction": "down",
-    "signal": "trend_down",
-    "cot_pct": 78.2,
-    "cot_report": "2026-11-03",
-    "trend_pct": -2.35,
+    "made": "2026-11-17",
+    "exit_day": "2026-12-14",
+    "direction": "up",
+    "signal": "trend_up",
+    "cot_pct": 73.1,
+    "cot_report": "2026-11-10",
+    "trend_pct": 0.58,
     "contract": "Jan '27",
     "ticker": "ZSF27.CBT",
-    "entry": 1188.25,
-    "target": 1188.0,
+    "entry": 1225.5,
+    "target": 1225.75,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry set to the settled 2026-11-09 close 1188.25 (read 1187.0 that evening).",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-11-16",
-     "close": 1226.75
-    }
+    "graded_on": null
    },
    {
-    "id": "wheat-2026-11-03",
+    "id": "wheat-2026-11-10",
     "crop": "wheat",
-    "made": "2026-11-09",
-    "exit_day": "2026-12-07",
+    "made": "2026-11-17",
+    "exit_day": "2026-12-14",
     "direction": "down",
     "signal": "trend_down",
-    "cot_pct": 51.3,
-    "cot_report": "2026-11-03",
-    "trend_pct": -10.98,
+    "cot_pct": 59.6,
+    "cot_report": "2026-11-10",
+    "trend_pct": -12.23,
     "contract": "Dec '26",
     "ticker": "ZWZ26.CBT",
-    "entry": 588.0,
-    "target": 587.75,
+    "entry": 595.0,
+    "target": 594.75,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry set to the settled 2026-11-09 close 588.0 (read 587.5 that evening).",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-11-16",
-     "close": 587.75
-    }
+    "graded_on": null
    },
    {
-    "id": "kcwheat-2026-11-03",
+    "id": "kcwheat-2026-11-10",
     "crop": "kcwheat",
-    "made": "2026-11-09",
-    "exit_day": "2026-12-07",
+    "made": "2026-11-17",
+    "exit_day": "2026-12-14",
     "direction": "down",
     "signal": "trend_down",
-    "cot_pct": 76.9,
-    "cot_report": "2026-11-03",
-    "trend_pct": -13.49,
+    "cot_pct": 71.2,
+    "cot_report": "2026-11-10",
+    "trend_pct": -17.0,
     "contract": "Dec '26",
     "ticker": "KEZ26.CBT",
-    "entry": 632.5,
-    "target": 632.25,
+    "entry": 633.0,
+    "target": 632.75,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null,
-    "note": "Entry set to the settled 2026-11-09 close 632.5 (read 631.75 that evening).",
-    "entry_final": true,
-    "mark": {
-     "date": "2026-11-16",
-     "close": 619.25
-    }
+    "graded_on": null
    }
   ]
  },
@@ -453,11 +429,11 @@
    }
   },
   "tests_in_family": 0,
-  "open": 12,
+  "open": 16,
   "ungradeable": 0
  },
  "action_label": "BOT CALL",
- "action_text": "Bot call, Nov 9 close, 4 weeks out: corn $4.39¼ down, soybeans $11.88¼ down, Chicago wheat $5.88 down, KC wheat $6.32½ down. Backtest: no edge.",
+ "action_text": "Bot call, Nov 17 close, 4 weeks out: corn $4.46¾ down, soybeans $12.25½ up, Chicago wheat $5.95 down, KC wheat $6.33 down. Backtest: no edge.",
  "calls": [
   {
    "id": "corn-2026-09-29",
@@ -568,8 +544,8 @@
    "note": "Entry set to the settled 2026-10-19 close 467.0 (read 466.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 448.5
+    "date": "2026-11-17",
+    "close": 446.75
    }
   },
   {
@@ -593,8 +569,8 @@
    "note": "Entry set to the settled 2026-10-19 close 1268.75 (read 1268.25 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 1226.75
+    "date": "2026-11-17",
+    "close": 1225.5
    }
   },
   {
@@ -618,8 +594,8 @@
    "note": "Entry set to the settled 2026-10-19 close 655.25 (read 656.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 587.75
+    "date": "2026-11-17",
+    "close": 595.0
    }
   },
   {
@@ -642,8 +618,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 619.25
+    "date": "2026-11-17",
+    "close": 633.0
    }
   },
   {
@@ -666,8 +642,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 448.5
+    "date": "2026-11-17",
+    "close": 446.75
    }
   },
   {
@@ -691,8 +667,8 @@
    "note": "Entry set to the settled 2026-10-26 close 1252.5 (read 1253.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 1226.75
+    "date": "2026-11-17",
+    "close": 1225.5
    }
   },
   {
@@ -716,8 +692,8 @@
    "note": "Entry set to the settled 2026-10-26 close 616.0 (read 615.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 587.75
+    "date": "2026-11-17",
+    "close": 595.0
    }
   },
   {
@@ -741,8 +717,8 @@
    "note": "Entry set to the settled 2026-10-26 close 659.0 (read 658.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 619.25
+    "date": "2026-11-17",
+    "close": 633.0
    }
   },
   {
@@ -766,8 +742,8 @@
    "note": "Entry set to the settled 2026-11-09 close 439.25 (read 438.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 448.5
+    "date": "2026-11-17",
+    "close": 446.75
    }
   },
   {
@@ -791,8 +767,8 @@
    "note": "Entry set to the settled 2026-11-09 close 1188.25 (read 1187.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 1226.75
+    "date": "2026-11-17",
+    "close": 1225.5
    }
   },
   {
@@ -816,8 +792,8 @@
    "note": "Entry set to the settled 2026-11-09 close 588.0 (read 587.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 587.75
+    "date": "2026-11-17",
+    "close": 595.0
    }
   },
   {
@@ -841,9 +817,85 @@
    "note": "Entry set to the settled 2026-11-09 close 632.5 (read 631.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-16",
-    "close": 619.25
+    "date": "2026-11-17",
+    "close": 633.0
    }
+  },
+  {
+   "id": "corn-2026-11-10",
+   "crop": "corn",
+   "made": "2026-11-17",
+   "exit_day": "2026-12-14",
+   "direction": "down",
+   "signal": "trend_down",
+   "cot_pct": 57.1,
+   "cot_report": "2026-11-10",
+   "trend_pct": -8.18,
+   "contract": "Dec '26",
+   "ticker": "ZCZ26.CBT",
+   "entry": 446.75,
+   "target": 446.5,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "id": "beans-2026-11-10",
+   "crop": "beans",
+   "made": "2026-11-17",
+   "exit_day": "2026-12-14",
+   "direction": "up",
+   "signal": "trend_up",
+   "cot_pct": 73.1,
+   "cot_report": "2026-11-10",
+   "trend_pct": 0.58,
+   "contract": "Jan '27",
+   "ticker": "ZSF27.CBT",
+   "entry": 1225.5,
+   "target": 1225.75,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "id": "wheat-2026-11-10",
+   "crop": "wheat",
+   "made": "2026-11-17",
+   "exit_day": "2026-12-14",
+   "direction": "down",
+   "signal": "trend_down",
+   "cot_pct": 59.6,
+   "cot_report": "2026-11-10",
+   "trend_pct": -12.23,
+   "contract": "Dec '26",
+   "ticker": "ZWZ26.CBT",
+   "entry": 595.0,
+   "target": 594.75,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
+  },
+  {
+   "id": "kcwheat-2026-11-10",
+   "crop": "kcwheat",
+   "made": "2026-11-17",
+   "exit_day": "2026-12-14",
+   "direction": "down",
+   "signal": "trend_down",
+   "cot_pct": 71.2,
+   "cot_report": "2026-11-10",
+   "trend_pct": -17.0,
+   "contract": "Dec '26",
+   "ticker": "KEZ26.CBT",
+   "entry": 633.0,
+   "target": 632.75,
+   "status": "open",
+   "exit": null,
+   "outcome": null,
+   "graded_on": null
   }
  ],
  "skipped": [
@@ -906,7 +958,7 @@
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-11-16T20:54:54Z",
+  "computed": "2026-11-17T19:54:54Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "append 2026-11-10",
   "cutoff": "2026-10-02",
