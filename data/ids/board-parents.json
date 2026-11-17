@@ -3,23 +3,24 @@
  "generated": "2026-11-17",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 1432,
-  "with_parent": 129,
-  "with_dest": 37,
+  "live_boards": 1426,
+  "with_parent": 132,
+  "with_dest": 41,
   "parent_by_rule": {
    "board-page": 1,
+   "change": 3,
    "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 7,
+   "ADM": 8,
    "AGP": 11,
    "Big River": 1,
-   "CGB": 4,
-   "Cargill": 5,
-   "Marquis": 2,
+   "CGB": 5,
+   "Cargill": 7,
+   "Marquis": 3,
    "POET": 1,
    "Valero": 2,
-   "Viserion": 4
+   "Viserion": 3
   },
   "board_pages_with_other_firms": 1
  },
@@ -28,6 +29,11 @@
    "elevId": "etykedhvfk",
    "parent": "ALCIVIA",
    "pv": "board-page:alciviacoop.agricharts.com"
+  },
+  "archercoopgrain-directshipagpsheldon": {
+   "elevId": "erxv00cfb4",
+   "dest": "AGP",
+   "dv": "location"
   },
   "balkgrain-adm": {
    "elevId": "e7fnj8a7m3",
@@ -704,14 +710,9 @@
    "dest": "AGP",
    "dv": "location"
   },
-  "farmerswin-agpmasoncity": {
-   "elevId": "e8jam8a9cw",
-   "dest": "AGP",
-   "dv": "location"
-  },
-  "farmerswin-viserion": {
-   "elevId": "ey734h2jkj",
-   "dest": "Viserion",
+  "dunkertoncoop-cargillcedarrapidssoybeans": {
+   "elevId": "e7ph7v3fqt",
+   "dest": "Cargill",
    "dv": "location"
   },
   "fsgrain-cgbalbany": {
@@ -732,6 +733,11 @@
   "fullcircleag-agpaberdeen": {
    "elevId": "ebn7vhdmrb",
    "dest": "AGP",
+   "dv": "location"
+  },
+  "lesyoungfarms-cargillon": {
+   "elevId": "e3gc84e8mw",
+   "dest": "Cargill",
    "dv": "location"
   },
   "linncoop-cargillbeans": {
@@ -794,6 +800,21 @@
    "dest": "Valero",
    "dv": "location"
   },
+  "pcecoops-alliancecommodities": {
+   "elevId": "ev9sdqr7qt",
+   "parent": "Stephenson Service Company",
+   "pv": "change:oc01"
+  },
+  "pcecoops-baileyville": {
+   "elevId": "e6m8m33m3v",
+   "parent": "Stephenson Service Company",
+   "pv": "change:oc01"
+  },
+  "pcecoops-pearlcity": {
+   "elevId": "ef7wxjzrp7",
+   "parent": "Stephenson Service Company",
+   "pv": "change:oc01"
+  },
   "premiercooperative-valerocc": {
    "elevId": "ehysxd2cqp",
    "dest": "Valero",
@@ -846,6 +867,21 @@
   },
   "seatonvilleelevator-marquis": {
    "elevId": "efaz6et1h4",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "tettensgrain-admclinton": {
+   "elevId": "eb1ye7qd7n",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "tettensgrain-cgbhennepin": {
+   "elevId": "etakxatpva",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "tettensgrain-marquisgrain": {
+   "elevId": "eggxhcvtx3",
    "dest": "Marquis",
    "dv": "location"
   },
