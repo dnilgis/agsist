@@ -1,6 +1,10 @@
 {
  "about": "Pointer pages for retired pages: path, where it sends readers, and the date retired.",
  "pointers": {
+  "rain/alabama/bullock-county.html": {
+   "to": "/rain/alabama",
+   "since": "2026-11-17"
+  },
   "rain/alabama/walker-county.html": {
    "to": "/rain/alabama",
    "since": "2026-10-14"
@@ -17,9 +21,9 @@
    "to": "/rain/arkansas",
    "since": "2026-10-14"
   },
-  "rain/arkansas/perry-county.html": {
+  "rain/arkansas/ouachita-county.html": {
    "to": "/rain/arkansas",
-   "since": "2026-11-16"
+   "since": "2026-11-17"
   },
   "rain/arkansas/poinsett-county.html": {
    "to": "/rain/arkansas",
@@ -52,6 +56,10 @@
   "rain/indiana/scott-county.html": {
    "to": "/rain/indiana",
    "since": "2026-11-15"
+  },
+  "rain/iowa/crawford-county.html": {
+   "to": "/rain/iowa",
+   "since": "2026-11-17"
   },
   "rain/iowa/kossuth-county.html": {
    "to": "/rain/iowa",
@@ -89,10 +97,6 @@
    "to": "/rain/michigan",
    "since": "2026-11-12"
   },
-  "rain/minnesota/jackson-county.html": {
-   "to": "/rain/minnesota",
-   "since": "2026-11-12"
-  },
   "rain/minnesota/watonwan-county.html": {
    "to": "/rain/minnesota",
    "since": "2026-11-14"
@@ -105,20 +109,12 @@
    "to": "/rain/mississippi",
    "since": "2026-11-01"
   },
-  "rain/mississippi/jefferson-county.html": {
-   "to": "/rain/mississippi",
-   "since": "2026-11-13"
-  },
   "rain/mississippi/pontotoc-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-11-16"
   },
   "rain/mississippi/tishomingo-county.html": {
    "to": "/rain/mississippi",
-   "since": "2026-11-16"
-  },
-  "rain/missouri/bollinger-county.html": {
-   "to": "/rain/missouri",
    "since": "2026-11-16"
   },
   "rain/missouri/clark-county.html": {
@@ -153,10 +149,6 @@
    "to": "/rain/nebraska",
    "since": "2026-11-15"
   },
-  "rain/nevada/churchill-county.html": {
-   "to": "/rain/nevada",
-   "since": "2026-11-12"
-  },
   "rain/north-carolina/northampton-county.html": {
    "to": "/rain/north-carolina",
    "since": "2026-11-12"
@@ -169,15 +161,7 @@
    "to": "/rain/north-dakota",
    "since": "2026-11-14"
   },
-  "rain/north-dakota/foster-county.html": {
-   "to": "/rain/north-dakota",
-   "since": "2026-11-14"
-  },
   "rain/north-dakota/grant-county.html": {
-   "to": "/rain/north-dakota",
-   "since": "2026-11-12"
-  },
-  "rain/north-dakota/oliver-county.html": {
    "to": "/rain/north-dakota",
    "since": "2026-11-12"
   },
@@ -248,6 +232,10 @@
   "rain/texas/sutton-county.html": {
    "to": "/rain/texas",
    "since": "2026-11-12"
+  },
+  "rain/virginia/dickenson-county.html": {
+   "to": "/rain/virginia",
+   "since": "2026-11-17"
   },
   "rain/virginia/richmond-county.html": {
    "to": "/rain/virginia",
