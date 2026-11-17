@@ -5,6 +5,10 @@
    "to": "/rain/alabama",
    "since": "2026-10-14"
   },
+  "rain/arkansas/arkansas-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-11-15"
+  },
   "rain/arkansas/bradley-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -12,6 +16,14 @@
   "rain/arkansas/desha-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
+  },
+  "rain/arkansas/perry-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-11-16"
+  },
+  "rain/arkansas/poinsett-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-11-16"
   },
   "rain/california/sutter-county.html": {
    "to": "/rain/california",
@@ -37,9 +49,21 @@
    "to": "/rain/indiana",
    "since": "2026-11-08"
   },
+  "rain/indiana/scott-county.html": {
+   "to": "/rain/indiana",
+   "since": "2026-11-15"
+  },
+  "rain/iowa/kossuth-county.html": {
+   "to": "/rain/iowa",
+   "since": "2026-11-16"
+  },
   "rain/iowa/worth-county.html": {
    "to": "/rain/iowa",
    "since": "2026-11-12"
+  },
+  "rain/kansas/jewell-county.html": {
+   "to": "/rain/kansas",
+   "since": "2026-11-16"
   },
   "rain/kentucky/carter-county.html": {
    "to": "/rain/kentucky",
@@ -85,6 +109,18 @@
    "to": "/rain/mississippi",
    "since": "2026-11-13"
   },
+  "rain/mississippi/pontotoc-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-11-16"
+  },
+  "rain/mississippi/tishomingo-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-11-16"
+  },
+  "rain/missouri/bollinger-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-11-16"
+  },
   "rain/missouri/clark-county.html": {
    "to": "/rain/missouri",
    "since": "2026-11-12"
@@ -92,6 +128,10 @@
   "rain/missouri/dallas-county.html": {
    "to": "/rain/missouri",
    "since": "2026-10-14"
+  },
+  "rain/missouri/holt-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-11-16"
   },
   "rain/missouri/ozark-county.html": {
    "to": "/rain/missouri",
@@ -108,6 +148,10 @@
   "rain/montana/wheatland-county.html": {
    "to": "/rain/montana",
    "since": "2026-11-14"
+  },
+  "rain/nebraska/perkins-county.html": {
+   "to": "/rain/nebraska",
+   "since": "2026-11-15"
   },
   "rain/nevada/churchill-county.html": {
    "to": "/rain/nevada",
@@ -136,6 +180,10 @@
   "rain/north-dakota/oliver-county.html": {
    "to": "/rain/north-dakota",
    "since": "2026-11-12"
+  },
+  "rain/north-dakota/sheridan-county.html": {
+   "to": "/rain/north-dakota",
+   "since": "2026-11-16"
   },
   "rain/oklahoma/harper-county.html": {
    "to": "/rain/oklahoma",
@@ -169,10 +217,6 @@
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
   },
-  "rain/tennessee/overton-county.html": {
-   "to": "/rain/tennessee",
-   "since": "2026-10-19"
-  },
   "rain/texas/concho-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -189,13 +233,13 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
-  "rain/texas/donley-county.html": {
-   "to": "/rain/texas",
-   "since": "2026-11-12"
-  },
   "rain/texas/franklin-county.html": {
    "to": "/rain/texas",
    "since": "2026-11-12"
+  },
+  "rain/texas/hartley-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-16"
   },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
