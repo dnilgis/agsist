@@ -1,6 +1,6 @@
 {
   "headline": "Corn ends the week at $4.56; crude up 3.8% to $103",
-  "lead": "Corn ended the week at **$4.56**, down 4½ cents, and soybeans edged up to $12.56½. Grains barely moved, but crude gained 3.8% to $103.27. That is the number that reaches your fuel and fertilizer bills next season, not the corn price.",
+  "lead": "Corn ended the week at **$4.56**, down 4½ cents, and soybeans edged up to $12.56½. Grains barely moved, but crude gained 3.8% to $103.27. This issue did not check diesel or fertilizer prices. (Corrected Nov 17, see the note below.)",
   "teaser": "Grains were quiet Friday while crude gained 3.8% to $103.27.",
   "one_number": {
     "value": "2.8",
@@ -489,6 +489,10 @@
     {
       "date": "2026-10-27",
       "text": "The Number said the 2.8 soybean to corn ratio \"favors beans when acres are planned for next spring.\" That ratio uses November 2026 soybeans and December 2026 corn, this year's crop, so it is not a planting comparison for next year."
+    },
+    {
+      "date": "2026-11-17",
+      "text": "The lead said crude's gain \"is the number that reaches your fuel and fertilizer bills next season, not the corn price.\" The Oct 27 correction took that claim out of the energy section, but it stayed in the lead. The lead now says only what was checked."
     }
   ]
 }

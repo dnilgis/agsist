@@ -93,8 +93,8 @@
       "desc": "Weekly Export Sales: soybean sales below 300,000 MT keep November $11.48 under pressure. Above 500,000 MT, China's purchase commitment starts showing up in the data."
     },
     {
-      "time": "Saturday, July 11, approximately 11:00 AM CT",
-      "desc": "July WASDE: USDA's first survey-based yield estimate for corn and soybeans. This is the report that either validates or rewrites the post-acreage narrative. Corn yield below 177 bu/acre adds weather premium; above 181 restores selling pressure."
+      "time": "Friday, July 10, approximately 11:00 AM CT",
+      "desc": "July WASDE: USDA's first survey-based yield estimate for corn and soybeans. This is the report that either validates or rewrites the post-acreage narrative. Corn yield below 177 bu/acre adds weather premium; above 181 restores selling pressure. (Corrected Nov 17, see the note below.)"
     },
     {
       "time": "Week of July 7",
@@ -239,5 +239,11 @@
       }
     ],
     "dry_run": false
-  }
+  },
+  "corrections": [
+    {
+      "date": "2026-11-17",
+      "text": "The watch list put the July WASDE report at Saturday, July 11. USDA released it Friday, July 10, at 11:00 AM CT."
+    }
+  ]
 }
