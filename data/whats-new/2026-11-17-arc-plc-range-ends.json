@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-17-arc-plc-range-ends",
+ "date": "2026-11-17",
+ "title": "ARC/PLC range ends match the benchmark",
+ "line": "County ARC/PLC cards now round the 60% and 100% PLC yields once, from the benchmark, so 60% of 54.12 bu reads 32 bu.",
+ "link": "/arc-plc",
+ "rank": 3
+}
