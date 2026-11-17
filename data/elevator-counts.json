@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-11-17T18:18:25Z",
+ "generated": "2026-11-17T20:21:23Z",
  "note": "Elevators with a current bid on a cash bids page, and boards read on the latest coverage pass.",
  "bids": {
-  "elevators": 1039,
-  "towns": 878
+  "elevators": 1427,
+  "towns": 1199
  },
  "states": {
   "AL": {
@@ -16,40 +16,40 @@
    "towns": 12
   },
   "CO": {
-   "elevators": 22,
-   "towns": 17
+   "elevators": 23,
+   "towns": 18
   },
   "FL": {
    "elevators": 1,
    "towns": 1
   },
   "GA": {
-   "elevators": 1,
-   "towns": 1
+   "elevators": 2,
+   "towns": 2
   },
   "IA": {
-   "elevators": 223,
-   "towns": 182
+   "elevators": 323,
+   "towns": 259
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 106,
-   "towns": 83
+   "elevators": 163,
+   "towns": 121
   },
   "IN": {
-   "elevators": 60,
-   "towns": 46
+   "elevators": 79,
+   "towns": 62
   },
   "KS": {
-   "elevators": 71,
-   "towns": 51
+   "elevators": 117,
+   "towns": 90
   },
   "KY": {
-   "elevators": 10,
-   "towns": 10
+   "elevators": 11,
+   "towns": 11
   },
   "LA": {
    "elevators": 1,
@@ -60,36 +60,36 @@
    "towns": 25
   },
   "MN": {
-   "elevators": 103,
-   "towns": 91
+   "elevators": 125,
+   "towns": 112
   },
   "MO": {
-   "elevators": 28,
-   "towns": 24
+   "elevators": 35,
+   "towns": 31
   },
   "MT": {
    "elevators": 9,
    "towns": 9
   },
   "ND": {
-   "elevators": 52,
-   "towns": 48
+   "elevators": 62,
+   "towns": 58
   },
   "NE": {
-   "elevators": 140,
-   "towns": 117
+   "elevators": 182,
+   "towns": 152
   },
   "NY": {
    "elevators": 1,
    "towns": 1
   },
   "OH": {
-   "elevators": 44,
-   "towns": 37
+   "elevators": 82,
+   "towns": 74
   },
   "OK": {
-   "elevators": 6,
-   "towns": 6
+   "elevators": 10,
+   "towns": 10
   },
   "OR": {
    "elevators": 1,
@@ -100,24 +100,28 @@
    "towns": 1
   },
   "SD": {
-   "elevators": 33,
-   "towns": 31
+   "elevators": 60,
+   "towns": 57
   },
   "TN": {
    "elevators": 3,
    "towns": 3
+  },
+  "TX": {
+   "elevators": 5,
+   "towns": 2
   },
   "WA": {
    "elevators": 7,
    "towns": 6
   },
   "WI": {
-   "elevators": 76,
-   "towns": 71
+   "elevators": 82,
+   "towns": 76
   },
   "WY": {
-   "elevators": 1,
-   "towns": 1
+   "elevators": 3,
+   "towns": 2
   }
  },
  "coverage": {
