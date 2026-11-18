@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-18-cash-bid-index-schedule",
+   "date": "2026-11-18",
+   "title": "Cash Bid Index ready for its December edition",
+   "line": "The first-of-the-month build now picks last month on its own when no month is set.",
+   "link": "/cash-bid-index"
+  },
+  {
    "id": "2026-11-18-accuracy-fixes",
    "date": "2026-11-18",
    "title": "Corrections from an accuracy check",
