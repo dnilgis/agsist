@@ -1,6 +1,6 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-11-17T11:48:25Z",
+ "generated": "2026-11-18T12:03:25Z",
  "label": "Only on AGSIST",
  "note": "From the elevator boards AGSIST reads.",
  "facts": [
@@ -8,60 +8,60 @@
    "id": "cash_change_corn",
    "crop": "corn",
    "kind": "cash_change",
-   "sentence": "On Monday, Nov 16, 1,794 of the 1,807 elevators AGSIST reads with the same delivery month both days posted a higher cash corn bid than Friday, 11 a lower one; 254 changed their basis, 27 weaker and 227 stronger.",
-   "key": "1,794 of the 1,807 elevators",
-   "detail": "2 unchanged; median change 3¢ higher. Biggest state move: Illinois, 3¼¢ higher (227 elevators).",
-   "value": 3.0,
+   "sentence": "On Tuesday, Nov 17, 1,592 of the 1,691 elevators AGSIST reads with the same delivery month both days posted a lower cash corn bid than Monday, 87 a higher one; 170 changed their basis, 28 weaker and 142 stronger.",
+   "key": "1,592 of the 1,691 elevators",
+   "detail": "12 unchanged; median change 3½¢ lower. Biggest state move: Nebraska, 4¢ lower (239 elevators).",
+   "value": -3.5,
    "unit": "cents per bushel, median change in cash bid",
-   "comparison": "last posted bid on 2026-11-16 vs 2026-11-13, same board, crop and delivery period",
-   "n": 1807,
-   "down": 11,
-   "up": 1794,
-   "unchanged": 2,
-   "basis_changed": 254,
-   "basis_weaker": 27,
-   "basis_stronger": 227,
+   "comparison": "last posted bid on 2026-11-17 vs 2026-11-16, same board, crop and delivery period",
+   "n": 1691,
+   "down": 1592,
+   "up": 87,
+   "unchanged": 12,
+   "basis_changed": 170,
+   "basis_weaker": 28,
+   "basis_stronger": 142,
    "outliers": 0,
    "states": [
     {
-     "state": "IL",
-     "name": "Illinois",
-     "n": 227,
-     "median_cents": 3.25
+     "state": "NE",
+     "name": "Nebraska",
+     "n": 239,
+     "median_cents": -4.0
+    },
+    {
+     "state": "KS",
+     "name": "Kansas",
+     "n": 234,
+     "median_cents": -4.0
+    },
+    {
+     "state": "WI",
+     "name": "Wisconsin",
+     "n": 88,
+     "median_cents": -4.0
     },
     {
      "state": "OH",
      "name": "Ohio",
-     "n": 74,
-     "median_cents": 3.25
+     "n": 69,
+     "median_cents": -4.0
     },
     {
-     "state": "IN",
-     "name": "Indiana",
-     "n": 68,
-     "median_cents": 3.25
+     "state": "IL",
+     "name": "Illinois",
+     "n": 188,
+     "median_cents": -3.5
     },
     {
      "state": "OK",
      "name": "Oklahoma",
      "n": 46,
-     "median_cents": 3.25
-    },
-    {
-     "state": "TX",
-     "name": "Texas",
-     "n": 17,
-     "median_cents": 3.25
-    },
-    {
-     "state": "MI",
-     "name": "Michigan",
-     "n": 24,
-     "median_cents": 3.125
+     "median_cents": -3.5
     }
    ],
-   "as_of": "2026-11-16",
-   "from": "2026-11-13",
+   "as_of": "2026-11-17",
+   "from": "2026-11-16",
    "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
@@ -70,60 +70,60 @@
    "id": "cash_change_soybeans",
    "crop": "soybeans",
    "kind": "cash_change",
-   "sentence": "On Monday, Nov 16, 1,453 of the 1,571 elevators AGSIST reads with the same delivery month both days posted a lower cash soybean bid than Friday, 98 a higher one; 171 changed their basis, 17 weaker and 154 stronger.",
-   "key": "1,453 of the 1,571 elevators",
-   "detail": "20 unchanged; median change 3¾¢ lower. Biggest state move: Nebraska, 4¢ lower (194 elevators).",
-   "value": -3.75,
+   "sentence": "On Tuesday, Nov 17, 1,384 of the 1,486 elevators AGSIST reads with the same delivery month both days posted a lower cash soybean bid than Monday, 76 a higher one; 106 changed their basis, 14 weaker and 92 stronger.",
+   "key": "1,384 of the 1,486 elevators",
+   "detail": "26 unchanged; median change 3¢ lower. Biggest state move: Iowa, 3¢ lower (315 elevators).",
+   "value": -3.0,
    "unit": "cents per bushel, median change in cash bid",
-   "comparison": "last posted bid on 2026-11-16 vs 2026-11-13, same board, crop and delivery period",
-   "n": 1571,
-   "down": 1453,
-   "up": 98,
-   "unchanged": 20,
-   "basis_changed": 171,
-   "basis_weaker": 17,
-   "basis_stronger": 154,
+   "comparison": "last posted bid on 2026-11-17 vs 2026-11-16, same board, crop and delivery period",
+   "n": 1486,
+   "down": 1384,
+   "up": 76,
+   "unchanged": 26,
+   "basis_changed": 106,
+   "basis_weaker": 14,
+   "basis_stronger": 92,
    "outliers": 0,
    "states": [
     {
-     "state": "NE",
-     "name": "Nebraska",
-     "n": 194,
-     "median_cents": -4.0
-    },
-    {
-     "state": "WI",
-     "name": "Wisconsin",
-     "n": 91,
-     "median_cents": -4.0
-    },
-    {
-     "state": "MO",
-     "name": "Missouri",
-     "n": 24,
-     "median_cents": -4.0
+     "state": "IA",
+     "name": "Iowa",
+     "n": 315,
+     "median_cents": -3.0
     },
     {
      "state": "KS",
      "name": "Kansas",
      "n": 200,
-     "median_cents": -3.875
+     "median_cents": -3.0
     },
     {
-     "state": "IN",
-     "name": "Indiana",
-     "n": 58,
-     "median_cents": -3.875
+     "state": "NE",
+     "name": "Nebraska",
+     "n": 193,
+     "median_cents": -3.0
     },
     {
-     "state": "OK",
-     "name": "Oklahoma",
-     "n": 45,
-     "median_cents": -3.75
+     "state": "IL",
+     "name": "Illinois",
+     "n": 160,
+     "median_cents": -3.0
+    },
+    {
+     "state": "MN",
+     "name": "Minnesota",
+     "n": 143,
+     "median_cents": -3.0
+    },
+    {
+     "state": "SD",
+     "name": "South Dakota",
+     "n": 79,
+     "median_cents": -3.0
     }
    ],
-   "as_of": "2026-11-16",
-   "from": "2026-11-13",
+   "as_of": "2026-11-17",
+   "from": "2026-11-16",
    "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
@@ -132,16 +132,16 @@
    "id": "over_futures_corn",
    "crop": "corn",
    "kind": "over_futures",
-   "sentence": "Of 1,813 elevators AGSIST reads with a fresh corn bid on Nov 17, 217 were paying over futures, most of them in Kansas (34).",
-   "key": "217 were paying over futures",
-   "detail": "1,559 under futures, 37 even. Each board against the futures month it names.",
-   "value": 217,
+   "sentence": "Of 1,693 elevators AGSIST reads with a fresh corn bid on Nov 18, 209 were paying over futures, most of them in Kansas (34).",
+   "key": "209 were paying over futures",
+   "detail": "1,452 under futures, 32 even. Each board against the futures month it names.",
+   "value": 209,
    "unit": "elevators bidding over futures",
    "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
-   "n": 1813,
-   "over": 217,
-   "under": 1559,
-   "even": 37,
+   "n": 1693,
+   "over": 209,
+   "under": 1452,
+   "even": 32,
    "states": [
     {
      "state": "KS",
@@ -151,7 +151,7 @@
     {
      "state": "IN",
      "name": "Indiana",
-     "n": 32
+     "n": 31
     },
     {
      "state": "CO",
@@ -161,15 +161,15 @@
     {
      "state": "NE",
      "name": "Nebraska",
-     "n": 23
+     "n": 22
     },
     {
      "state": "IL",
      "name": "Illinois",
-     "n": 21
+     "n": 17
     }
    ],
-   "as_of": "2026-11-17",
+   "as_of": "2026-11-18",
    "source": "AGSIST elevator network, live board basis (merged-index.json)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"

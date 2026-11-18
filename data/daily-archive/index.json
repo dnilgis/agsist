@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-18",
+      "date_display": "Wednesday, November 18, 2026",
+      "headline": "December lean hogs fell $2.25 Tuesday to $53.10",
+      "teaser": "Hog futures fell 4.1% Tuesday; corn and beans are lower overnight, and Illinois yields came in short.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-18",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-17",
       "date_display": "Tuesday, November 17, 2026",
       "headline": "Corn harvest reaches 88%; the five-year average is 92%",
@@ -2844,5 +2855,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-17T11:49:00.670802+00:00"
+  "updated": "2026-11-18T12:03:47.142571+00:00"
 }

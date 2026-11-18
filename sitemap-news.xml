@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- AGSIST Daily issues from the last two days, for Google News. Written by scripts/generate_daily.py on every publish; an empty list is normal on a quiet weekend. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url><loc>https://agsist.com/daily/2026-11-18</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-11-18T06:03:47-06:00</news:publication_date><news:title>December lean hogs fell $2.25 Tuesday to $53.10</news:title></news:news></url>
   <url><loc>https://agsist.com/daily/2026-11-17</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-11-17T05:48:54-06:00</news:publication_date><news:title>Corn harvest reaches 88%; the five-year average is 92%</news:title></news:news></url>
-  <url><loc>https://agsist.com/daily/2026-11-16</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-11-16T05:49:15-06:00</news:publication_date><news:title>Crude slips on supply glut fears; corn flat at $4.46 overnight</news:title></news:news></url>
-  <url><loc>https://agsist.com/daily/2026-11-15</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-11-15T05:55:58-06:00</news:publication_date><news:title>USDA reports Monday and Thursday open a week of mild rain</news:title></news:news></url>
 </urlset>
