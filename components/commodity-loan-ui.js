@@ -137,7 +137,7 @@
       $('lo-pct').value = '';
       st.pctFrom = '';
       src.textContent = '';
-      empty.textContent = 'The CCC rate loads after the first FSA read. Until then, type the rate your county FSA office gives you.';
+      empty.textContent = 'The CCC rate loads after the first FSA read; the current monthly rate is not loaded yet. FSA posts it each month on its Current FSA loan interest rates page (fsa.usda.gov), and your county FSA office has it. Until then, type that rate here.';
     }
     render();
   }
