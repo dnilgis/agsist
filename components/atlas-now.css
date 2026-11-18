@@ -1,7 +1,8 @@
 /* atlas-now.css: the Farmland Atlas opening view (components/atlas-now.js). One scale per kind of number, each a
-   single-hue lightness ramp (colorblind-safe), light and dark. Gaps are hatched with a plain label in the key. */
+   single-hue lightness ramp (colorblind-safe), light and dark. Drought is one ordered ramp in both themes, pale D0 to
+   strong D4, the same five colours as the share pictures (scripts/atlas_pictures.py DROUGHT_DK). Gaps are hatched with a plain label in the key. */
 .an{--an-gap-bg:#f6f7f5;--an-gap-line:#c3c9c3;--an-none:#e4e7e3;--an-stroke:var(--bg,#f6f7f5);--an-state:#4a524e;--an-hl:#161a18;
-  --an-drought-k0:#f3cfae;--an-drought-k1:#eca577;--an-drought-k2:#de7b4c;--an-drought-k3:#c4512e;--an-drought-k4:#7c2817;
+  --an-drought-k0:#f3d98c;--an-drought-k1:#f2ad5b;--an-drought-k2:#e57b3a;--an-drought-k3:#cc4a2c;--an-drought-k4:#9b1d33;
   --an-money-k0:#efe3c2;--an-money-k1:#d9bf7f;--an-money-k2:#b8933e;--an-money-k3:#8a6514;--an-money-k4:#523b0a;
   --an-basis-k0:#d3ebe6;--an-basis-k1:#93cdc2;--an-basis-k2:#4fa597;--an-basis-k3:#227a6d;--an-basis-k4:#0f4d45;
   --an-count-k0:#d3ebe6;--an-count-k1:#93cdc2;--an-count-k2:#4fa597;--an-count-k3:#227a6d;--an-count-k4:#0f4d45;
@@ -12,7 +13,7 @@
   --an-green-k0:#e2efdc;--an-green-k1:#b5d6a7;--an-green-k2:#7fb26c;--an-green-k3:#4d8a3c;--an-green-k4:#2a5c20;
   --an-accent:#8a6514;margin:0 0 1.6rem}
 :root:not([data-theme="light"]) .an{--an-gap-bg:#0f1314;--an-gap-line:#3a4446;--an-none:#1f2627;--an-stroke:var(--bg,#0a0c0d);--an-state:#9aa49f;--an-hl:#ffffff;
-  --an-drought-k0:#544433;--an-drought-k1:#8c5a2c;--an-drought-k2:#be6630;--an-drought-k3:#f2724a;--an-drought-k4:#ffbfa8;
+  --an-drought-k0:#f3d98c;--an-drought-k1:#f2ad5b;--an-drought-k2:#e57b3a;--an-drought-k3:#cc4a2c;--an-drought-k4:#9b1d33;
   --an-money-k0:#3d3420;--an-money-k1:#6e5a2a;--an-money-k2:#a07f36;--an-money-k3:#cfa548;--an-money-k4:#f3d27c;
   --an-basis-k0:#183b37;--an-basis-k1:#1f5c54;--an-basis-k2:#2d8577;--an-basis-k3:#55b0a0;--an-basis-k4:#9fdccf;
   --an-count-k0:#183b37;--an-count-k1:#1f5c54;--an-count-k2:#2d8577;--an-count-k3:#55b0a0;--an-count-k4:#9fdccf;
@@ -106,3 +107,5 @@
 .an-mbtn[aria-pressed="true"]{border-color:var(--an-accent);box-shadow:inset 0 0 0 1px var(--an-accent)}
 .an-mbtn:hover,.an-mopen:hover{border-color:var(--an-accent)}
 #an-panel:empty{display:none}
+.an-read .fa-cc-v{display:inline;font-weight:700}.an-read .fa-cc-u{font-size:.85em;font-weight:500}.an-read .fa-cc-r{display:block;color:var(--text-dim);font-size:.9rem;margin:.15rem 0}
+.an-read .fa-cc-print{margin-right:.9rem}.an-read .fa-thin{color:var(--text)}
