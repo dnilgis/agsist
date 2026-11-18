@@ -28,7 +28,15 @@
    week's question from data/cot-questions.json (scripts/cot_questions.py: fund positions only, never prices); once the
    new report is in cot.json the row is titled "Read this week's funds report" and its line answers ("Funds sold corn
    for 7 weeks in a row."): the question file's answer when it is for that report, else the corn run from cot-history.
-   A question file for another week is never shown. */
+   A question file for another week is never shown.
+
+   DEADLINES (Nov 18): an FSA signup deadline or a crop insurance sales closing date 14 days out or less takes a row,
+   so it is in the hero in time, not 4,000 px down /usda-calendar. They come from the same /usda-calendar.ics: its
+   all-day rows marked (FSA) or (RMA) whose name says deadline or sales closing (the RMA rows are built from RMA's
+   own data by scripts/build_usda_ics.mjs, the PRF date from data/prf/meta.json). The line under it is the row's own
+   "Miss it ..." sentence where the calendar has one (the site's ARC/PLC copy), else its first sentence; no
+   consequence is added that the calendar does not state. At most two; the nearest one is the first row unless a
+   release falls today, which keeps the first row. The row stays through its last day (Eastern). */
 (function (root) {
   'use strict';
   var DAY = 864e5;
@@ -51,6 +59,7 @@
     [/^Milk Production$/, null, '/milk-prices']
   ];
   var COT_NAME = 'Funds report (COT)';
+  var DL_DAYS = 14;
 
   /* ---- dates (ISO yyyy-mm-dd, UTC arithmetic so the weekday never depends on the reader's zone) ---- */
   function iso(d) { return d.toISOString().slice(0, 10); }
@@ -134,6 +143,30 @@
       }
     });
     return out;
+  }
+  /* the all-day deadline rows of the calendar file: {key:'deadline', src, name, day, href, x} */
+  function unesc(s) { return String(s).replace(/\\n/g, '\n').replace(/\\([,;\\])/g, '$1'); }
+  function deadlineEvents(text) {
+    var out = [];
+    String(text || '').replace(/\r/g, '').replace(/\n[ \t]/g, '').split('BEGIN:VEVENT').slice(1).forEach(function (b) {
+      var s = /\nSUMMARY:([^\n]*)/.exec(b), d = /\nDTSTART;VALUE=DATE:(\d{4})(\d{2})(\d{2})/.exec(b);
+      if (!s || !d) return;
+      var m = /^(.*?) \((FSA|RMA)\)$/.exec(unesc(s[1].trim()));
+      if (!m || !/deadline|sales closing/i.test(m[1])) return;
+      var de = /\nDESCRIPTION:([^\n]*)/.exec(b), u = /\nURL:https:\/\/agsist\.com(\/[^\n]*)/.exec(b);
+      var sent = (de ? unesc(de[1]) : '').split('\n')[0].match(/[^.]+\./g) || [];
+      var miss = sent.filter(function (x) { return /^\s*Miss /.test(x); })[0];
+      out.push({ key: 'deadline', src: m[2], name: m[1], day: d[1] + '-' + d[2] + '-' + d[3], href: u ? u[1] : '/usda-calendar',
+        x: String(miss || sent[0] || '').trim() });
+    });
+    return out;
+  }
+  /* the deadlines to show at nowMs: today through 14 days out (Eastern), nearest first, FSA before RMA on a tie */
+  function deadlines(dl, nowMs) {
+    var today = etParts(nowMs).day, end = add(today, DL_DAYS);
+    return (dl || []).filter(function (e) { return e && e.day >= today && e.day <= end; })
+      .sort(function (a, b) { return a.day < b.day ? -1 : a.day > b.day ? 1 : (a.src === 'FSA' ? 0 : 1) - (b.src === 'FSA' ? 0 : 1); })
+      .slice(0, 2);
   }
   function cpEvents(nowMs) {
     var out = [], today = etParts(nowMs).day, mon = add(today, -((wd(today) + 6) % 7));
@@ -258,9 +291,24 @@
     }
     return { state: 'out', x: '' };
   }
+  /* the rows in order: deadlines first, unless the first release is today (Eastern); three at most */
+  function order(events, D, nowMs) {
+    var rel = pick(events, nowMs), dl = deadlines(D && D.dl, nowMs), today = etParts(nowMs).day;
+    if (!dl.length) return rel;
+    return (rel.length && rel[0].day === today ? rel.slice(0, 1).concat(dl, rel.slice(1)) : dl.concat(rel)).slice(0, 3);
+  }
+  function dlWhen(e, nowMs) {
+    var today = etParts(nowMs).day;
+    return 'Deadline ' + (e.day === today ? 'today' : e.day === add(today, 1) ? 'tomorrow' : short(e.day));
+  }
   /* {rows:[{t, w, cd, x, href, state}], say}: what each row prints at nowMs */
   function words(events, D, nowMs) {
-    return pick(events, nowMs).map(function (r, i) {
+    return order(events, D, nowMs).map(function (r, i) {
+      if (r.key === 'deadline') {
+        var n = Math.round((dt(r.day) - dt(etParts(nowMs).day)) / DAY);
+        return { t: r.name, href: r.href, state: 'next', w: dlWhen(r, nowMs), cd: i === 0 ? (n === 0 ? 'last day' : 'in ' + n + ' day' + (n === 1 ? '' : 's')) : '',
+          x: r.x, ask: false, dl: true };
+      }
       var o = { t: r.name, href: r.href, state: 'next', cd: '', x: '', ask: i === 0 && r.key === 'cot' };
       if (r.out) {
         var ol = outLine(r, D || {});
@@ -282,7 +330,7 @@
       '<span class="hap-cd">' + (o.cd ? ' &middot; ' + e(o.cd) : '') + '</span></span><span class="hap-x"' + (o.x ? ' title="' + e(o.x) + '"' : '') + '>' + e(o.x) + '</span></a>' +
       (o.ask ? ASK : '') + '</li>';
     return '<li class="hap-i" data-state="' + o.state + '"><a class="hap-a" href="' + e(o.href) + '" data-track="happening">' +
-      '<span class="hap-w">' + e(o.w) + '</span><span class="hap-t">' + e(o.t) + (o.x ? ': ' + e(o.x) : '') + '</span></a></li>';
+      '<span class="hap-w">' + e(o.w) + '</span><span class="hap-t"' + (o.dl && o.x ? ' title="' + e(o.t + ': ' + o.x) + '"' : '') + '>' + e(o.t) + (o.x ? ': ' + e(o.x) : '') + '</span></a></li>';
   }
   /* the same markup as scripts/seed_static.py HAP_ASK */
   var ASK = '<a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a>';
@@ -295,6 +343,7 @@
 
   /* ---- the page ---- */
   var api = { cotRelease: cotRelease, cotEvents: cotEvents, icsEvents: icsEvents, cpEvents: cpEvents, pick: pick, words: words,
+    deadlineEvents: deadlineEvents, deadlines: deadlines,
     streak: streak, cotRows: cotRows, listHtml: listHtml, etMs: etMs, holiday: holiday };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root || !root.document) return;
@@ -314,6 +363,7 @@
     var list = document.getElementById('hap-list'), now = Date.now();
     if (!list) return;
     ev = cotEvents(D.cot, now).concat(icsEvents(D.ics), cpEvents(now));
+    if (!D.dl) D.dl = deadlineEvents(D.ics);
     var rows = words(ev, D, now);
     if (!rows.length) return;                              /* nothing read: the baked rows stay */
     /* a change of state (a new row, out, updating) redraws and is spoken once; the minute only changes the countdown */

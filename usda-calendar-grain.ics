@@ -5,9 +5,9 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:USDA Grain Reports - AGSIST
 X-WR-CALDESC:WASDE\, Crop Production\, Grain Stocks\, Prospective Plantings
-  and Acreage\, the Outlook Forum and FSA ARC/PLC signup dates. No livestoc
- k\, dairy\, international or weekly reports. Built from the list on agsist
- .com/usda-calendar
+  and Acreage\, the Outlook Forum\, FSA ARC/PLC signup dates and crop insur
+ ance sales closing dates. No livestock\, dairy\, international or weekly r
+ eports. Built from the list on agsist.com/usda-calendar
 X-PUBLISHED-TTL:PT48H
 REFRESH-INTERVAL;VALUE=DURATION:PT48H
 BEGIN:VEVENT
@@ -382,6 +382,19 @@ DESCRIPTION:Free University of Minnesota Extension webinar\, "2026 Farm Bil
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
+UID:2026-12-01-prf-sales-closing-2027-crop-year@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART;VALUE=DATE:20261201
+SUMMARY:PRF sales closing\, 2027 crop year (RMA)
+DESCRIPTION:Last day to sign up for 2027 PRF insurance or change a policy. 
+ PRF is the Pasture\, Rangeland\, Forage policy for grazing land and hay gr
+ ound. The acreage report is due the same day. Dates from RMA's actuarial d
+ ata.\nPRF calculator: https://agsist.com/prf\nWhat the market priced in: h
+ ttps://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/da
+ ily?utm_source=ics
+URL:https://agsist.com/prf
+END:VEVENT
+BEGIN:VEVENT
 UID:2026-12-10-crop-production@agsist.com
 DTSTAMP:20261027T120000Z
 DTSTART:20261210T170000Z
@@ -408,14 +421,14 @@ UID:2026-12-11-arc-plc-2026-signup-deadline@agsist.com
 DTSTAMP:20261027T120000Z
 DTSTART;VALUE=DATE:20261211
 SUMMARY:2026 ARC/PLC signup deadline (FSA)
-DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. Changing y
- our election is optional\, but every farm needs a signed 2026 enrollment c
- ontract. Miss Dec 11 and the farm keeps its 2025 choice but gets no 2026 p
- ayment.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\n
- Source: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announce
- s-2026-2027-enrollment-key-price-revenue-safety-net\nWhat the market price
- d in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist
- .com/daily?utm_source=ics
+DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. Miss it an
+ d the farm gets no 2026 payment. It keeps its 2025 choice. Changing your e
+ lection is optional\, but every farm needs a signed 2026 enrollment contra
+ ct.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSour
+ ce: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-20
+ 26-2027-enrollment-key-price-revenue-safety-net\nWhat the market priced in
+ : https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com
+ /daily?utm_source=ics
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
@@ -463,6 +476,21 @@ DESCRIPTION:Last day to sign 2027 ARC or PLC at your FSA office.\nCompare A
  st.com/usda-calendar. Free morning Daily: https://agsist.com/daily?utm_sou
  rce=ics
 URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-15-corn-and-soybean-crop-insurance-sales-closing@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART;VALUE=DATE:20270315
+SUMMARY:Corn and soybean crop insurance sales closing (RMA)
+DESCRIPTION:Last day to buy or change 2027 corn and soybean crop insurance 
+ in 29 states\, the Corn Belt included. States: CO\, DE\, IA\, IL\, IN\, KS
+ \, KY\, MA\, MD\, ME\, MI\, MN\, MO\, MT\, ND\, NE\, NJ\, NY\, OH\, OK\, O
+ R\, PA\, SD\, TN\, VA\, VT\, WA\, WI\, WV. Other states close on other dat
+ es: check your state's sales closing date with your insurer. Dates from RM
+ A's Commodity Exchange Price Provisions.\nWhat the market priced in: https
+ ://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/daily?
+ utm_source=ics
+URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
 UID:2027-04-09-wasde-report@agsist.com
