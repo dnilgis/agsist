@@ -17,6 +17,7 @@
       '/watch-subscribe': 'farmland watch', '/elevator-watch-subscribe': 'elevator alert', '/price-watch-subscribe': 'price alert' };
     var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
     var QUEUED = "Got it. You'll be added within a day.";
+    var KEEP_DAYS = 7, KEEP_TRIES = 8;
     var real = window.fetch;
     function routeOf(u) {
       try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] && /^(www\.)?agsist\.com$/.test(location.hostname) ? x.pathname : ''; }
@@ -49,7 +50,20 @@
         setTimeout(function () { if (bar.parentNode) bar.remove(); }, 15000);
       } catch (e) {}
     }
-    function queue(route, init, orig, err) {
+    function keep(url, route, f) {
+      try {
+        if (!f.email) return;
+        var a = JSON.parse(localStorage.getItem('agsist-outbox') || '[]'), t = Date.now();
+        a = (Array.isArray(a) ? a : []).filter(function (x) {
+          return !(x && x.kind === 'signup' && x.route === route && x.body && x.body.email === f.email);
+        });
+        a.push({ id: t.toString(36) + Math.random().toString(36).slice(2, 8), t: t, url: new URL(String(url), location.href).href, method: 'POST',
+          label: 'your ' + LISTS[route] + ' signup', kind: 'signup', route: route, okIf: 'json', body: f,
+          expires: t + KEEP_DAYS * 86400000, max: KEEP_TRIES, n: 0 });
+        localStorage.setItem('agsist-outbox', JSON.stringify(a.slice(-30)));
+      } catch (e) { }
+    }
+    function queue(route, init, orig, err, url) {
       var f = fields(init && init.body), fd = new FormData(), extra = {};
       var list = LISTS[route] + (f.topic ? ' (' + String(f.topic).slice(0, 60) + ')' : '');
       Object.keys(f).forEach(function (k) {
@@ -63,11 +77,12 @@
       fd.append('source', String(f.source || f.src || '').slice(0, 60));
       fd.append('page', location.pathname);
       if (Object.keys(extra).length) fd.append('details', JSON.stringify(extra).slice(0, 1500));
-      fd.append('note', 'Not on the list yet and not confirmed: add by hand when the worker is back; mail nothing before that.');
+      fd.append('note', 'Not on the list yet and not confirmed. The reader\'s browser retries this signup with the worker on their next visits for 7 days, and the worker mails the confirmation if it goes through: check the list before adding by hand; mail nothing before that.');
       return real.call(window, FORMSPREE, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
         .then(function (r) { return r.ok ? r.json().catch(function () { return {}; }) : null; })
         .then(function (j) {
           if (!j || j.ok === false || j.errors) throw new Error('not sent');
+          keep(url, route, f);
           window.dispatchEvent(new CustomEvent('agsist:signup-queued', { detail: { list: LISTS[route] } }));
           say();
           return new Response(JSON.stringify({ ok: true, queued: true, message: QUEUED }),
@@ -75,10 +90,10 @@
         })
         .catch(function () { if (orig) return orig; throw err || new Error('not sent'); });
     }
-    window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS };
+    window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS, realFetch: real };
     try {
       if (!window.AgOutbox && localStorage.getItem('agsist-outbox') && !document.querySelector('script[src^="/components/outbox.js"]')) {
-        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=4'; ob.defer = true;
+        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=5'; ob.defer = true;
         (document.head || document.documentElement).appendChild(ob);
       }
     } catch (e) { }
@@ -89,17 +104,17 @@
       if (!route) return real.apply(this, arguments);
       return real.apply(this, arguments).then(function (r) {
         if (r.status === 403 || r.status === 404 || r.status === 405 || r.status >= 500) {
-          return r.clone().json().then(function () { return r; }, function () { return queue(route, init, r); });
+          return r.clone().json().then(function () { return r; }, function () { return queue(route, init, r, null, url); });
         }
         return r;
-      }, function (err) { return queue(route, init, null, err); });
+      }, function (err) { return queue(route, init, null, err, url); });
     };
   })();
   var BASE = (function () {
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '108';
+  var CV = '109';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
