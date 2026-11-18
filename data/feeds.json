@@ -2832,7 +2832,6 @@
   {
    "path": "data/us-states.geo.json",
    "pages": [
-    "farmland-atlas.html",
     "hail-map.html",
     "list-your-elevator.html"
    ],
