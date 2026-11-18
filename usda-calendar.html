@@ -119,6 +119,7 @@
     .tag-wasde   {background:none;color:var(--text-dim);border:1px solid var(--border-2);}
     .tag-intl    {background:none;color:var(--text-dim);border:1px solid var(--border-2);}
     .tag-fsa     {background:none;color:var(--text-dim);border:1px solid var(--border-2);}
+    .tag-rma     {background:none;color:var(--text-dim);border:1px solid var(--border-2);}
     .tag-croprog {background:none;color:var(--text-dim);border:1px solid var(--border-2);}
     .tag-plantings{background:none;color:var(--text-dim);border:1px solid var(--border-2);}
     .tag-stocks  {background:none;color:var(--text-dim);border:1px solid var(--border-2);}
@@ -762,7 +763,7 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
 
       <aside class="ya" data-your-state="calendar" data-v="1" hidden></aside><script src="/components/your-state.js?v=2" defer></script>
 
-      <p class="cal-related">ARC/PLC signup at FSA: the 2027 signup opens Nov 2, 2026; the 2026 signup closes Dec 11, 2026; the 2027 signup closes Mar 15, 2027. <a href="/arc-plc">Compare ARC and PLC for your county</a> &middot; <a href="https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net" rel="noopener">FSA notice, Sept 15, 2026</a></p>
+      <p class="cal-related"><!--SEED:cal:arcplc-->ARC/PLC signup at FSA: the 2026 signup closes Dec 11, 2026; the 2027 signup runs Nov 2, 2026 to Mar 15, 2027.<!--/SEED--> <a href="/arc-plc">Compare ARC and PLC for your county</a> &middot; <a href="https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net" rel="noopener">FSA notice, Sept 15, 2026</a></p>
       <div class="cal-related">Plan around the data: <a href="/daily">Daily Briefing</a> &middot; <a href="/markets">Live Markets</a> &middot; <a href="/fast-facts">Fast Facts</a> &middot; <a href="/cash-bids">Cash Bids</a></div>
 
       <details class="fold" id="about-reports">
@@ -1174,11 +1175,17 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
     {date:'2026-12-23',name:'Cold Storage',type:'livestock',time:'3:00 PM ET',desc:'Month-end stocks of beef, pork, poultry, butter and cheese in cold storage, NASS',link:'/milk-prices',linkText:'Milk prices'},
     /* FSA signup dates, not market reports: USDA notice of Sept 15, 2026 (FSA_SRC). */
     {date:'2026-11-02',name:'2027 ARC/PLC signup opens',type:'fsa',time:'All Day',desc:'Signup opens at your county FSA (Farm Service Agency) office for the 2027 crop year. This is where you choose ARC or PLC, the two programs that can pay when crop prices or revenue fall. It runs to Mar 15, 2027.',link:'/arc-plc'},
-    {date:'2026-12-11',name:'2026 ARC/PLC signup deadline',type:'fsa',time:'All Day',desc:'Last day to sign 2026 ARC or PLC at your FSA office. Changing your election is optional, but every farm needs a signed 2026 enrollment contract. Miss Dec 11 and the farm keeps its 2025 choice but gets no 2026 payment.',link:'/arc-plc'},
+    {date:'2026-12-11',name:'2026 ARC/PLC signup deadline',type:'fsa',time:'All Day',desc:'Last day to sign 2026 ARC or PLC at your FSA office. Miss it and the farm gets no 2026 payment. It keeps its 2025 choice. Changing your election is optional, but every farm needs a signed 2026 enrollment contract.',link:'/arc-plc'},
     /* Not USDA: University of Minnesota Extension's event page "2026 Farm Bill decision", read Nov 2, 2026. The page
        says 11 a.m. to 12:30 p.m. CDT; Nov 17 is standard time, so it is printed as Central (noon ET). */
     {date:'2026-11-17',name:'ARC/PLC decision webinar (UMN Extension)',type:'fsa',time:'12:00 PM ET',desc:'Free University of Minnesota Extension webinar, "2026 Farm Bill decision": choosing ARC or PLC for 2026. 11 a.m. to 12:30 p.m. Central. Register on the UMN Extension event page to get the link.',link:'/arc-plc'},
     {date:'2027-03-15',name:'2027 ARC/PLC signup deadline',type:'fsa',time:'All Day',desc:'Last day to sign 2027 ARC or PLC at your FSA office.',link:'/arc-plc'},
+    /* Crop insurance sales closing dates, not market reports. Written by scripts/build_usda_ics.mjs from RMA data
+       (data/prf/meta.json, data/rma-discovery.json); edit the data or the builder, not these rows. */
+    /*rma:rows*/
+    {date:'2026-12-01',name:'PRF sales closing, 2027 crop year',type:'rma',time:'All Day',desc:'Last day to sign up for 2027 PRF insurance or change a policy. PRF is the Pasture, Rangeland, Forage policy for grazing land and hay ground. The acreage report is due the same day. Dates from RMA\'s actuarial data.',link:'/prf',linkText:'PRF calculator'},
+    {date:'2027-03-15',name:'Corn and soybean crop insurance sales closing',type:'rma',time:'All Day',desc:'Last day to buy or change 2027 corn and soybean crop insurance in 29 states, the Corn Belt included: CO, DE, IA, IL, IN, KS, KY, MA, MD, ME, MI, MN, MO, MT, ND, NE, NJ, NY, OH, OK, OR, PA, SD, TN, VA, VT, WA, WI, WV. Other states close on other dates: check your state\'s sales closing date with your insurer. Dates from RMA\'s Commodity Exchange Price Provisions.'},
+    /*/rma:rows*/
   ];
   const FSA_SRC='https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net';
   /* the "Your area" box (components/ys-calendar.js) reads the same list, weekly rows included */
@@ -1278,6 +1285,7 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
       outlook:  {level:'low',     score:2,label:'LOW-MOD'},
       intl:     {level:'high',    score:4,label:'HIGH'},
       fsa:      {level:'low',     score:1,label:'LOW'},
+      rma:      {level:'low',     score:1,label:'LOW'},
       livestock:{level:'low',     score:2,label:'LOW-MOD'},
       census:   {level:'low',     score:1,label:'LOW'},
     };
@@ -1300,7 +1308,7 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
      hides the livestock and dairy reports; Livestock & dairy keeps those plus
      WASDE (it carries the meat and milk tables), the Outlook Forum and FSA
      signups. The next-report card at the top still counts every report. */
-  var GROW_STOCK={livestock:1,wasde:1,outlook:1,fsa:1};
+  var GROW_STOCK={livestock:1,wasde:1,outlook:1,fsa:1,rma:1};
   var grow='all';
   try{var _g=localStorage.getItem('agsist-cal-grow');if(_g==='grain'||_g==='stock')grow=_g;}catch(e){}
   function growOk(r){return grow==='all'||(grow==='grain'?r.type!=='livestock':!!GROW_STOCK[r.type]);}
@@ -1329,7 +1337,7 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
        is not next. */
     const nowMs=Date.now();
     for(const r of sorted){
-      if(r.type==='fsa'||r.type==='intl')continue;
+      if(r.type==='fsa'||r.type==='rma'||r.type==='intl')continue;
       const d=new Date(r.date+'T12:00:00');if(d<today)continue;
       const st=isoStart(r);
       if(/T/.test(st)&&new Date(st).getTime()<=nowMs)continue;
@@ -1362,17 +1370,22 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
       var nm=document.getElementById('next-num'); if(nm)nm.textContent='-';
     }
 
-    const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International',fsa:'FSA Signup',livestock:'Livestock'};
+    const tagLabels={wasde:'WASDE',croprog:'Crop Progress',plantings:'Plantings',stocks:'Grain Stocks',census:'Census',supply:'Crop Production',outlook:'Outlook',export:'Export Sales',intl:'International',fsa:'FSA Signup',rma:'Crop Insurance',livestock:'Livestock'};
     const JAN_KEY='2027-01', JAN_PENDING=!REPORTS.some(r=>r.date.slice(0,7)===JAN_KEY)&&['all','wasde','supply','stocks'].indexOf(activeFilter)>=0;
     /* 2026-10-27: the 2027 WASDE dates are posted, the 2027 NASS dates are not. January then shows its
        WASDE row and says the Crop Production summary and Grain Stocks dates are still to come. */
     const JAN_NASS_PENDING=!REPORTS.some(r=>r.date.slice(0,7)===JAN_KEY&&(r.type==='supply'||r.type==='stocks'))&&['all','supply','stocks'].indexOf(activeFilter)>=0;
+    /* Nov 18: March 2027 the same way. Its WASDE, FSA and insurance rows are listed; Prospective Plantings and
+       the March 1 Grain Stocks wait for NASS's 2027 calendar and are not guessed. */
+    const MAR_KEY='2027-03', MAR_NASS_PENDING=!REPORTS.some(r=>r.date.slice(0,7)===MAR_KEY&&(r.type==='plantings'||r.type==='stocks'))&&['all','plantings','stocks'].indexOf(activeFilter)>=0;
+    const MAR_NASS_NOTE='<p class="cal-jan-note" id="cal-mar-note">USDA NASS has not posted its 2027 report dates yet. Prospective Plantings and the March 1 Grain Stocks come out at the end of March; their dates go here once NASS posts them.</p>';
     let html='';
     /* JANUARY 2027 IS NOT POSTED YET (checked 2026-10-15). Say so in its place
        rather than jump from December to March, and never guess the dates. */
     const monthKeys=Object.keys(groups);
     const JAN_NASS_NOTE='<p class="cal-jan-note" id="cal-jan-note">USDA NASS has not posted its 2027 report dates yet. The Crop Production annual summary and the Dec 1 Grain Stocks also come out in January; their dates go here once NASS posts them.</p>';
     if((JAN_PENDING||JAN_NASS_PENDING)&&monthKeys.indexOf(JAN_KEY)<0)monthKeys.push(JAN_KEY);
+    if(MAR_NASS_PENDING&&monthKeys.indexOf(MAR_KEY)<0)monthKeys.push(MAR_KEY);
     monthKeys.sort().forEach(key=>{
       const[yr,mo]=key.split('-').map(Number);
       if(key===JAN_KEY&&!groups[key]&&!JAN_PENDING){
@@ -1382,6 +1395,10 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
       if(key===JAN_KEY&&!groups[key]){
         html+=`<div class="cal-month" data-month="${key}"><div class="cal-month-head"><span class="cal-mname">${MONTHS[mo-1]} ${yr}</span><span class="cal-mcount">DATES NOT POSTED</span></div>`
           +'<p class="cal-jan-note" id="cal-jan-note">USDA has not posted its 2027 report dates yet. January is usually the biggest report day of the winter: the January WASDE, the annual Crop Production summary and the Dec 1 Grain Stocks. The dates go here once USDA posts them.</p></div>';
+        return;
+      }
+      if(key===MAR_KEY&&!groups[key]){
+        html+=`<div class="cal-month" data-month="${key}"><div class="cal-month-head"><span class="cal-mname">${MONTHS[mo-1]} ${yr}</span><span class="cal-mcount">DATES NOT POSTED</span></div>`+MAR_NASS_NOTE+'</div>';
         return;
       }
       const reps=groups[key].sort((a,b)=>a.date.localeCompare(b.date));
@@ -1418,12 +1435,14 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
     </div>
     ${showDesc?`<div class="cal-desc">${r.desc}</div>`:''}
     ${r.link&&r.type==='fsa'?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})">ARC or PLC calculator &rarr;</a> <a href="${FSA_SRC}" rel="noopener">FSA notice</a></div>`:''}
+    ${r.link&&r.type==='rma'?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})">${r.linkText||'More'} &rarr;</a></div>`:''}
     ${r.link&&r.type==='livestock'?`<div class="cal-links"><a href="${r.link}" onclick="calEvent('calendar_link',{to:'${r.link}',report:'${r.name}'})">${r.linkText} &rarr;</a></div>`:''}
     ${r.type==='wasde'?`<div class="cal-links"><a href="#priced-in" onclick="calEvent('calendar_link',{to:'/whats-priced-in',report:'${r.name}'})">What's priced in &rarr;</a></div>`:''}
   </div>
 </div>`;
       });
       if(key===JAN_KEY&&JAN_NASS_PENDING)html+=JAN_NASS_NOTE;
+      if(key===MAR_KEY&&MAR_NASS_PENDING)html+=MAR_NASS_NOTE;
       html+='</div>';
     });
     if(!html){html='<div class="cal-empty">No upcoming '+(activeFilter==='all'?'reports':((tagLabels[activeFilter]||activeFilter)+' reports'))+'. <button type="button" class="cal-empty-btn" onclick="document.getElementById(\'toggle-past\').click()">Show past reports</button></div>';}
@@ -1459,7 +1478,7 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
     function up(r){var d=new Date(r.date+'T12:00:00');if(d<today)return false;var st=isoStart(r);return !(/T/.test(st)&&new Date(st).getTime()<=nowMs);}
     function day(r){var d=new Date(r.date+'T12:00:00');return SH[d.getDay()]+' '+MO[d.getMonth()]+' '+d.getDate();}
     function li(r){return '<li data-type="'+r.type+'"><span class="cal-n5-d">'+day(r)+'</span><span class="cal-n5-n">'+r.name+'<span class="cal-n5-t">'+r.time+'</span></span></li>';}
-    var pool=REPORTS.filter(function(r){return r.type!=='export'&&r.type!=='croprog'&&(r.type!=='fsa'||/deadline|signup/i.test(r.name))&&growOk(r)&&up(r);}).sort(function(a,b){return a.date.localeCompare(b.date);});
+    var pool=REPORTS.filter(function(r){return r.type!=='export'&&r.type!=='croprog'&&(r.type!=='fsa'||/deadline|signup/i.test(r.name))&&(r.type!=='rma'||/sales closing/i.test(r.name))&&growOk(r)&&up(r);}).sort(function(a,b){return a.date.localeCompare(b.date);});
     var lead=pool.filter(function(r){return grow==='stock'?r.type==='livestock':!!N5_CROP[r.type];});
     var rest=pool.filter(function(r){return lead.indexOf(r)<0;});
     var rows=lead.concat(rest).slice(0,5),nLead=Math.min(lead.length,5);
