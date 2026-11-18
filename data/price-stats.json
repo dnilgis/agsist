@@ -1,14 +1,14 @@
 {
-  "updated": "2026-11-17T21:54:40Z",
+  "updated": "2026-11-18T22:01:43Z",
   "corn": {
-    "pct": 38,
-    "cur": 4.4675,
+    "pct": 26,
+    "cur": 4.35,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.6438,
     "n": 262,
     "years": 5,
-    "read": "At the 38th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 26th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       5.7075,
       5.8675,
@@ -297,7 +297,7 @@
   },
   "soybean": {
     "pct": 52,
-    "cur": 12.255,
+    "cur": 12.16,
     "lo": 9.3875,
     "hi": 17.455,
     "median": 12.075,
@@ -591,14 +591,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "wheat": {
-    "pct": 46,
-    "cur": 5.95,
+    "pct": 36,
+    "cur": 5.7125,
     "lo": 4.985,
     "hi": 13.48,
     "median": 6.0388,
     "n": 262,
     "years": 5,
-    "read": "At the 46th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 36th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       8.23,
       8.255,
@@ -886,14 +886,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "cattle": {
-    "pct": 73,
-    "cur": 218.7,
+    "pct": 75,
+    "cur": 219.9,
     "lo": 131.575,
     "hi": 257.45,
     "median": 184.15,
     "n": 262,
     "years": 5,
-    "read": "At the 73rd percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 75th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
     "hist": [
       133.525,
       138.1,
@@ -1182,7 +1182,7 @@
   },
   "feeders": {
     "pct": 78,
-    "cur": 335.5,
+    "cur": 336.85,
     "lo": 153.125,
     "hi": 375.5,
     "median": 249.4,
