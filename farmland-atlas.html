@@ -841,6 +841,11 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 </script>
 <script>/* the tenure fold loads its own file only when opened (this page is already over 200 KB) */
 (function(){var d=document.getElementById('fa-tenure');if(!d)return;
+/* one request for tenure.json however late the map's layers arrive: the fold and the rented layer (atlas-layers.js)
+   share this one promise, whichever asks first; a failed or timed-out read (10 s) clears it so a second open tries again */
+var P=null;window.AgTenureFile=function(){if(!P){var c=window.AbortController?new AbortController():null,t=setTimeout(function(){if(c)c.abort();},10000);
+P=fetch('/data/tenure/tenure.json',c?{cache:'no-cache',signal:c.signal}:{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(j){clearTimeout(t);if(!j)P=null;return j;});}return P;};
+if(!window.AgTenureData)window.AgTenureData=window.AgTenureFile;
 function go(){if(!d.open||d.getAttribute('data-on'))return;d.setAttribute('data-on','1');var box=document.getElementById('fa-tenure-box');
 var s=document.createElement('script');s.src='/components/atlas-tenure.js?v=4';s.onload=function(){window.AgTenure.mount(box).then(function(){if(!box.querySelector('table'))d.removeAttribute('data-on');});};
 s.onerror=function(){box.textContent='The tenure section did not load. Close and open it to try again.';d.removeAttribute('data-on');};document.head.appendChild(s);}
