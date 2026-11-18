@@ -758,7 +758,7 @@
      "why": "Grids, intervals and payments in plain terms"
     },
     {
-     "href": "/rain#drought",
+     "href": "/farmland-atlas#l=drought",
      "text": "Drought monitor",
      "why": "This week by county"
     },
@@ -1039,7 +1039,7 @@
      "why": "What calves and cattle brought at local auctions"
     },
     {
-     "href": "/rain#drought",
+     "href": "/farmland-atlas#l=drought",
      "text": "Drought monitor",
      "why": "This week by county"
     },
@@ -1251,7 +1251,7 @@
      "why": "What calves and cattle brought at local auctions"
     },
     {
-     "href": "/rain#drought",
+     "href": "/farmland-atlas#l=drought",
      "text": "Drought monitor",
      "why": "This week by county"
     }
