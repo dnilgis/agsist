@@ -10,7 +10,11 @@
    the counts in each key, the bin edges of the folded layers (quantiles of their own values), and the old map's reader
    tools restored under the map (Nov 18, batch 2 review): the ranked lists (Highest and Lowest in the US or the state,
    farm counties only), a state's own scale when zoomed (or the US scale), the decade map's reference line, and the
-   counts beside each; plus My county, the full county record jump, and the sources and vintages with the build day. */
+   counts beside each; plus My county, the full county record jump, and the sources and vintages with the build day.
+   Batch 2, PR B adds eleven maps to now.json (soybean basis, CRP ending this fiscal year, frost-free days, corn GDD,
+   land rented, rent change, tile, cover crops, cattle, solar and wind proposed, foreign-held acres, hail and wind days,
+   claims from heat and drought). Their column holds the figure or a gap code; "zero" names a 0 drawn grey, "kn" a gap
+   drawn grey, "cover" an unread state drawn as an outline. */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
