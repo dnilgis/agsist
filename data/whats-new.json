@@ -9,6 +9,13 @@
    "link": "/farmland-atlas#l=drought"
   },
   {
+   "id": "2026-11-18-farmland-atlas-key-counts",
+   "date": "2026-11-18",
+   "title": "Atlas key counts the state you open",
+   "line": "Open a state on the Farmland Atlas and the key counts that state's counties. The picture button names the map it saves.",
+   "link": "/farmland-atlas"
+  },
+  {
    "id": "2026-11-18-sponsor-numbers-same-day",
    "date": "2026-11-18",
    "title": "Sponsor numbers follow late corrections",
