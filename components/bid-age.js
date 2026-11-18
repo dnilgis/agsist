@@ -123,7 +123,7 @@
       if (it) items.push(it); else missing.push(CROP[root]);
     });
     var word = function (it) {
-      return it.name + (it.front ? ' (front month)' : '') + (it.net == null ? ' trading' : it.net === 0 ? ' unchanged' : (it.net < 0 ? ' down ' : ' up ') + cents(it.net));
+      return it.name + (it.front ? ' (front month)' : '') + (it.net == null ? ' trading' : it.net === 0 ? ' unchanged' : (it.net < 0 ? ' down\u00a0' : ' up\u00a0') + cents(it.net));
     };
     var tm = function (t) { return hm(ct(new Date(t)).min); }, text = '';
     if (items.length) {
