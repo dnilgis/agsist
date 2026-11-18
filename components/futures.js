@@ -2230,7 +2230,7 @@ loadPrices();
 // TRADINGVIEW: fully decoupled from prices, loads independently, degrades gracefully
 document.addEventListener('DOMContentLoaded',function(){
   // S7: seasonal chart from /data/price-stats.json (stashed by the 5-yr range code as window.__agsistSeasS,
-  // seasDraw above). No clean data: the fold stays hidden; nothing invented.
+  // seasDraw above). No clean data: the chart stays hidden and the fold says so; nothing invented.
   function renderSeasonal(){
     var s=window.__agsistSeasS;
     var wrap=document.getElementById('seas-wrap');
@@ -2240,7 +2240,7 @@ document.addEventListener('DOMContentLoaded',function(){
     var capEl=document.getElementById('seas-caption');
     if(capEl)capEl.textContent=seasCap(s)+CROP.seasSuffix;
     wrap.style.display='block';
-    var fold=document.getElementById('fold-seas');if(fold)fold.hidden=false;
+    var none=document.getElementById('seas-none');if(none)none.hidden=true;
   }
   window.addEventListener('agsist-seas',renderSeasonal);
   renderSeasonal();

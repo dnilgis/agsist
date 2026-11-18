@@ -544,9 +544,10 @@ details.fold[hidden]{display:none}
   </details>
 
   <!-- ░░ seasonal price tendency ░░ -->
-  <details class="fold" id="fold-seas" data-wide-open hidden>
+  <details class="fold" id="fold-seas" data-wide-open>
     <summary class="fold-sum"><span class="fold-t">Prices by month, recent years</span><span class="fold-d">What one contract did by month in recent years</span></summary>
     <div class="fold-body">
+    <p class="seas-caption" id="seas-none">Not shown yet: this chart is built from one contract per calendar year, and those weekly closes are not in yet.</p>
     <section class="seas-wrap" id="seas-wrap" aria-label="What recent years did: live cattle by month" style="display:none">
       <div class="seas-head">
         <span class="seas-title">What recent years did</span>
@@ -598,7 +599,7 @@ details.fold[hidden]{display:none}
       var cap=document.getElementById('seas-caption');
       if(cap)cap.textContent=seasCap(c);
       wrap.style.display='';
-      var fold=document.getElementById('fold-seas');if(fold)fold.hidden=false;
+      var none=document.getElementById('seas-none');if(none)none.hidden=true;
     }).catch(function(){});
   })();
   </script>
