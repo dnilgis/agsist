@@ -93,9 +93,9 @@ function basisKey(cs,n){
 }
 // ARC-CO minus PLC: five bins around even, orange where PLC has the higher estimate, blue where ARC-CO has
 function gapKey(cs,n,l){
-  var kd=keyDp(cs,l), cut0=cut; function cut(v,l){ return cut0(v,l,kd); }
-  return [['k0','PLC higher by more than '+cut(cs[0],l),n.k0],['k1','PLC higher by '+cut(cs[1],l)+' to '+cut(cs[0],l),n.k1],
-    ['k2','Within '+cut(cs[2],l)+' either way',n.k2],['k3','ARC-CO higher by '+cut(cs[2],l)+' to '+cut(cs[3],l),n.k3],['k4','ARC-CO higher by '+cut(cs[3],l)+' or more',n.k4]];
+  var kd=keyDp(cs,l); function c(v){ return cut(v,l,kd); }
+  return [['k0','PLC higher by more than '+c(cs[0]),n.k0],['k1','PLC higher by '+c(cs[1])+' to '+c(cs[0]),n.k1],
+    ['k2','Within '+c(cs[2])+' either way',n.k2],['k3','ARC-CO higher by '+c(cs[2])+' to '+c(cs[3]),n.k3],['k4','ARC-CO higher by '+c(cs[3])+' or more',n.k4]];
 }
 var DRN=['Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'];
 // partial layers: a state we do not read is an empty outline (ko), not a few hundred hatched counties
