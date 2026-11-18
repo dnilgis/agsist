@@ -10,14 +10,25 @@
    the counts in each key, the bin edges of the folded layers (quantiles of their own values), and the old map's reader
    tools restored under the map (Nov 18, batch 2 review): the ranked lists (Highest and Lowest in the US or the state,
    farm counties only), a state's own scale when zoomed (or the US scale), the decade map's reference line, and the
-   counts beside each; plus My county, the full county record jump, and the sources and vintages with the build day. */
+   counts beside each; plus My county, the full county record jump, and the sources and vintages with the build day.
+   Batch 2, PR B adds fourteen maps to now.json (soybean basis, CRP ending this fiscal year, frost-free days, corn GDD,
+   land rented, rent change, tile, cover crops, cattle, solar and wind proposed, foreign-held acres, hail and wind days,
+   claims from heat and drought). Their column holds the figure or a gap code; "zero" names a 0 drawn grey, "kn" a gap
+   drawn grey, "cover" an unread state drawn as an outline.
+   Batch 2, PR C2 adds ARC-CO for soybeans and wheat under Program; a layer's "dp" sets the decimal places it prints.
+   It also adds ARC-CO minus PLC for corn (unit "gd", scale "arcplc"): orange where PLC has the higher estimate, blue
+   where ARC-CO has, grey within a dollar; the key names each side (gapKey). */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
 var D='/farmland-atlas/data/', NOW=null, GEO=null, IDX={}, ROWS={}, COL={}, LAY={}, PATHS={}, HAS={}, STATE_OF={};
 var S={q:'',m:'',s:'',c:'',sc:'st'}, OLD=null, OLDP=null, OL={}, DEC=null, DEEP=null;
 // the old map's layers that are the same figure as a headline map open that map
-var SAME={val:'value',rent:'rent',sob_cost:'cost',sob_10:'lr',yield_worst:'worst',water_irr:'irr',dr_share:'dweeks',heat_recent:'heat'};
+var SAME={val:'value',rent:'rent',sob_cost:'cost',sob_10:'lr',yield_worst:'worst',water_irr:'irr',dr_share:'dweeks',heat_recent:'heat',
+  fr_ffd:'ffd',fr_gdd:'gdd',st_hail:'hail',st_wind:'wind',rent_change:'rentchg',loss_hd:'claims',pr_tile:'tile',pr_cover:'cover',afida:'foreign'};
+// an old layer that is the same figure as a new map but keeps its own link (#l=ten_rent prints the national rented
+// line beside its legend): it opens as before, and is left out of "More maps" so the figure is listed once
+var HIDE={ten_rent:1};
 // the old map's layer groups, each under one question
 var QOF={'Night heat':'weather','Drought':'weather','Rain and heat':'weather','Season':'weather','Storms':'weather',
   'Land value':'land','Recorded sales':'land','Rent':'land','Who farms it':'land','Tile and tillage':'land','Solar and wind':'land','Livestock':'land',
@@ -38,19 +49,31 @@ function get(u){ return fetch(u,{cache:'no-cache'}).then(function(r){ if(!r.ok) 
 function isOld(k){ return !!k&&!LAY[k]; }
 
 // ---------- values, bins and words (headline maps)
-function val(f,l){ var r=ROWS[f]; return r?r[COL[l.col]]:null; }
-function gap(f,l){ var r=ROWS[f]; return r&&l.gcol?r[COL[l.gcol]]:null; }
+// a county's figure (a number) and its gap code (a word); the newer maps keep both in one column, never both at once
+function val(f,l){ var r=ROWS[f], v=r?r[COL[l.col]]:null; return typeof v==='number'?v:null; }
+function gap(f,l){ var r=ROWS[f], g=r&&l.gcol?r[COL[l.gcol]]:null; return typeof g==='string'?g:null; }
 function money(v,dp){ return '$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp}); }
-function dp(l){ return l.key==='arc'||l.key==='prf'||l.key==='cost'?2:0; }
+function dp(l){ return l.dp!=null?l.dp:l.key==='arc'||l.key==='prf'||l.key==='cost'?2:0; }
+function n0(v){ return Number(v).toLocaleString('en-US',{maximumFractionDigits:2}); }
 function show(v,l){
   if(l.unit==='$') return money(v,dp(l));
-  if(l.unit==='%') return (Math.round(v*10)/10)+'%';
+  if(l.unit==='ac') return n0(v)+' acres';
+  if(l.unit==='d') return n0(v)+' days';
+  if(l.unit==='gdd') return n0(v)+' GDD';
+  if(l.unit==='pc') return (v>0?'+':'')+(Math.round(v*10)/10)+'%';
+  if(l.unit==='hd') return n0(v)+' per 1,000 acres';
+  if(l.unit==='mw') return n0(v)+' MW';
+  if(l.unit==='%') return v>0&&v<0.05?'under 0.1%':(Math.round(v*10)/10)+'%';
   if(l.unit==='F') return v.toFixed(1)+' F';
   if(l.unit==='c'){ var c=Math.round(Math.abs(v)*100); return c?c+(c===1?' cent ':' cents ')+(v<0?'under':'over'):'even'; }
   if(l.unit==='x') return v.toFixed(2);
+  if(l.unit==='gd') return v>0?'ARC-CO higher by '+money(v,2):v<0?'PLC higher by '+money(-v,2):'even';
   return String(v);
 }
-function cut(v,l){ if(l.unit==='$') return money(v,0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2); return v+(l.unit==='%'?'%':l.unit==='F'?' F':''); }
+function cut(v,l){ if(l.unit==='$'||l.unit==='gd') return money(Math.abs(v),0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2);
+  if(l.unit==='ac') return n0(v)+' acres'; if(l.unit==='d') return n0(v)+' days'; if(l.unit==='mw') return n0(v)+' MW';
+  if(l.unit==='gdd'||l.unit==='hd') return n0(v); if(l.unit==='pc') return (v>0?'+':'')+v+'%';
+  return v+(l.unit==='%'?'%':l.unit==='F'?' F':''); }
 // basis in words: 65¢ under, even, 10¢ over
 function cents(v){ var c=Math.round(Math.abs(v)*100); return c?c+'¢ '+(v<0?'under':'over'):'even'; }
 function basisKey(cs,n){
@@ -60,6 +83,11 @@ function basisKey(cs,n){
     o.push(['k'+i,(a<0&&b<0)?Math.round(-a*100)+'¢ to '+cents(b):(a>0&&b>0)?Math.round(a*100)+'¢ to '+cents(b):cents(a)+' to '+cents(b),n['k'+i]]); }
   b=cs[cs.length-1]; o.push(['k'+cs.length,b===0?'Even or over':b>0?cents(b)+' or more':cents(b)+' or stronger',n['k'+cs.length]]);
   return o;
+}
+// ARC-CO minus PLC: five bins around even, orange where PLC has the higher estimate, blue where ARC-CO has
+function gapKey(cs,n,l){
+  return [['k0','PLC higher by more than '+cut(cs[0],l),n.k0],['k1','PLC higher by '+cut(cs[1],l)+' to '+cut(cs[0],l),n.k1],
+    ['k2','Within '+cut(cs[2],l)+' either way',n.k2],['k3','ARC-CO higher by '+cut(cs[2],l)+' to '+cut(cs[3],l),n.k3],['k4','ARC-CO higher by '+cut(cs[3],l)+' or more',n.k4]];
 }
 var DRN=['Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'];
 // partial layers: a state we do not read is an empty outline (ko), not a few hundred hatched counties
@@ -73,11 +101,11 @@ function outOf(f){ return !!(LOCAL&&(STATE_OF[f]||f.slice(0,2))!==LOCAL.st); }
 function canLocal(l){
   if(!S.s||!l) return false;
   if(l.old){ var d=OL[l.key]; if(!d||d.div||l.scale==='rain'||d.salesWords) return false; }
-  else if(['money','risk','share','heat','green'].indexOf(l.scale)<0) return false;
+  else if(['money','risk','share','heat','green','amount'].indexOf(l.scale)<0) return false;
   return inState(l).length>=20;
 }
 function rv(f,l){ return l.old?(OL[l.key]?OL[l.key].vals[f]:null):val(f,l); }
-function inState(l){ var a=[], f, v; for(f in HAS){ if((STATE_OF[f]||f.slice(0,2))!==S.s) continue; v=rv(f,l); if(v==null||isNaN(v)) continue; if(l.old&&l.zeroNone&&v===0) continue; a.push(v); } return a; }
+function inState(l){ var a=[], f, v; for(f in HAS){ if((STATE_OF[f]||f.slice(0,2))!==S.s) continue; v=rv(f,l); if(v==null||isNaN(v)) continue; if((l.old&&l.zeroNone||l.zero)&&v===0) continue; a.push(v); } return a; }
 function setLocal(l){
   LOCAL=null; var box=$('an-scl'); if(!box) return;
   var can=canLocal(l); box.hidden=!can;
@@ -95,9 +123,9 @@ function cls(f,l){
   if(l.old) return ocls(f,l);
   var v=val(f,l), g=gap(f,l);
   if(l.key==='drought'){ if(v==null) return 'kx'; return v<0?'kn':'k'+v; }
-  if(g==='nost'&&COVER[l.key]) return 'ko';
-  if(l.scale==='count'&&v===0) return 'kn';
-  if(v==null){ if(g==='none'&&(l.key==='basis')) return 'kn'; return 'kx'; }
+  if(g==='nost'&&(COVER[l.key]||l.cover)) return 'ko';
+  if((l.scale==='count'||l.zero)&&v===0) return 'kn';
+  if(v==null){ if(g==='none'&&(l.key==='basis')||l.kn&&g===l.kn) return 'kn'; return 'kx'; }
   var cs=cutsOf(l), i=0; while(i<cs.length&&v>=cs[i]) i++;
   if(l.scale==='count') i=Math.max(0,i-1);
   return 'k'+i;
@@ -111,10 +139,12 @@ function keyItems(l){
     out.push(['kn','None',n.kn]); for(var i=0;i<5;i++) out.push(['k'+i,DRN[i],n['k'+i]]);
   }else{
     var cs=cutsOf(l).slice(); if(l.scale==='count'){ out.push(['kn','None within 30 miles',n.kn]); cs=cs.slice(1); }
+    if(l.zero) out.push(['kn',l.zero,n.kn]);
     if(l.scale==='rain'){ out.push(['k0','Under '+cs[0]+'%',n.k0]); for(var j=1;j<cs.length;j++) out.push(['k'+j,cs[j-1]+' to '+cs[j]+'%',n['k'+j]]); out.push(['k'+cs.length,cs[cs.length-1]+'% or more',n['k'+cs.length]]); }
     else if(l.unit==='c'&&cs.length){ out=out.concat(basisKey(cs,n)); }
+    else if(l.unit==='gd'&&cs.length===4){ out=out.concat(gapKey(cs,n,l)); }
     else if(cs.length){ out.push(['k0','Under '+cut(cs[0],l),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l)+' to '+cut(cs[k],l),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l)+' or more',n['k'+cs.length]]); }
-    if(l.key==='basis') out.push(['kn',l.gaps.none,n.kn]);
+    if(l.kn) out.push(['kn',l.gaps[l.kn],n.kn]);
   }
   var gx={}; for(f in HAS){ if(!outOf(f)&&cls(f,l)==='kx'){ var g=gap(f,l)||'nodata'; gx[g]=(gx[g]||0)+1; } }
   Object.keys(gx).forEach(function(g){ out.push(['kx',(l.gaps&&l.gaps[g])||'No figure',gx[g]]); });
@@ -125,7 +155,8 @@ function line(f,l){
   var v=val(f,l), g=gap(f,l);
   if(l.key==='drought') return v==null?((l.gaps&&l.gaps[g])||'No county figure'):(v<0?'No drought level covers half the county':DRN[v]+' covers at least half the county');
   if(v==null) return (l.gaps&&l.gaps[g])||'No figure';
-  return l.label+': '+show(v,l)+(l.key==='basis'?' '+NOW.dates.basis_vs+' futures':'');
+  if(l.zero&&v===0) return l.label+': '+l.zero.toLowerCase();
+  return l.label+': '+show(v,l)+(l.key==='basis'?' '+NOW.dates.basis_vs+' futures':l.key==='sbasis'?' '+NOW.dates.sbasis_vs+' futures':'');
 }
 
 // ---------- the folded layers: their values come from atlas-layers.js, their bins and key from here
@@ -188,7 +219,7 @@ function oldList(){
       return window.AtlasLayers.boot({paths:HAS, names:names, pick:function(f){ pick(f,true,true); }, toMap:function(){ $('an-map').scrollIntoView({behavior:'smooth',block:'start'}); }, panelHost:function(){ return $('an-panel'); }});
     }).then(function(api){
       OLD={};
-      api.list().forEach(function(x){ if(SAME[x.key]||!QOF[x.grp]) return; OLD[x.key]={key:x.key, old:true, q:QOF[x.grp], label:x.label, grp:x.grp, off:x.off, slider:x.slider}; });
+      api.list().forEach(function(x){ if(SAME[x.key]||!QOF[x.grp]) return; OLD[x.key]={key:x.key, old:true, q:QOF[x.grp], label:x.label, grp:x.grp, off:x.off||!!HIDE[x.key], slider:x.slider}; });
       try{ document.dispatchEvent(new CustomEvent('atlas-layers-ready')); }catch(e){}
       return OLD;
     });
@@ -235,6 +266,8 @@ function paint(){
   $('an-maptitle').textContent=l.label;
   var leg=l.old?(OL[l.key].natline||'')+'<span>'+esc(OL[l.key].title)+'.</span> '+(OL[l.key].why?'<span>'+esc(OL[l.key].why)+'.</span> ':'')+(OL[l.key].note||''):strong(l.legend);
   $('an-legend').innerHTML=leg;
+  // the rented map brings the census tenure table with it, as the old rented layer did (the fold under the map)
+  if(l.key==='rented'){ var tf=$('fa-tenure'); if(tf&&!tf.open) tf.open=true; }
   var cs=getComputedStyle(root);
   // each swatch is a button: it lights that class's counties on the map (the old map's swatches)
   $('an-key').innerHTML=keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
@@ -426,11 +459,11 @@ function applyDeep(o){
   }
   return null;
 }
-function picName(){ return S.c&&S.q==='land'?'pic-'+S.c:S.s?'pic-'+S.s.toLowerCase():'pic-us'; }
+function picName(){ return S.c&&S.q==='land'?'pic-'+S.c:S.m==='arcgap'?'pic-arc-us':S.s?'pic-'+S.s.toLowerCase():'pic-us'; }
 function save(){
   var a=$('an-pic'); if(!a||!NOW.pics) return;
   var n=picName(); a.href=NOW.pics+n+'.png'; a.setAttribute('download','agsist-'+n+'.png');
-  a.textContent=n==='pic-us'?'Save the picture':n.length===6?'Save the '+(NOW.states[S.s]&&NOW.states[S.s].name||S.s)+' picture':'Save the county picture';
+  a.textContent=n==='pic-us'?'Save the picture':n==='pic-arc-us'?'Save the ARC-CO and PLC picture':n.length===6?'Save the '+(NOW.states[S.s]&&NOW.states[S.s].name||S.s)+' picture':'Save the county picture';
 }
 function wire(){
   [].forEach.call(root.querySelectorAll('.an-tab'),function(b){ b.addEventListener('click',function(){ go(b.getAttribute('data-q')); ga('atlas_now_question',{q:b.getAttribute('data-q')||'all'}); }); });

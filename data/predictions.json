@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17T19:54:54Z",
+ "updated": "2026-11-18T19:55:40Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -59,7 +59,12 @@
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-18",
+     "close": 435.0
+    }
    },
    {
     "id": "beans-2026-11-10",
@@ -78,7 +83,12 @@
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-18",
+     "close": 1216.0
+    }
    },
    {
     "id": "wheat-2026-11-10",
@@ -92,12 +102,18 @@
     "trend_pct": -12.23,
     "contract": "Dec '26",
     "ticker": "ZWZ26.CBT",
-    "entry": 595.0,
-    "target": 594.75,
+    "entry": 595.25,
+    "target": 595.0,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "note": "Entry set to the settled 2026-11-17 close 595.25 (read 595.0 that evening).",
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-18",
+     "close": 571.25
+    }
    },
    {
     "id": "kcwheat-2026-11-10",
@@ -116,23 +132,28 @@
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-18",
+     "close": 611.0
+    }
    }
   ]
  },
  "live": {
   "records": {
    "all": {
-    "graded": 4,
-    "hits": 3,
-    "hit_rate": 75.0,
+    "graded": 8,
+    "hits": 7,
+    "hit_rate": 87.5,
     "by_offset": [
      {
       "offset": 0,
-      "calls": 0,
-      "hits": 0,
-      "rate": null,
-      "windows": 0,
+      "calls": 4,
+      "hits": 4,
+      "rate": 100.0,
+      "windows": 1,
       "p_luck": null,
       "p_worse": null
      },
@@ -165,18 +186,18 @@
      }
     ],
     "spell_rate_low": 75.0,
-    "spell_rate_high": 75.0,
+    "spell_rate_high": 100.0,
     "windows": 0,
-    "hac_z": null,
-    "p_luck": null,
-    "p_worse": null,
+    "hac_z": 12.7279,
+    "p_luck": 0.0,
+    "p_worse": 1.0,
     "rose": 0,
-    "fell": 4,
-    "moves_of": 4,
+    "fell": 8,
+    "moves_of": 8,
     "rose_rate": 0.0,
     "fell_rate": 100.0,
     "first": "2026-10-05",
-    "last": "2026-10-05",
+    "last": "2026-10-19",
     "gate_ok": false,
     "p_luck_adjusted": null,
     "p_worse_adjusted": null,
@@ -184,18 +205,18 @@
     "verdict_text": "Too few calls to grade."
    },
    "corn": {
-    "graded": 1,
-    "hits": 1,
+    "graded": 2,
+    "hits": 2,
     "hit_rate": 100.0,
     "by_offset": [
      {
       "offset": 0,
-      "calls": 0,
-      "hits": 0,
-      "rate": null,
-      "windows": 0,
-      "p_luck": null,
-      "p_worse": null
+      "calls": 1,
+      "hits": 1,
+      "rate": 100.0,
+      "windows": 1,
+      "p_luck": 0.5,
+      "p_worse": 1.0
      },
      {
       "offset": 1,
@@ -232,12 +253,12 @@
     "p_luck": null,
     "p_worse": null,
     "rose": 0,
-    "fell": 1,
-    "moves_of": 1,
+    "fell": 2,
+    "moves_of": 2,
     "rose_rate": 0.0,
     "fell_rate": 100.0,
     "first": "2026-10-05",
-    "last": "2026-10-05",
+    "last": "2026-10-19",
     "gate_ok": false,
     "p_luck_adjusted": null,
     "p_worse_adjusted": null,
@@ -245,18 +266,18 @@
     "verdict_text": "Too few calls to grade."
    },
    "beans": {
-    "graded": 1,
-    "hits": 1,
+    "graded": 2,
+    "hits": 2,
     "hit_rate": 100.0,
     "by_offset": [
      {
       "offset": 0,
-      "calls": 0,
-      "hits": 0,
-      "rate": null,
-      "windows": 0,
-      "p_luck": null,
-      "p_worse": null
+      "calls": 1,
+      "hits": 1,
+      "rate": 100.0,
+      "windows": 1,
+      "p_luck": 0.5,
+      "p_worse": 1.0
      },
      {
       "offset": 1,
@@ -293,12 +314,12 @@
     "p_luck": null,
     "p_worse": null,
     "rose": 0,
-    "fell": 1,
-    "moves_of": 1,
+    "fell": 2,
+    "moves_of": 2,
     "rose_rate": 0.0,
     "fell_rate": 100.0,
     "first": "2026-10-05",
-    "last": "2026-10-05",
+    "last": "2026-10-19",
     "gate_ok": false,
     "p_luck_adjusted": null,
     "p_worse_adjusted": null,
@@ -306,18 +327,18 @@
     "verdict_text": "Too few calls to grade."
    },
    "wheat": {
-    "graded": 1,
-    "hits": 0,
-    "hit_rate": 0.0,
+    "graded": 2,
+    "hits": 1,
+    "hit_rate": 50.0,
     "by_offset": [
      {
       "offset": 0,
-      "calls": 0,
-      "hits": 0,
-      "rate": null,
-      "windows": 0,
-      "p_luck": null,
-      "p_worse": null
+      "calls": 1,
+      "hits": 1,
+      "rate": 100.0,
+      "windows": 1,
+      "p_luck": 0.5,
+      "p_worse": 1.0
      },
      {
       "offset": 1,
@@ -348,18 +369,18 @@
      }
     ],
     "spell_rate_low": 0.0,
-    "spell_rate_high": 0.0,
+    "spell_rate_high": 100.0,
     "windows": 0,
-    "hac_z": null,
-    "p_luck": null,
-    "p_worse": null,
+    "hac_z": 0.0,
+    "p_luck": 0.5,
+    "p_worse": 0.5,
     "rose": 0,
-    "fell": 1,
-    "moves_of": 1,
+    "fell": 2,
+    "moves_of": 2,
     "rose_rate": 0.0,
     "fell_rate": 100.0,
     "first": "2026-10-05",
-    "last": "2026-10-05",
+    "last": "2026-10-19",
     "gate_ok": false,
     "p_luck_adjusted": null,
     "p_worse_adjusted": null,
@@ -367,18 +388,18 @@
     "verdict_text": "Too few calls to grade."
    },
    "kcwheat": {
-    "graded": 1,
-    "hits": 1,
+    "graded": 2,
+    "hits": 2,
     "hit_rate": 100.0,
     "by_offset": [
      {
       "offset": 0,
-      "calls": 0,
-      "hits": 0,
-      "rate": null,
-      "windows": 0,
-      "p_luck": null,
-      "p_worse": null
+      "calls": 1,
+      "hits": 1,
+      "rate": 100.0,
+      "windows": 1,
+      "p_luck": 0.5,
+      "p_worse": 1.0
      },
      {
       "offset": 1,
@@ -415,12 +436,12 @@
     "p_luck": null,
     "p_worse": null,
     "rose": 0,
-    "fell": 1,
-    "moves_of": 1,
+    "fell": 2,
+    "moves_of": 2,
     "rose_rate": 0.0,
     "fell_rate": 100.0,
     "first": "2026-10-05",
-    "last": "2026-10-05",
+    "last": "2026-10-19",
     "gate_ok": false,
     "p_luck_adjusted": null,
     "p_worse_adjusted": null,
@@ -429,11 +450,11 @@
    }
   },
   "tests_in_family": 0,
-  "open": 16,
+  "open": 12,
   "ungradeable": 0
  },
  "action_label": "BOT CALL",
- "action_text": "Bot call, Nov 17 close, 4 weeks out: corn $4.46¾ down, soybeans $12.25½ up, Chicago wheat $5.95 down, KC wheat $6.33 down. Backtest: no edge.",
+ "action_text": "Bot call, Nov 17 close, 4 weeks out: corn $4.46¾ down, soybeans $12.25½ up, Chicago wheat $5.95¼ down, KC wheat $6.33 down. Backtest: no edge.",
  "calls": [
   {
    "id": "corn-2026-09-29",
@@ -537,16 +558,13 @@
    "ticker": "ZCZ26.CBT",
    "entry": 467.0,
    "target": 466.75,
-   "status": "open",
-   "exit": null,
-   "outcome": null,
-   "graded_on": null,
+   "status": "graded",
+   "exit": 446.75,
+   "outcome": "hit",
+   "graded_on": "2026-11-18",
    "note": "Entry set to the settled 2026-10-19 close 467.0 (read 466.75 that evening).",
    "entry_final": true,
-   "mark": {
-    "date": "2026-11-17",
-    "close": 446.75
-   }
+   "rose": false
   },
   {
    "id": "beans-2026-10-13",
@@ -562,16 +580,13 @@
    "ticker": "ZSF27.CBT",
    "entry": 1268.75,
    "target": 1268.5,
-   "status": "open",
-   "exit": null,
-   "outcome": null,
-   "graded_on": null,
+   "status": "graded",
+   "exit": 1225.5,
+   "outcome": "hit",
+   "graded_on": "2026-11-18",
    "note": "Entry set to the settled 2026-10-19 close 1268.75 (read 1268.25 that evening).",
    "entry_final": true,
-   "mark": {
-    "date": "2026-11-17",
-    "close": 1225.5
-   }
+   "rose": false
   },
   {
    "id": "wheat-2026-10-13",
@@ -587,16 +602,13 @@
    "ticker": "ZWZ26.CBT",
    "entry": 655.25,
    "target": 655.0,
-   "status": "open",
-   "exit": null,
-   "outcome": null,
-   "graded_on": null,
+   "status": "graded",
+   "exit": 595.25,
+   "outcome": "hit",
+   "graded_on": "2026-11-18",
    "note": "Entry set to the settled 2026-10-19 close 655.25 (read 656.0 that evening).",
    "entry_final": true,
-   "mark": {
-    "date": "2026-11-17",
-    "close": 595.0
-   }
+   "rose": false
   },
   {
    "id": "kcwheat-2026-10-13",
@@ -612,15 +624,12 @@
    "ticker": "KEZ26.CBT",
    "entry": 699.5,
    "target": 699.25,
-   "status": "open",
-   "exit": null,
-   "outcome": null,
-   "graded_on": null,
+   "status": "graded",
+   "exit": 633.0,
+   "outcome": "hit",
+   "graded_on": "2026-11-18",
    "entry_final": true,
-   "mark": {
-    "date": "2026-11-17",
-    "close": 633.0
-   }
+   "rose": false
   },
   {
    "id": "corn-2026-10-20",
@@ -642,8 +651,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 446.75
+    "date": "2026-11-18",
+    "close": 435.0
    }
   },
   {
@@ -667,8 +676,8 @@
    "note": "Entry set to the settled 2026-10-26 close 1252.5 (read 1253.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 1225.5
+    "date": "2026-11-18",
+    "close": 1216.0
    }
   },
   {
@@ -692,8 +701,8 @@
    "note": "Entry set to the settled 2026-10-26 close 616.0 (read 615.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 595.0
+    "date": "2026-11-18",
+    "close": 571.25
    }
   },
   {
@@ -717,8 +726,8 @@
    "note": "Entry set to the settled 2026-10-26 close 659.0 (read 658.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 633.0
+    "date": "2026-11-18",
+    "close": 611.0
    }
   },
   {
@@ -742,8 +751,8 @@
    "note": "Entry set to the settled 2026-11-09 close 439.25 (read 438.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 446.75
+    "date": "2026-11-18",
+    "close": 435.0
    }
   },
   {
@@ -767,8 +776,8 @@
    "note": "Entry set to the settled 2026-11-09 close 1188.25 (read 1187.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 1225.5
+    "date": "2026-11-18",
+    "close": 1216.0
    }
   },
   {
@@ -792,8 +801,8 @@
    "note": "Entry set to the settled 2026-11-09 close 588.0 (read 587.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 595.0
+    "date": "2026-11-18",
+    "close": 571.25
    }
   },
   {
@@ -817,8 +826,8 @@
    "note": "Entry set to the settled 2026-11-09 close 632.5 (read 631.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-17",
-    "close": 633.0
+    "date": "2026-11-18",
+    "close": 611.0
    }
   },
   {
@@ -838,7 +847,12 @@
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-18",
+    "close": 435.0
+   }
   },
   {
    "id": "beans-2026-11-10",
@@ -857,7 +871,12 @@
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-18",
+    "close": 1216.0
+   }
   },
   {
    "id": "wheat-2026-11-10",
@@ -871,12 +890,18 @@
    "trend_pct": -12.23,
    "contract": "Dec '26",
    "ticker": "ZWZ26.CBT",
-   "entry": 595.0,
-   "target": 594.75,
+   "entry": 595.25,
+   "target": 595.0,
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "note": "Entry set to the settled 2026-11-17 close 595.25 (read 595.0 that evening).",
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-18",
+    "close": 571.25
+   }
   },
   {
    "id": "kcwheat-2026-11-10",
@@ -895,7 +920,12 @@
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-18",
+    "close": 611.0
+   }
   }
  ],
  "skipped": [
@@ -953,12 +983,12 @@
   }
  ],
  "next_entry": {
-  "report": "2026-11-10",
-  "day": "2026-11-17",
+  "report": "2026-11-17",
+  "day": "2026-11-23",
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-11-17T19:54:54Z",
+  "computed": "2026-11-18T19:55:40Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "append 2026-11-10",
   "cutoff": "2026-10-02",
