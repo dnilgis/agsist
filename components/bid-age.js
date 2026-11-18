@@ -158,9 +158,10 @@
   function whatLine(month, basis, ref) {
     var mo = month ? String(month) : '', b = '';
     if (basis != null && basis !== '' && isFinite(Number(basis))) {
-      var c = Math.round(Number(basis) * 100 * 4) / 4, r = String(ref || ''), inf = / \(inferred\)$/.test(r);
-      r = r.replace(/ \(inferred\)$/, '');
-      var fut = (r || 'futures') + (inf ? ' (month inferred)' : '');
+      /* The contract comes from the row's own futures field (ZCZ26 -> "Dec '26"). A month the card worked out
+         from the price ("(inferred)") is not the row's and reads "futures", like a row that names none. */
+      var c = Math.round(Number(basis) * 100 * 4) / 4, r = String(ref || '');
+      var fut = r && !/\(inferred\)/.test(r) ? r : 'futures';
       b = c === 0 ? 'even with ' + fut : cents(c) + (c < 0 ? ' under ' : ' over ') + fut;
     }
     return { month: mo, basis: b };
