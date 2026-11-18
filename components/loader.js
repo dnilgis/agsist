@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '108';
+  var CV = '109';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -558,7 +558,7 @@
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=6';
+    s.src = BASE + '/components/geo-sponsor.js?v=7';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
@@ -603,7 +603,7 @@
       var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(r[2], BASE); } catch (e) {} };
       if (window.AgsistSwOpen) return f();
       var s = document.createElement('script');
-      s.src = BASE + '/components/sw-open.js?v=2'; s.async = true; s.onload = f;
+      s.src = BASE + '/components/sw-open.js?v=3'; s.async = true; s.onload = f;
       document.head.appendChild(s);
     });
   }

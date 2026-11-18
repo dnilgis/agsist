@@ -148,7 +148,8 @@
   function dayTxt(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
   /* The open state spot sells itself (decided Nov 13): what the buyer gets (the card on that state's pages and for its
      readers), that STATE's own engaged visits over GA4's own window (data/sponsor-spots.json proof.states) with its
-     dates, and the sitewide totals labelled as all of AGSIST (Bing named on its figure). A state with no figure of its
+     dates, and the sitewide readers labelled as all of AGSIST (engaged visits and search clicks; AI answer citations
+     stay in the /sponsor table). A state with no figure of its
      own shows none; under SMALL visits the sitewide totals come first and the state's own figure follows, named as the
      state's. One button to /sponsor with the state picked. No price. */
   var SMALL = 100;
@@ -163,7 +164,7 @@
     var stTxt = has ? nm + ' readers: <b>' + num(e) + '</b> engaged visits, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '. ' : '';
     var site = [];
     if (pr.engaged && pr.engaged.total > 0) site.push('<b>' + num(pr.engaged.total) + '</b> engaged visits');
-    if (pr.ai && pr.ai.total > 0) site.push('<b>' + num(pr.ai.total) + '</b> Bing AI citations');
+    if (pr.search && pr.search.total > 0) site.push('<b>' + num(pr.search.total) + '</b> search clicks');
     var lst = ls.people > 0 ? '<b>' + num(ls.people) + '</b> on our email lists' : ls.daily > 0 ? '<b>' + num(ls.daily) + '</b> on the Daily email' : '';
     if (lst && ls.asOf) lst += ' (' + dayTxt(ls.asOf) + ')';
     var siteTxt = site.length ? 'All of AGSIST, 30 days: ' + site.join(', ') + (lst ? '; ' + lst : '') + '. ' : (lst ? 'All of AGSIST: ' + lst + '. ' : '');
@@ -209,17 +210,12 @@
     }, function () { return '-'; });
   }
   function shown(el) { try { return el.getClientRects().length > 0; } catch (e) { return false; } }
+  /* A PRF state sponsor's block (components/prf-sponsor.js, slot prf-<kind>:<st>) is not a page sponsor: the State
+     Sponsor's card is sold for every page about its state, PRF pages included, so it never yields to that block. */
   function soldOnPage() {
-    var l = doc.querySelectorAll('[data-sponsor-slot]:not(#ag-sw)');
+    var l = doc.querySelectorAll('[data-sponsor-slot]:not(#ag-sw):not([data-sponsor-slot^="prf-"])');
     for (var i = 0; i < l.length; i++) if (shown(l[i])) return true;
     return false;
-  }
-  function prfSold(st, day) {
-    if (!/^\/prf\//.test(root.location.pathname)) return Promise.resolve(false);
-    return getJSON('/data/prf-sponsors.json', 4000, { cache: 'no-cache' }).then(function (d) {
-      var e = d && d[st];
-      return !!(e && e.name && e.url && (!e.through || e.through >= day));
-    }, function () { return false; });
   }
   function need(tag, attr, url, test) {
     return new Promise(function (ok) {
@@ -334,7 +330,7 @@
         : lookup().then(function (rc) { var x = choose(data, rc, day, false); return x && { e: x, st: rc, s: 'reader-state' }; });
       return go.then(function (r) {
         if (!r) return;
-        return prfSold(ps || r.st, day).then(function (sold) { if (!sold) draw(r.e, r.s, rib, false); else if (r.s === 'state-page') hold(false); });
+        draw(r.e, r.s, rib, false);
       });
     }).catch(function () { if (ps && spot()) drawOpen(ps); });
   }

@@ -1,11 +1,10 @@
 /* The open sitewide sponsor strip sells itself (decided Nov 13, 2026). components/loader.js loads this only when the
  * sitewide spot is unsold, into the line it already holds the room for (styles.css --sw-h), so nothing moves.
- * It says what is for sale and leads with the totals (Nov 13): one AI answer citations figure (the count the engines
- * report; only Bing reports one, for Bing and Copilot answers, and the title says so) and the people on our email lists,
- * each counted once across every list, from data/sponsor-spots.json (scripts/bake_audience.py). No engine is named in
- * the visible line (one total, not broken down by platform), and visits from AI answers are not on the strip: they
- * are a different thing from citations and are never added to them. The citations carry their 30-day window in the
- * title; the list figure is a count on the day named. One button to /sponsor, no price. Flat colors, no gradient.
+ * It says what is for sale and leads with readers: engaged visits and search clicks, each over its own 30 days, then
+ * the people on our email lists, each counted once across every list, all from data/sponsor-spots.json
+ * (scripts/bake_audience.py). The title carries each figure's dates and source. AI answer citations and visits from
+ * AI answers are not on the strip; they stay in the /sponsor table. The list figure is a count on the day named.
+ * One button to /sponsor, no price. Flat colors, no gradient.
  * A figure the file does not hold is left out, never made up.
  */
 (function (root) {
@@ -46,15 +45,22 @@
   }
   function lab(l, sh) { return '<span class="sw-l">' + l + '</span><span class="sw-s">' + sh + '</span>'; }
 
-  /* "Sponsor spot open: one line on every page." then the totals: AI answer citations over their 30 days and the people
-     on our lists (a count on the day named), then the button. Engaged visits, search clicks and visits from AI answers
-     stay on /sponsor. */
+  /* "Sponsor spot open: one line on every page." then the readers: engaged visits and search clicks, each over its own
+     30 days, then the people on our lists (a count on the day named), then the button. AI answer citations and visits
+     from AI answers stay on /sponsor. Engaged visits and search clicks overlap, so the line never adds them and the
+     title says so. */
   function html(spots, base) {
-    var pr = (spots && spots.proof) || {}, li = (spots && spots.lists) || {}, ai = pr.ai, line = '', tip = [];
-    if (num(ai && ai.total) && win(ai)) {
-      line = '<span class="sw-ai"><b>' + num(ai.total) + '</b> AI answer citations in 30 days</span>';
-      tip.push('AI answer citations ' + win(ai) + ': the count Bing reports for Bing and Copilot answers. Other AI engines report no count');
+    var pr = (spots && spots.proof) || {}, li = (spots && spots.lists) || {}, en = pr.engaged, se = pr.search, line = '', tip = [];
+    if (num(en && en.total) && win(en)) {
+      line = '<span class="sw-ev"><b>' + num(en.total) + '</b> engaged visits</span>';
+      tip.push('Engaged visits ' + win(en) + ': ' + (en.source || 'Google Analytics') + ', US readers');
     }
+    if (num(se && se.total) && win(se)) {
+      line += '<span class="sw-sc">' + (line ? ', ' : '') + '<b>' + num(se.total) + '</b> search clicks</span>';
+      tip.push('Search clicks ' + win(se) + ': ' + (se.source || 'Google Search Console (US) and Bing Webmaster'));
+    }
+    if (line) line += ' in 30 days';
+    if (tip.length > 1) tip.push('Many search clicks are also engaged visits: do not add the two');
     if (num(li.people) && day(li.asOf)) {
       line += '<span class="sw-pp">' + (line ? lab(' and ', ' &middot; ') : '') + '<b>' + num(li.people) + '</b> ' +
         lab('people on our <span class="sw-em">email </span>lists', 'on our lists') + '</span>';

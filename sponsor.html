@@ -101,6 +101,8 @@
     .sp-btn--alt{background:transparent;color:var(--text);border-color:var(--text-dim);}
     .sp-btn--alt:hover{background:transparent;color:var(--brand);border-color:var(--brand);}
     .sp-note{max-width:64ch;}
+    .sp-report{margin:-.3rem 0 1rem;}
+    .sp-report a{color:var(--text);text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:12px 0;margin:-12px 0;}
     .sp-form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.2rem;background:var(--surface);}
     .sp-form .full{grid-column:1/-1;}
     .sp-form #spa-go{min-width:240px;}
@@ -175,6 +177,7 @@
       </section>
 
       <h2 class="sp-h2">What you get</h2>
+      <p class="sp-note sp-report">Every sponsor gets a monthly report of the ad&rsquo;s views and clicks: counts only, no personal data. <a href="#report">How you see it</a>.</p>
 
       <section class="sp-spot" id="sitewide" aria-labelledby="sp-sw-h" data-spot="sitewide">
         <div class="sp-spot-head">
@@ -198,7 +201,7 @@
       <section class="sp-spot" id="state" aria-labelledby="sp-st-h" data-spot="state">
         <div class="sp-spot-head">
           <h3 class="sp-spot-name" id="sp-st-h">State Sponsor</h3>
-          <p class="sp-price"><b>$79 a month</b> in most states, <b>$149 a month</b> in Illinois, Minnesota, Wisconsin and Texas. A year costs the same as 10 months.</p>
+          <p class="sp-price"><b>$79 a month</b> in most states, <b>$49 a month</b> in Iowa, <b>$149 a month</b> in Illinois, Minnesota and Texas. A year costs the same as 10 months.</p>
         </div>
         <p class="sp-what">One card below the main answer on every page about your state, and for readers in your state on other pages. One business per state.</p>
         <figure class="sp-pic" aria-label="How the state card looks">
@@ -215,7 +218,7 @@
           <select id="sp-state"><option value="">Pick a state</option></select>
         </div>
         <p class="sp-live" id="sp-state-live">Pick a state to see its numbers and price.</p>
-        <p class="sp-fine">California, Nevada and Texas open soon.</p>
+        <p class="sp-fine">California, Nevada and Texas open soon, at the prices above.</p>
         <p class="sp-status" data-status="state" hidden></p>
         <div class="sp-btns" data-btns="state">
           <a class="sp-btn" href="#book" data-invoice="state">Book this spot</a>
@@ -266,6 +269,10 @@
           <summary>Where do the numbers come from?</summary>
           <div class="sp-faq-body">We use four sources. Each site figure covers its own 30 days, with its dates printed beside it, and we refresh those each Monday. Engaged visits come from Google Analytics: US readers only, the sum of each day&rsquo;s engaged visits (10 seconds or more, or a second page). Our own visits from Wisconsin count in the site total, so Wisconsin shows no state figure. We count search clicks from Google Search Console (US searches) and Bing Webmaster (all countries). Many are also engaged visits, so do not add the two. A Bing AI citation is each time a Bing or Copilot answer lists an AGSIST page as a source. A citation is not a reader. We pull Bing&rsquo;s export each Monday and leave off a figure more than 14 days old. The AI answer citations figure is that count: Bing and Copilot are the only AI engines that report one. Other engines report no count, so we print none for them and add nothing to the figure. Google does not report its AI Overview citations either. A state&rsquo;s figure is engaged visits from readers in that state over the dates shown beside it, updated each day. The list figure counts each address once across all our email lists (the Daily, alerts, watches and notices) on the day named. The Daily figure beside it is the Daily alone.</div>
         </details>
+        <details id="report">
+          <summary>How do I see how my ad does?</summary>
+          <div class="sp-faq-body">When your ad goes live, we email you a private link to your own report page. It counts how many times your ad was seen on screen and how many times it was clicked, updated each day. Each month we email you that month&rsquo;s counts. Counts only: no names, emails or other personal data about readers.</div>
+        </details>
         <details>
           <summary>Can I see the ad before it runs?</summary>
           <div class="sp-faq-body">Yes. We send it to you before it goes live. Sponsors never change data, rankings or bid order on AGSIST.</div>
@@ -299,8 +306,8 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=20" defer></script>
-  <script src="/components/sponsor-apply.js?v=12" defer></script>
-  <script>/* "How each is counted" opens its question on arrival */(function(){function o(){if(location.hash==='#how-counted'){var d=document.getElementById('how-counted');if(d)d.open=true;}}o();addEventListener('hashchange',o);})();</script>
+  <script src="/components/sponsor-apply.js?v=13" defer></script>
+  <script>/* "How each is counted" and "How you see it" open their question on arrival */(function(){function o(){if(location.hash==='#how-counted'||location.hash==='#report'){var d=document.getElementById(location.hash.slice(1));if(d)d.open=true;}}o();addEventListener('hashchange',o);})();</script>
   <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>
