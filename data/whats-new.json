@@ -2,6 +2,34 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-18-accuracy-fixes",
+   "date": "2026-11-18",
+   "title": "Corrections from an accuracy check",
+   "line": "Seven Daily issues carry dated corrections. Hail days give standard-time hours, rain records list the longest first, and rent tables skip thin-year medians.",
+   "link": "/editorial-standards#corrections"
+  },
+  {
+   "id": "2026-11-18-atlas-accuracy",
+   "date": "2026-11-18",
+   "title": "Farmland Atlas county fixes",
+   "line": "Farmland Atlas county pages now give the real reason when rent per bushel is withheld, count every year claims topped premium, and mark forest sales in the newest list.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-cash-bids-accuracy",
+   "date": "2026-11-18",
+   "title": "Cash bid pages fixed",
+   "line": "Town pages headline the regular corn bid, not a white corn premium. Company pages count each crop where it is bid. Estimates name the futures time.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-17-arc-plc-range-ends",
+   "date": "2026-11-17",
+   "title": "ARC/PLC trigger yields to a tenth",
+   "line": "County ARC/PLC cards now print the yield where ARC-CO starts to pay to a tenth, rounded down, so 38.62 bu reads 38.6. The 60% to 100% range ends are rounded once.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-13-honest-counts",
    "date": "2026-11-13",
    "title": "Honest visit counts",
