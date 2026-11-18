@@ -11,7 +11,7 @@
 
    The page says which crop it is before loading this file:
      <script>window.AGSIST_FUTURES='corn'</script>
-     <script src="/components/futures.js?v=37"></script>
+     <script src="/components/futures.js?v=38"></script>
    Prices print through components/util.js (AG.px), which loads in the head. */
 (function(){
 'use strict';
@@ -1045,12 +1045,8 @@ function computeScorecard(){
     var _cp=Math.round(cot.pct);
     factors.push({lbl:'Fund Positioning',val:_cp+ord(_cp)+' pct since '+cot.since,cls:'nu',meter:cot.pct,det:cot.crowded?'crowded '+cot.crowded+' (share of open interest)':(cot.word||'')+', not crowded'});
   }
-  // 4. Seasonal: from /data/price-stats.json seasonality; row omitted entirely when data is unavailable
-  if(window.__agsistSeas&&window.__agsistSeas.length===12){
-    var mo=new Date().getMonth();
-    var sv=window.__agsistSeas[mo];
-    factors.push({lbl:'Seasonal Tendency',val:sv+'/100',cls:'nu',meter:sv,det:seasWin()});
-  }
+  // 4. (Nov 18, 2026) no seasonal score here: the old one ranked a month on the continuous front-month, whose
+  //    July to September roll made corn's August low. The seasonal chart below shows the one-contract figure.
   // 5. RP projected price (crop insurance), only when harvest-prices has this crop.
   //    It is a price, not a floor: the guarantee is APH yield times coverage
   //    times the higher of the projected and harvest prices.
@@ -1444,9 +1440,40 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
    elevators with a current bid), the same field every page prints. No file, no number: the sentence reads fine without it. */
 function netCount(box){fetch('/data/elevator-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.bids;if(!k||typeof k.elevators!=='number'||!(k.elevators>0)||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.elevators.toLocaleString('en-US')+' elevators with a current bid)';});}).catch(function(){});}
 
-/* The seasonal factor's label names the window the index was built on
-   (price-stats.json seasonality_years: 2022-2025 is 4 years, not "5-yr"). */
-function seasWin(){var s=window.__agsistSeasS,y=s&&s.seasonality_years;return (y&&y.length===2?'weekly closes '+y[0]+'–'+y[1]+' ('+(y[1]-y[0]+1)+' years)':'weekly closes')+', indexed 0–100';}
+/* The seasonal chart (Nov 18, 2026): price-stats.json seasonality_pct, by calendar month the percent a weekly close
+   sat above or below its year's average, each year read from ONE contract (scripts/build_price_percentile.py). Drawn
+   only for that method: a continuous front-month series is never drawn (its roll from one contract to the next made
+   corn's August low). Twin of seasDraw in cattle-futures-prices.html. Returns true when drawn. */
+function seasDraw(s,ch,cm){
+  var P=s&&s.seasonality_pct,y=s&&s.seasonality_years;
+  if(!s||s.seasonality_method!=='one-contract-calendar-year'||!P||P.length!==12||!y||y.length!==2)return false;
+  for(var i=0;i<12;i++)if(typeof P[i]!=='number'||!isFinite(P[i]))return false;
+  var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function pc(v){return (v>0?'+':v<0?'\u2212':'')+Math.abs(v).toFixed(1)+'%';}
+  var mx=0;P.forEach(function(v){mx=Math.max(mx,Math.abs(v));});
+  var top=[1,2,3,4,5,6,8,10,12,15,20,25,30,40,50].filter(function(t){return t>=mx;})[0]||Math.ceil(mx);
+  var hi=0,lo=0;P.forEach(function(v,i){if(v>P[hi])hi=i;if(v<P[lo])lo=i;});
+  var yy=y[0]+'-'+String(y[1]).slice(2);
+  var cols=P.map(function(v,i){var h=(Math.abs(v)/top*50).toFixed(1)+'%';
+    return '<div class="seas-col'+(i===cm?' cur':'')+'" title="'+MOS[i]+': '+pc(v)+' from that year\u2019s average" style="position:relative;justify-content:flex-end">'+
+      '<div style="position:relative;flex:1;width:100%"><div class="seas-bar" style="position:absolute;left:0;right:0;'+(v>=0?'bottom:50%;border-radius:2px 2px 0 0':'top:50%;border-radius:0 0 2px 2px')+';height:'+h+'"></div></div>'+
+      '<div class="seas-mo">'+MOS[i]+'</div></div>';}).join('');
+  ch.setAttribute('role','img');
+  ch.setAttribute('aria-label','What '+yy+' did, percent from each year\u2019s average by month: highest '+MOS[hi]+' '+pc(P[hi])+', lowest '+MOS[lo]+' '+pc(P[lo]));
+  ch.style.height='96px';ch.style.alignItems='stretch';
+  ch.innerHTML='<div aria-hidden="true" style="display:flex;flex-direction:column;justify-content:space-between;font-size:.7rem;color:var(--text-dim);padding:0 4px 18px 0;text-align:right;white-space:nowrap"><span>+'+top+'%</span><span>0%</span><span>\u2212'+top+'%</span></div>'+
+    '<div style="flex:1;display:flex;gap:3px;position:relative"><div aria-hidden="true" style="position:absolute;left:0;right:0;top:calc((100% - 18px) / 2);border-top:1px solid var(--border)"></div>'+cols+'</div>';
+  var wrap=ch.closest?ch.closest('.seas-wrap'):null,t=wrap&&wrap.querySelector('.seas-title'),n=wrap&&wrap.querySelector('.seas-note');
+  if(t)t.textContent='What '+yy+' did';
+  if(n)n.textContent='Highest '+MOS[hi]+' ('+pc(P[hi])+'), lowest '+MOS[lo]+' ('+pc(P[lo])+')';
+  return true;
+}
+function seasCap(s){
+  var y=s.seasonality_years,c=s.seasonality_contract==='December'?'December contract':'contract for January of the next year';
+  return 'Percent above or below the year\u2019s average, by month: weekly closes of the '+c+' in each calendar year '+y[0]+' to '+y[1]+
+    ' (Yahoo Finance), each set against that year\u2019s average close, then averaged by month (n='+(s.seasonality_n||'?')+' weeks). '+
+    (y[1]-y[0]+1)+' years is a short window: what these years did, not a forecast.';
+}
 
 function fmtBidTime(ts){
   try{
@@ -2169,7 +2196,7 @@ loadPrices();
    scorecard and announces it with an "agsist-seas" event. */
 (function(){var KEY=CROP.stats,QK=CROP_KEY;function $(i){return document.getElementById(i);}function m(v,md){return AG.px.priceDollars(v,{mode:md});}function ord(n){var v=n%100;if(v>=10&&v<=20)return "th";return {1:"st",2:"nd",3:"rd"}[n%10]||"th";}function band(p){return p<10?"historically very low: near a 5-year bottom":p<25?"historically low: below most of the last 5 years":p<45?"below the 5-year midpoint":p<=55?"right around the 5-year midpoint":p<75?"above the 5-year midpoint":p<90?"historically high: above most of the last 5 years":"historically very high: near a 5-year peak";}function ct(iso){try{return new Date(iso).toLocaleString("en-US",{timeZone:"America/Chicago",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" CT";}catch(e){return String(iso);}}function J(u){return AG.json(u).catch(function(){return null;});}
   /* 5-yr bar = ONE measure: the dot sits at the percentile the sentence prints (share of weekly closes at or below the price), not at (price-low)/(high-low). When price-stats.json carries the weekly history (hist), today's live quote is ranked against it so the bar and the hero show the same price; otherwise the stored position is shown and dated. */
-  Promise.all([J("/data/price-stats.json"),J("/data/prices.json")]).then(function(a){var d=a[0],p=a[1],s=d&&d[KEY];if(s&&s.seasonality&&s.seasonality.length===12){window.__agsistSeas=s.seasonality;window.__agsistSeasN=s.seasonality_n||s.n||null;window.__agsistSeasS=s;try{window.dispatchEvent(new Event("agsist-seas"));}catch(e){}}if(!s||s.pct==null)return;var w=$("rng5-wrap");if(!w)return;var qs=(p&&p.quotes)||{},q=qs[QK+"-nearby"]||qs[QK]||null,live=(q&&q.close!=null)?q.close/100:null;var h=s.hist,cur,pct,n,lo,hi,note;if(h&&h.length>=29&&live!=null){var c=1;lo=live;hi=live;for(var i=0;i<h.length;i++){if(h[i]<=live)c++;if(h[i]<lo)lo=h[i];if(h[i]>hi)hi=h[i];}n=h.length+1;pct=Math.round(100*c/n);cur=live;note="Ranks "+pxWhat(q,p.fetched,ct)+" ("+m(live)+") against the prior "+h.length+" weekly closes.";}else{pct=s.pct;cur=s.cur;n=s.n;lo=s.lo;hi=s.hi;note="5-yr position as of the "+(d.updated?ct(d.updated):"last")+" update ("+m(s.cur)+"), not today’s live quote.";}pct=Math.max(0,Math.min(100,pct));$("rng5-lo").textContent="5-yr low "+m(lo,"down");$("rng5-hi").textContent="5-yr high "+m(hi,"up");$("rng5-cur").textContent=m(cur)+" · "+pct+ord(pct)+" pct";$("rng5-fill").style.width=pct+"%";$("rng5-dot").style.left="calc("+pct+"% - 6px)";$("rng5-read").textContent="At the "+pct+ord(pct)+" percentile of the last "+(s.years||5)+" years: "+band(pct)+". n = "+n+" weekly closes, continuous front-month (Yahoo Finance, delayed, not CME settlements). "+note;w.style.display="";});})();
+  Promise.all([J("/data/price-stats.json"),J("/data/prices.json")]).then(function(a){var d=a[0],p=a[1],s=d&&d[KEY];if(s&&s.seasonality_method==="one-contract-calendar-year"&&s.seasonality_pct&&s.seasonality_pct.length===12){window.__agsistSeasS=s;try{window.dispatchEvent(new Event("agsist-seas"));}catch(e){}}if(!s||s.pct==null)return;var w=$("rng5-wrap");if(!w)return;var qs=(p&&p.quotes)||{},q=qs[QK+"-nearby"]||qs[QK]||null,live=(q&&q.close!=null)?q.close/100:null;var h=s.hist,cur,pct,n,lo,hi,note;if(h&&h.length>=29&&live!=null){var c=1;lo=live;hi=live;for(var i=0;i<h.length;i++){if(h[i]<=live)c++;if(h[i]<lo)lo=h[i];if(h[i]>hi)hi=h[i];}n=h.length+1;pct=Math.round(100*c/n);cur=live;note="Ranks "+pxWhat(q,p.fetched,ct)+" ("+m(live)+") against the prior "+h.length+" weekly closes.";}else{pct=s.pct;cur=s.cur;n=s.n;lo=s.lo;hi=s.hi;note="5-yr position as of the "+(d.updated?ct(d.updated):"last")+" update ("+m(s.cur)+"), not today’s live quote.";}pct=Math.max(0,Math.min(100,pct));$("rng5-lo").textContent="5-yr low "+m(lo,"down");$("rng5-hi").textContent="5-yr high "+m(hi,"up");$("rng5-cur").textContent=m(cur)+" · "+pct+ord(pct)+" pct";$("rng5-fill").style.width=pct+"%";$("rng5-dot").style.left="calc("+pct+"% - 6px)";$("rng5-read").textContent="At the "+pct+ord(pct)+" percentile of the last "+(s.years||5)+" years: "+band(pct)+". n = "+n+" weekly closes, continuous front-month (Yahoo Finance, delayed, not CME settlements). "+note;w.style.display="";});})();
 
 
 /* RP revenue floor from data/harvest-prices.json, corn and soybeans. This ran
@@ -2202,23 +2229,18 @@ loadPrices();
 
 // TRADINGVIEW: fully decoupled from prices, loads independently, degrades gracefully
 document.addEventListener('DOMContentLoaded',function(){
-  // S7: seasonal chart driven by /data/price-stats.json seasonality (stashed by the
-  // 5-yr range code as window.__agsistSeas). No data: the card stays hidden;
-  // nothing invented.
-  function seasCap(s){if(!s)return null;var y=s.seasonality_years;if(s.seasonality_method==='calendar-year-detrended'&&y&&y.length===2){return 'Weekly closes for whole calendar years '+y[0]+'–'+y[1]+', each divided by its own year’s average, then averaged by month and scaled 0–100 (0 = weakest month, 100 = strongest; n='+(s.seasonality_n||'?')+' weeks). Continuous front-month (Yahoo Finance), not roll-adjusted. '+(y[1]-y[0]+1)+' years is a short window: a description of these years, not a forecast.';}return 'Average weekly close by calendar month over a rolling '+(s.years||5)+'-yr window, scaled 0–100 (n='+s.n+' weeks). Raw levels, not detrended, and the window starts and ends mid-year, so in a trending market the months sampled from the earliest or latest year read low or high for that reason alone. A description of these years, not a forecast.';}
+  // S7: seasonal chart from /data/price-stats.json (stashed by the 5-yr range code as window.__agsistSeasS,
+  // seasDraw above). No clean data: the fold stays hidden; nothing invented.
   function renderSeasonal(){
-    var seas=window.__agsistSeas;
+    var s=window.__agsistSeasS;
     var wrap=document.getElementById('seas-wrap');
     var ch=document.getElementById('seas-chart');
-    if(!wrap||!ch||!seas||seas.length!==12)return;
-    var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var cm=new Date().getMonth();
-    ch.innerHTML='';
-    seas.forEach(function(v,i){var c=document.createElement('div');c.className='seas-col'+(i===cm?' cur':'');c.title=MOS[i]+': '+v+'/100';c.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(c);});
+    if(!wrap||!ch||!s)return;
+    if(!seasDraw(s,ch,new Date().getMonth()))return;
     var capEl=document.getElementById('seas-caption');
-    var capTx=seasCap(window.__agsistSeasS);if(capEl&&capTx)capEl.textContent=capTx+CROP.seasSuffix;
+    if(capEl)capEl.textContent=seasCap(s)+CROP.seasSuffix;
     wrap.style.display='block';
-    try{renderScorecard();}catch(e){}
+    var fold=document.getElementById('fold-seas');if(fold)fold.hidden=false;
   }
   window.addEventListener('agsist-seas',renderSeasonal);
   renderSeasonal();
