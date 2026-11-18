@@ -162,12 +162,17 @@
     var soon = held(card, st), nm = esc(name);
     var gets = 'Your card on every ' + nm + ' page and for ' + nm + ' readers. ';
     var stTxt = has ? nm + ' readers: <b>' + num(e) + '</b> engaged visits, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '. ' : '';
-    var site = [];
-    if (pr.engaged && pr.engaged.total > 0) site.push('<b>' + num(pr.engaged.total) + '</b> engaged visits');
-    if (pr.search && pr.search.total > 0) site.push('<b>' + num(pr.search.total) + '</b> search clicks');
+    /* the sitewide pair: each with its own dates (one date span when both share it), and said to overlap */
+    var site = [], en = pr.engaged, se = pr.search;
+    var hasE = !!(en && en.total > 0 && en.start && en.end), hasS = !!(se && se.total > 0 && se.start && se.end);
+    var one = hasE && hasS && en.start === se.start && en.end === se.end;
+    var span = function (w) { return dayTxt(w.start) + ' to ' + dayTxt(w.end); };
+    if (hasE) site.push('<b>' + num(en.total) + '</b> engaged visits' + (one ? '' : ' (' + span(en) + ')'));
+    if (hasS) site.push('<b>' + num(se.total) + '</b> search clicks' + (one ? '' : ' (' + span(se) + (hasE ? '; they overlap' : '') + ')'));
+    if (one) site[1] += ' (they overlap)';
     var lst = ls.people > 0 ? '<b>' + num(ls.people) + '</b> on our email lists' : ls.daily > 0 ? '<b>' + num(ls.daily) + '</b> on the Daily email' : '';
     if (lst && ls.asOf) lst += ' (' + dayTxt(ls.asOf) + ')';
-    var siteTxt = site.length ? 'All of AGSIST, 30 days: ' + site.join(', ') + (lst ? '; ' + lst : '') + '. ' : (lst ? 'All of AGSIST: ' + lst + '. ' : '');
+    var siteTxt = site.length ? 'All of AGSIST' + (one ? ', ' + span(en) : '') + ': ' + site.join(', ') + (lst ? '; ' + lst : '') + '. ' : (lst ? 'All of AGSIST: ' + lst + '. ' : '');
     var body = gets + (has && e >= SMALL ? stTxt + siteTxt : siteTxt + stTxt);
     return '<div class="ss-box ss-open"><p class="ss-tag">' + nm + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
       '<p class="ss-txt">' + body.replace(/\s+$/, '') + '</p>' +
