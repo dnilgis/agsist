@@ -3,11 +3,12 @@ name: Sponsor monthly email
 run-name: ${{ inputs.dry_run && 'Sponsor monthly email (dry run)' || 'Sponsor monthly email' }}
 
 # Each live sponsor gets last month's times seen and clicks with the link to their report page
-# (scripts/sponsor_month_report.py). The 1st to the 3rd at 19:37 UTC: the first run whose report covers
-# the whole month sends, and the sent marker on private-data stops a second send.
+# (scripts/sponsor_month_report.py). The 2nd to the 4th at 19:37 UTC, never the 1st: GA4 needs a full day to
+# settle the month's last day, so the 1st would undercount it. The first run whose report covers the whole month
+# sends; the sent marker on private-data stops a second send.
 on:
   schedule:
-    - cron: "37 19 1-3 * *"
+    - cron: "37 19 2-4 * *"
   workflow_run:
     workflows: ["Fetch Grain Bids", "Tick 02"]
     types: [completed]
@@ -55,7 +56,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python3 scripts/cron_gate.py tick --workflow sponsor-monthly.yml --max-lag 360
-          --cron "37 19 1-3 * *"
+          --cron "37 19 2-4 * *"
 
   send:
     needs: gate
@@ -99,6 +100,9 @@ jobs:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           FROM_NAME: ${{ secrets.FROM_NAME }}
           SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
+          # each sponsor's marker is saved to private-data before and right after its send (two steps)
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
         run: python3 scripts/sponsor_month_report.py
 
       - name: Save the sent markers
