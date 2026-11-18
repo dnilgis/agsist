@@ -3,7 +3,7 @@
    strong D4, the same five colours as the share pictures (scripts/atlas_pictures.py DROUGHT_DK). Gaps are hatched with a plain label in the key.
    Two-colour scales: rain against normal, basis, and ARC-CO minus PLC (arcplc: orange PLC higher, grey about even, blue
    ARC-CO higher; never red and green). */
-.an{--an-gap-bg:#f6f7f5;--an-gap-line:#c3c9c3;--an-none:#e4e7e3;--an-stroke:var(--bg,#f6f7f5);--an-state:#4a524e;--an-hl:#161a18;
+.an{--an-gap-bg:#f6f7f5;--an-gap-line:#c3c9c3;--an-care-dot:#5d6662;--an-none:#e4e7e3;--an-stroke:var(--bg,#f6f7f5);--an-state:#4a524e;--an-hl:#161a18;
   --an-drought-k0:#f3d98c;--an-drought-k1:#f2ad5b;--an-drought-k2:#e57b3a;--an-drought-k3:#cc4a2c;--an-drought-k4:#c02c44;
   --an-money-k0:#efe3c2;--an-money-k1:#d9bf7f;--an-money-k2:#b8933e;--an-money-k3:#8a6514;--an-money-k4:#523b0a;
   --an-basis-k0:#d3ebe6;--an-basis-k1:#93cdc2;--an-basis-k2:#4fa597;--an-basis-k3:#227a6d;--an-basis-k4:#0f4d45;
@@ -16,7 +16,7 @@
   --an-arcplc-k0:#b3541e;--an-arcplc-k1:#eba872;--an-arcplc-k2:#d6d9d5;--an-arcplc-k3:#9cc3e4;--an-arcplc-k4:#2c6aa8;
   --an-green-k0:#e2efdc;--an-green-k1:#b5d6a7;--an-green-k2:#7fb26c;--an-green-k3:#4d8a3c;--an-green-k4:#2a5c20;
   --an-accent:#8a6514;margin:0 0 1.6rem}
-:root:not([data-theme="light"]) .an{--an-gap-bg:#232b2d;--an-gap-line:#7a878a;--an-none:#1f2627;--an-stroke:var(--bg,#0a0c0d);--an-state:#9aa49f;--an-hl:#ffffff;
+:root:not([data-theme="light"]) .an{--an-gap-bg:#232b2d;--an-gap-line:#7a878a;--an-care-dot:#c9d1d2;--an-none:#1f2627;--an-stroke:var(--bg,#0a0c0d);--an-state:#9aa49f;--an-hl:#ffffff;
   --an-drought-k0:#f3d98c;--an-drought-k1:#f2ad5b;--an-drought-k2:#e57b3a;--an-drought-k3:#cc4a2c;--an-drought-k4:#c02c44;
   --an-money-k0:#73633a;--an-money-k1:#937f4b;--an-money-k2:#b39a5b;--an-money-k3:#d3b66c;--an-money-k4:#f3d27c;
   --an-basis-k0:#4d6b64;--an-basis-k1:#61877f;--an-basis-k2:#76a39a;--an-basis-k3:#8ac0b4;--an-basis-k4:#9fdccf;
@@ -63,9 +63,11 @@
 #an-svg .an-c path{stroke:var(--an-stroke);stroke-width:.4px;stroke-linejoin:round;cursor:pointer}
 #an-svg .an-s path{fill:none;stroke:var(--an-state);stroke-width:1.1px;stroke-linejoin:round;pointer-events:none}
 #an-svg .an-hl{fill:none;stroke:var(--an-hl);stroke-width:2px;pointer-events:none}
-#an-svg .kn{fill:var(--an-none)} #an-svg .kx{fill:url(#an-hx)} #an-svg .ko{fill:var(--bg,transparent);stroke:none}
+#an-svg .kn{fill:var(--an-none)} #an-svg .kx{fill:url(#an-hx)} #an-svg .kc{fill:url(#an-kc)} #an-svg .ko{fill:var(--bg,transparent);stroke:none}
 .an-key i.kn{background:var(--an-none)}
 .an-key i.kx{background:repeating-linear-gradient(45deg,var(--an-gap-bg) 0 3px,var(--an-gap-line) 3px 4.5px)}
+/* a caution (read with care, depends on your PLC yield): dots, never the missing-figure hatch */
+.an-key i.kc,.an-rk-l i.kc{background:radial-gradient(circle,var(--an-care-dot) 1.3px,transparent 1.6px) 0 0/5px 5px,var(--an-gap-bg)}
 .an-key i.ko{background:var(--bg,transparent);border:1.5px solid var(--an-state)}
 #an-svg[data-scale=drought] .k0{fill:var(--an-drought-k0)}#an-svg[data-scale=drought] .k1{fill:var(--an-drought-k1)}#an-svg[data-scale=drought] .k2{fill:var(--an-drought-k2)}#an-svg[data-scale=drought] .k3{fill:var(--an-drought-k3)}#an-svg[data-scale=drought] .k4{fill:var(--an-drought-k4)}
 #an-svg[data-scale=money] .k0{fill:var(--an-money-k0)}#an-svg[data-scale=money] .k1{fill:var(--an-money-k1)}#an-svg[data-scale=money] .k2{fill:var(--an-money-k2)}#an-svg[data-scale=money] .k3{fill:var(--an-money-k3)}#an-svg[data-scale=money] .k4{fill:var(--an-money-k4)}
@@ -128,7 +130,7 @@
 .an-key button{display:flex;align-items:center;gap:.3rem;background:none;border:0;padding:0 .1rem;font:inherit;color:inherit;cursor:pointer;min-height:1.6rem;border-radius:4px}
 .an-key button[aria-pressed="true"]{outline:2px solid var(--an-accent,var(--gold));outline-offset:1px}
 #an-svg[data-hk] .an-c path{opacity:.18}
-#an-svg[data-hk="k0"] .an-c path.k0,#an-svg[data-hk="k1"] .an-c path.k1,#an-svg[data-hk="k2"] .an-c path.k2,#an-svg[data-hk="k3"] .an-c path.k3,#an-svg[data-hk="k4"] .an-c path.k4,#an-svg[data-hk="k5"] .an-c path.k5,#an-svg[data-hk="kn"] .an-c path.kn,#an-svg[data-hk="kx"] .an-c path.kx,#an-svg[data-hk="ko"] .an-c path.ko{opacity:1}
+#an-svg[data-hk="k0"] .an-c path.k0,#an-svg[data-hk="k1"] .an-c path.k1,#an-svg[data-hk="k2"] .an-c path.k2,#an-svg[data-hk="k3"] .an-c path.k3,#an-svg[data-hk="k4"] .an-c path.k4,#an-svg[data-hk="k5"] .an-c path.k5,#an-svg[data-hk="kn"] .an-c path.kn,#an-svg[data-hk="kx"] .an-c path.kx,#an-svg[data-hk="kc"] .an-c path.kc,#an-svg[data-hk="ko"] .an-c path.ko{opacity:1}
 #an-svg .an-c path.kz{fill:var(--an-none);opacity:.35}
 #an-svg .an-c path.line{stroke:var(--an-hl);stroke-width:1.3px;vector-effect:non-scaling-stroke}
 .an-scl{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 .4rem}.an-scl[hidden],.an-linew[hidden]{display:none}
