@@ -2255,14 +2255,13 @@
     "prf",
     "seasonal models"
    ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 11am Central",
+   "cadence": "1 launch on a fixed schedule at about 5am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "23 10 * * 3",
-    "37 16 2 12 *"
+    "23 10 * * 3"
    ],
    "max_gap_hours": 168.0,
    "quiet": null,
@@ -2283,7 +2282,7 @@
     "prf",
     "seasonal models"
    ],
-   "cadence": "4 launches on a fixed schedule at about 5am, 9am, 10am, 11am Central",
+   "cadence": "3 launches on a fixed schedule at about 5am, 9am, 10am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2291,7 +2290,6 @@
    "crons": [
     "37 14 9 * *",
     "23 10 * * 3",
-    "37 16 2 12 *",
     "41 15 15 11,12 *"
    ],
    "max_gap_hours": 168.0,
@@ -2314,7 +2312,7 @@
     "prf",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 10am, 11am Central",
+   "cadence": "3 launches on a fixed schedule at about 5am, 6am, 10am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2322,8 +2320,7 @@
    "crons": [
     "47 15 * * 4",
     "17 11 * * 5",
-    "23 10 * * 3",
-    "37 16 2 12 *"
+    "23 10 * * 3"
    ],
    "max_gap_hours": 119.1,
    "quiet": "weekly",
