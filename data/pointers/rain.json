@@ -109,6 +109,10 @@
    "to": "/rain/mississippi",
    "since": "2026-11-01"
   },
+  "rain/mississippi/sunflower-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-11-18"
+  },
   "rain/mississippi/tishomingo-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-11-16"
@@ -141,9 +145,17 @@
    "to": "/rain/montana",
    "since": "2026-11-14"
   },
+  "rain/nebraska/hooker-county.html": {
+   "to": "/rain/nebraska",
+   "since": "2026-11-18"
+  },
   "rain/nebraska/perkins-county.html": {
    "to": "/rain/nebraska",
    "since": "2026-11-15"
+  },
+  "rain/nebraska/wayne-county.html": {
+   "to": "/rain/nebraska",
+   "since": "2026-11-18"
   },
   "rain/north-carolina/northampton-county.html": {
    "to": "/rain/north-carolina",
@@ -184,6 +196,10 @@
   "rain/south-carolina/calhoun-county.html": {
    "to": "/rain/south-carolina",
    "since": "2026-10-14"
+  },
+  "rain/south-carolina/fairfield-county.html": {
+   "to": "/rain/south-carolina",
+   "since": "2026-11-18"
   },
   "rain/south-carolina/marion-county.html": {
    "to": "/rain/south-carolina",
