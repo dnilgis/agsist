@@ -187,7 +187,9 @@
     var quiet = opts && opts.quiet;
     running = Promise.resolve(withLock(function () {
       var out = { sent: [], kept: 0, refused: [] };
-      var ids = read().map(function (x) { return x.id; });
+      var live = read();
+      try { if (live.length !== JSON.parse(root.localStorage.getItem(KEY) || '[]').length) write(live); } catch (e) {}   // expired ones go now
+      var ids = live.map(function (x) { return x.id; });
       return ids.reduce(function (p, id) {
         return p.then(function () {
           var x = read().filter(function (y) { return y.id === id; })[0];
