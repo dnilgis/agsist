@@ -93,6 +93,13 @@
    "link": "/farmland-atlas"
   },
   {
+   "id": "2026-11-18-rain-county-average-first",
+   "date": "2026-11-18",
+   "title": "County rain pages lead with the county average",
+   "line": "County rain pages now answer with the county-wide average where there is one. The weather station follows with its own date, and the page says when they disagree.",
+   "link": "/rain"
+  },
+  {
    "id": "2026-11-17-arc-plc-range-ends",
    "date": "2026-11-17",
    "title": "ARC/PLC trigger yields to a tenth",
