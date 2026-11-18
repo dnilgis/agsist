@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-11-18T14:09:42+00:00",
+  "fetched": "2026-11-18T15:24:35+00:00",
   "source": "api.weather.gov/alerts/active",
   "events_requested": [
     "Frost Advisory",
