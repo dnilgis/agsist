@@ -15,7 +15,9 @@
    land rented, rent change, tile, cover crops, cattle, solar and wind proposed, foreign-held acres, hail and wind days,
    claims from heat and drought). Their column holds the figure or a gap code; "zero" names a 0 drawn grey, "kn" a gap
    drawn grey, "cover" an unread state drawn as an outline.
-   Batch 2, PR C2 adds ARC-CO for soybeans and wheat under Program; a layer's "dp" sets the decimal places it prints. */
+   Batch 2, PR C2 adds ARC-CO for soybeans and wheat under Program; a layer's "dp" sets the decimal places it prints.
+   It also adds ARC-CO minus PLC for corn (unit "gd", scale "arcplc"): orange where PLC has the higher estimate, blue
+   where ARC-CO has, grey within a dollar; the key names each side (gapKey). */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
@@ -65,9 +67,10 @@ function show(v,l){
   if(l.unit==='F') return v.toFixed(1)+' F';
   if(l.unit==='c'){ var c=Math.round(Math.abs(v)*100); return c?c+(c===1?' cent ':' cents ')+(v<0?'under':'over'):'even'; }
   if(l.unit==='x') return v.toFixed(2);
+  if(l.unit==='gd') return v>0?'ARC-CO higher by '+money(v,2):v<0?'PLC higher by '+money(-v,2):'even';
   return String(v);
 }
-function cut(v,l){ if(l.unit==='$') return money(v,0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2);
+function cut(v,l){ if(l.unit==='$'||l.unit==='gd') return money(Math.abs(v),0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2);
   if(l.unit==='ac') return n0(v)+' acres'; if(l.unit==='d') return n0(v)+' days'; if(l.unit==='mw') return n0(v)+' MW';
   if(l.unit==='gdd'||l.unit==='hd') return n0(v); if(l.unit==='pc') return (v>0?'+':'')+v+'%';
   return v+(l.unit==='%'?'%':l.unit==='F'?' F':''); }
@@ -80,6 +83,11 @@ function basisKey(cs,n){
     o.push(['k'+i,(a<0&&b<0)?Math.round(-a*100)+'¢ to '+cents(b):(a>0&&b>0)?Math.round(a*100)+'¢ to '+cents(b):cents(a)+' to '+cents(b),n['k'+i]]); }
   b=cs[cs.length-1]; o.push(['k'+cs.length,b===0?'Even or over':b>0?cents(b)+' or more':cents(b)+' or stronger',n['k'+cs.length]]);
   return o;
+}
+// ARC-CO minus PLC: five bins around even, orange where PLC has the higher estimate, blue where ARC-CO has
+function gapKey(cs,n,l){
+  return [['k0','PLC higher by more than '+cut(cs[0],l),n.k0],['k1','PLC higher by '+cut(cs[1],l)+' to '+cut(cs[0],l),n.k1],
+    ['k2','Within '+cut(cs[2],l)+' either way',n.k2],['k3','ARC-CO higher by '+cut(cs[2],l)+' to '+cut(cs[3],l),n.k3],['k4','ARC-CO higher by '+cut(cs[3],l)+' or more',n.k4]];
 }
 var DRN=['Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'];
 // partial layers: a state we do not read is an empty outline (ko), not a few hundred hatched counties
@@ -134,6 +142,7 @@ function keyItems(l){
     if(l.zero) out.push(['kn',l.zero,n.kn]);
     if(l.scale==='rain'){ out.push(['k0','Under '+cs[0]+'%',n.k0]); for(var j=1;j<cs.length;j++) out.push(['k'+j,cs[j-1]+' to '+cs[j]+'%',n['k'+j]]); out.push(['k'+cs.length,cs[cs.length-1]+'% or more',n['k'+cs.length]]); }
     else if(l.unit==='c'&&cs.length){ out=out.concat(basisKey(cs,n)); }
+    else if(l.unit==='gd'&&cs.length===4){ out=out.concat(gapKey(cs,n,l)); }
     else if(cs.length){ out.push(['k0','Under '+cut(cs[0],l),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l)+' to '+cut(cs[k],l),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l)+' or more',n['k'+cs.length]]); }
     if(l.kn) out.push(['kn',l.gaps[l.kn],n.kn]);
   }
@@ -450,11 +459,11 @@ function applyDeep(o){
   }
   return null;
 }
-function picName(){ return S.c&&S.q==='land'?'pic-'+S.c:S.s?'pic-'+S.s.toLowerCase():'pic-us'; }
+function picName(){ return S.c&&S.q==='land'?'pic-'+S.c:S.m==='arcgap'?'pic-arc-us':S.s?'pic-'+S.s.toLowerCase():'pic-us'; }
 function save(){
   var a=$('an-pic'); if(!a||!NOW.pics) return;
   var n=picName(); a.href=NOW.pics+n+'.png'; a.setAttribute('download','agsist-'+n+'.png');
-  a.textContent=n==='pic-us'?'Save the picture':n.length===6?'Save the '+(NOW.states[S.s]&&NOW.states[S.s].name||S.s)+' picture':'Save the county picture';
+  a.textContent=n==='pic-us'?'Save the picture':n==='pic-arc-us'?'Save the ARC-CO and PLC picture':n.length===6?'Save the '+(NOW.states[S.s]&&NOW.states[S.s].name||S.s)+' picture':'Save the county picture';
 }
 function wire(){
   [].forEach.call(root.querySelectorAll('.an-tab'),function(b){ b.addEventListener('click',function(){ go(b.getAttribute('data-q')); ga('atlas_now_question',{q:b.getAttribute('data-q')||'all'}); }); });
