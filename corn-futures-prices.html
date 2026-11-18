@@ -687,15 +687,16 @@ details.fold[hidden]{display:none}
   </details>
 
   <details class="fold" id="fold-seas" data-wide-open>
-    <summary class="fold-sum"><span class="fold-t">Seasonal price tendency</span><span class="fold-d">What weekly closes did by month over recent years</span></summary>
+    <summary class="fold-sum"><span class="fold-t">Prices by month, recent years</span><span class="fold-d">What one contract did by month in recent years</span></summary>
     <div class="fold-body">
+    <p class="seas-caption" id="seas-none">Not shown yet: this chart is built from one contract per calendar year, and those weekly closes are not in yet.</p>
     <div class="seas-wrap" id="seas-wrap" style="display:none">
       <div class="seas-head">
-        <span class="seas-title">Corn seasonal price tendency</span>
-        <span class="seas-note">Current month highlighted · hover for value</span>
+        <span class="seas-title">What recent years did</span>
+        <span class="seas-note">Percent from each year&rsquo;s mean</span>
       </div>
       <div id="seas-chart" class="seas-chart"></div>
-      <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast. Major USDA reports and weather events override any seasonal pattern.</div>
+      <div class="seas-caption" id="seas-caption">By month, the percent a weekly close sat above or below its year&rsquo;s mean, each year read from one contract. Shown once those closes are in. Major USDA reports and weather events override any seasonal pattern.</div>
     </div>
     </div>
   </details>
@@ -852,7 +853,7 @@ details.fold[hidden]{display:none}
 <script src="/components/loader.js?v=20" defer></script>
 <script src="/components/geo.js?v=41" defer></script>
 <script>window.AGSIST_FUTURES='corn'</script>
-<script src="/components/storesell.js?v=10"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=37"></script>
+<script src="/components/storesell.js?v=10"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=38"></script>
 
   <script src="/components/next-links.js?v=4" defer></script>
 </body>
