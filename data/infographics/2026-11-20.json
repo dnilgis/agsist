@@ -1,0 +1,204 @@
+{
+ "date": "2026-11-20",
+ "slug": "2026-11-20",
+ "kind": "drought-states",
+ "topic": "weather",
+ "related_page": "/rain",
+ "title": "Nearly half of Arkansas is in exceptional drought",
+ "lede": [
+  "Exceptional drought (D4) is the worst of the Drought Monitor's five drought levels.",
+  "We show how much of each state's land was at that level on four maps."
+ ],
+ "big": {
+  "value": 49.5,
+  "unit": "%",
+  "label": "of Arkansas in exceptional drought (D4), map valid Nov 10, 2026"
+ },
+ "chart": {
+  "type": "groups",
+  "title": "Share of each state's land in drought, four Drought Monitor maps",
+  "unit": "%",
+  "axis": {
+   "x": "Percent of the state's land",
+   "y": "Map date"
+  },
+  "series": [
+   "Exceptional drought (D4)",
+   "Extreme drought or worse (D3 or D4)"
+  ],
+  "dates": [
+   "2026-11-10",
+   "2026-11-03",
+   "2026-10-13",
+   "2025-11-11"
+  ],
+  "groups": [
+   {
+    "key": "AR",
+    "label": "Arkansas",
+    "rows": [
+     {
+      "date": "2026-11-10",
+      "label": "Nov 10",
+      "when": "newest",
+      "d4": 49.5,
+      "d3": 84.6
+     },
+     {
+      "date": "2026-11-03",
+      "label": "Nov 3",
+      "when": "a week earlier",
+      "d4": 39.7,
+      "d3": 82.1
+     },
+     {
+      "date": "2026-10-13",
+      "label": "Oct 13",
+      "when": "four weeks earlier",
+      "d4": 6.6,
+      "d3": 65.4
+     },
+     {
+      "date": "2025-11-11",
+      "label": "Nov 11, 2025",
+      "when": "a year earlier",
+      "d4": 0,
+      "d3": 0
+     }
+    ]
+   },
+   {
+    "key": "LA",
+    "label": "Louisiana",
+    "rows": [
+     {
+      "date": "2026-11-10",
+      "label": "Nov 10",
+      "when": "newest",
+      "d4": 18.9,
+      "d3": 58.6
+     },
+     {
+      "date": "2026-11-03",
+      "label": "Nov 3",
+      "when": "a week earlier",
+      "d4": 16.1,
+      "d3": 53.3
+     },
+     {
+      "date": "2026-10-13",
+      "label": "Oct 13",
+      "when": "four weeks earlier",
+      "d4": 1.1,
+      "d3": 8.2
+     },
+     {
+      "date": "2025-11-11",
+      "label": "Nov 11, 2025",
+      "when": "a year earlier",
+      "d4": 0,
+      "d3": 0
+     }
+    ]
+   },
+   {
+    "key": "MS",
+    "label": "Mississippi",
+    "rows": [
+     {
+      "date": "2026-11-10",
+      "label": "Nov 10",
+      "when": "newest",
+      "d4": 7.5,
+      "d3": 46.5
+     },
+     {
+      "date": "2026-11-03",
+      "label": "Nov 3",
+      "when": "a week earlier",
+      "d4": 5.9,
+      "d3": 38.4
+     },
+     {
+      "date": "2026-10-13",
+      "label": "Oct 13",
+      "when": "four weeks earlier",
+      "d4": 3.1,
+      "d3": 9.6
+     },
+     {
+      "date": "2025-11-11",
+      "label": "Nov 11, 2025",
+      "when": "a year earlier",
+      "d4": 0,
+      "d3": 0
+     }
+    ]
+   }
+  ],
+  "highlight": [
+   "AR"
+  ],
+  "counties": {
+   "key": "AR",
+   "label": "Arkansas",
+   "total": 75,
+   "dates": [
+    "2026-11-10",
+    "2026-11-03",
+    "2026-10-13"
+   ],
+   "any_d4": [
+    57,
+    48,
+    20
+   ],
+   "half_d4": [
+    37,
+    30,
+    2
+   ]
+  }
+ },
+ "facts": [
+  {
+   "text": "49.5% of Arkansas was in exceptional drought (D4) on the Nov 10 map, up from 39.7% a week earlier.",
+   "source": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 10, 2026",
+   "date": "2026-11-10"
+  },
+  {
+   "text": "It was 6.6% four weeks earlier (Oct 13) and 0% a year earlier (Nov 11, 2025).",
+   "source": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 10, 2026",
+   "date": "2026-11-10"
+  },
+  {
+   "text": "84.6% of Arkansas was in extreme drought or worse (D3 or D4), up from 82.1% a week earlier.",
+   "source": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 10, 2026",
+   "date": "2026-11-10"
+  },
+  {
+   "text": "57 of Arkansas's 75 counties had some exceptional drought, up from 48 a week earlier and 20 four weeks earlier.",
+   "source": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 10, 2026",
+   "date": "2026-11-10"
+  },
+  {
+   "text": "In 37 of those counties, at least half the land was in exceptional drought.",
+   "source": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 10, 2026",
+   "date": "2026-11-10"
+  },
+  {
+   "text": "Louisiana: 18.9% in exceptional drought, 58.6% in D3 or worse. Mississippi: 7.5% in exceptional drought, 46.5% in D3 or worse.",
+   "source": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 10, 2026",
+   "date": "2026-11-10"
+  }
+ ],
+ "sources": [
+  {
+   "name": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA)",
+   "url": "https://droughtmonitor.unl.edu",
+   "credit": "The U.S. Drought Monitor is jointly produced by the National Drought Mitigation Center at the University of Nebraska-Lincoln, the U.S. Department of Agriculture, the National Oceanic and Atmospheric Administration and NASA. Map and data courtesy of NDMC, via https://droughtmonitor.unl.edu.",
+   "period": "Map valid Nov 10, 2026 (Tuesday), released Nov 12, 2026"
+  }
+ ],
+ "data_date": "2026-11-10"
+}
