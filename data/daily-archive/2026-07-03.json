@@ -31,7 +31,7 @@
     {
       "title": "Corn Sells Into Pollination",
       "icon": "🌽",
-      "body": "Corn closed Thursday at **$4.25**, down 4.0%, the sharpest single-session drop of the summer so far, and it happened the day before a long weekend with the crop in tassel. December corn held far better, settling at **$4.42**, down only 0.3%, which tells you something: whoever sold nearby corn on Thursday was not making a new-crop call, they were getting out of a position. The NCGA dropped its 250-year corn demand roadmap Thursday, which is the kind of structural bullish story that does not move a July futures contract. What moves a July contract is heat, and the Belt has had plenty of it. USDA's acreage report, released Monday, confirmed more corn acres than March estimates, which added supply to the balance sheet right as the heat premium was building. That combination, more acres plus funds stepping out before a holiday, is the cleanest explanation for Thursday's break. December corn at $4.42 held, which means the new-crop market is not panicking. The new-crop market is waiting for Monday's Crop Progress to find out what three days of peak-pollination heat actually did.",
+      "body": "Corn closed Thursday at **$4.25**, down 4.0%, the sharpest single-session drop of the summer so far, and it happened the day before a long weekend with the crop in tassel. December corn held far better, settling at **$4.42**, down only 0.3%, which tells you something: whoever sold nearby corn on Thursday was not making a new-crop call, they were getting out of a position. The NCGA dropped its 250-year corn demand roadmap Thursday, which is the kind of structural bullish story that does not move a July futures contract. What moves a July contract is heat, and the Belt has had plenty of it. USDA's acreage report, released Tuesday, June 30, confirmed more corn acres than March estimates, which added supply to the balance sheet right as the heat premium was building. (Corrected Nov 17, see the note below.) That combination, more acres plus funds stepping out before a holiday, is the cleanest explanation for Thursday's break. December corn at $4.42 held, which means the new-crop market is not panicking. The new-crop market is waiting for Monday's Crop Progress to find out what three days of peak-pollination heat actually did.",
       "catalyst": "USDA acreage confirmed above-estimate corn acres; pre-holiday fund liquidation in a quiet session.",
       "bottom_line": "Nearby sold off hard; new-crop held. Separation says the market isn't calling a yield disaster yet.",
       "conviction_level": "medium",
@@ -41,8 +41,8 @@
     {
       "title": "Beans Hold Better Than Corn",
       "icon": "🫘",
-      "body": "Soybeans nearby closed at **$11.32**, down 2.0%, and November beans held at **$11.48**, down only 0.6%. That spread matters. Nearby beans took a hit alongside corn in what was broadly a pre-holiday selloff, but new-crop beans are holding well above the levels that would signal a real demand problem. Soybean meal closed **up 0.7%** at $307.70 and soybean oil gained 2.2% to $66.95, so the crush complex is not telling the same story as the bean itself. China's $17 billion annual U.S. ag purchase commitment through 2028, announced May 18, has not produced sustained futures support, and Thursday's session was no exception. The beans story this weekend is the same as corn: peak July heat plus the acreage overhang from Monday's USDA report. The soyoil gain tells you renewable diesel demand is still present. The meal gain tells you crush is running. The bean price tells you the funds went home early.",
-      "catalyst": "Pre-holiday liquidation against Monday's above-estimate acreage numbers; crush complex diverged higher.",
+      "body": "Soybeans nearby closed at **$11.32**, down 2.0%, and November beans held at **$11.48**, down only 0.6%. That spread matters. Nearby beans took a hit alongside corn in what was broadly a pre-holiday selloff, but new-crop beans are holding well above the levels that would signal a real demand problem. Soybean meal closed **up 0.7%** at $307.70 and soybean oil gained 2.2% to $66.95, so the crush complex is not telling the same story as the bean itself. China's $17 billion annual U.S. ag purchase commitment through 2028, announced May 18, has not produced sustained futures support, and Thursday's session was no exception. The beans story this weekend is the same as corn: peak July heat plus the acreage overhang from Tuesday's USDA report. (Corrected Nov 17, see the note below.) The soyoil gain tells you renewable diesel demand is still present. The meal gain tells you crush is running. The bean price tells you the funds went home early.",
+      "catalyst": "Pre-holiday liquidation against Tuesday's above-estimate acreage numbers; crush complex diverged higher.",
       "bottom_line": "Crush margins running fine; the bean selloff was funds, not fundamentals.",
       "conviction_level": "medium",
       "overnight_surprise": false,
@@ -106,8 +106,8 @@
       "desc": "Weekly Export Sales: soybeans below 300,000 MT keeps November beans at $11.48 under pressure. Above 500,000 MT and the China commitment starts showing up as sustained flow, not just a headline."
     },
     {
-      "time": "Saturday, July 11, 11:00 AM CT",
-      "desc": "WASDE monthly report: July WASDE will carry USDA's first look at 2026 crop yield estimates incorporating early-season heat. Any yield cut from the 181 bu/acre trendline in corn is the number that resets the whole supply story."
+      "time": "Friday, July 10, 11:00 AM CT",
+      "desc": "WASDE monthly report: July WASDE will carry USDA's first look at 2026 crop yield estimates incorporating early-season heat. Any yield cut from the 181 bu/acre trendline in corn is the number that resets the whole supply story. (Corrected Nov 17, see the note below.)"
     }
   ],
   "daily_quote": {
@@ -198,5 +198,15 @@
   "price_validation_clean": true,
   "market_closed": true,
   "market_status_reason": "holiday",
-  "first_published_at": "2026-07-03T12:59:54+00:00"
+  "first_published_at": "2026-07-03T12:59:54+00:00",
+  "corrections": [
+    {
+      "date": "2026-11-17",
+      "text": "The watch list put the July WASDE report at Saturday, July 11, 11:00 AM CT. USDA released it Friday, July 10, at 11:00 AM CT."
+    },
+    {
+      "date": "2026-11-17",
+      "text": "This issue said USDA's acreage report was \"released Monday.\" It came out Tuesday, June 30, as the source line says. The lines now say Tuesday."
+    }
+  ]
 }
