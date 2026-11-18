@@ -14,6 +14,16 @@
   'use strict';
   var PAL = [['var(--gold,#d4a23f)', '#e0ac45'], ['var(--blue,#4f94d8)', '#5ea4ea']];
   function inRange(c, y0, y1) { return c.lines[0].pts.filter(function (p) { return p[0] >= y0 && p[0] <= y1; }); }
+  // A tie for the most CRP acres names its first year, then the last year when every year between held it,
+  // or 'matched later' when one did not (Nov 18, 2026). Twin: crp_take() in the builder.
+  function crpTake(pts, top, last) {
+    if (top[1] <= 0) return 'No acres enrolled in any year shown.';
+    var tied = pts.filter(function (p) { return p[1] === top[1]; }).map(function (p) { return p[0]; });
+    var head = 'The most in the years shown: ' + top[2] + ' acres';
+    if (tied.length === 1) return top[0] !== last[0] ? head + ' in ' + top[0] + '.' : 'The most enrolled in any year shown.';
+    if (tied[tied.length - 1] - tied[0] === tied.length - 1) return head + ', first reached in ' + tied[0] + ' and held through ' + tied[tied.length - 1] + '.';
+    return head + ', first reached in ' + tied[0] + ' and matched later.';
+  }
   function story(c, y0, y1) {
     var pts = inRange(c, y0, y1);
     if (!pts.length) return { head: '', take: '', summary: '' };
@@ -21,7 +31,7 @@
     var top = pts.reduce(function (a, p) { return p[1] > a[1] || (p[1] === a[1] && p[0] > a[0]) ? p : a; });
     if (k === 'crp') {
       head = 'CRP acres in ' + lab + ': ' + last[2] + ' in ' + last[0];
-      take = top[0] !== last[0] ? 'The most in the years shown: ' + top[2] + ' acres in ' + top[0] + '.' : 'The most enrolled in any year shown.';
+      take = crpTake(pts, top, last);
     } else if (k === 'rent') {
       var ch = pts[0][0] < last[0] ? (c.chg || {})[String(pts[0][0])] : null, noun = c.lines[0].n + ' rent in ' + lab;
       if (ch && ch[0]) head = noun + ' is ' + (ch[0] > 0 ? 'up ' : 'down ') + ch[1] + '% since ' + pts[0][0];
