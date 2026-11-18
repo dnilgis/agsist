@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '108';
+  var CV = '109';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -152,7 +152,7 @@
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!a) return;
       var dd = a.closest('.nav-dd');
-      send(a, 'desktop', txt(dd && dd.querySelector('.nav-btn')));
+      send(a, 'desktop', dd ? txt(dd.querySelector('.nav-btn')) : 'Top');   // a link straight on the bar (Cash bids) is group Top
     }, true);   // capture: each panel keeps its own clicks from bubbling (it stays open on a click inside)
     var dr = document.getElementById('drawer');
     if (dr) dr.addEventListener('click', function (e) {
