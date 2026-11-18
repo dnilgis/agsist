@@ -1,0 +1,112 @@
+name: Sponsor monthly email
+
+run-name: ${{ inputs.dry_run && 'Sponsor monthly email (dry run)' || 'Sponsor monthly email' }}
+
+# Each live sponsor gets last month's times seen and clicks with the link to their report page
+# (scripts/sponsor_month_report.py). The 1st to the 3rd at 19:37 UTC: the first run whose report covers
+# the whole month sends, and the sent marker on private-data stops a second send.
+on:
+  schedule:
+    - cron: "37 19 1-3 * *"
+  workflow_run:
+    workflows: ["Fetch Grain Bids", "Tick 02"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Check the sponsors, reports, links and addresses; send and record nothing"
+        type: boolean
+        default: true
+      month:
+        description: "YYYY-MM for a dry run (empty: the month just ended; a send is always that month)"
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 02' || (contains(github.event.workflow_run.display_title, ' sponsor-monthly.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow sponsor-monthly.yml --max-lag 360
+          --cron "37 19 1-3 * *"
+
+  send:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: sponsor-monthly
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: python3 scripts/sponsor_month_report.py --selftest
+
+      - name: Sponsor reports, links, contacts and sent markers from the private repo
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: bash scripts/pull_raw.sh private/sponsors
+
+      - name: Send the monthly email
+        id: send
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == true && '1' || '0' }}
+          MONTH: ${{ github.event_name == 'workflow_dispatch' && inputs.month || '' }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
+        run: python3 scripts/sponsor_month_report.py
+
+      - name: Save the sent markers
+        if: always() && steps.send.outputs.sent == '1'
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: |
+          bash scripts/push_raw.sh "sponsor monthly email sent" private/sponsors/sent-month && exit 0
+          echo "::error::SENT, markers not saved: the email already went out. Do not rerun for this month."
+          exit 1
