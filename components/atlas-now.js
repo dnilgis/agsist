@@ -124,7 +124,9 @@ function setLocal(l){
   $('an-scl-note').textContent=S.sc==='st'?'Colors set for '+nm+' alone; other states are grey.':'Colors on the US scale; the key counts '+nm+' counties.';
   if(S.sc!=='st') return;
   var a=inState(l).sort(function(x,y){return x-y;});
-  LOCAL={key:l.key, st:S.s, cuts:qcuts(a,l.old&&OL[l.key].doy)};
+  // land value: the state's own cuts from now.json, the ones its county share picture prints, so the two keys agree
+  var vc=l.key==='value'&&NOW.states[S.s]&&NOW.states[S.s].val_cuts;
+  LOCAL={key:l.key, st:S.s, cuts:vc&&vc.length?vc.slice():qcuts(a,l.old&&OL[l.key].doy)};
 }
 function cls(f,l){
   if(outOf(f)) return 'kz';
