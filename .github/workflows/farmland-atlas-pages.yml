@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: "41 11 * * 3"
   workflow_dispatch:
+    inputs:
+      skip_pictures:
+        description: "Pages and 1200x630 cards only; draw the 1080x1350 Atlas pictures on a later run"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -72,7 +77,9 @@ jobs:
         run: bash scripts/agsist_data.sh checkout "$RUNNER_TEMP/agsist-data"
 
       - name: Draw share images
-        run: python scripts/build_atlas_cards.py --out "$RUNNER_TEMP/agsist-data/farmland-atlas/og"
+        env:
+          SKIP_PICTURES: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_pictures && '--no-pictures' || '' }}
+        run: python scripts/build_atlas_cards.py --out "$RUNNER_TEMP/agsist-data/farmland-atlas/og" $SKIP_PICTURES
 
       - name: Push share images to agsist-data
         env:
