@@ -78,3 +78,9 @@
 .an-note{font-size:.85rem;color:var(--text-dim);margin:.6rem 0 0}
 .an:not(.ready) .an-stage,.an:not(.ready) .an-tabs{visibility:hidden}.an.failed .an-stage,.an.failed .an-tabs,.an.failed .an-acts{display:none}
 .an-more{margin:1.2rem 0 .4rem;font-size:1.05rem;font-weight:700;color:var(--text)}
+/* an old-map deep link (#l=, #s=, #<fips>) opens on the old map; the opening view is one link away (class set in the page before the section) */
+.an-back{display:none}
+.an-deep .an-back{display:block;margin:0;font-size:.85rem;line-height:1.4}
+.an-deep .an-h1{margin:0 0 .1rem!important}
+.an-deep .fa-hero{padding-top:.3rem}
+.an-deep #an,.an-deep #fa-every{display:none}

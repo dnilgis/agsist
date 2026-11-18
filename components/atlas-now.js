@@ -6,6 +6,8 @@
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
+// an old-map deep link hides the opening view (the page sets an-deep before drawing): nothing to load
+if(document.documentElement.classList.contains('an-deep')) return;
 var D='/farmland-atlas/data/', NOW=null, GEO=null, IDX={}, ROWS={}, COL={}, LAY={}, PATHS={};
 var S={q:'',m:'',s:'',c:''};
 function $(id){ return document.getElementById(id); }
