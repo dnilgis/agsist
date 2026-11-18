@@ -1,22 +1,27 @@
-/* components/bid-age.js: two lines on the home "Today near me" card, in words a farmer reads in one go.
+/* components/bid-age.js: the lines on the home "Today near me" card, in words a farmer reads in one go.
 
-   1. ageLine(posted, now, quotes, sym): the time line over the two top bids, BEFORE the day session.
+   1. ageLine(posted, now): the time line over the two top bids, BEFORE the day session.
       CBOT grains trade overnight (7:00 pm to 7:45 am CT, Sunday to Friday), pause, and open the day session at
       8:30 am. Elevators post new bids after that open, so at 7:20 am a bid posted after yesterday's close is the
       newest there is, not an old one. Between the last session and the next open (before 8:30 am on a trading
       day, or all day on a weekend or exchange holiday) a bid posted after the last session's close reads
         "Posted after yesterday's close, 1:47 pm."          ("Friday's close" on a Monday morning)
-      and, when the bid names its futures contract and the price file holds a fresh overnight trade for that
-      same contract with a change from that session's settle,
-        "Jan '27 soybeans are down 5¢ since yesterday's settle (overnight, 7:01 am)."
       Anything else returns null and the page keeps the site's "Updated" stamp (components/asof.js), whose old
       bid note stays: in the day session, after the close, and for a bid older than the last session.
-      No cash estimate is printed: the elevator's futures level at posting is not on file for every board, and
-      the page would be mixing two files of different vintages into a new number (honest-numbers 8 and 9).
-      Sessions and holidays come from AgPxStamp.isTradingDay (components/price-local.js, the twin of
-      scripts/contract_calendar.py); the change from AgPxStamp.change (the one pair rule).
 
-   2. whatLine(month, basis, ref): "Harvest · 74¢ under Jan '27", the town pages' words ("62 under December").
+   2. ovnLine(data, syms, now): the overnight line under it (Sig, Nov 18: "show the overnight markets and their
+      moves"). In the overnight hours of a trading session (ovnLive: AgPxStamp.ovnWindow, the futures pages' one
+      clock rule, and that session is a trading day by AgPxStamp.isTradingDay), the move of the futures contract
+      each card's bid is priced on, from the futures pages' own overnight read (AgPxStamp.overnight: the change
+      against the prior settle), with the time of the quote:
+        "Dec corn down 3¢, Jan soybeans down 5¢ overnight (7:01 am)."
+      A bid with no contract named reads the front month (AgPxStamp.headline), named by its month; a bid whose
+      named contract has no overnight quote reads the front month, marked "(front month)". A quote older than
+      45 minutes, or none, says "not available", never an old number as current. Weekends and holidays: null.
+      Futures only: no cash estimate is printed. The elevator's futures level at posting is not on file for every
+      board, and the page would be mixing two files of different vintages into a new number (honest-numbers 8, 9).
+
+   3. whatLine(month, basis, ref): "Harvest · 74¢ under Jan '27", the town pages' words ("62 under December").
       No contract named: "66¢ under futures", never a guessed month. Short on purpose: a half-width cell on a
       390 px phone holds about 26 characters, and the card holds three lines from first paint.
 
@@ -27,7 +32,7 @@
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var FCODE = 'FGHJKMNQUVXZ';
-  var CROP = { ZC: 'corn is', ZS: 'soybeans are', ZW: 'Chicago wheat is', KE: 'KC wheat is', MW: 'Minneapolis wheat is' };
+  var CROP = { ZC: 'corn', ZS: 'soybeans' }, PXKEY = { ZC: 'corn', ZS: 'beans' };
   var FR = { 1: ' 1/4', 2: ' 1/2', 3: ' 3/4' };
 
   function px() { return root.AgPxStamp || (typeof require === 'function' ? require('./price-local.js') : null); }
@@ -64,28 +69,76 @@
     return tOf(today) - tOf(session) === DAY ? 'yesterday' : WD[new Date(tOf(session)).getUTCDay()];
   }
 
-  /* A fresh overnight trade for the bid's own contract, with its change from the session's settle:
-     {text} or null. sym: the bid's contract ("ZCZ26"); quotes: data/prices.json quotes. */
-  function moveLine(quotes, sym, win, now) {
-    var P = px(), m = /^(Z[CS]|ZW|KE|MW)([FGHJKMNQUVXZ])(\d{2})$/.exec(String(sym || ''));
-    if (!P || !m || !quotes) return null;
-    var q = null;
-    for (var k in quotes) if (quotes[k] && quotes[k].ticker === sym + '.CBT') { q = quotes[k]; break; }
-    if (!q || q.close_kind !== 'last' || q.settled || q.roll || q.close_date !== win.today || !q.close_time) return null;
-    var at = Date.parse(q.close_time), nt = (now instanceof Date ? now : new Date(now)).getTime();
-    if (!isFinite(at) || at > nt + 60e3 || nt - at > QUOTE_MAX_MIN * 6e4) return null;   /* past the delay limit: say nothing */
-    var c = P.change(q);
-    if (!c || c.vs !== win.session || typeof c.net !== 'number') return null;
-    var a = ct(new Date(at));
-    if (!a || iso(a) !== win.today) return null;
-    var name = MON[FCODE.indexOf(m[2])] + " '" + m[3] + ' ' + CROP[m[1]];
-    var dw = dayWord(win.session, win.today), mv = Math.round(c.net * 4) / 4;
-    var how = mv === 0 ? ' unchanged since ' : (mv < 0 ? ' down ' : ' up ') + cents(mv) + ' since ';
-    return { text: name + how + dw + '’s settle (overnight, ' + hm(a.min) + ').' };
+  /* The overnight hours of a trading session: the futures pages' window (7 pm Sunday to Thursday, until 8:30 am
+     Monday to Friday) when the session it opens is a trading day (no line the night before Thanksgiving).
+     -> {session, prev} (ISO days: the session trading, the one whose settle the move is from) or null. */
+  function ovnLive(now) {
+    var P = px(), q = ct(now);
+    if (!P || !q || !P.ovnWindow || !P.ovnWindow(now)) return null;
+    var t = tOf(iso(q)) + (q.min >= 19 * 60 ? DAY : 0), n = 0, p;
+    if (!P.isTradingDay(isoOf(t))) return null;
+    p = t - DAY;
+    while (!P.isTradingDay(isoOf(p)) && n++ < 10) p -= DAY;
+    return { session: isoOf(t), prev: isoOf(p) };
+  }
+  function cname(sym, live) {
+    var m = /^(Z[CS])([FGHJKMNQUVXZ])(\d{2})/.exec(String(sym || ''));
+    if (!m) return '';
+    var mi = FCODE.indexOf(m[2]), sy = +live.session.slice(2, 4), sm = +live.session.slice(5, 7) - 1;
+    var ahead = (+m[3]) * 12 + mi - (sy * 12 + sm);
+    return MON[mi] + (ahead >= 11 ? " '" + m[3] : '') + ' ' + CROP[m[1]];
+  }
+  /* one quote's overnight move: {name, net (cents or null), at (ms)} | 'stale' | null (no overnight read) */
+  function ovnOf(q, live, nt) {
+    var P = px(), o = q && !q.roll && !q.move_withheld ? P.overnight(q) : null;
+    if (!o) return null;
+    var at = Date.parse(o.at);
+    if (!isFinite(at) || at > nt + 60e3 || nt - at > QUOTE_MAX_MIN * 6e4 || !P.ovnWindow(new Date(at))) return 'stale';
+    /* the move is from the settle of the session before this one, never an older pair */
+    if (o.ref.date !== live.prev) return 'stale';
+    var net = o.ref.kind === 'settle' && typeof o.net === 'number' ? Math.round(o.net * 4) / 4 : null;
+    return { net: net, at: at };
+  }
+  function findSym(quotes, sym) {
+    for (var k in quotes) if (quotes[k] && quotes[k].ticker === sym + '.CBT') return quotes[k];
+    return null;
+  }
+  /* data: prices.json; syms: {ZC: 'ZCZ26' | null, ZS: 'ZSF27' | null}, each card's bid contract.
+     -> {text, html, items} or null (outside the overnight hours of a trading session) */
+  function ovnLine(data, syms, now) {
+    now = now || new Date();
+    var P = px(), live = ovnLive(now), nt = (now instanceof Date ? now : new Date(now)).getTime();
+    if (!live) return null;
+    var quotes = data && data.quotes, rolled = quotes && P.roll ? P.roll(quotes) : quotes, items = [], missing = [];
+    ['ZC', 'ZS'].forEach(function (root) {
+      var sym = syms && syms[root] && new RegExp('^' + root + '[FGHJKMNQUVXZ]\\d{2}$').test(syms[root]) ? syms[root] : '';
+      var it = null, own = sym && quotes ? findSym(quotes, sym) : null, r = own ? ovnOf(own, live, nt) : null;
+      if (r && r !== 'stale') it = { name: cname(sym, live), net: r.net, at: r.at, front: false };
+      else if (r !== 'stale' && rolled) {
+        var hl = P.headline ? P.headline({ quotes: rolled, nearby: data.nearby }, PXKEY[root]) : null, fq = hl && hl.q;
+        var ft = fq && /^(Z[CS][FGHJKMNQUVXZ]\d{2})\.CBT$/.exec(String(fq.ticker || ''));
+        var fr = ft && ft[1] !== sym ? ovnOf(fq, live, nt) : null;
+        if (fr && fr !== 'stale') it = { name: cname(ft[1], live), net: fr.net, at: fr.at, front: !!sym };
+      }
+      if (it) items.push(it); else missing.push(CROP[root]);
+    });
+    var word = function (it) {
+      return it.name + (it.front ? ' (front month)' : '') + (it.net == null ? ' trading' : it.net === 0 ? ' unchanged' : (it.net < 0 ? ' down ' : ' up ') + cents(it.net));
+    };
+    var tm = function (t) { return hm(ct(new Date(t)).min); }, text = '';
+    if (items.length) {
+      var same = items.every(function (it) { return tm(it.at) === tm(items[0].at); });
+      text = same ? items.map(word).join(', ') + ' overnight (' + tm(items[0].at) + ')'
+        : items.map(function (it, i) { return word(it) + (i ? '' : ' overnight') + ' (' + tm(it.at) + ')'; }).join(', ');
+      if (items.some(function (it) { return it.net == null; })) text += ', settle not posted yet';
+      text += '.';
+      if (missing.length) text += ' ' + (missing[0] === 'corn' ? 'Corn' : 'Soybean') + ' overnight quote not available.';
+    } else text = 'Overnight quote not available.';
+    return { text: text, items: items, html: esc(text) };
   }
 
   /* -> {text, html, session} or null (keep the site's Updated stamp) */
-  function ageLine(posted, now, quotes, sym) {
+  function ageLine(posted, now) {
     now = now || new Date();
     var t = posted ? Date.parse(posted) : NaN, win = between(now);
     if (!isFinite(t) || !win) return null;
@@ -95,12 +148,10 @@
     var dw = dayWord(win.session, win.today), when;
     if (pd === win.session) when = 'Posted after ' + dw + '’s close, ' + hm(p.min) + '.';
     else when = 'Posted ' + WD[new Date(tOf(pd)).getUTCDay()] + ', ' + hm(p.min) + '.';
-    var mv = moveLine(quotes, sym, win, now);
-    var text = when + (mv ? ' ' + mv.text : '');
+    var text = when;
     var full = MON[p.m - 1] + ' ' + p.d + ', ' + p.y + ', ' + hm(p.min).replace(' ', ' ') + ' CT';
-    return { text: text, session: win.session, move: mv ? mv.text : '',
-      html: '<time class="hb-asof-t" datetime="' + new Date(t).toISOString() + '" title="' + esc(full) + '">' + esc(when) + '</time>' +
-        (mv ? ' <span class="hb-asof-mv">' + esc(mv.text) + '</span>' : '') };
+    return { text: text, session: win.session,
+      html: '<time class="hb-asof-t" datetime="' + new Date(t).toISOString() + '" title="' + esc(full) + '">' + esc(when) + '</time>' };
   }
 
   /* "Harvest · 74¢ under Jan '27" as plain parts: {month, basis} (either may be '') */
@@ -115,7 +166,7 @@
     return { month: mo, basis: b };
   }
 
-  var api = { ageLine: ageLine, whatLine: whatLine, between: between, moveLine: moveLine, cents: cents };
+  var api = { ageLine: ageLine, ovnLine: ovnLine, ovnLive: ovnLive, whatLine: whatLine, between: between, cents: cents };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.AgBidAge = api;
 })(typeof window !== 'undefined' ? window : globalThis);

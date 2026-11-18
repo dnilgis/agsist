@@ -1,8 +1,8 @@
 {
  "id": "2026-11-18-home-today-card",
  "date": "2026-11-18",
- "title": "Home card reads plainly before the open",
- "line": "Before the 8:30 am open, a bid posted after yesterday's close says so, with the overnight futures move. Basis reads 74¢ under Jan '27, in words.",
+ "title": "Home card shows the overnight futures moves",
+ "line": "Before the 8:30 am open the home card shows the overnight move of each bid's futures contract, with the quote time. Basis reads 74¢ under Jan '27.",
  "link": "/",
  "rank": 3
 }

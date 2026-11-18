@@ -14,7 +14,7 @@
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
   <script src="/components/price-local.js?v=16"></script>
-  <script src="/components/bid-age.js?v=1"></script>
+  <script src="/components/bid-age.js?v=2"></script>
 <link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=4">
 <link rel="stylesheet" href="/css/home.css?v=48">
@@ -251,9 +251,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <main id="main" class="main" role="main" tabindex="-1">
-  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-asof-mv{display:block}html.has-zip #hero-band.hb-preopen .hb-where{min-height:62px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band.hb-preopen .hb-where{min-height:calc(66px + 2.8em)}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
+  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-ovn{display:none;margin:0}html.has-zip #hero-band.hb-ovnl .hb-ovn{display:block;font-size:.824rem;line-height:1.3;min-height:1.3em;color:var(--text-dim)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:42px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band.hb-ovnl .hb-ovn{min-height:2.6em}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
-    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}try{if(window.AgBidAge&&AgBidAge.between(new Date()))hb.classList.add('hb-preopen');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
+    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}try{if(window.AgBidAge&&AgBidAge.between(new Date()))hb.classList.add('hb-preopen');if(window.AgBidAge&&AgBidAge.ovnLive(new Date()))hb.classList.add('hb-ovnl');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
     <h2 class="visually-hidden" id="hb-h">Today</h2>
     <!-- 2026-11-02 (go): the first screen is three jobs, near me, sell grain, my field.
@@ -265,6 +265,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <span class="hb-where"><span class="hb-place" id="hb-place"><span class="hb-pz">Your area</span><span class="hb-pn">Set your ZIP to see local cash bids</span></span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
           <button type="button" class="hb-change" id="hb-change" aria-controls="hb-zip-form" aria-expanded="false">Change</button>
         </div>
+        <p class="hb-ovn" id="hb-ovn"></p>
         <form class="hb-zip" id="hb-zip-form" novalidate>
           <label class="visually-hidden" for="hb-zip">Your ZIP code</label>
           <input type="text" id="hb-zip" name="zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go">
@@ -689,20 +690,29 @@ try {
       else set(id+'-v',DASH);
       set(id+'-s','<span class="hb-l">'+esc(STATE[status]||('No '+word+' bid '+ring))+'</span>');
     }
-    /* (.hb-preopen, set at the top of the band by AgBidAge.between from the Central clock and the exchange calendar,
-       holds the slot's room for both lines from first paint: no shift when the bids and the overnight move land.)
-       The time line over the bids: before the 8:30 am open (or on a weekend or holiday) a bid posted after the
-       last close says so with the overnight move of its own contract (components/bid-age.js); otherwise the
-       site's Updated stamp with its old-bid note (components/asof.js). Repainted each minute and when prices land. */
-    var oldestBid=null,agePrices=null;
+    /* The time line over the bids: before the 8:30 am open (or on a weekend or holiday) a bid posted after the
+       last close says so (components/bid-age.js); otherwise the site's Updated stamp with its old-bid note
+       (components/asof.js). Nov 18 (Sig): under it, in the overnight hours of a trading session, the overnight
+       move of each bid's futures contract with the quote's time (AgBidAge.ovnLine, the futures pages' overnight
+       read and clock). .hb-preopen and .hb-ovnl, set at the top of the band from the same rules, hold both
+       lines' room from first paint: no gap and no shift when the bids and the price file land. Repainted each
+       minute and when bids or prices land. */
+    var oldestBid=null,agePrices=null,bidSyms={ZC:null,ZS:null};
+    function paintOvn(){
+      var el=$('hb-ovn'),hb=$('hero-band');if(!el||!window.AgBidAge)return;
+      var o=agePrices?AgBidAge.ovnLine(agePrices,bidSyms,new Date()):null,live=!!AgBidAge.ovnLive(new Date());
+      if(hb)hb.classList.toggle('hb-ovnl',live);
+      el.textContent=live&&o?o.text:'';
+    }
     function paintAge(){
+      paintOvn();
       var ao=$('hb-asof');if(!ao)return;
-      var x=oldestBid,a=x&&window.AgBidAge?AgBidAge.ageLine(x.posted,new Date(),agePrices&&agePrices.quotes,x.sym):null;
+      var x=oldestBid,a=x&&window.AgBidAge?AgBidAge.ageLine(x.posted,new Date()):null;
       ao.classList.toggle('hb-asof-ok',!!a);
       if(a){ao.innerHTML=a.html;ao.hidden=false;return;}
       if(window.AgAsOf)AgAsOf.set(ao,x&&x.posted?new Date(x.posted):null,'bids');else{ao.textContent='';ao.hidden=true;}
     }
-    setInterval(function(){if(oldestBid)paintAge();},60000);
+    setInterval(function(){if(oldestBid)paintAge();else paintOvn();},60000);
     function paintBids(d){
       if(!d||typeof d!=='object')return;
       bidsSeen=true;
@@ -724,6 +734,7 @@ try {
       /* The stamp names the OLDEST bid shown, so a fresh corn bid never vouches for an old bean bid. */
       var oldest=null;shown.forEach(function(x){var t=x.posted?Date.parse(x.posted):NaN;if(!isNaN(t)&&(oldest==null||t<oldest))oldest=t;});
       oldestBid=null;shown.forEach(function(x){if(x.posted&&Date.parse(x.posted)===oldest)oldestBid=oldestBid||x;});
+      bidSyms={ZC:d.corn&&d.corn.sym||null,ZS:d.soybeans&&d.soybeans.sym||null};
       paintAge();
       var today=ctKey(new Date());
       Object.keys(CROP).forEach(function(k){
@@ -1696,7 +1707,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/geo.js?v=41" defer></script>
 <script src="/components/elev-names.js?v=2" defer></script>
 <script src="/components/bids-fallback.js?v=1" defer></script>
-<script src="/components/bids-homepage.js?v=53" defer></script>
+<script src="/components/bids-homepage.js?v=54" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=3">
 <script src="/components/cb-myelev.js?v=10" defer></script>
 <script src="/components/homepage-extras.js?v=20" defer></script>
