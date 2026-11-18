@@ -11,7 +11,7 @@
    tools restored under the map (Nov 18, batch 2 review): the ranked lists (Highest and Lowest in the US or the state,
    farm counties only), a state's own scale when zoomed (or the US scale), the decade map's reference line, and the
    counts beside each; plus My county, the full county record jump, and the sources and vintages with the build day.
-   Batch 2, PR B adds eleven maps to now.json (soybean basis, CRP ending this fiscal year, frost-free days, corn GDD,
+   Batch 2, PR B adds fourteen maps to now.json (soybean basis, CRP ending this fiscal year, frost-free days, corn GDD,
    land rented, rent change, tile, cover crops, cattle, solar and wind proposed, foreign-held acres, hail and wind days,
    claims from heat and drought). Their column holds the figure or a gap code; "zero" names a 0 drawn grey, "kn" a gap
    drawn grey, "cover" an unread state drawn as an outline. */
@@ -60,7 +60,7 @@ function show(v,l){
   if(l.unit==='pc') return (v>0?'+':'')+(Math.round(v*10)/10)+'%';
   if(l.unit==='hd') return n0(v)+' per 1,000 acres';
   if(l.unit==='mw') return n0(v)+' MW';
-  if(l.unit==='%') return (Math.round(v*10)/10)+'%';
+  if(l.unit==='%') return v>0&&v<0.05?'under 0.1%':(Math.round(v*10)/10)+'%';
   if(l.unit==='F') return v.toFixed(1)+' F';
   if(l.unit==='c'){ var c=Math.round(Math.abs(v)*100); return c?c+(c===1?' cent ':' cents ')+(v<0?'under':'over'):'even'; }
   if(l.unit==='x') return v.toFixed(2);
@@ -256,6 +256,8 @@ function paint(){
   $('an-maptitle').textContent=l.label;
   var leg=l.old?(OL[l.key].natline||'')+'<span>'+esc(OL[l.key].title)+'.</span> '+(OL[l.key].why?'<span>'+esc(OL[l.key].why)+'.</span> ':'')+(OL[l.key].note||''):strong(l.legend);
   $('an-legend').innerHTML=leg;
+  // the rented map brings the census tenure table with it, as the old rented layer did (the fold under the map)
+  if(l.key==='rented'){ var tf=$('fa-tenure'); if(tf&&!tf.open) tf.open=true; }
   var cs=getComputedStyle(root);
   // each swatch is a button: it lights that class's counties on the map (the old map's swatches)
   $('an-key').innerHTML=keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
