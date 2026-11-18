@@ -410,8 +410,8 @@ function side(){
         :'<button type="button" class="an-mopen" id="an-mopen">Show every map for '+esc(q.label)+'</button>');
   }
   box.innerHTML=h;
-  [].forEach.call(box.querySelectorAll('[data-q]'),function(b){ b.addEventListener('click',function(){ go(b.getAttribute('data-q')); ga('atlas_now_question',{q:b.getAttribute('data-q')}); }); });
-  [].forEach.call(box.querySelectorAll('[data-m]'),function(b){ b.addEventListener('click',function(){ S.m=b.getAttribute('data-m'); paint(); side(); setLink(); save(); ga('atlas_now_layer',{layer:S.m}); }); });
+  [].forEach.call(box.querySelectorAll('[data-q]'),function(b){ b.addEventListener('click',function(){ ui(); go(b.getAttribute('data-q')); ga('atlas_now_question',{q:b.getAttribute('data-q')}); }); });
+  [].forEach.call(box.querySelectorAll('[data-m]'),function(b){ b.addEventListener('click',function(){ ui(); S.m=b.getAttribute('data-m'); paint(); side(); setLink(); save(); ga('atlas_now_layer',{layer:S.m}); }); });
   var mo=$('an-mopen'); if(mo) mo.addEventListener('click',function(){ mo.disabled=true; mo.textContent='Loading the maps'; oldList().then(side).catch(function(){ mo.disabled=false; mo.textContent='The maps did not load. Tap to try again.'; }); });
   thumbs();
 }
@@ -427,7 +427,7 @@ function tiles(){
   var box=$('an-tiles'); if(!box||!NOW.tiles) return;
   box.innerHTML=NOW.tiles.map(function(t){
     return '<button type="button" class="an-tile" data-q="'+esc(t.q)+'"><span class="an-tl">'+esc(t.label)+'</span><b class="an-tb">'+esc(t.big.t)+'</b><span class="an-ts">'+esc(t.sub.t)+'</span></button>'; }).join('');
-  [].forEach.call(box.querySelectorAll('.an-tile'),function(b){ b.addEventListener('click',function(){ go(b.getAttribute('data-q')); ga('atlas_now_tile',{q:b.getAttribute('data-q')}); }); });
+  [].forEach.call(box.querySelectorAll('.an-tile'),function(b){ b.addEventListener('click',function(){ ui(); go(b.getAttribute('data-q')); ga('atlas_now_tile',{q:b.getAttribute('data-q')}); }); });
 }
 
 // ---------- links and the picture
@@ -477,13 +477,15 @@ function save(){
   if(!p) return;
   a.href=NOW.pics+p.n+'.png'; a.setAttribute('download','agsist-'+p.n+'.png'); a.textContent=p.t;
 }
+// the key holds the opening view's room while the page loads; once the reader changes the map or the state it fits its rows
+function ui(){ root.classList.add('ui'); }
 function wire(){
-  [].forEach.call(root.querySelectorAll('.an-tab'),function(b){ b.addEventListener('click',function(){ go(b.getAttribute('data-q')); ga('atlas_now_question',{q:b.getAttribute('data-q')||'all'}); }); });
+  [].forEach.call(root.querySelectorAll('.an-tab'),function(b){ b.addEventListener('click',function(){ ui(); go(b.getAttribute('data-q')); ga('atlas_now_question',{q:b.getAttribute('data-q')||'all'}); }); });
   var sel=$('an-st');
   Object.keys(GEO.box).sort(function(a,b){ var A=NOW.states[a]&&NOW.states[a].name||a, B=NOW.states[b]&&NOW.states[b].name||b; return A<B?-1:1; }).forEach(function(st){
     var o=document.createElement('option'); o.value=st; o.textContent=NOW.states[st]&&NOW.states[st].name||st; sel.appendChild(o); });
-  sel.addEventListener('change',function(){ zoom(sel.value); if(sel.value) ga('atlas_now_state',{state:sel.value}); });
-  $('an-all').addEventListener('click',function(){ zoom(''); });
+  sel.addEventListener('change',function(){ ui(); zoom(sel.value); if(sel.value) ga('atlas_now_state',{state:sel.value}); });
+  $('an-all').addEventListener('click',function(){ ui(); zoom(''); });
   $('an-dec').addEventListener('change',function(){ DEC=Number(this.value); var k=S.m; delete OL[k]; paint(); });
   // the old map's reference lines, 60 to 70 F, 66 F first
   var ln=$('an-line'); [60,62,64,66,68,70].forEach(function(t){ var o=document.createElement('option'); o.value=o.textContent=t; if(t===66) o.selected=true; ln.appendChild(o); });

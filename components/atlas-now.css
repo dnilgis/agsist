@@ -81,6 +81,7 @@
 .an-key{list-style:none;display:flex;flex-wrap:wrap;gap:.05rem .8rem;padding:0;margin:0 0 .3rem;font-size:.8rem;line-height:1.3;color:var(--text-dim);min-height:7.6rem;align-content:flex-start;align-items:center}
 .an-key .an-kh{font-weight:600;color:var(--text)}
 @media(min-width:700px){.an-key{min-height:3.9rem}}
+.an.ui .an-key{min-height:0}
 .an-key li{display:flex;align-items:center;gap:.3rem;flex:0 1 auto;min-width:0}.an-key button{text-align:left}.an-key b{color:var(--text);font-weight:600}
 .an-key i{width:13px;height:13px;border-radius:2px;display:inline-block;border:1px solid var(--border);flex:0 0 auto}
 .an-read{min-height:3em;font-size:.95rem;line-height:1.5;color:var(--text);margin:.2rem 0 .6rem}
