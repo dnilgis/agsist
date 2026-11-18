@@ -14,7 +14,10 @@
    Batch 2, PR B adds fourteen maps to now.json (soybean basis, CRP ending this fiscal year, frost-free days, corn GDD,
    land rented, rent change, tile, cover crops, cattle, solar and wind proposed, foreign-held acres, hail and wind days,
    claims from heat and drought). Their column holds the figure or a gap code; "zero" names a 0 drawn grey, "kn" a gap
-   drawn grey, "cover" an unread state drawn as an outline. */
+   drawn grey, "cover" an unread state drawn as an outline.
+   Batch 2, PR C2 adds ARC-CO for soybeans and wheat under Program; a layer's "dp" sets the decimal places it prints.
+   It also adds ARC-CO minus PLC for corn (unit "gd", scale "arcplc"): orange where PLC has the higher estimate, blue
+   where ARC-CO has, grey within a dollar; the key names each side (gapKey). */
 /* Nov 18: with a state open, the key counts that state's counties and says so ("Iowa counties"), the
    ranked lists give one sentence when every county ties, and the picture button names the map it saves and shows
    only when that picture exists (drought: the U.S. or the state; land value: the county); every other map offers
@@ -54,7 +57,7 @@ function isOld(k){ return !!k&&!LAY[k]; }
 function val(f,l){ var r=ROWS[f], v=r?r[COL[l.col]]:null; return typeof v==='number'?v:null; }
 function gap(f,l){ var r=ROWS[f], g=r&&l.gcol?r[COL[l.gcol]]:null; return typeof g==='string'?g:null; }
 function money(v,dp){ return '$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp}); }
-function dp(l){ return l.key==='arc'||l.key==='prf'||l.key==='cost'?2:0; }
+function dp(l){ return l.dp!=null?l.dp:l.key==='arc'||l.key==='prf'||l.key==='cost'?2:0; }
 function n0(v){ return Number(v).toLocaleString('en-US',{maximumFractionDigits:2}); }
 function show(v,l){
   if(l.unit==='$') return money(v,dp(l));
@@ -68,9 +71,10 @@ function show(v,l){
   if(l.unit==='F') return v.toFixed(1)+' F';
   if(l.unit==='c'){ var c=Math.round(Math.abs(v)*100); return c?c+(c===1?' cent ':' cents ')+(v<0?'under':'over'):'even'; }
   if(l.unit==='x') return v.toFixed(2);
+  if(l.unit==='gd') return v>0?'ARC-CO higher by '+money(v,2):v<0?'PLC higher by '+money(-v,2):'even';
   return String(v);
 }
-function cut(v,l){ if(l.unit==='$') return money(v,0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2);
+function cut(v,l){ if(l.unit==='$'||l.unit==='gd') return money(Math.abs(v),0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2);
   if(l.unit==='ac') return n0(v)+' acres'; if(l.unit==='d') return n0(v)+' days'; if(l.unit==='mw') return n0(v)+' MW';
   if(l.unit==='gdd'||l.unit==='hd') return n0(v); if(l.unit==='pc') return (v>0?'+':'')+v+'%';
   return v+(l.unit==='%'?'%':l.unit==='F'?' F':''); }
@@ -83,6 +87,11 @@ function basisKey(cs,n){
     o.push(['k'+i,(a<0&&b<0)?Math.round(-a*100)+'¢ to '+cents(b):(a>0&&b>0)?Math.round(a*100)+'¢ to '+cents(b):cents(a)+' to '+cents(b),n['k'+i]]); }
   b=cs[cs.length-1]; o.push(['k'+cs.length,b===0?'Even or over':b>0?cents(b)+' or more':cents(b)+' or stronger',n['k'+cs.length]]);
   return o;
+}
+// ARC-CO minus PLC: five bins around even, orange where PLC has the higher estimate, blue where ARC-CO has
+function gapKey(cs,n,l){
+  return [['k0','PLC higher by more than '+cut(cs[0],l),n.k0],['k1','PLC higher by '+cut(cs[1],l)+' to '+cut(cs[0],l),n.k1],
+    ['k2','Within '+cut(cs[2],l)+' either way',n.k2],['k3','ARC-CO higher by '+cut(cs[2],l)+' to '+cut(cs[3],l),n.k3],['k4','ARC-CO higher by '+cut(cs[3],l)+' or more',n.k4]];
 }
 var DRN=['Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'];
 // partial layers: a state we do not read is an empty outline (ko), not a few hundred hatched counties
@@ -140,6 +149,7 @@ function keyItems(l){
     if(l.zero) out.push(['kn',l.zero,n.kn]);
     if(l.scale==='rain'){ out.push(['k0','Under '+cs[0]+'%',n.k0]); for(var j=1;j<cs.length;j++) out.push(['k'+j,cs[j-1]+' to '+cs[j]+'%',n['k'+j]]); out.push(['k'+cs.length,cs[cs.length-1]+'% or more',n['k'+cs.length]]); }
     else if(l.unit==='c'&&cs.length){ out=out.concat(basisKey(cs,n)); }
+    else if(l.unit==='gd'&&cs.length===4){ out=out.concat(gapKey(cs,n,l)); }
     else if(cs.length){ out.push(['k0','Under '+cut(cs[0],l),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l)+' to '+cut(cs[k],l),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l)+' or more',n['k'+cs.length]]); }
     if(l.kn) out.push(['kn',l.gaps[l.kn],n.kn]);
   }
@@ -465,6 +475,8 @@ function pic(){
   if(!NOW.pics) return null;
   if(S.m==='drought'){ if(!S.s) return {n:'pic-us', t:'Save the U.S. drought picture'};
     return NOW.states[S.s]&&NOW.states[S.s].d1?{n:'pic-'+S.s.toLowerCase(), t:'Save the '+viewName()+' drought picture'}:null; }
+  // the national ARC-CO minus PLC picture (batch 2, PR C2): the US view only, as the picture shows the whole country
+  var arc=S.m==='arcgap'?'pic-arc-us':''; if(arc) return S.s?null:{n:arc, t:'Save the U.S. ARC-CO and PLC picture'};
   if(S.m==='value'&&S.c&&GEO.c[S.c]&&IDX[S.c]) return {n:'pic-'+S.c, t:'Save the '+IDX[S.c][0].replace(/, [A-Z]{2}$/,'')+' land value picture'};
   return null;
 }
