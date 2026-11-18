@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-18-drought-map-atlas",
+   "date": "2026-11-18",
+   "title": "Drought map links open the Farmland Atlas",
+   "line": "Drought map links across the site now open the Farmland Atlas drought map, every county on one map. The land sales page links the Atlas from the top.",
+   "link": "/farmland-atlas#l=drought"
+  },
+  {
    "id": "2026-11-18-sponsor-numbers-same-day",
    "date": "2026-11-18",
    "title": "Sponsor numbers follow late corrections",
