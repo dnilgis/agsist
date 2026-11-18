@@ -109,3 +109,31 @@
 #an-panel:empty{display:none}
 .an-read .fa-cc-v{display:inline;font-weight:700}.an-read .fa-cc-u{font-size:.85em;font-weight:500}.an-read .fa-cc-r{display:block;color:var(--text-dim);font-size:.9rem;margin:.15rem 0}
 .an-read .fa-cc-print{margin-right:.9rem}.an-read .fa-thin{color:var(--text)}
+/* the old map's reader tools, restored under the one map (batch 2 review, Nov 18) */
+.an-key button{display:flex;align-items:center;gap:.3rem;background:none;border:0;padding:0 .1rem;font:inherit;color:inherit;cursor:pointer;min-height:1.6rem;border-radius:4px}
+.an-key button[aria-pressed="true"]{outline:2px solid var(--an-accent,var(--gold));outline-offset:1px}
+#an-svg[data-hk] .an-c path{opacity:.18}
+#an-svg[data-hk="k0"] .an-c path.k0,#an-svg[data-hk="k1"] .an-c path.k1,#an-svg[data-hk="k2"] .an-c path.k2,#an-svg[data-hk="k3"] .an-c path.k3,#an-svg[data-hk="k4"] .an-c path.k4,#an-svg[data-hk="k5"] .an-c path.k5,#an-svg[data-hk="kn"] .an-c path.kn,#an-svg[data-hk="kx"] .an-c path.kx,#an-svg[data-hk="ko"] .an-c path.ko{opacity:1}
+#an-svg .an-c path.kz{fill:var(--an-none);opacity:.35}
+#an-svg .an-c path.line{stroke:var(--an-hl);stroke-width:1.3px;vector-effect:non-scaling-stroke}
+.an-scl{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 .4rem}.an-scl[hidden],.an-linew[hidden]{display:none}
+.an-scl button,#an-mine,.an-rk-more{min-height:36px;padding:.25rem .7rem;border:1px solid var(--border-2,var(--border));border-radius:var(--r-md,6px);background:var(--surface);color:var(--text);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.an-scl button[aria-pressed="true"]{border-color:var(--an-accent,var(--gold));box-shadow:inset 0 0 0 1px var(--an-accent,var(--gold))}
+#an-mine{margin-left:.4rem}#an-mine[hidden]{display:none}
+.an-linew{font-size:.9rem;margin:0 0 .4rem;color:var(--text)}.an-linew select{font:inherit;min-height:32px}
+.an-rail{margin:1.2rem 0 .6rem;min-height:4rem}
+.an-rk-t{font-size:1.05rem;margin:0 0 .5rem}
+.an-rk2{display:grid;grid-template-columns:1fr;gap:.2rem 1.4rem}
+@media (min-width:700px){.an-rk2{grid-template-columns:1fr 1fr}}
+.an-rk-h{font-size:.95rem;font-weight:700;margin:.4rem 0 .3rem}
+.an-rk-l{list-style:none;margin:0;padding:0;counter-reset:rk}
+.an-rk-l li{border-top:1px solid var(--border)}
+.an-rk-l button{display:flex;align-items:center;gap:.5rem;width:100%;min-height:36px;padding:.2rem .1rem;background:none;border:0;font:inherit;font-size:.9rem;color:var(--text);text-align:left;cursor:pointer}
+.an-rk-l button:hover,.an-rk-l button.me{background:var(--surface)}.an-rk-l button.me .nm{font-weight:700}
+.an-rk-l i{width:12px;height:12px;border-radius:2px;flex:0 0 auto;border:1px solid var(--border)}
+.an-rk-l i.kn{background:var(--an-none)}.an-rk-l i.kx{background:repeating-linear-gradient(45deg,var(--an-gap-bg) 0 3px,var(--an-gap-line) 3px 4.5px)}
+.an-rk-l .nm{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}.an-rk-l .v{flex:0 0 auto;font-variant-numeric:tabular-nums;color:var(--text-dim)}
+.an-rk-n{font-size:.85rem;color:var(--text-dim);margin:.5rem 0 0}
+.an-vd{margin:.4rem 0 .8rem;font-size:.85rem;color:var(--text-dim)}.an-vd summary{cursor:pointer;min-height:32px;display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.an-built b{color:var(--text);font-weight:600}
+.an-vint{list-style:none;margin:.3rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.2rem 1.2rem;font-family:var(--font-mono);font-size:.74rem}

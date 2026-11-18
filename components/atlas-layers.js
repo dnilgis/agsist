@@ -1105,7 +1105,22 @@ function card(key,f){
   return esc(L.label)+': <b>'+esc(fmtv(L,v))+(L.money&&L.unit==='$/acre'?'<span class="fa-cc-u"> an acre</span>':'')+'</b>'+esc(rnote(L,f));
 }
 function national(){ renderThesis(); renderByState(); renderPremium(); renderScatters(); }
+// the reference line on the decade map (the old map's selector, 60 to 70 F): the counties whose July average low in
+// the decade on the map is at or above the line, out of those with five Julys or more in it
+function heatLine(line){
+  var d=DECADES[DEC==null?DECADES.length-1:DEC], n=0, at=0, hit={};
+  for(var f in PATHS){ var dd=jdec(f); dd=dd&&dd[d]; if(dd&&dd.n>=5){ n++; if(dd.mean>=line){ at++; hit[f]=1; } } }
+  return {n:n, at:at, hit:hit, decade:d};
+}
+// rent layers rank within one survey year (the newest): an older survey is shown, not ranked
+function ryearOf(key,f){
+  var c=ATLAS&&ATLAS.counties[f]; if(!c) return null;
+  if(key==='rent_rev'){ var r=rrev(f); return r&&r.py||null; }
+  return key==='rent'?get(c,'rent','nonirr','year'):key==='rent_irr'?get(c,'rent','irr','year'):null;
+}
+function rlatestOf(key){ return key==='rent_rev'?RREV_LATEST:key==='rent'||key==='rent_irr'?RENT_LATEST:null; }
 var api={boot:boot, list:list, layer:layer, fmt:fmtOf, short:shortOf, card:card, panel:openPanel, national:national, decades:DECADES,
+  heatLine:heatLine, ryear:ryearOf, rlatest:rlatestOf,
   tenure:function(){ return loadSide('tenure').then(function(S){ return S.ok?S.d:null; }); }};
 window.AtlasLayers=api;
 })();

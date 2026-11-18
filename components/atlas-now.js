@@ -7,12 +7,15 @@
    (#l=<layer>, #s=<state>, #<county code>) open the same layer, state and county here.
    Legend rules, every layer: at most six bins, grey for none, a hatch for no figure, an empty state outline where we
    do not read a state; two-colour scales only for rain against normal and basis. The only figures computed here are
-   the counts in each key and the bin edges of the folded layers (quantiles of their own values). */
+   the counts in each key, the bin edges of the folded layers (quantiles of their own values), and the old map's reader
+   tools restored under the map (Nov 18, batch 2 review): the ranked lists (Highest and Lowest in the US or the state,
+   farm counties only), a state's own scale when zoomed (or the US scale), the decade map's reference line, and the
+   counts beside each; plus My county, the full county record jump, and the sources and vintages with the build day. */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
 var D='/farmland-atlas/data/', NOW=null, GEO=null, IDX={}, ROWS={}, COL={}, LAY={}, PATHS={}, HAS={}, STATE_OF={};
-var S={q:'',m:'',s:'',c:''}, OLD=null, OLDP=null, OL={}, DEC=null, DEEP=null;
+var S={q:'',m:'',s:'',c:'',sc:'st'}, OLD=null, OLDP=null, OL={}, DEC=null, DEEP=null;
 // the old map's layers that are the same figure as a headline map open that map
 var SAME={val:'value',rent:'rent',sob_cost:'cost',sob_10:'lr',yield_worst:'worst',water_irr:'irr',dr_share:'dweeks',heat_recent:'heat'};
 // the old map's layer groups, each under one question
@@ -62,18 +65,44 @@ var DRN=['Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exc
 // partial layers: a state we do not read is an empty outline (ko), not a few hundred hatched counties
 var COVER={sale:1,basis:1,near:1};
 // class of one county on one layer: k0..k5 a bin, kn grey (none), kx hatched (a gap with a reason), ko a state we do not read
+// zoomed to a state, a one-hue map takes that state's own bins (Iowa at national bins is one pale block); the counties
+// of other states drop out of the colours (kz). The reader can switch back to the US scale (S.sc)
+var LOCAL=null;
+function cutsOf(l){ return LOCAL&&LOCAL.key===l.key?LOCAL.cuts:l.cuts; }
+function outOf(f){ return !!(LOCAL&&(STATE_OF[f]||f.slice(0,2))!==LOCAL.st); }
+function canLocal(l){
+  if(!S.s||!l) return false;
+  if(l.old){ var d=OL[l.key]; if(!d||d.div||l.scale==='rain'||d.salesWords) return false; }
+  else if(['money','risk','share','heat','green'].indexOf(l.scale)<0) return false;
+  return inState(l).length>=20;
+}
+function rv(f,l){ return l.old?(OL[l.key]?OL[l.key].vals[f]:null):val(f,l); }
+function inState(l){ var a=[], f, v; for(f in HAS){ if((STATE_OF[f]||f.slice(0,2))!==S.s) continue; v=rv(f,l); if(v==null||isNaN(v)) continue; if(l.old&&l.zeroNone&&v===0) continue; a.push(v); } return a; }
+function setLocal(l){
+  LOCAL=null; var box=$('an-scl'); if(!box) return;
+  var can=canLocal(l); box.hidden=!can;
+  if(!can) return;
+  var nm=NOW.states[S.s]&&NOW.states[S.s].name||S.s;
+  box.querySelector('[data-sc="st"]').textContent=nm+' scale';
+  [].forEach.call(box.querySelectorAll('button'),function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-sc')===S.sc?'true':'false'); });
+  $('an-scl-note').textContent=S.sc==='st'?'Colors set for '+nm+' alone; other states are grey.':'Colors on the US scale.';
+  if(S.sc!=='st') return;
+  var a=inState(l).sort(function(x,y){return x-y;});
+  LOCAL={key:l.key, st:S.s, cuts:qcuts(a,l.old&&OL[l.key].doy)};
+}
 function cls(f,l){
+  if(outOf(f)) return 'kz';
   if(l.old) return ocls(f,l);
   var v=val(f,l), g=gap(f,l);
   if(l.key==='drought'){ if(v==null) return 'kx'; return v<0?'kn':'k'+v; }
   if(g==='nost'&&COVER[l.key]) return 'ko';
   if(l.scale==='count'&&v===0) return 'kn';
   if(v==null){ if(g==='none'&&(l.key==='basis')) return 'kn'; return 'kx'; }
-  var i=0; while(i<l.cuts.length&&v>=l.cuts[i]) i++;
+  var cs=cutsOf(l), i=0; while(i<cs.length&&v>=cs[i]) i++;
   if(l.scale==='count') i=Math.max(0,i-1);
   return 'k'+i;
 }
-function count(l){ var n={}, f; for(f in HAS){ var c=cls(f,l); n[c]=(n[c]||0)+1; } return n; }
+function count(l){ var n={}, f; for(f in HAS){ var c=cls(f,l); if(c!=='kz') n[c]=(n[c]||0)+1; } return n; }
 function outStates(l){ var o={}, f; for(f in HAS) if(cls(f,l)==='ko') o[(STATE_OF[f]||f.slice(0,2))]=1; return Object.keys(o).length; }
 function keyItems(l){
   var out=[], n=count(l), f;
@@ -81,13 +110,13 @@ function keyItems(l){
   if(l.key==='drought'){
     out.push(['kn','None',n.kn]); for(var i=0;i<5;i++) out.push(['k'+i,DRN[i],n['k'+i]]);
   }else{
-    var cs=l.cuts.slice(); if(l.scale==='count'){ out.push(['kn','None within 30 miles',n.kn]); cs=cs.slice(1); }
+    var cs=cutsOf(l).slice(); if(l.scale==='count'){ out.push(['kn','None within 30 miles',n.kn]); cs=cs.slice(1); }
     if(l.scale==='rain'){ out.push(['k0','Under '+cs[0]+'%',n.k0]); for(var j=1;j<cs.length;j++) out.push(['k'+j,cs[j-1]+' to '+cs[j]+'%',n['k'+j]]); out.push(['k'+cs.length,cs[cs.length-1]+'% or more',n['k'+cs.length]]); }
     else if(l.unit==='c'&&cs.length){ out=out.concat(basisKey(cs,n)); }
     else if(cs.length){ out.push(['k0','Under '+cut(cs[0],l),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l)+' to '+cut(cs[k],l),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l)+' or more',n['k'+cs.length]]); }
     if(l.key==='basis') out.push(['kn',l.gaps.none,n.kn]);
   }
-  var gx={}; for(f in HAS){ if(cls(f,l)==='kx'){ var g=gap(f,l)||'nodata'; gx[g]=(gx[g]||0)+1; } }
+  var gx={}; for(f in HAS){ if(!outOf(f)&&cls(f,l)==='kx'){ var g=gap(f,l)||'nodata'; gx[g]=(gx[g]||0)+1; } }
   Object.keys(gx).forEach(function(g){ out.push(['kx',(l.gaps&&l.gaps[g])||'No figure',gx[g]]); });
   if(n.ko) out.push(['ko','States we do not read',outStates(l),'states']);
   return out.filter(function(x){ return x[2]; });
@@ -109,15 +138,19 @@ function bins(d){
   a.sort(function(x,y){return x-y;});
   var scale=DIVSCALE[d.key]||RAMP[d.ramp]||'money';
   if(scale==='rain') return {scale:scale,cuts:RAINVS.slice(),zeroNone:false};
+  return {scale:scale,cuts:qcuts(a,d.doy),zeroNone:zeroNone};
+}
+// five classes of about the same number of counties, edges rounded to a figure a reader can say (a: sorted values)
+function qcuts(a,doy){
   var cuts=[];
   if(a.length>=10){
     var lo=a[0], hi=a[a.length-1];
     for(var i=1;i<5;i++){ var p=(a.length-1)*i/5, x=a[Math.floor(p)]+(a[Math.ceil(p)]-a[Math.floor(p)])*(p-Math.floor(p));
-      var g=Math.max((hi-lo)/50,Math.abs(x)*0.02)||1, c=d.doy?Math.round(x):nice(x,g);
+      var g=Math.max((hi-lo)/50,Math.abs(x)*0.02)||1, c=doy?Math.round(x):nice(x,g);
       if(!cuts.length||c>cuts[cuts.length-1]) cuts.push(c); }
     if(cuts.length&&cuts[0]<=lo) cuts.shift();
   }
-  return {scale:scale,cuts:cuts,zeroNone:zeroNone};
+  return cuts;
 }
 function ocls(f,l){
   var d=OL[l.key]; if(!d) return 'kx';
@@ -125,12 +158,12 @@ function ocls(f,l){
   var v=d.vals[f];
   if(v==null) return d.outSt[STATE_OF[f]||f.slice(0,2)]?'ko':'kx';
   if(l.zeroNone&&v===0) return 'kn';
-  var i=0; while(i<l.cuts.length&&v>=l.cuts[i]) i++;
+  var cs=cutsOf(l), i=0; while(i<cs.length&&v>=cs[i]) i++;
   return 'k'+i;
 }
 function oshort(l,v){ return window.AtlasLayers?window.AtlasLayers.short(l.key,v):String(v); }
 function okeyItems(l,n){
-  var out=[], cs=l.cuts, d=OL[l.key], w=d.salesWords;
+  var out=[], cs=cutsOf(l), d=OL[l.key], w=d.salesWords;
   if(l.zeroNone) out.push(['kn',w?w.kn.charAt(0).toUpperCase()+w.kn.slice(1):'None',n.kn]);
   else if(w) out.push(['kn',w.kn.charAt(0).toUpperCase()+w.kn.slice(1),n.kn]);
   if(l.scale==='rain'){ var r=['30% or more below normal','15 to 30% below','Up to 15% below','Up to 15% above','15 to 30% above','30% or more above'];
@@ -148,7 +181,7 @@ function oldList(){
   if(!OLDP){
     OLDP=new Promise(function(ok,no){
       if(window.AtlasLayers) return ok();
-      var s=document.createElement('script'); s.src='/components/atlas-layers.js?v=1'; s.onload=function(){ ok(); }; s.onerror=function(){ OLDP=null; no(new Error('layers')); };
+      var s=document.createElement('script'); s.src='/components/atlas-layers.js?v=2'; s.onload=function(){ ok(); }; s.onerror=function(){ OLDP=null; no(new Error('layers')); };
       document.head.appendChild(s);
     }).then(function(){
       var names={}; for(var k in NOW.states) names[k]=NOW.states[k].name;
@@ -195,20 +228,82 @@ function buildMap(){
 function paint(){
   var l=layerOf(S.m); if(!l) return;
   if(l.old&&!OL[l.key]){ waitOld(l.key); return; }
-  $('an-svg').setAttribute('data-scale',l.scale);
-  for(var f in PATHS) PATHS[f].setAttribute('class',cls(f,l));
+  setLocal(l);
+  $('an-svg').setAttribute('data-scale',l.scale); $('an-svg').removeAttribute('data-hk');
+  var hit=l.slider?heatLine():null;
+  for(var f in PATHS) PATHS[f].setAttribute('class',cls(f,l)+(hit&&hit[f]?' line':''));
   $('an-maptitle').textContent=l.label;
   var leg=l.old?(OL[l.key].natline||'')+'<span>'+esc(OL[l.key].title)+'.</span> '+(OL[l.key].why?'<span>'+esc(OL[l.key].why)+'.</span> ':'')+(OL[l.key].note||''):strong(l.legend);
   $('an-legend').innerHTML=leg;
   var cs=getComputedStyle(root);
+  // each swatch is a button: it lights that class's counties on the map (the old map's swatches)
   $('an-key').innerHTML=keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
-    return '<li><i class="'+x[0]+'"'+bg+'></i>'+esc(x[1])+' <b>'+Number(x[2]).toLocaleString('en-US')+'</b></li>'; }).join('');
+    var t=x[1]+' '+Number(x[2]).toLocaleString('en-US')+(x[3]?' '+x[3]:'');
+    return '<li><button type="button" data-k="'+x[0]+'" aria-pressed="false" aria-label="Show '+esc(t)+' on the map"><i class="'+x[0]+'"'+bg+'></i>'+esc(x[1])+' <b>'+Number(x[2]).toLocaleString('en-US')+'</b></button></li>'; }).join('');
   $('an-key').scrollLeft=0;
   $('an-svg').setAttribute('aria-label','County map: '+l.label);
   var dw=$('an-dec'); dw.hidden=!l.slider;
   if(l.slider&&!dw.options.length){ window.AtlasLayers.decades.forEach(function(t,i){ var o=document.createElement('option'); o.value=i; o.textContent=t; dw.appendChild(o); }); dw.value=DEC==null?window.AtlasLayers.decades.length-1:DEC; }
   root.classList.remove('waiting');
-  if(S.c) pick(S.c,true);
+  if(S.c) pick(S.c,true); else rail();
+}
+var KEYPIN=null;
+function wireKey(){
+  var box=$('an-key'), svg=$('an-svg');
+  function show(k){ if(k) svg.setAttribute('data-hk',k); else svg.removeAttribute('data-hk'); }
+  box.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('button[data-k]'); if(!b) return; var k=b.getAttribute('data-k');
+    KEYPIN=KEYPIN===k?null:k; [].forEach.call(box.querySelectorAll('button[data-k]'),function(x){ x.setAttribute('aria-pressed',x.getAttribute('data-k')===KEYPIN?'true':'false'); }); show(KEYPIN); });
+  box.addEventListener('mouseover',function(e){ var b=e.target.closest&&e.target.closest('button[data-k]'); if(b&&!KEYPIN) show(b.getAttribute('data-k')); });
+  box.addEventListener('mouseleave',function(){ show(KEYPIN); });
+}
+// the decade map's reference line: counties at or above it get an outline, and the line under the map counts them
+function heatLine(){
+  var w=$('an-linew'), note=$('an-line-note'); if(!window.AtlasLayers||!window.AtlasLayers.heatLine) return null;
+  var line=Number($('an-line').value), r=window.AtlasLayers.heatLine(line);
+  w.hidden=false;
+  note.textContent=r.n?r.at.toLocaleString('en-US')+' of '+r.n.toLocaleString('en-US')+' counties at or above '+line+' F in the '+r.decade+' (outlined)':'';
+  return r.hit;
+}
+
+// ---------- the ranked lists: highest and lowest in the US or the zoomed state, on every map. Farm counties only
+// (10,000 acres or more in farms, 2022 census: the old map's rule); a rent map ranks within its newest survey year
+var RAIL_MORE=false;
+function rword(l,v){
+  if(l.old) return window.AtlasLayers?window.AtlasLayers.fmt(l.key,v):String(v);
+  if(l.key==='drought') return v<0?'No drought':DRN[v];
+  return show(v,l);
+}
+function railList(l){
+  var fi=COL.farm, list=[], f, v, yr=null;
+  if(l.old&&window.AtlasLayers&&window.AtlasLayers.rlatest) yr=window.AtlasLayers.rlatest(l.key);
+  for(f in HAS){ if(S.s&&(STATE_OF[f]||f.slice(0,2))!==S.s) continue;
+    var r=ROWS[f]; if(!r||r[fi]!==1) continue;
+    v=rv(f,l); if(v==null||isNaN(v)) continue;
+    if(yr&&window.AtlasLayers.ryear(l.key,f)!==yr) continue;
+    list.push({f:f,v:v}); }
+  list.sort(function(a,b){ return b.v-a.v||(a.f<b.f?-1:1); });
+  return {list:list, yr:yr};
+}
+function rail(){
+  var box=$('an-rail'); if(!box) return; var l=layerOf(S.m);
+  if(!l||(l.old&&!OL[l.key])){ box.innerHTML=''; return; }
+  var scope=S.s?(NOW.states[S.s]&&NOW.states[S.s].name||S.s):'the US', doy=l.old&&OL[l.key].doy;
+  var hi=doy?'Latest':'Highest', lo=doy?'Earliest':'Lowest', h='';
+  if(!NOW.farm||COL.farm==null){ box.innerHTML='<p class="an-rk-n">No ranking: the census farm-acres file did not load, and without it cities would rank as farm counties.</p>'; return; }
+  var R=railList(l), list=R.list, n=list.length, k=Math.min(RAIL_MORE?15:8,Math.floor(n/2)), cs=getComputedStyle(root);
+  function row(r){ var c=PATHS[r.f]?String(PATHS[r.f].getAttribute('class')||'').split(' ')[0]:'kx', bg=/^k\d$/.test(c)?cs.getPropertyValue('--an-'+l.scale+'-'+c).trim():'';
+    var nm=IDX[r.f]?IDX[r.f][0]:r.f; if(S.s) nm=nm.replace(/, [A-Z]{2}$/,'');
+    return '<li><button type="button" data-f="'+r.f+'"'+(r.f===S.c?' class="me" aria-current="true"':'')+'><i class="'+c+'"'+(bg?' style="background:'+bg+'"':'')+'></i><span class="nm">'+esc(nm)+'</span><span class="v">'+esc(rword(l,r.v))+'</span></button></li>'; }
+  function side(head,rows,tiedAt,tied){ return '<div class="an-rk"><h3 class="an-rk-h">'+head+' in '+esc(scope)+'</h3>'+(tied>k?'<p class="an-rk-n">'+tied.toLocaleString('en-US')+' counties tied at '+esc(rword(l,tiedAt))+'.</p>':'<ol class="an-rk-l">'+rows.map(row).join('')+'</ol>')+'</div>'; }
+  if(n<4) h='<p class="an-rk-n">'+(n?'Only '+n:'No')+' '+(n===1?'county':'counties')+' with 10,000 acres or more in farms in '+esc(scope)+' '+(n===1?'has':'have')+' a figure on this map'+(n?', too few to list':'')+'.</p>';
+  else {
+    var top=list[0].v, bot=list[n-1].v;
+    h='<div class="an-rk2">'+side(hi,list.slice(0,k),top,list.filter(function(r){return r.v===top;}).length)+side(lo,list.slice(n-k).reverse(),bot,list.filter(function(r){return r.v===bot;}).length)+'</div>'
+      +'<p class="an-rk-n">'+n.toLocaleString('en-US')+' counties with 10,000 acres or more in farms'+(!l.old&&l.key==='rent'&&NOW.dates.rent_year?', '+NOW.dates.rent_year+' survey':R.yr?', '+R.yr+(l.key==='rent_rev'?' crop year':' survey'):'')+'. '
+      +(n>2*k||RAIL_MORE?'<button type="button" class="an-rk-more" id="an-rk-more" aria-expanded="'+(RAIL_MORE?'true':'false')+'">'+(RAIL_MORE?'Show fewer':'Show more')+'</button>':'')+'</p>';
+  }
+  box.innerHTML='<h2 class="an-rk-t">Counties on this map</h2>'+h;
+  var mo=$('an-rk-more'); if(mo) mo.addEventListener('click',function(){ RAIL_MORE=!RAIL_MORE; rail(); var b=$('an-rk-more'); if(b) b.focus({preventScroll:true}); });
 }
 function waitOld(key){
   root.classList.add('waiting');
@@ -225,6 +320,7 @@ function zoom(st){
     if(W/H<r) W=H*r; else H=W/r; vb=[(b[0]+b[2])/2-W/2,(b[1]+b[3])/2-H/2,W,H]; }
   $('an-svg').setAttribute('viewBox',vb.map(function(v){return Math.round(v*10)/10;}).join(' '));
   root.classList.toggle('zoomed',!!S.s); $('an-st').value=S.s; $('an-all').hidden=!S.s;
+  if(NOW&&layerOf(S.m)&&(!layerOf(S.m).old||OL[S.m])) paint();
   setLink(); save();
 }
 function pick(f,quiet,fromRecord){
@@ -233,16 +329,19 @@ function pick(f,quiet,fromRecord){
   var name=i?i[0]:f, stc=GEO.box[STATE_OF[f]]?STATE_OF[f]:null;
   var body=l&&l.old?(window.AtlasLayers?window.AtlasLayers.card(l.key,f):''):(l&&ROWS[f]?esc(line(f,l))+'.':'');
   $('an-read').innerHTML='<b>'+esc(name)+'</b>: '+body+' '+(i?'<a href="'+esc(i[1])+'">Open the county page</a>':'')+
-    ' <button type="button" id="an-rec">Full county record here</button>'+
+    ' <button type="button" id="an-rec">Full county record \u2193</button>'+
     (stc&&S.s!==stc?' <button type="button" id="an-zst">Zoom to '+esc(NOW.states[stc]&&NOW.states[stc].name||stc)+'</button>':'');
   var z=$('an-zst'); if(z) z.addEventListener('click',function(){ zoom(stc); ga('atlas_now_state',{state:stc}); });
-  $('an-rec').addEventListener('click',function(){ record(f,'tap'); });
+  $('an-rec').addEventListener('click',function(){ record(f,'jump'); });
+  rail();
   if(!quiet){ setLink(); save(); }
   if(fromRecord){ setLink(); }
   if(!quiet||fromRecord){ try{ document.dispatchEvent(new CustomEvent('atlas-county',{detail:f})); }catch(e){} }
 }
 function record(f,how){
-  oldList().then(function(){ window.AtlasLayers.panel(f,how); ga('atlas_now_record',{fips:f}); }).catch(function(){
+  oldList().then(function(){ window.AtlasLayers.panel(f,how==='jump'?'tap':how); ga('atlas_now_record',{fips:f});
+    // the jump: the record opens under the map and the page goes to it
+    if(how==='jump') setTimeout(function(){ var p=$('fa-panel')||$('an-panel'); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); },60); }).catch(function(){
     $('an-read').insertAdjacentHTML('beforeend',' <span>The full record did not load; the county page has it.</span>'); });
 }
 
@@ -341,6 +440,17 @@ function wire(){
   sel.addEventListener('change',function(){ zoom(sel.value); if(sel.value) ga('atlas_now_state',{state:sel.value}); });
   $('an-all').addEventListener('click',function(){ zoom(''); });
   $('an-dec').addEventListener('change',function(){ DEC=Number(this.value); var k=S.m; delete OL[k]; paint(); });
+  // the old map's reference lines, 60 to 70 F, 66 F first
+  var ln=$('an-line'); [60,62,64,66,68,70].forEach(function(t){ var o=document.createElement('option'); o.value=o.textContent=t; if(t===66) o.selected=true; ln.appendChild(o); });
+  $('an-line').addEventListener('change',function(){ paint(); ga('atlas_now_line',{line:this.value}); });
+  [].forEach.call($('an-scl').querySelectorAll('button'),function(b){ b.addEventListener('click',function(){ S.sc=b.getAttribute('data-sc'); paint(); ga('atlas_now_scale',{sc:S.sc}); }); });
+  wireKey();
+  var rl=$('an-rail');
+  rl.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('button[data-f]'); if(b){ pick(b.getAttribute('data-f')); ga('atlas_now_rank',{fips:b.getAttribute('data-f')}); } });
+  rl.addEventListener('mouseover',function(e){ var b=e.target.closest&&e.target.closest('button[data-f]'); var p=b&&PATHS[b.getAttribute('data-f')]; if(p) $('an-hl').setAttribute('d',GEO.c[b.getAttribute('data-f')]); });
+  rl.addEventListener('mouseleave',function(){ $('an-hl').setAttribute('d',S.c&&GEO.c[S.c]||''); });
+  mine(window.AGSIST_STATE&&window.AGSIST_STATE.fips||window.AGSIST_MINE);
+  document.addEventListener('atlas-mine',function(e){ mine(e.detail); });
   $('an-pic').addEventListener('click',function(e){
     // a same-tab download of a picture on the image host; if the host blocks it, the link opens the picture
     var a=this; if(!window.fetch||!window.URL||!URL.createObjectURL) return; e.preventDefault();
@@ -353,6 +463,18 @@ function wire(){
   // a link inside the page that names an old layer (the foreign-held fold's "show it on the map")
   window.addEventListener('hashchange',function(){ var o=readHash(); if(!o) return; applyDeep(o); if(!o.l||LAY[SAME[o.l]||o.l]){ go(S.q,true); if(o.s) zoom(o.s); if(o.c) pick(o.c,true); }
     $('an-map').scrollIntoView({behavior:'smooth',block:'start'}); });
+}
+// My county: the county saved on another page (AGSIST_STATE, or the saved location the finder reads), picked on the map
+function mine(f){
+  f=f&&String(f); var b=$('an-mine'); if(!b||!f||!HAS[f]||b.getAttribute('data-f')) return;
+  b.setAttribute('data-f',f); b.hidden=false;
+  b.addEventListener('click',function(){ pick(f); ga('atlas_now_mine',{fips:f}); });
+}
+// the sources and vintages, and the day the Atlas was built (now.json, from atlas.json's own notes)
+function vint(){
+  var b=$('an-built'); if(b&&NOW.built){ var d=new Date(String(NOW.built).slice(0,10)+'T12:00:00Z'); b.textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}); }
+  var n=$('an-n'); if(n) n.textContent=NOW.rows.length.toLocaleString('en-US');
+  var v=$('an-vint'); if(v&&NOW.vint) v.innerHTML=NOW.vint.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('');
 }
 // the national folds lower on the page read the Atlas file: drawn the first time one is opened
 function folds(){
@@ -367,7 +489,7 @@ Promise.all([get(D+'now.json'),get(D+'geo-us.json'),get(D+'counties-index.json')
   NOW.rows.forEach(function(r){ ROWS[r[0]]=r; });
   NOW.layers.forEach(function(l){ LAY[l.key]=l; });
   (res[2]||[]).forEach(function(x){ IDX[x[0]]=[x[1],x[2]]; STATE_OF[x[0]]=String(x[1]).slice(-2); });
-  buildMap(); wire(); tiles(); folds();
+  buildMap(); wire(); tiles(); folds(); vint();
   var deep=readLink();
   if(S.m&&!LAY[S.m]&&!deep) deep={l:S.m};
   if(S.q&&!NOW.questions.some(function(x){return x.key===S.q;})) S.q='';
