@@ -85,8 +85,9 @@
    hidden sideways scroll, and it holds the room of the opening view's key so the map does not move as it loads */
 .an-key{list-style:none;display:flex;flex-wrap:wrap;gap:0 .8rem;padding:0;margin:0 0 .3rem;font-size:.8rem;line-height:1.3;color:var(--text-dim);min-height:4rem;align-content:flex-start;align-items:center}
 .an-key .an-kh{font-weight:600;color:var(--text)}
-/* on a phone the rows sit close (1rem each), so the key, the map and the legend's first line fit on the first screen */
-@media(max-width:699px){.an-key li button{min-height:1rem}.an-key{margin-bottom:.15rem;line-height:1.25}.an-legend{margin-top:.35rem}}
+/* on a phone each key row is a 24 px tap (WCAG 2.5.8), the labels are short (atlas-now.js shortLab, DRS) and the map head is
+   a little lower, so the key, the map and the legend's first line still fit on the first screen */
+@media(max-width:699px){.an-key li button{min-height:24px}.an-key{margin-bottom:0;line-height:1.25;min-height:4.5rem;column-gap:.55rem}.an-maphead{min-height:32px}.an-legend{margin-top:.25rem}.an-maphead .an-zoom select,.an-maphead .an-zoom button{min-height:32px}.an-tiles,.an-tabs{margin-bottom:.4rem}.an-lede{margin-bottom:.45rem}}
 @media(min-width:700px){.an-key{min-height:3.9rem}}
 .an.ui .an-key{min-height:0}
 .an-key li{display:flex;align-items:center;gap:.3rem;flex:0 1 auto;min-width:0}.an-key button{text-align:left}.an-key b{color:var(--text);font-weight:600}

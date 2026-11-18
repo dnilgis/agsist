@@ -277,9 +277,10 @@ function paint(){
   if(l.key==='rented'){ var tf=$('fa-tenure'); if(tf&&!tf.open) tf.open=true; }
   var cs=getComputedStyle(root);
   // each swatch is a button: it lights that class's counties on the map (the old map's swatches)
+  var ph=!!(window.matchMedia&&matchMedia('(max-width:699px)').matches);
   $('an-key').innerHTML='<li class="an-kh">'+esc(viewName())+' counties</li>'+keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
     var t=x[1]+' '+Number(x[2]).toLocaleString('en-US')+(x[3]?' '+x[3]:'');
-    return '<li><button type="button" data-k="'+x[0]+'" aria-pressed="false" aria-label="Show '+esc(t)+' on the map"><i class="'+x[0]+'"'+bg+'></i>'+esc(x[1])+' <b>'+Number(x[2]).toLocaleString('en-US')+'</b></button></li>'; }).join('');
+    return '<li><button type="button" data-k="'+x[0]+'" aria-pressed="false" aria-label="Show '+esc(t)+' on the map"><i class="'+x[0]+'"'+bg+'></i>'+esc(ph?(l.key==='drought'&&/^k\d$/.test(x[0])?DRS[+x[0].slice(1)]:shortLab(x[1])):x[1])+' <b>'+Number(x[2]).toLocaleString('en-US')+'</b></button></li>'; }).join('');
   $('an-key').scrollLeft=0;
   $('an-svg').setAttribute('aria-label','County map: '+l.label);
   var dw=$('an-dec'); dw.hidden=!l.slider;
@@ -288,6 +289,10 @@ function paint(){
   if(S.c) pick(S.c,true); else rail();
   save(); vcount();
 }
+// on a phone a range reads "21-30%" (en dash) and a drought level by its Drought Monitor code ("D1"), so the key takes
+// three rows on the common maps and each swatch stays a full 24 px tap; the button's label keeps the full words
+var DRS=['D0','D1','D2','D3','D4'];
+function shortLab(t){ var m=/^(\$?[\d.,]+)([%\u00a2]?) to (\$?[\d.,]+)([%\u00a2]?)(.*)$/.exec(t); return m?m[1]+(m[2]&&m[2]===m[4]?'':m[2])+'\u2013'+m[3]+m[4]+m[5]:t; }
 var KEYPIN=null;
 function wireKey(){
   var box=$('an-key'), svg=$('an-svg');
