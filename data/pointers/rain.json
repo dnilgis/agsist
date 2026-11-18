@@ -109,10 +109,6 @@
    "to": "/rain/mississippi",
    "since": "2026-11-01"
   },
-  "rain/mississippi/pontotoc-county.html": {
-   "to": "/rain/mississippi",
-   "since": "2026-11-16"
-  },
   "rain/mississippi/tishomingo-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-11-16"
@@ -164,10 +160,6 @@
   "rain/north-dakota/grant-county.html": {
    "to": "/rain/north-dakota",
    "since": "2026-11-12"
-  },
-  "rain/north-dakota/sheridan-county.html": {
-   "to": "/rain/north-dakota",
-   "since": "2026-11-16"
   },
   "rain/oklahoma/harper-county.html": {
    "to": "/rain/oklahoma",
