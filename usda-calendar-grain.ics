@@ -483,13 +483,13 @@ DTSTAMP:20261027T120000Z
 DTSTART;VALUE=DATE:20270315
 SUMMARY:Corn and soybean crop insurance sales closing (RMA)
 DESCRIPTION:Last day to buy or change 2027 corn and soybean crop insurance 
- in 29 states\, the Corn Belt included: CO\, DE\, IA\, IL\, IN\, KS\, KY\, 
- MA\, MD\, ME\, MI\, MN\, MO\, MT\, ND\, NE\, NJ\, NY\, OH\, OK\, OR\, PA\,
-  SD\, TN\, VA\, VT\, WA\, WI\, WV. Other states close on other dates: chec
- k your state's sales closing date with your insurer. Dates from RMA's Comm
- odity Exchange Price Provisions.\nWhat the market priced in: https://agsis
- t.com/usda-calendar. Free morning Daily: https://agsist.com/daily?utm_sour
- ce=ics
+ in 29 states\, the Corn Belt included. States: CO\, DE\, IA\, IL\, IN\, KS
+ \, KY\, MA\, MD\, ME\, MI\, MN\, MO\, MT\, ND\, NE\, NJ\, NY\, OH\, OK\, O
+ R\, PA\, SD\, TN\, VA\, VT\, WA\, WI\, WV. Other states close on other dat
+ es: check your state's sales closing date with your insurer. Dates from RM
+ A's Commodity Exchange Price Provisions.\nWhat the market priced in: https
+ ://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/daily?
+ utm_source=ics
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
