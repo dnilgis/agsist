@@ -10,9 +10,10 @@
 (function (root) {
   'use strict';
   /* Radii use the site tokens (--r-sm). Widths: above 1000 px one line in the 36 px the header holds; at 1000 px and
-     under two lines in 54 px; at 640 px and under the list reads "on our lists" and "one line on every page." goes; at
-     540 px and under the button reads "Advertise here"; under 390 px the list figure goes (it cannot share two lines with
-     the citations at 360 px once either figure gains a digit). Never cut with an ellipsis: what does not fit is left out whole.
+     under two lines in 54 px; from 1001 to 1180 px "one line on every page." and "email" go; at 640 px and under the
+     list reads "on our lists" and "one line on every page." goes; at 540 px and under the button reads "Advertise here"
+     and the list figure goes; under 390 px the search clicks go too, and engaged visits stand alone (two figures cannot
+     share two lines at 360 px). Never cut with an ellipsis: what does not fit is left out whole.
      Measured clean from 320 to 1440 px with every figure one digit longer than today. */
   var CSS = '.sw-in.sw-open{display:flex;align-items:center;gap:10px;padding:3px 4px 3px 10px;border:1px solid rgba(var(--ad-orange-rgb),.55);border-radius:var(--r-sm,4px);background:rgba(var(--ad-orange-rgb),.08);color:var(--text-dim);font-size:.8rem;line-height:1.3}' +
     '.sw-pitch{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap}' +
@@ -25,8 +26,9 @@
     '@media (max-width:1000px){.sw-in.sw-open{font-size:.78rem;gap:8px}.sw-pitch{white-space:normal}.sw-in.sw-open a.sw-cta{min-height:0;padding:2px 8px;white-space:normal;width:8.8em;align-self:center;text-align:center;line-height:1.15;font-size:.76rem}}' +
     '@media (max-width:640px){.sw-what,.sw-l{display:none}.sw-s{display:inline}}' +
     '@media (max-width:540px){.sw-in.sw-open{gap:6px;padding-left:8px}.sw-in.sw-open a.sw-cta{width:6.4em;padding:2px 5px;overflow-wrap:normal;word-break:normal;hyphens:none}.sw-cl{display:none}.sw-cs{display:inline}}' +
-    '@media (min-width:1001px) and (max-width:1100px){.sw-em{display:none}}' +
-    '@media (max-width:389px){.sw-pp{display:none}.sw-in.sw-open{gap:5px;padding-left:7px}.sw-in.sw-open a.sw-cta{width:6em;padding:2px 3px}}';
+    '@media (min-width:1001px) and (max-width:1180px){.sw-em,.sw-what{display:none}}' +
+    '@media (max-width:540px){.sw-pp{display:none}}' +
+    '@media (max-width:389px){.sw-sc{display:none}.sw-in.sw-open{gap:5px;padding-left:7px}.sw-in.sw-open a.sw-cta{width:6em;padding:2px 3px}}';
 
   function esc(x) {
     return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) {
