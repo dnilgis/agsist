@@ -3,6 +3,7 @@ name: prf
 on:
   schedule:
     - cron: "23 10 * * 3"
+    - cron: "37 16 2 12 *"
   workflow_run:
     workflows: ["Fetch Grain Bids", "Tick 08"]
     types: [completed]
@@ -62,6 +63,7 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow prf.yml --max-lag 360
           --cron "23 10 * * 3"
+          --cron "37 16 2 12 *"
 
   prf:
     needs: gate
