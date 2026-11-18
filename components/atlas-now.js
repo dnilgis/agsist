@@ -31,7 +31,17 @@ function show(v,l){
   if(l.unit==='x') return v.toFixed(2);
   return String(v);
 }
-function cut(v,l){ if(l.unit==='$') return money(v,0); if(l.unit==='c') return (v<0?'-':'')+Math.round(Math.abs(v)*100)+'c'; if(l.unit==='x') return v.toFixed(2); return v+(l.unit==='%'?'%':l.unit==='F'?' F':''); }
+function cut(v,l){ if(l.unit==='$') return money(v,0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2); return v+(l.unit==='%'?'%':l.unit==='F'?' F':''); }
+// basis in words: 65\u00a2 under, even, 10\u00a2 over
+function cents(v){ var c=Math.round(Math.abs(v)*100); return c?c+'\u00a2 '+(v<0?'under':'over'):'even'; }
+function basisKey(cs,n){
+  var o=[], i, a, b;
+  o.push(['k0',cs[0]<0?'More than '+cents(cs[0]):cs[0]===0?'Under futures':'Under '+cents(cs[0]),n.k0]);
+  for(i=1;i<cs.length;i++){ a=cs[i-1]; b=cs[i];
+    o.push(['k'+i,(a<0&&b<0)?Math.round(-a*100)+'\u00a2 to '+cents(b):(a>0&&b>0)?Math.round(a*100)+'\u00a2 to '+cents(b):cents(a)+' to '+cents(b),n['k'+i]]); }
+  b=cs[cs.length-1]; o.push(['k'+cs.length,b===0?'Even or over':b>0?cents(b)+' or more':cents(b)+' or stronger',n['k'+cs.length]]);
+  return o;
+}
 var DRN=['Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'];
 // class of one county on one layer: k0..k6 a bin, kn grey (none), kx hatched (a gap with a reason)
 function cls(f,l){
@@ -51,6 +61,7 @@ function keyItems(l){
   }else{
     var cs=l.cuts.slice(); if(l.scale==='count'){ out.push(['kn','None within 30 miles',n.kn]); cs=cs.slice(1); }
     if(l.scale==='rain'){ out.push(['k0','Under '+cs[0]+'%',n.k0]); for(var j=1;j<cs.length;j++) out.push(['k'+j,cs[j-1]+' to '+cs[j]+'%',n['k'+j]]); out.push(['k'+cs.length,cs[cs.length-1]+'% or more',n['k'+cs.length]]); }
+    else if(l.unit==='c'&&cs.length){ out=out.concat(basisKey(cs,n)); }
     else if(cs.length){ out.push(['k0','Under '+cut(cs[0],l),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l)+' to '+cut(cs[k],l),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l)+' or more',n['k'+cs.length]]); }
     if(l.key==='basis') out.push(['kn',l.gaps.none,n.kn]);
   }
