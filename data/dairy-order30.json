@@ -220,6 +220,7 @@
    "uniform": 16.62
   },
   {
+   "central": "agree",
    "class3": 15.16,
    "month_key": "2026-10",
    "ppd": 0.75,
@@ -227,11 +228,11 @@
    "uniform": 15.91
   }
  ],
- "read": "2026-11-17",
+ "read": "2026-11-18",
  "source": "Upper Midwest Market Administrator (Federal Order 30)",
  "source_url": "https://www.fmma30.com/",
  "status": {
-  "at": "2026-11-17T16:26:12Z",
+  "at": "2026-11-18T16:26:20Z",
   "ok": true
  },
  "year_ago": {
