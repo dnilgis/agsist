@@ -8,7 +8,7 @@
         "Posted after yesterday's close, 1:47 pm."          ("Friday's close" on a Monday morning)
       and, when the bid names its futures contract and the price file holds a fresh overnight trade for that
       same contract with a change from that session's settle,
-        "Jan '27 soybean futures are down 5¢ from yesterday's settle (overnight trade, read 7:01 am)."
+        "Jan '27 soybeans are down 5¢ since yesterday's settle (overnight, 7:01 am)."
       Anything else returns null and the page keeps the site's "Updated" stamp (components/asof.js), whose old
       bid note stays: in the day session, after the close, and for a bid older than the last session.
       No cash estimate is printed: the elevator's futures level at posting is not on file for every board, and
@@ -26,7 +26,7 @@
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var FCODE = 'FGHJKMNQUVXZ';
-  var CROP = { ZC: 'corn', ZS: 'soybean', ZW: 'Chicago wheat', KE: 'KC wheat', MW: 'Minneapolis wheat' };
+  var CROP = { ZC: 'corn is', ZS: 'soybeans are', ZW: 'Chicago wheat is', KE: 'KC wheat is', MW: 'Minneapolis wheat is' };
   var FR = { 1: ' 1/4', 2: ' 1/2', 3: ' 3/4' };
 
   function px() { return root.AgPxStamp || (typeof require === 'function' ? require('./price-local.js') : null); }
@@ -77,10 +77,10 @@
     if (!c || c.vs !== win.session || typeof c.net !== 'number') return null;
     var a = ct(new Date(at));
     if (!a || iso(a) !== win.today) return null;
-    var name = MON[FCODE.indexOf(m[2])] + " '" + m[3] + ' ' + CROP[m[1]] + ' futures';
+    var name = MON[FCODE.indexOf(m[2])] + " '" + m[3] + ' ' + CROP[m[1]];
     var dw = dayWord(win.session, win.today), mv = Math.round(c.net * 4) / 4;
-    var how = mv === 0 ? 'are unchanged from' : (mv < 0 ? 'are down ' : 'are up ') + cents(mv) + ' from';
-    return { text: name + ' ' + how + ' ' + dw + '’s settle (overnight trade, ' + hm(a.min) + ').' };
+    var how = mv === 0 ? ' unchanged since ' : (mv < 0 ? ' down ' : ' up ') + cents(mv) + ' since ';
+    return { text: name + how + dw + '’s settle (overnight, ' + hm(a.min) + ').' };
   }
 
   /* -> {text, html, session} or null (keep the site's Updated stamp) */
