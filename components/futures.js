@@ -1441,7 +1441,7 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
 function netCount(box){fetch('/data/elevator-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.bids;if(!k||typeof k.elevators!=='number'||!(k.elevators>0)||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.elevators.toLocaleString('en-US')+' elevators with a current bid)';});}).catch(function(){});}
 
 /* The seasonal chart (Nov 18, 2026): price-stats.json seasonality_pct, by calendar month the percent a weekly close
-   sat above or below its year's average, each year read from ONE contract (scripts/build_price_percentile.py). Drawn
+   sat above or below its year's mean, each year read from ONE contract (scripts/build_price_percentile.py). Drawn
    only for that method: a continuous front-month series is never drawn (its roll from one contract to the next made
    corn's August low). Twin of seasDraw in cattle-futures-prices.html. Returns true when drawn. */
 function seasDraw(s,ch,cm){
@@ -1455,11 +1455,11 @@ function seasDraw(s,ch,cm){
   var hi=0,lo=0;P.forEach(function(v,i){if(v>P[hi])hi=i;if(v<P[lo])lo=i;});
   var yy=y[0]+'-'+String(y[1]).slice(2);
   var cols=P.map(function(v,i){var h=(Math.abs(v)/top*50).toFixed(1)+'%';
-    return '<div class="seas-col'+(i===cm?' cur':'')+'" title="'+MOS[i]+': '+pc(v)+' from that year\u2019s average" style="position:relative;justify-content:flex-end">'+
+    return '<div class="seas-col'+(i===cm?' cur':'')+'" title="'+MOS[i]+': '+pc(v)+' from that year\u2019s mean" style="position:relative;justify-content:flex-end">'+
       '<div style="position:relative;flex:1;width:100%"><div class="seas-bar" style="position:absolute;left:0;right:0;'+(v>=0?'bottom:50%;border-radius:2px 2px 0 0':'top:50%;border-radius:0 0 2px 2px')+';height:'+h+'"></div></div>'+
       '<div class="seas-mo">'+MOS[i]+'</div></div>';}).join('');
   ch.setAttribute('role','img');
-  ch.setAttribute('aria-label','What '+yy+' did, percent from each year\u2019s average by month: highest '+MOS[hi]+' '+pc(P[hi])+', lowest '+MOS[lo]+' '+pc(P[lo]));
+  ch.setAttribute('aria-label','What '+yy+' did, percent from each year\u2019s mean by month: highest '+MOS[hi]+' '+pc(P[hi])+', lowest '+MOS[lo]+' '+pc(P[lo]));
   ch.style.height='96px';ch.style.alignItems='stretch';
   ch.innerHTML='<div aria-hidden="true" style="display:flex;flex-direction:column;justify-content:space-between;font-size:.7rem;color:var(--text-dim);padding:0 4px 18px 0;text-align:right;white-space:nowrap"><span>+'+top+'%</span><span>0%</span><span>\u2212'+top+'%</span></div>'+
     '<div style="flex:1;display:flex;gap:3px;position:relative"><div aria-hidden="true" style="position:absolute;left:0;right:0;top:calc((100% - 18px) / 2);border-top:1px solid var(--border)"></div>'+cols+'</div>';
@@ -1470,8 +1470,8 @@ function seasDraw(s,ch,cm){
 }
 function seasCap(s){
   var y=s.seasonality_years,c=s.seasonality_contract==='December'?'December contract':'contract for January of the next year';
-  return 'Percent above or below the year\u2019s average, by month: weekly closes of the '+c+' in each calendar year '+y[0]+' to '+y[1]+
-    ' (Yahoo Finance), each set against that year\u2019s average close, then averaged by month (n='+(s.seasonality_n||'?')+' weeks). '+
+  return 'Percent above or below the year\u2019s mean, by month: weekly closes of the '+c+' in each calendar year '+y[0]+' to '+y[1]+
+    ' (Yahoo Finance), each set against that year\u2019s mean close, then the mean for each month (n='+(s.seasonality_n||'?')+' weeks). '+
     (y[1]-y[0]+1)+' years is a short window: what these years did, not a forecast.';
 }
 
