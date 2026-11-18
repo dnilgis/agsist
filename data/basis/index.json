@@ -30,9 +30,9 @@
    "kb":1.4
   },
   "IA":{
-   "rows":7310,
-   "facilities":506,
-   "kb":342.2
+   "rows":7465,
+   "facilities":508,
+   "kb":350.5
   },
   "ID":{
    "rows":1,
@@ -50,9 +50,9 @@
    "kb":52.8
   },
   "KS":{
-   "rows":5569,
+   "rows":5575,
    "facilities":263,
-   "kb":247.3
+   "kb":247.6
   },
   "KY":{
    "rows":129,
@@ -75,9 +75,9 @@
    "kb":227.7
   },
   "MO":{
-   "rows":376,
-   "facilities":41,
-   "kb":18.3
+   "rows":388,
+   "facilities":42,
+   "kb":18.9
   },
   "MT":{
    "rows":118,
