@@ -38,7 +38,11 @@
  * longer after each miss, and is dropped after its last try or its 7 days.
  * It goes out through the page's own fetch, never through loader.js's backup
  * form wrapper, so a retry that misses sends nothing anywhere else. Sent: the
- * worker mails its confirmation as usual and the page says one short line.
+ * worker does what it always does for that route (a watch or price alert mails
+ * its confirmation; the Daily, notices and hail alerts do not) and the page says
+ * that route's usual success line (SIGNED). Expired items leave storage when a
+ * page loads, so an address is never kept past its 7 days. Signups are capped at
+ * SIGNUPS_MAX and never push out the other kept items.
  * Refused by the worker: dropped quietly (the backup form copy stands). The
  * address in it stays in this browser's storage only and is never logged.
  */
@@ -49,7 +53,16 @@
   var KEY = 'agsist-outbox', LOCK = 'agsist-outbox-lock', MAX = 30, DAYS = 30, LEASE_MS = 60000, SEND_MS = 15000;
   var LINE = 'Saved. It will go through when our system is back and you next open agsist.com on this device; nothing else to do.';
   var CONTACT = 'sig@agsist.com';
-  var SIGNED = "You're signed up: check your email to confirm.";
+  // each route's own success line, as the page says it when the worker answers at once (signup-ask.js)
+  var SIGNED = {
+    '/subscribe': 'You are on AGSIST Daily, first email tomorrow morning.',
+    '/notice': 'You are signed up for that email.',
+    '/alert-subscribe': 'You are signed up for hail alerts. They arrive the morning after radar-estimated hail touches your spot.',
+    '/watch-subscribe': 'Check your email to confirm the alert. Nothing is sent until you press that link.',
+    '/elevator-watch-subscribe': 'Check your email to confirm the price alert. Nothing about it is sent until you press that link.',
+    '/price-watch-subscribe': 'Check your email to confirm the futures alert. Nothing about it is sent until you press that link.'
+  };
+  var SIGNUPS_MAX = 10;
   var WAIT_MS = 60000, WAIT_MAX = 6 * 3600000;
 
   // The worker moved to agsist-api on Oct 22 (same storage behind both). Either
@@ -68,6 +81,15 @@
     });
   }
   function write(a) {
+    var over = a.length - MAX;
+    if (over > 0) {   // signups go first, oldest first: they never push out what only the worker can finish
+      a = a.filter(function (x) { if (over > 0 && x.kind === 'signup') { over--; return false; } return true; });
+    }
+    var sg = a.filter(function (x) { return x.kind === 'signup'; });
+    if (sg.length > SIGNUPS_MAX) {
+      var cut = sg.slice(0, sg.length - SIGNUPS_MAX);
+      a = a.filter(function (x) { return cut.indexOf(x) < 0; });
+    }
     try {
       if (a.length) root.localStorage.setItem(KEY, JSON.stringify(a.slice(-MAX)));
       else root.localStorage.removeItem(KEY);
@@ -88,6 +110,16 @@
     if (!write(a)) return '';
     // read back: a full or blocked storage keeps nothing
     return read().some(function (y) { return y.id === id; }) ? id : '';
+  }
+  // expired or broken items leave storage now, not only from the list read() gives
+  function prune() {
+    var live = read(), raw = null;
+    try { raw = root.localStorage.getItem(KEY); } catch (e) { return live; }
+    if (raw === null) return live;
+    var n = -1;
+    try { var a = JSON.parse(raw); n = Array.isArray(a) ? a.length : -1; } catch (e) { n = -1; }
+    if (n !== live.length) write(live);
+    return live;
   }
   function drop(id) { write(read().filter(function (x) { return x.id !== id; })); }
   function mark(id, v, more) {
@@ -187,9 +219,7 @@
     var quiet = opts && opts.quiet;
     running = Promise.resolve(withLock(function () {
       var out = { sent: [], kept: 0, refused: [] };
-      var live = read();
-      try { if (live.length !== JSON.parse(root.localStorage.getItem(KEY) || '[]').length) write(live); } catch (e) {}   // expired ones go now
-      var ids = live.map(function (x) { return x.id; });
+      var ids = prune().map(function (x) { return x.id; });
       return ids.reduce(function (p, id) {
         return p.then(function () {
           var x = read().filter(function (y) { return y.id === id; })[0];
@@ -207,7 +237,14 @@
               out.kept++; return 'stop';
             }
             drop(id);
-            if (x.kind === 'signup') { if (r.sent) out.signed = (out.signed || 0) + 1; return; }
+            if (x.kind === 'signup') {
+              if (r.sent) {
+                out.signed = (out.signed || 0) + 1;
+                var line = SIGNED[x.route] || 'You are signed up.';
+                out.signedLines = (out.signedLines || []).filter(function (l) { return l !== line; }).concat([line]);
+              }
+              return;
+            }
             if (r.sent) { afterSent(x, r.j); out.sent.push(x.label); }
             else out.refused.push(x.label + (r.error ? ': ' + r.error : ''));
           });
@@ -220,8 +257,8 @@
       if (!quiet) {
         if (out.refused.length) bar(['Something you saved while our system was down did not go through.'].concat(out.refused,
           ['Write to ' + CONTACT + ' if you need a hand.']), true);
-        else if (out.sent.length) bar(['Sent now that our system is back: ' + out.sent.join('; ') + '.'].concat(out.signed ? [SIGNED] : []));
-        else if (out.signed) bar([SIGNED]);
+        else if (out.sent.length) bar(['Sent now that our system is back: ' + out.sent.join('; ') + '.'].concat(out.signedLines || []));
+        else if (out.signed) bar(out.signedLines);
       }
       return out;
     }, function () { running = null; return { sent: [], kept: read().length, refused: [] }; });
@@ -230,6 +267,6 @@
 
   root.AgOutbox = { add: add, flush: flush, list: read, drop: drop, blocked: blocked, LINE: LINE, KEY: KEY, SIGNED: SIGNED };
 
-  if (root.document && read().length) setTimeout(function () { flush(); }, 1500);
+  if (prune().length && root.document) setTimeout(function () { flush(); }, 1500);
   if (root.addEventListener) root.addEventListener('online', function () { if (read().length) flush(); });
 })(typeof window !== 'undefined' ? window : this);

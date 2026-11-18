@@ -50,17 +50,28 @@
         setTimeout(function () { if (bar.parentNode) bar.remove(); }, 15000);
       } catch (e) {}
     }
+    // one kept copy per signup: the route, the address (trimmed, lower case) and every field that names what is
+    // watched (topic, county, elevator, crop, price...); where it was asked (source, askId) does not count
+    function signupKey(route, f) {
+      var o = {};
+      Object.keys(f).sort().forEach(function (k) {
+        if (['source', 'src', 'askId', 'zipField', '_gotcha'].indexOf(k) < 0) o[k] = k === 'email' ? String(f[k]).trim().toLowerCase() : f[k];
+      });
+      return route + ' ' + JSON.stringify(o);
+    }
     function keep(url, route, f) {
       try {
         if (!f.email) return;
-        var a = JSON.parse(localStorage.getItem('agsist-outbox') || '[]'), t = Date.now();
+        var a = JSON.parse(localStorage.getItem('agsist-outbox') || '[]'), t = Date.now(), k = signupKey(route, f);
         a = (Array.isArray(a) ? a : []).filter(function (x) {
-          return !(x && x.kind === 'signup' && x.route === route && x.body && x.body.email === f.email);
+          return !(x && x.kind === 'signup' && signupKey(x.route, x.body || {}) === k);
         });
         a.push({ id: t.toString(36) + Math.random().toString(36).slice(2, 8), t: t, url: new URL(String(url), location.href).href, method: 'POST',
           label: 'your ' + LISTS[route] + ' signup', kind: 'signup', route: route, okIf: 'json', body: f,
           expires: t + KEEP_DAYS * 86400000, max: KEEP_TRIES, n: 0 });
-        localStorage.setItem('agsist-outbox', JSON.stringify(a.slice(-30)));
+        var sg = a.filter(function (x) { return x && x.kind === 'signup'; });
+        if (sg.length > 10) a = a.filter(function (x) { var i = sg.indexOf(x); return i < 0 || i >= sg.length - 10; });   // the oldest signups go; other items stay
+        localStorage.setItem('agsist-outbox', JSON.stringify(a));
       } catch (e) { }
     }
     function queue(route, init, orig, err, url) {
@@ -77,7 +88,7 @@
       fd.append('source', String(f.source || f.src || '').slice(0, 60));
       fd.append('page', location.pathname);
       if (Object.keys(extra).length) fd.append('details', JSON.stringify(extra).slice(0, 1500));
-      fd.append('note', 'Not on the list yet and not confirmed. The reader\'s browser retries this signup with the worker on their next visits for 7 days, and the worker mails the confirmation if it goes through: check the list before adding by hand; mail nothing before that.');
+      fd.append('note', 'Not on the list yet and not confirmed. The reader\'s browser retries this signup with the worker on their next visits for 7 days (if it goes through, the worker handles it as usual): check the list before adding by hand; mail nothing before that.');
       return real.call(window, FORMSPREE, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
         .then(function (r) { return r.ok ? r.json().catch(function () { return {}; }) : null; })
         .then(function (j) {
