@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-18-sponsor-numbers-same-day",
+   "date": "2026-11-18",
+   "title": "Sponsor numbers follow late corrections",
+   "line": "When Google Analytics corrects a past day, the visit totals on the sponsor page now change the same day.",
+   "link": "/sponsor"
+  },
+  {
    "id": "2026-11-18-cash-bid-index-schedule",
    "date": "2026-11-18",
    "title": "Cash Bid Index ready for its December edition",
@@ -35,6 +42,13 @@
    "title": "Cash bid pages fixed",
    "line": "Town pages headline the regular corn bid, not a white corn premium. Company pages count each crop where it is bid. Estimates name the futures time.",
    "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-18-futures-overnight-box",
+   "date": "2026-11-18",
+   "title": "Futures prices hold still",
+   "line": "On the corn, soybean and wheat futures pages the price no longer jumps sideways when the overnight trade line appears.",
+   "link": "/corn-futures-prices"
   },
   {
    "id": "2026-11-17-arc-plc-range-ends",
