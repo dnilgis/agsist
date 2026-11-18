@@ -3,9 +3,9 @@
  "generated": "2026-11-18",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 1991,
+  "live_boards": 1923,
   "with_parent": 133,
-  "with_dest": 84,
+  "with_dest": 94,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
@@ -13,17 +13,17 @@
   },
   "dest_by_brand": {
    "ADM": 19,
-   "AGP": 23,
-   "Big River": 3,
-   "Bunge": 1,
-   "CGB": 6,
-   "Cargill": 10,
+   "AGP": 22,
+   "Big River": 4,
+   "Bunge": 3,
+   "CGB": 9,
+   "Cargill": 13,
    "Green Plains": 1,
    "Ingredion": 1,
-   "Marquis": 4,
+   "Marquis": 5,
    "POET": 9,
    "Valero": 3,
-   "Viserion": 4
+   "Viserion": 5
   },
   "board_pages_with_other_firms": 1
  },
@@ -728,14 +728,79 @@
    "dest": "AGP",
    "dv": "location"
   },
-  "farmerscoopelevator-admmarshall": {
-   "elevId": "ewbdx8z23w",
+  "dunkertoncoop-admcedarrapidscorn": {
+   "elevId": "e261bv72y7",
    "dest": "ADM",
    "dv": "location"
   },
-  "farmerscoopelevator-agpdawson": {
-   "elevId": "e2qvfpfwdh",
-   "dest": "AGP",
+  "dunkertoncoop-cargillcedarrapidssoybeans": {
+   "elevId": "e7ph7v3fqt",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "dunkertoncoop-cargillstarchcorn": {
+   "elevId": "e6zdsmnr7b",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "efgi-admclintonterminal": {
+   "elevId": "ejyspxhyhg",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "efgi-admmendota": {
+   "elevId": "e3d08ww7sm",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "efgi-admprocessorclinton": {
+   "elevId": "efe3p53z2a",
+   "dest": "ADM",
+   "dv": "location"
+  },
+  "efgi-bigriverdyersville": {
+   "elevId": "e10mg1g1w7",
+   "dest": "Big River",
+   "dv": "location"
+  },
+  "efgi-bungeshullsburg": {
+   "elevId": "ekb0dz309y",
+   "dest": "Bunge",
+   "dv": "location"
+  },
+  "efgi-bungewarren": {
+   "elevId": "eraaqtf0fq",
+   "dest": "Bunge",
+   "dv": "location"
+  },
+  "efgi-cargillcedarrapids": {
+   "elevId": "e3wvzbn5y3",
+   "dest": "Cargill",
+   "dv": "location"
+  },
+  "efgi-cgbalbany": {
+   "elevId": "en60em56n7",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "efgi-cgbillinoisriver": {
+   "elevId": "e7jd9h6x4b",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "efgi-cgbmtcarroll": {
+   "elevId": "ef27648qv5",
+   "dest": "CGB",
+   "dv": "location"
+  },
+  "efgi-marquishennepin": {
+   "elevId": "edeswgvfcg",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "efgi-viserionsavanna": {
+   "elevId": "ej9jh4gdb1",
+   "dest": "Viserion",
    "dv": "location"
   },
   "farmerscooperative-admlincoln": {
@@ -770,21 +835,6 @@
   },
   "fsgrain-admclintoncorn": {
    "elevId": "ekz8tqgy53",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "fsgrain-admmorris": {
-   "elevId": "e3ej6cs9hz",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "fsgrain-admnortherncrossing": {
-   "elevId": "ecm7acw3qj",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "fsgrain-admottawa": {
-   "elevId": "ezqh7mnh0v",
    "dest": "ADM",
    "dv": "location"
   },
