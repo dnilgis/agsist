@@ -1,6 +1,8 @@
 /* atlas-now.css: the Farmland Atlas opening view (components/atlas-now.js). One scale per kind of number, each a
    single-hue lightness ramp (colorblind-safe), light and dark. Drought is one ordered ramp in both themes, pale D0 to
-   strong D4, the same five colours as the share pictures (scripts/atlas_pictures.py DROUGHT_DK). Gaps are hatched with a plain label in the key. */
+   strong D4, the same five colours as the share pictures (scripts/atlas_pictures.py DROUGHT_DK). Gaps are hatched with a plain label in the key.
+   Two-colour scales: rain against normal, basis, and ARC-CO minus PLC (arcplc: orange PLC higher, grey about even, blue
+   ARC-CO higher; never red and green). */
 .an{--an-gap-bg:#f6f7f5;--an-gap-line:#c3c9c3;--an-none:#e4e7e3;--an-stroke:var(--bg,#f6f7f5);--an-state:#4a524e;--an-hl:#161a18;
   --an-drought-k0:#f3d98c;--an-drought-k1:#f2ad5b;--an-drought-k2:#e57b3a;--an-drought-k3:#cc4a2c;--an-drought-k4:#c02c44;
   --an-money-k0:#efe3c2;--an-money-k1:#d9bf7f;--an-money-k2:#b8933e;--an-money-k3:#8a6514;--an-money-k4:#523b0a;
@@ -11,6 +13,7 @@
   --an-share-k0:#e3e9ef;--an-share-k1:#bccbd9;--an-share-k2:#8ea7bf;--an-share-k3:#5f80a0;--an-share-k4:#34536f;
   --an-heat-k0:#fbe6c5;--an-heat-k1:#f5c27f;--an-heat-k2:#e8954a;--an-heat-k3:#cc6528;--an-heat-k4:#8f3a12;
   --an-rain-k0:#8c5a2b;--an-rain-k1:#c49a6c;--an-rain-k2:#ead9c2;--an-rain-k3:#c9dcec;--an-rain-k4:#6fa3d0;--an-rain-k5:#2c6aa8;
+  --an-arcplc-k0:#b3541e;--an-arcplc-k1:#eba872;--an-arcplc-k2:#d6d9d5;--an-arcplc-k3:#9cc3e4;--an-arcplc-k4:#2c6aa8;
   --an-green-k0:#e2efdc;--an-green-k1:#b5d6a7;--an-green-k2:#7fb26c;--an-green-k3:#4d8a3c;--an-green-k4:#2a5c20;
   --an-accent:#8a6514;margin:0 0 1.6rem}
 :root:not([data-theme="light"]) .an{--an-gap-bg:#232b2d;--an-gap-line:#7a878a;--an-none:#1f2627;--an-stroke:var(--bg,#0a0c0d);--an-state:#9aa49f;--an-hl:#ffffff;
@@ -23,6 +26,7 @@
   --an-share-k0:#5a6672;--an-share-k1:#70808e;--an-share-k2:#869aaa;--an-share-k3:#9db3c7;--an-share-k4:#b3cde3;
   --an-heat-k0:#7f5e40;--an-heat-k1:#9c744f;--an-heat-k2:#ba8b5e;--an-heat-k3:#d8a16d;--an-heat-k4:#f6b77c;
   --an-rain-k0:#d6a064;--an-rain-k1:#a88050;--an-rain-k2:#7d6a55;--an-rain-k3:#5f7590;--an-rain-k4:#5f93c8;--an-rain-k5:#92c3ee;
+  --an-arcplc-k0:#f2a35e;--an-arcplc-k1:#b9804f;--an-arcplc-k2:#6e7678;--an-arcplc-k3:#6f97c0;--an-arcplc-k4:#a8d2f5;
   --an-green-k0:#556a52;--an-green-k1:#6d8768;--an-green-k2:#84a57f;--an-green-k3:#9cc296;--an-green-k4:#b4e0ad;
   --an-accent:#d4a23f}
 .an-h1{font-size:.95rem!important;font-weight:600!important;color:var(--text-dim)!important;margin:0 0 .3rem!important}
@@ -73,6 +77,7 @@
 #an-svg[data-scale=heat] .k0{fill:var(--an-heat-k0)}#an-svg[data-scale=heat] .k1{fill:var(--an-heat-k1)}#an-svg[data-scale=heat] .k2{fill:var(--an-heat-k2)}#an-svg[data-scale=heat] .k3{fill:var(--an-heat-k3)}#an-svg[data-scale=heat] .k4{fill:var(--an-heat-k4)}
 #an-svg[data-scale=rain] .k0{fill:var(--an-rain-k0)}#an-svg[data-scale=rain] .k1{fill:var(--an-rain-k1)}#an-svg[data-scale=rain] .k2{fill:var(--an-rain-k2)}#an-svg[data-scale=rain] .k3{fill:var(--an-rain-k3)}#an-svg[data-scale=rain] .k4{fill:var(--an-rain-k4)}#an-svg[data-scale=rain] .k5{fill:var(--an-rain-k5)}
 #an-svg[data-scale=green] .k0{fill:var(--an-green-k0)}#an-svg[data-scale=green] .k1{fill:var(--an-green-k1)}#an-svg[data-scale=green] .k2{fill:var(--an-green-k2)}#an-svg[data-scale=green] .k3{fill:var(--an-green-k3)}#an-svg[data-scale=green] .k4{fill:var(--an-green-k4)}
+#an-svg[data-scale=arcplc] .k0{fill:var(--an-arcplc-k0)}#an-svg[data-scale=arcplc] .k1{fill:var(--an-arcplc-k1)}#an-svg[data-scale=arcplc] .k2{fill:var(--an-arcplc-k2)}#an-svg[data-scale=arcplc] .k3{fill:var(--an-arcplc-k3)}#an-svg[data-scale=arcplc] .k4{fill:var(--an-arcplc-k4)}
 /* the legend sentence is no larger than the sub-line; two lines are held so nothing below it moves */
 .an-legend{font-size:.88rem;line-height:1.45;color:var(--text-dim);margin:.45rem 0 .35rem;font-weight:400;min-height:2.9em}
 .an-legend .fa-natline{margin:0 0 .2rem;color:var(--text)}.an-legend .fa-note{display:inline}

@@ -226,14 +226,14 @@ details.fold[hidden]{display:none}
 --><!--SEED:gfct-->Nov '26<!--/SEED--><!--
 --></span></div>
         <div class="ph-val sk" id="hero-gf-price"><!--
---><!--SEED:gfpx-->$335.575<!--/SEED--><!--
+--><!--SEED:gfpx-->$336.85<!--/SEED--><!--
 --></div>
         <div class="ph-unit">$ / cwt · GF</div>
         <div class="ph-chg sk" id="hero-gf-chg"><!--
---><!--SEED:gfchg--><span class="dn">▼ −$1.80 (−0.53%)</span><!--/SEED--><!--
+--><!--SEED:gfchg--><span class="up">▲ +$1.275 (+0.38%)</span><!--/SEED--><!--
 --></div>
         <div class="ph-stamp" id="hero-gf-stamp"><!--
---><!--SEED:gfstamp-->Nov 17 settle<!--/SEED--><!--
+--><!--SEED:gfstamp-->Last trade<!--/SEED--><!--
 --></div>
       </div>
       <div class="ph-q" id="hero-le">
@@ -241,20 +241,20 @@ details.fold[hidden]{display:none}
 --><!--SEED:lect-->Dec '26<!--/SEED--><!--
 --></span></div>
         <div class="ph-val sk" id="hero-price"><!--
---><!--SEED:px-->$218.775<!--/SEED--><!--
+--><!--SEED:px-->$219.90<!--/SEED--><!--
 --></div>
         <div class="ph-unit">$ / cwt · LE</div>
         <div class="ph-chg sk" id="hero-chg"><!--
---><!--SEED:chg--><span class="dn">▼ −$1.55 (−0.70%)</span><!--/SEED--><!--
+--><!--SEED:chg--><span class="up">▲ +$1.125 (+0.51%)</span><!--/SEED--><!--
 --></div>
         <div class="ph-stamp" id="hero-le-stamp"><!--
---><!--SEED:lestamp-->Nov 17 settle<!--/SEED--><!--
+--><!--SEED:lestamp-->Last trade<!--/SEED--><!--
 --></div>
       </div>
     </div>
   </div>
   <p class="ct-seednote"><!--
---><!--SEED:note-->Live cattle settled at <strong>$218.775</strong> &middot; feeders near $335.575 &middot; $/cwt &middot; as of Nov 17.<!--/SEED--><!--
+--><!--SEED:note-->Live cattle last traded near <strong>$219.90</strong> &middot; feeders near $336.85 &middot; $/cwt &middot; as of Nov 18, 1:05 p.m. CT.<!--/SEED--><!--
 --></p>
       <div class="ps"><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span></div>
 
@@ -545,31 +545,61 @@ details.fold[hidden]{display:none}
 
   <!-- ░░ seasonal price tendency ░░ -->
   <details class="fold" id="fold-seas" data-wide-open>
-    <summary class="fold-sum"><span class="fold-t">Seasonal price tendency</span><span class="fold-d">What weekly closes did by month over recent years</span></summary>
+    <summary class="fold-sum"><span class="fold-t">Prices by month, recent years</span><span class="fold-d">What one contract did by month in recent years</span></summary>
     <div class="fold-body">
-    <section class="seas-wrap" id="seas-wrap" aria-label="Cattle seasonal price tendency" style="display:none">
+    <p class="seas-caption" id="seas-none">Not shown yet: this chart is built from one contract per calendar year, and those weekly closes are not in yet.</p>
+    <section class="seas-wrap" id="seas-wrap" aria-label="What recent years did: live cattle by month" style="display:none">
       <div class="seas-head">
-        <span class="seas-title">Cattle seasonal price tendency</span>
-        <span class="seas-note">Live cattle, continuous series &middot; current month highlighted</span>
+        <span class="seas-title">What recent years did</span>
+        <span class="seas-note">Percent from each year&rsquo;s mean</span>
       </div>
       <div id="seas-chart" class="seas-chart"></div>
-      <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast.</div>
+      <div class="seas-caption" id="seas-caption">By month, the percent a weekly close sat above or below its year&rsquo;s mean, each year read from one contract. Shown once those closes are in.</div>
     </section>
     </div>
   </details>
   <script>
   (function(){
-    var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    function seasCap(s){if(!s)return null;var y=s.seasonality_years;if(s.seasonality_method==='calendar-year-detrended'&&y&&y.length===2){return 'Weekly closes for whole calendar years '+y[0]+'–'+y[1]+', each divided by its own year’s average, then averaged by month and scaled 0–100 (0 = weakest month, 100 = strongest; n='+(s.seasonality_n||'?')+' weeks). Continuous front-month (Yahoo Finance), not roll-adjusted. '+(y[1]-y[0]+1)+' years is a short window: a description of these years, not a forecast.';}return 'Average weekly close by calendar month over a rolling '+(s.years||5)+'-yr window, scaled 0–100 (n='+s.n+' weeks). Raw levels, not detrended, and the window starts and ends mid-year, so in a trending market the months sampled from the earliest or latest year read low or high for that reason alone. A description of these years, not a forecast.';}
+    /* Twin of seasDraw and seasCap in components/futures.js (Nov 18, 2026): one contract per year, never a series
+       spliced across contracts. */
+    function seasDraw(s,ch,cm){
+      var P=s&&s.seasonality_pct,y=s&&s.seasonality_years;
+      if(!s||s.seasonality_method!=='one-contract-calendar-year'||!P||P.length!==12||!y||y.length!==2)return false;
+      for(var i=0;i<12;i++)if(typeof P[i]!=='number'||!isFinite(P[i]))return false;
+      var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      function pc(v){return (v>0?'+':v<0?'\u2212':'')+Math.abs(v).toFixed(1)+'%';}
+      var mx=0;P.forEach(function(v){mx=Math.max(mx,Math.abs(v));});
+      var top=[1,2,3,4,5,6,8,10,12,15,20,25,30,40,50].filter(function(t){return t>=mx;})[0]||Math.ceil(mx);
+      var hi=0,lo=0;P.forEach(function(v,i){if(v>P[hi])hi=i;if(v<P[lo])lo=i;});
+      var yy=y[0]+'-'+String(y[1]).slice(2);
+      var cols=P.map(function(v,i){var h=(Math.abs(v)/top*50).toFixed(1)+'%';
+        return '<div class="seas-col'+(i===cm?' cur':'')+'" title="'+MOS[i]+': '+pc(v)+' from that year\u2019s mean" style="position:relative;justify-content:flex-end">'+
+          '<div style="position:relative;flex:1;width:100%"><div class="seas-bar" style="position:absolute;left:0;right:0;'+(v>=0?'bottom:50%;border-radius:2px 2px 0 0':'top:50%;border-radius:0 0 2px 2px')+';height:'+h+'"></div></div>'+
+          '<div class="seas-mo">'+MOS[i]+'</div></div>';}).join('');
+      ch.setAttribute('role','img');
+      ch.setAttribute('aria-label','What '+yy+' did, percent from each year\u2019s mean by month: highest '+MOS[hi]+' '+pc(P[hi])+', lowest '+MOS[lo]+' '+pc(P[lo]));
+      ch.style.height='96px';ch.style.alignItems='stretch';
+      ch.innerHTML='<div aria-hidden="true" style="display:flex;flex-direction:column;justify-content:space-between;font-size:.7rem;color:var(--text-dim);padding:0 4px 18px 0;text-align:right;white-space:nowrap"><span>+'+top+'%</span><span>0%</span><span>\u2212'+top+'%</span></div>'+
+        '<div style="flex:1;display:flex;gap:3px;position:relative"><div aria-hidden="true" style="position:absolute;left:0;right:0;top:calc((100% - 18px) / 2);border-top:1px solid var(--border)"></div>'+cols+'</div>';
+      var wrap=ch.closest?ch.closest('.seas-wrap'):null,t=wrap&&wrap.querySelector('.seas-title'),n=wrap&&wrap.querySelector('.seas-note');
+      if(t)t.textContent='What '+yy+' did';
+      if(n)n.textContent='Highest '+MOS[hi]+' ('+pc(P[hi])+'), lowest '+MOS[lo]+' ('+pc(P[lo])+')';
+      return true;
+    }
+    function seasCap(s){
+      var y=s.seasonality_years,c=s.seasonality_contract==='December'?'December contract':'contract for January of the next year';
+      return 'Percent above or below the year\u2019s mean, by month: weekly closes of the '+c+' in each calendar year '+y[0]+' to '+y[1]+
+        ' (Yahoo Finance), each set against that year\u2019s mean close, then the mean for each month (n='+(s.seasonality_n||'?')+' weeks). '+
+        (y[1]-y[0]+1)+' years is a short window: what these years did, not a forecast.';
+    }
     fetch('/data/price-stats.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
-      var c=d&&d.cattle,SEAS=c&&c.seasonality;
+      var c=d&&d.cattle;
       var ch=document.getElementById('seas-chart'),wrap=document.getElementById('seas-wrap');
-      if(!ch||!wrap||!SEAS||SEAS.length!==12)return;
-      var cm=new Date().getMonth();
-      SEAS.forEach(function(v,i){var e=document.createElement('div');e.className='seas-col'+(i===cm?' cur':'');e.title=MOS[i]+': '+v+'/100';e.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(e);});
+      if(!ch||!wrap||!c||!seasDraw(c,ch,new Date().getMonth()))return;
       var cap=document.getElementById('seas-caption');
-      var capTx=seasCap(c);if(cap&&capTx)cap.textContent=capTx;
+      if(cap)cap.textContent=seasCap(c);
       wrap.style.display='';
+      var none=document.getElementById('seas-none');if(none)none.hidden=true;
     }).catch(function(){});
   })();
   </script>

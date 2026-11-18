@@ -526,7 +526,7 @@ details.fa-arith .body a{color:var(--gold)}
 .fl-bar-y{font-size:.55rem;white-space:nowrap}
 </style>
 <link rel="stylesheet" href="/components/src-fold.css?v=2">
-<link rel="stylesheet" href="/components/atlas-now.css?v=8">
+<link rel="stylesheet" href="/components/atlas-now.css?v=9">
 <script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
@@ -720,7 +720,7 @@ details.fa-arith .body a{color:var(--gold)}
     <h2>The rest of the land record on AGSIST</h2>
     <div class="fa-rel">
       <a href="/rent/"><b>Cash Rent by State</b><span>Every NASS rent estimate by state and county, irrigated and not, with the history.</span></a>
-      <a href="/rain#drought"><b>Drought Monitor</b><span>This week's map and the seasonal outlooks.</span></a>
+      <a href="/farmland-atlas#l=drought" onclick="var m=document.getElementById('an');if(m)m.scrollIntoView();"><b>Drought map</b><span>Every county's drought level this week, on the map at the top of this page.</span></a>
       <a href="/hail-map"><b>Hail Map</b><span>Radar hail swaths and the storm record, down to the field.</span></a>
       <a href="/prf"><b>PRF Insurance Calculator</b><span>What pasture and hay rainfall insurance would have paid on your grid, every year since 1951.</span></a>
       <a href="/conditions#crop-size"><b>Ratings vs Yield</b><span>What the weekly crop ratings have said about the final yield.</span></a>
@@ -867,7 +867,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 var h=(location.hash||'').replace(/^#/,'').split('&').filter(function(p){return p&&p.slice(0,2)!=='l=';});h.push('l=afida');location.hash=h.join('&');
 });})();
 </script>
-  <script src="/components/atlas-now.js?v=6" defer></script>
+  <script src="/components/atlas-now.js?v=7" defer></script>
 <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>
