@@ -1102,7 +1102,7 @@ function card(key,f){
   if(L.side==='sales') return sCard(L,c,f);
   var v=L.v(c,f);
   if(v==null||isNaN(v)) return esc(L.label)+': '+esc(missingWhy(c,L,f));
-  return esc(L.label)+': <b>'+esc(fmtv(L,v))+'</b>'+esc(rnote(L,f));
+  return esc(L.label)+': <b>'+esc(fmtv(L,v))+(L.money&&L.unit==='$/acre'?'<span class="fa-cc-u"> an acre</span>':'')+'</b>'+esc(rnote(L,f));
 }
 function national(){ renderThesis(); renderByState(); renderPremium(); renderScatters(); }
 var api={boot:boot, list:list, layer:layer, fmt:fmtOf, short:shortOf, card:card, panel:openPanel, national:national, decades:DECADES,
