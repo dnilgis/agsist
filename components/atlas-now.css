@@ -23,23 +23,24 @@
   --an-green-k0:#1f3320;--an-green-k1:#2f5a30;--an-green-k2:#4a8a4a;--an-green-k3:#78b874;--an-green-k4:#b4e0ad;
   --an-accent:#d4a23f}
 .an-h1{font-size:.95rem!important;font-weight:600!important;color:var(--text-dim)!important;margin:0 0 .3rem!important}
-.an-lede{font-family:var(--font-display);font-size:clamp(1.15rem,3.6vw,1.6rem);line-height:1.25;font-weight:800;color:var(--text);margin:0 0 .6rem;letter-spacing:-.01em;max-width:860px}
+.an-lede{font-family:var(--font-display);font-size:clamp(1.05rem,3.2vw,1.45rem);line-height:1.25;font-weight:800;color:var(--text);margin:0 0 .6rem;letter-spacing:-.01em}
 .an-lede b,.an-ans b,.an-qa b,.an-legend b{color:var(--an-accent)}
 /* five headline tiles, one number each: one row that scrolls sideways on a phone, so the map stays on the first screen */
 .an-tiles{display:flex;gap:.5rem;overflow-x:auto;scrollbar-width:none;margin:0 -16px .6rem;padding:0 16px;height:5.6rem}
 .an-tiles::-webkit-scrollbar{display:none}
-.an-tile{flex:0 0 9.6rem;display:flex;flex-direction:column;align-items:flex-start;gap:.1rem;text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:4px;padding:.45rem .6rem;cursor:pointer;font:inherit;overflow:hidden}
+.an-tile{flex:0 0 10.2rem;display:flex;flex-direction:column;align-items:flex-start;gap:.1rem;text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:4px;padding:.45rem .6rem;cursor:pointer;font:inherit;overflow:hidden}
 .an-tile:hover{border-color:var(--an-accent)}
-.an-tl{font-size:.74rem;line-height:1.2;color:var(--text-dim);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.an-tl{font-size:.76rem;line-height:1.2;color:var(--text-dim);white-space:nowrap}
 .an-tb{font-size:1.25rem;line-height:1.2;font-weight:800;color:var(--an-accent)}
-.an-ts{font-size:.74rem;line-height:1.25;color:var(--text-dim)}
-@media(min-width:960px){.an-tiles{margin:0 0 .8rem;padding:0;height:auto;overflow:visible}.an-tile{flex:1 1 0}}
+.an-ts{font-size:.72rem;line-height:1.25;color:var(--text-dim)}
+@media(min-width:960px){.an-tiles{margin:0 0 .8rem;padding:0;overflow:visible}.an-tile{flex:1 1 0}}
 .an-tabs{display:flex;flex-wrap:nowrap;gap:.35rem;overflow-x:auto;scrollbar-width:none;margin:0 -16px .6rem;padding:0 16px}
 .an-tabs::-webkit-scrollbar{display:none}
 .an-tab{flex:0 0 auto;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:4px;padding:.35rem .75rem;font:600 .9rem var(--font-body,inherit);cursor:pointer;min-height:38px;white-space:nowrap}
 .an-tab[aria-pressed="true"]{background:var(--an-accent);border-color:var(--an-accent);color:var(--bg)}
 @media(min-width:960px){.an-tabs{margin:0 0 .8rem;padding:0}}
 .an-stage{display:grid;gap:1.1rem}
+.an-mapcol,.an-side{min-width:0}
 @media(min-width:960px){.an-stage{grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr)}}
 .an-maphead{display:flex;flex-wrap:nowrap;gap:.4rem .6rem;align-items:center;justify-content:space-between;margin:0 0 .25rem;min-height:38px}
 .an-maptitle{font-weight:700;color:var(--text);font-size:1rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
