@@ -1642,6 +1642,8 @@
     var best = tp.best;
     var b = best.b, e = best.e, pp = ppu(b.cashPrice), bc = basisCents(b.basis);
     var ref = null, rm = refMonth(b.symbol), br = boardRef(b, cat);
+    /* Nov 18: the contract itself (ZSF27), for the home card's overnight line; only a named one */
+    var own = shardSym(b && b.shard, shardRowKey(b)), sym = rm ? normSym(b.symbol, cat) : (br && own ? own : '');
     if(!rm && br) rm = br;
     if(rm) ref = rm.replace(/ (corn|soybeans)$/, '');
     else if(br === undefined && bc != null && refCropFor(b, cat) && pricesData){
@@ -1656,6 +1658,7 @@
       cash: Math.round(pp * 10000) / 10000,
       basis: bc == null ? null : Math.round(bc * 100) / 10000,
       ref: ref,
+      sym: sym || null,
       name: displayName(e.facility),
       town: townOf(e) + (townOf(e) && e.state ? ', ' : '') + (e.state || ''),
       mi: e.distance == null ? null : Math.round(e.distance * 10) / 10,

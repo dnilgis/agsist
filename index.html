@@ -14,6 +14,7 @@
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
   <script src="/components/price-local.js?v=16"></script>
+  <script src="/components/bid-age.js?v=2"></script>
 <link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=4">
 <link rel="stylesheet" href="/css/home.css?v=48">
@@ -246,9 +247,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <main id="main" class="main" role="main" tabindex="-1">
-  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
+  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-date.hb-sol::before{content:none}#hero-band .hb-sep.hb-sepw{display:none}#hero-band .hb-ovn{display:none;margin:0 0 4px}html.has-zip #hero-band.hb-ovnl .hb-ovn{display:block;font-size:.824rem;line-height:1.3;min-height:1.3em;color:var(--text-dim)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:43px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:66px}html.has-zip #hero-band.hb-ovnl .hb-ovn{min-height:2.6em}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
-    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
+    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}try{if(window.AgBidAge&&AgBidAge.between(new Date()))hb.classList.add('hb-preopen');if(window.AgBidAge&&AgBidAge.ovnLive(new Date()))hb.classList.add('hb-ovnl');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
     <h2 class="visually-hidden" id="hb-h">Today</h2>
     <!-- 2026-11-02 (go): the first screen is three jobs, near me, sell grain, my field.
@@ -260,6 +261,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <span class="hb-where"><span class="hb-place" id="hb-place"><span class="hb-pz">Your area</span><span class="hb-pn">Set your ZIP to see local cash bids</span></span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
           <button type="button" class="hb-change" id="hb-change" aria-controls="hb-zip-form" aria-expanded="false">Change</button>
         </div>
+        <p class="hb-ovn" id="hb-ovn"></p>
         <form class="hb-zip" id="hb-zip-form" novalidate>
           <label class="visually-hidden" for="hb-zip">Your ZIP code</label>
           <input type="text" id="hb-zip" name="zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go">
@@ -373,7 +375,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   </section>
   <script src="/components/home-worth.js?v=1" defer></script>
-<!-- price-answer:price-home --><section class="qa-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-18T16:46:13Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.38¾ a bushel as of Nov 18, 10:46 a.m. CT. January 2027 soybean futures last traded at $12.16 a bushel as of Nov 18, 10:46 a.m. CT. December 2026 wheat futures last traded at $5.73 a bushel as of Nov 18, 10:46 a.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
+<!-- price-answer:price-home --><section class="qa-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-18T17:46:15Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.37½ a bushel as of Nov 18, 11:46 a.m. CT. January 2027 soybean futures last traded at $12.14¼ a bushel as of Nov 18, 11:46 a.m. CT. December 2026 wheat futures last traded at $5.73¼ a bushel as of Nov 18, 11:46 a.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-11-18" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date">AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
@@ -622,12 +624,30 @@ try {
     function paintPlace(){
       var l=loc(),p=placeFromBids||(l&&l.label)||'',nz=noZip();
       var hb=$('hero-band');if(hb)hb.classList.toggle('hb-nozip',nz);
-      var el=$('hb-place');if(el)el.textContent=looking?'Looking up ZIP '+looking:(nz?'Set your ZIP to see local cash bids':(p||'Set your ZIP'));
+      var el=$('hb-place');if(el)el.textContent=looking?'Looking up ZIP '+looking:(nz?'Set your ZIP to see local cash bids':(p||'Set your ZIP'));if(typeof sepFit==='function')sepFit();
       var b=$('hb-change');if(b){b.textContent=(p&&!nz)?'Change':'Set ZIP';b.setAttribute('aria-label',(p&&!nz)?'Change location ('+p+')':'Set your ZIP');}
       if(!nz&&!looking){var f=$('hb-zip-form');if(f&&!f.classList.contains('is-open')){var i=$('hb-zip');if(i&&l&&/^\d{5}$/.test(String(l.zip||''))&&document.activeElement!==i)i.value=l.zip;}}
     }
     var dt=$('hb-date');
     if(dt){try{dt.textContent=new Intl.DateTimeFormat('en-US',{timeZone:TZ,weekday:'short',month:'short',day:'numeric'}).format(new Date()).replace(',','');}catch(e){}}
+    /* 2026-11-18: no line in the band opens or ends with a separator dot. The date's dot goes when the date starts
+       its own line (a long place at 390); a card's " · " between two parts that land on two lines ("Harvest ·" over
+       "74¢ under Jan '27") becomes a line break (a <br> in its place). Measured with the marks off, so the answer does not depend on
+       itself; the line count is the same either way (no shift). Rechecked when the place, fonts, width or a cell change. */
+    function topOf(n){if(!n)return null;if(n.nodeType===1)return n.getBoundingClientRect().top;var r=document.createRange();r.selectNodeContents(n);var b=r.getClientRects();return b.length?b[b.length-1].top:null;}
+    function sepFit(){
+      var hb=$('hero-band'),p=$('hb-place');if(!hb)return;
+      var seps=hb.querySelectorAll('.hb-sep');
+      if(dt)dt.classList.remove('hb-sol');
+      var olds=hb.querySelectorAll('br.hb-sepbr');for(var i=0;i<olds.length;i++)olds[i].parentNode.removeChild(olds[i]);
+      for(i=0;i<seps.length;i++)seps[i].classList.remove('hb-sepw');
+      var sol=!!(dt&&p&&dt.textContent&&dt.offsetTop>p.offsetTop+2),brk=[];
+      for(i=0;i<seps.length;i++){var s=seps[i],a=topOf(s.previousSibling),c=topOf(s.nextSibling),r=s.getClientRects(),t=r.length?r[0].top:null;
+        if(t!=null&&((a!=null&&Math.abs(t-a)>2)||(c!=null&&Math.abs(c-t)>2)||r.length>1))brk.push(s);}
+      if(sol)dt.classList.add('hb-sol');
+      for(i=0;i<brk.length;i++){var br=document.createElement('br');br.className='hb-sepbr';brk[i].parentNode.insertBefore(br,brk[i]);brk[i].classList.add('hb-sepw');}
+    }
+    sepFit();try{if(window.ResizeObserver&&dt){var sro=new ResizeObserver(function(){sepFit();});sro.observe(dt.parentNode);sro.observe($('hb-place'));var hbx=$('hero-band');if(hbx)sro.observe(hbx);}}catch(e){}
     /* ---- the one ZIP box (2026-10-11 polish) ----
        Every "Set ZIP", "Change ZIP" and "Enter ZIP" on the page opens this box
        (window.agsistOpenZip). A ZIP typed here goes to window.agsistSetZip in
@@ -684,6 +704,29 @@ try {
       else set(id+'-v',DASH);
       set(id+'-s','<span class="hb-l">'+esc(STATE[status]||('No '+word+' bid '+ring))+'</span>');
     }
+    /* The time line over the bids: before the 8:30 am open (or on a weekend or holiday) a bid posted after the
+       last close says so (components/bid-age.js); otherwise the site's Updated stamp with its old-bid note
+       (components/asof.js). Under it, in the overnight hours of a trading session, the overnight
+       move of each bid's futures contract with the quote's time (AgBidAge.ovnLine, the futures pages' overnight
+       read and clock). .hb-preopen and .hb-ovnl, set at the top of the band from the same rules, hold both
+       lines' room from first paint: no gap and no shift when the bids and the price file land. Repainted each
+       minute and when bids or prices land. */
+    var oldestBid=null,agePrices=null,bidSyms={ZC:null,ZS:null};
+    function paintOvn(){
+      var el=$('hb-ovn'),hb=$('hero-band');if(!el||!window.AgBidAge)return;
+      var o=agePrices?AgBidAge.ovnLine(agePrices,bidSyms,new Date()):null,on=!!AgBidAge.ovnLive(new Date());
+      if(hb)hb.classList.toggle('hb-ovnl',on);
+      el.textContent=on&&o?o.text:'';
+    }
+    function paintAge(){
+      paintOvn();
+      var ao=$('hb-asof');if(!ao)return;
+      var x=oldestBid,a=x&&window.AgBidAge?AgBidAge.ageLine(x.posted,new Date()):null;
+      ao.classList.toggle('hb-asof-ok',!!a);
+      if(a){ao.innerHTML=a.html;ao.hidden=false;return;}
+      if(window.AgAsOf)AgAsOf.set(ao,x&&x.posted?new Date(x.posted):null,'bids');else{ao.textContent='';ao.hidden=true;}
+    }
+    setInterval(function(){if(oldestBid)paintAge();else paintOvn();},60000);
     function paintBids(d){
       if(!d||typeof d!=='object')return;
       bidsSeen=true;
@@ -704,7 +747,9 @@ try {
       }
       /* The stamp names the OLDEST bid shown, so a fresh corn bid never vouches for an old bean bid. */
       var oldest=null;shown.forEach(function(x){var t=x.posted?Date.parse(x.posted):NaN;if(!isNaN(t)&&(oldest==null||t<oldest))oldest=t;});
-      var ao=$('hb-asof');if(ao){if(window.AgAsOf)AgAsOf.set(ao,oldest!=null?new Date(oldest):null,'bids');else{ao.textContent=asof?'Bids as of '+asof:'';ao.hidden=!asof;}}
+      oldestBid=null;shown.forEach(function(x){if(x.posted&&Date.parse(x.posted)===oldest)oldestBid=oldestBid||x;});
+      bidSyms={ZC:d.corn&&d.corn.sym||null,ZS:d.soybeans&&d.soybeans.sym||null};
+      paintAge();
       var today=ctKey(new Date());
       Object.keys(CROP).forEach(function(k){
         var id=CROP[k][0],word=CROP[k][1],x=d[k];
@@ -728,14 +773,17 @@ try {
         if(x.town)where.push(esc(x.town));
         if(num(x.mi))where.push('<span class="hb-nw"><span class="hb-n">'+Math.round(Number(x.mi))+'</span>&nbsp;mi</span>');
         if(where.length)lines.push('<span class="hb-l">'+where.join(SEP)+'</span>');
+        /* Nov 18: "Harvest · 74¢ under Jan '27", the town pages' words (components/bid-age.js) */
+        var wl=window.AgBidAge?AgBidAge.whatLine(x.month,num(x.basis)?Number(x.basis):null,x.ref):{month:x.month||'',basis:''};
         var what=[];
-        if(x.month)what.push(esc(x.month));
-        if(num(x.basis))what.push('<span class="hb-n">'+qc(Number(x.basis)*100)+'</span> basis'+(x.ref?' <span class="hb-nw">'+esc(x.ref)+'</span>':''));
+        if(wl.month)what.push(esc(wl.month));
+        if(wl.basis)what.push('<span class="hb-nw">'+esc(wl.basis)+'</span>');
         if(what.length)lines.push('<span class="hb-l">'+what.join(SEP)+'</span>');
         var ho=x.higherOlder;
         if(ho&&num(ho.cash)){var hd=ctDay(ho.posted);lines.push('<span class="hb-l hb-ho">Higher older bid <span class="hb-nw">'+qd(ho.cash)+(hd?SEP+hd:'')+'</span></span>');}
         set(id+'-s',lines.join(''));
       });
+      if(typeof sepFit==='function')sepFit();
     }
     /* A tap opens that elevator's row in the card when the card can; else it
        scrolls to the card. With no ZIP it opens the ZIP field. */
@@ -765,6 +813,7 @@ try {
     var futParsed=false;
     function label(q,fallback){var m=/^Z[CS]([FGHJKMNQUVXZ])(\d{2})/.exec((q&&q.ticker)||'');return m?MCODE[m[1]]+' ’'+m[2]:fallback;}
     function paintFut(data){
+      if(data&&data.quotes&&data!==agePrices){agePrices=data;paintAge();}
       var q=data&&data.quotes;if(!q)return;
       /* chaos-1: expired contracts roll off; corn-dec on Jan 2 is the next live Dec (components/price-local.js roll) */
       if(window.AgPxStamp&&AgPxStamp.roll)q=AgPxStamp.roll(q);
@@ -1684,7 +1733,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/geo.js?v=41" defer></script>
 <script src="/components/elev-names.js?v=2" defer></script>
 <script src="/components/bids-fallback.js?v=1" defer></script>
-<script src="/components/bids-homepage.js?v=52" defer></script>
+<script src="/components/bids-homepage.js?v=54" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=3">
 <script src="/components/cb-myelev.js?v=10" defer></script>
 <script src="/components/homepage-extras.js?v=20" defer></script>
