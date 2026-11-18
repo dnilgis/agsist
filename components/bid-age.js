@@ -16,8 +16,9 @@
       Sessions and holidays come from AgPxStamp.isTradingDay (components/price-local.js, the twin of
       scripts/contract_calendar.py); the change from AgPxStamp.change (the one pair rule).
 
-   2. whatLine(month, basis, ref): "Harvest delivery · 74¢ under Jan '27 futures", the town pages' words.
-      No contract named: "66¢ under futures", never a guessed month.
+   2. whatLine(month, basis, ref): "Harvest · 74¢ under Jan '27", the town pages' words ("62 under December").
+      No contract named: "66¢ under futures", never a guessed month. Short on purpose: a half-width cell on a
+      390 px phone holds about 26 characters, and the card holds three lines from first paint.
 
    Pure; test/home-today-card.test.mjs runs it in node. */
 (function (root) {
@@ -102,13 +103,13 @@
         (mv ? ' <span class="hb-asof-mv">' + esc(mv.text) + '</span>' : '') };
   }
 
-  /* "Harvest delivery · 74¢ under Jan '27 futures" as plain parts: {month, basis} (either may be '') */
+  /* "Harvest · 74¢ under Jan '27" as plain parts: {month, basis} (either may be '') */
   function whatLine(month, basis, ref) {
-    var mo = month ? String(month) + ' delivery' : '', b = '';
+    var mo = month ? String(month) : '', b = '';
     if (basis != null && basis !== '' && isFinite(Number(basis))) {
       var c = Math.round(Number(basis) * 100 * 4) / 4, r = String(ref || ''), inf = / \(inferred\)$/.test(r);
       r = r.replace(/ \(inferred\)$/, '');
-      var fut = (r ? r + ' futures' : 'futures') + (inf ? ' (month inferred)' : '');
+      var fut = (r || 'futures') + (inf ? ' (month inferred)' : '');
       b = c === 0 ? 'even with ' + fut : cents(c) + (c < 0 ? ' under ' : ' over ') + fut;
     }
     return { month: mo, basis: b };

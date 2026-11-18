@@ -742,8 +742,9 @@ try {
         if(x.town)where.push(esc(x.town));
         if(num(x.mi))where.push('<span class="hb-nw"><span class="hb-n">'+Math.round(Number(x.mi))+'</span>&nbsp;mi</span>');
         if(where.length)lines.push('<span class="hb-l">'+where.join(SEP)+'</span>');
-        /* Nov 18: "Harvest delivery · 74¢ under Jan '27 futures", the town pages' words (components/bid-age.js) */
-        var what=[],wl=window.AgBidAge?AgBidAge.whatLine(x.month,num(x.basis)?Number(x.basis):null,x.ref):{month:x.month?x.month+' delivery':'',basis:''};
+        /* Nov 18: "Harvest · 74¢ under Jan '27", the town pages' words (components/bid-age.js) */
+        var wl=window.AgBidAge?AgBidAge.whatLine(x.month,num(x.basis)?Number(x.basis):null,x.ref):{month:x.month||'',basis:''};
+        var what=[];
         if(wl.month)what.push(esc(wl.month));
         if(wl.basis)what.push('<span class="hb-nw">'+esc(wl.basis)+'</span>');
         if(what.length)lines.push('<span class="hb-l">'+what.join(SEP)+'</span>');
