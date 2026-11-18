@@ -380,13 +380,21 @@
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
   }
 
+  /* The nearest county with a station, in words: the file's own name for it ("Franklin County, Iowa"), else the name a
+     same-state county carries in the file, else nothing. Never its FIPS code (Nov 18: "the nearest county with one is
+     19069" reached readers). */
+  function nearWords(file, none) {
+    var n = none && none.near_name, c = none && none.near && file.counties && file.counties[none.near], st = String(file.state || '').toUpperCase();
+    if (!n && c && c.name && STATES[st]) n = c.name + ', ' + STATES[st];
+    return n && !/\d{5}/.test(n) ? '; the nearest county with one is ' + n : '';
+  }
   /* County rain since Jan 1 from data/rain/<st>.json. */
   function rainSoFar(file, fips) {
     if (!file || !file.counties) return { status: 'missing', why: 'the county rain file did not load' };
     var c = file.counties[fips];
     if (!c) {
       var none = file.none && file.none[fips];
-      return { status: 'none', why: none ? 'no weather station with a full record in this county; the nearest county with one is ' + none.near : 'no county rain figure for this county' };
+      return { status: 'none', why: none ? 'no weather station with a full record in this county' + nearWords(file, none) : 'no county rain figure for this county' };
     }
     var cum = c.cum || [], last = cum[cum.length - 1];
     if (!last || last[1] == null) return { status: 'none', why: 'no rain total this year yet' };
