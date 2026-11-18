@@ -15,6 +15,10 @@
    land rented, rent change, tile, cover crops, cattle, solar and wind proposed, foreign-held acres, hail and wind days,
    claims from heat and drought). Their column holds the figure or a gap code; "zero" names a 0 drawn grey, "kn" a gap
    drawn grey, "cover" an unread state drawn as an outline. */
+/* Nov 18: with a state open, the key counts that state's counties and says so ("Iowa counties"), the
+   ranked lists give one sentence when every county ties, and the picture button names the map it saves and shows
+   only when that picture exists (drought: the U.S. or the state; land value: the county); every other map offers
+   "Copy link to this map", the old-style #l=, #s= link. */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
@@ -104,7 +108,7 @@ function setLocal(l){
   var nm=NOW.states[S.s]&&NOW.states[S.s].name||S.s;
   box.querySelector('[data-sc="st"]').textContent=nm+' scale';
   [].forEach.call(box.querySelectorAll('button'),function(b){ b.setAttribute('aria-pressed',b.getAttribute('data-sc')===S.sc?'true':'false'); });
-  $('an-scl-note').textContent=S.sc==='st'?'Colors set for '+nm+' alone; other states are grey.':'Colors on the US scale.';
+  $('an-scl-note').textContent=S.sc==='st'?'Colors set for '+nm+' alone; other states are grey.':'Colors on the US scale; the key counts '+nm+' counties.';
   if(S.sc!=='st') return;
   var a=inState(l).sort(function(x,y){return x-y;});
   LOCAL={key:l.key, st:S.s, cuts:qcuts(a,l.old&&OL[l.key].doy)};
@@ -121,8 +125,11 @@ function cls(f,l){
   if(l.scale==='count') i=Math.max(0,i-1);
   return 'k'+i;
 }
-function count(l){ var n={}, f; for(f in HAS){ var c=cls(f,l); if(c!=='kz') n[c]=(n[c]||0)+1; } return n; }
-function outStates(l){ var o={}, f; for(f in HAS) if(cls(f,l)==='ko') o[(STATE_OF[f]||f.slice(0,2))]=1; return Object.keys(o).length; }
+// the counties in view: the open state's, or every county
+function inView(f){ return !S.s||(STATE_OF[f]||f.slice(0,2))===S.s; }
+function viewName(){ return S.s?(NOW.states[S.s]&&NOW.states[S.s].name||S.s):'U.S.'; }
+function count(l){ var n={}, f; for(f in HAS){ if(!inView(f)) continue; var c=cls(f,l); if(c!=='kz') n[c]=(n[c]||0)+1; } return n; }
+function outStates(l){ var o={}, f; for(f in HAS) if(inView(f)&&cls(f,l)==='ko') o[(STATE_OF[f]||f.slice(0,2))]=1; return Object.keys(o).length; }
 function keyItems(l){
   var out=[], n=count(l), f;
   if(l.old) return okeyItems(l,n);
@@ -136,7 +143,7 @@ function keyItems(l){
     else if(cs.length){ out.push(['k0','Under '+cut(cs[0],l),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l)+' to '+cut(cs[k],l),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l)+' or more',n['k'+cs.length]]); }
     if(l.kn) out.push(['kn',l.gaps[l.kn],n.kn]);
   }
-  var gx={}; for(f in HAS){ if(!outOf(f)&&cls(f,l)==='kx'){ var g=gap(f,l)||'nodata'; gx[g]=(gx[g]||0)+1; } }
+  var gx={}; for(f in HAS){ if(inView(f)&&!outOf(f)&&cls(f,l)==='kx'){ var g=gap(f,l)||'nodata'; gx[g]=(gx[g]||0)+1; } }
   Object.keys(gx).forEach(function(g){ out.push(['kx',(l.gaps&&l.gaps[g])||'No figure',gx[g]]); });
   if(n.ko) out.push(['ko','States we do not read',outStates(l),'states']);
   return out.filter(function(x){ return x[2]; });
@@ -248,7 +255,7 @@ function buildMap(){
 }
 function paint(){
   var l=layerOf(S.m); if(!l) return;
-  if(l.old&&!OL[l.key]){ waitOld(l.key); return; }
+  if(l.old&&!OL[l.key]){ save(); waitOld(l.key); return; }
   setLocal(l);
   $('an-svg').setAttribute('data-scale',l.scale); $('an-svg').removeAttribute('data-hk');
   var hit=l.slider?heatLine():null;
@@ -260,7 +267,7 @@ function paint(){
   if(l.key==='rented'){ var tf=$('fa-tenure'); if(tf&&!tf.open) tf.open=true; }
   var cs=getComputedStyle(root);
   // each swatch is a button: it lights that class's counties on the map (the old map's swatches)
-  $('an-key').innerHTML=keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
+  $('an-key').innerHTML='<li class="an-kh">'+esc(viewName())+' counties</li>'+keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
     var t=x[1]+' '+Number(x[2]).toLocaleString('en-US')+(x[3]?' '+x[3]:'');
     return '<li><button type="button" data-k="'+x[0]+'" aria-pressed="false" aria-label="Show '+esc(t)+' on the map"><i class="'+x[0]+'"'+bg+'></i>'+esc(x[1])+' <b>'+Number(x[2]).toLocaleString('en-US')+'</b></button></li>'; }).join('');
   $('an-key').scrollLeft=0;
@@ -269,6 +276,7 @@ function paint(){
   if(l.slider&&!dw.options.length){ window.AtlasLayers.decades.forEach(function(t,i){ var o=document.createElement('option'); o.value=i; o.textContent=t; dw.appendChild(o); }); dw.value=DEC==null?window.AtlasLayers.decades.length-1:DEC; }
   root.classList.remove('waiting');
   if(S.c) pick(S.c,true); else rail();
+  save(); vcount();
 }
 var KEYPIN=null;
 function wireKey(){
@@ -319,6 +327,7 @@ function rail(){
     return '<li><button type="button" data-f="'+r.f+'"'+(r.f===S.c?' class="me" aria-current="true"':'')+'><i class="'+c+'"'+(bg?' style="background:'+bg+'"':'')+'></i><span class="nm">'+esc(nm)+'</span><span class="v">'+esc(rword(l,r.v))+'</span></button></li>'; }
   function side(head,rows,tiedAt,tied){ return '<div class="an-rk"><h3 class="an-rk-h">'+head+' in '+esc(scope)+'</h3>'+(tied>k?'<p class="an-rk-n">'+tied.toLocaleString('en-US')+' counties tied at '+esc(rword(l,tiedAt))+'.</p>':'<ol class="an-rk-l">'+rows.map(row).join('')+'</ol>')+'</div>'; }
   if(n<4) h='<p class="an-rk-n">'+(n?'Only '+n:'No')+' '+(n===1?'county':'counties')+' with 10,000 acres or more in farms in '+esc(scope)+' '+(n===1?'has':'have')+' a figure on this map'+(n?', too few to list':'')+'.</p>';
+  else if(list[0].v===list[n-1].v) h='<p class="an-rk-n an-rk-tie">All '+n.toLocaleString('en-US')+' counties with 10,000 acres or more in farms in '+esc(scope)+' read the same: '+esc(rword(l,list[0].v))+'.</p>';
   else {
     var top=list[0].v, bot=list[n-1].v;
     h='<div class="an-rk2">'+side(hi,list.slice(0,k),top,list.filter(function(r){return r.v===top;}).length)+side(lo,list.slice(n-k).reverse(),bot,list.filter(function(r){return r.v===bot;}).length)+'</div>'
@@ -357,7 +366,8 @@ function pick(f,quiet,fromRecord){
   var z=$('an-zst'); if(z) z.addEventListener('click',function(){ zoom(stc); ga('atlas_now_state',{state:stc}); });
   $('an-rec').addEventListener('click',function(){ record(f,'jump'); });
   rail();
-  if(!quiet){ setLink(); save(); }
+  save();
+  if(!quiet){ setLink(); }
   if(fromRecord){ setLink(); }
   if(!quiet||fromRecord){ try{ document.dispatchEvent(new CustomEvent('atlas-county',{detail:f})); }catch(e){} }
 }
@@ -449,11 +459,23 @@ function applyDeep(o){
   }
   return null;
 }
-function picName(){ return S.c&&S.q==='land'?'pic-'+S.c:S.s?'pic-'+S.s.toLowerCase():'pic-us'; }
+// the pictures that exist: the drought map of the US or a state, and a county's land value picture. The button names
+// the map it saves; on any other map there is no picture, and the link to this map takes its place
+function pic(){
+  if(!NOW.pics) return null;
+  if(S.m==='drought'){ if(!S.s) return {n:'pic-us', t:'Save the U.S. drought picture'};
+    return NOW.states[S.s]&&NOW.states[S.s].d1?{n:'pic-'+S.s.toLowerCase(), t:'Save the '+viewName()+' drought picture'}:null; }
+  if(S.m==='value'&&S.c&&GEO.c[S.c]&&IDX[S.c]) return {n:'pic-'+S.c, t:'Save the '+IDX[S.c][0].replace(/, [A-Z]{2}$/,'')+' land value picture'};
+  return null;
+}
+function picName(){ var p=pic(); return p?p.n:''; }
+// the link to this map in the old map's words, which every version of the page reads: #l=<map>&s=<state>&<county>
+function mapLink(){ return location.origin+location.pathname+'#l='+S.m+(S.s?'&s='+S.s:'')+(S.c?'&'+S.c:''); }
 function save(){
-  var a=$('an-pic'); if(!a||!NOW.pics) return;
-  var n=picName(); a.href=NOW.pics+n+'.png'; a.setAttribute('download','agsist-'+n+'.png');
-  a.textContent=n==='pic-us'?'Save the picture':n.length===6?'Save the '+(NOW.states[S.s]&&NOW.states[S.s].name||S.s)+' picture':'Save the county picture';
+  var a=$('an-pic'), c=$('an-copy'); if(!a) return;
+  var p=pic(); a.hidden=!p; a.style.display=p?'':'none'; if(c) c.classList.toggle('pri',!p);
+  if(!p) return;
+  a.href=NOW.pics+p.n+'.png'; a.setAttribute('download','agsist-'+p.n+'.png'); a.textContent=p.t;
 }
 function wire(){
   [].forEach.call(root.querySelectorAll('.an-tab'),function(b){ b.addEventListener('click',function(){ go(b.getAttribute('data-q')); ga('atlas_now_question',{q:b.getAttribute('data-q')||'all'}); }); });
@@ -482,7 +504,7 @@ function wire(){
     }).catch(function(){ window.open(a.href,'_blank','noopener'); });
     ga('atlas_now_picture',{pic:picName()});
   });
-  $('an-copy').addEventListener('click',function(){ var u=location.href; try{ navigator.clipboard.writeText(u).then(function(){ $('an-copied').textContent='Link copied.'; }); }catch(e){ $('an-copied').textContent=u; } });
+  $('an-copy').addEventListener('click',function(){ var u=mapLink(); try{ navigator.clipboard.writeText(u).then(function(){ $('an-copied').textContent='Link copied.'; }); }catch(e){ $('an-copied').textContent=u; } });
   // a link inside the page that names an old layer (the foreign-held fold's "show it on the map")
   window.addEventListener('hashchange',function(){ var o=readHash(); if(!o) return; applyDeep(o); if(!o.l||LAY[SAME[o.l]||o.l]){ go(S.q,true); if(o.s) zoom(o.s); if(o.c) pick(o.c,true); }
     $('an-map').scrollIntoView({behavior:'smooth',block:'start'}); });
@@ -496,8 +518,14 @@ function mine(f){
 // the sources and vintages, and the day the Atlas was built (now.json, from atlas.json's own notes)
 function vint(){
   var b=$('an-built'); if(b&&NOW.built){ var d=new Date(String(NOW.built).slice(0,10)+'T12:00:00Z'); b.textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}); }
-  var n=$('an-n'); if(n) n.textContent=NOW.rows.length.toLocaleString('en-US');
+  vcount();
   var v=$('an-vint'); if(v&&NOW.vint) v.innerHTML=NOW.vint.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('');
+}
+// the county count beside the sources follows the view: every county, or the open state's
+function vcount(){
+  var n=$('an-n'), w=$('an-nw'), k=0, f; if(!n) return;
+  if(S.s){ for(f in HAS) if(inView(f)) k++; } else k=NOW.rows.length;
+  n.textContent=k.toLocaleString('en-US'); if(w) w.textContent=S.s?viewName()+' counties':'counties';
 }
 // the national folds lower on the page read the Atlas file: drawn the first time one is opened
 function folds(){

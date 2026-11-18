@@ -571,7 +571,7 @@ details.fa-arith .body a{color:var(--gold)}
       <div class="an-svgwrap"><svg id="an-svg" viewBox="34 30 830 564" role="img" aria-label="County map"><defs><pattern id="an-hx" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="4" style="fill:var(--an-gap-bg)"/><line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--an-gap-line)" stroke-width="1.2"/></pattern></defs></svg><div class="an-insets" id="an-insets" aria-hidden="true"></div></div>
       <p class="an-legend" id="an-legend"></p>
       <p class="an-read" id="an-read" role="status" aria-live="polite">Tap a county for its figure and its page.</p>
-      <div class="an-acts"><a class="pri" id="an-pic" href="/farmland-atlas/states/">Save the picture</a><button type="button" id="an-copy">Copy link</button><span class="fa-note" id="an-copied" role="status"></span></div>
+      <div class="an-acts"><a class="pri" id="an-pic" href="/farmland-atlas/states/">Save the U.S. drought picture</a><button type="button" id="an-copy">Copy link to this map</button><span class="fa-note" id="an-copied" role="status"></span></div>
       <a class="fa-mycty" id="fa-mycty" href="/farmland-atlas/states/" hidden></a>
       <form class="fa-quick" id="fa-quick" role="search" aria-label="Open one county's page">
         <input type="search" id="fa-qq" placeholder="One county? e.g. Story, IA" autocomplete="off" aria-label="Open one county's page">
@@ -579,7 +579,7 @@ details.fa-arith .body a{color:var(--gold)}
         <span class="fa-note" id="fa-qq-status" role="status"></span>
       </form>
       <section class="an-rail" id="an-rail" aria-label="Counties on this map"></section>
-      <details class="an-vd" id="an-vd"><summary>Sources and vintages <span class="an-built">· built <b id="an-built">-</b> · <b id="an-n">-</b> counties</span></summary><ul class="an-vint" id="an-vint"></ul></details>
+      <details class="an-vd" id="an-vd"><summary>Sources and vintages <span class="an-built">· built <b id="an-built">-</b> · <b id="an-n">-</b> <span id="an-nw">counties</span></span></summary><ul class="an-vint" id="an-vint"></ul></details>
       <div id="an-panel"></div>
     </div><div class="an-side" id="an-side" aria-live="polite"></div></div>
   </section>
@@ -867,7 +867,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 var h=(location.hash||'').replace(/^#/,'').split('&').filter(function(p){return p&&p.slice(0,2)!=='l=';});h.push('l=afida');location.hash=h.join('&');
 });})();
 </script>
-  <script src="/components/atlas-now.js?v=6" defer></script>
+  <script src="/components/atlas-now.js?v=8" defer></script>
 <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>
