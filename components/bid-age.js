@@ -9,8 +9,7 @@
       Anything else returns null and the page keeps the site's "Updated" stamp (components/asof.js), whose old
       bid note stays: in the day session, after the close, and for a bid older than the last session.
 
-   2. ovnLine(data, syms, now): the overnight line under it (Sig, Nov 18: "show the overnight markets and their
-      moves"). In the overnight hours of a trading session (ovnLive: AgPxStamp.ovnWindow, the futures pages' one
+   2. ovnLine(data, syms, now): the overnight line under it: the overnight futures moves. In the overnight hours of a trading session (ovnLive: AgPxStamp.ovnWindow, the futures pages' one
       clock rule, and that session is a trading day by AgPxStamp.isTradingDay), the move of the futures contract
       each card's bid is priced on, from the futures pages' own overnight read (AgPxStamp.overnight: the change
       against the prior settle), with the time of the quote:
