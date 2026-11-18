@@ -14,7 +14,8 @@
    Batch 2, PR B adds fourteen maps to now.json (soybean basis, CRP ending this fiscal year, frost-free days, corn GDD,
    land rented, rent change, tile, cover crops, cattle, solar and wind proposed, foreign-held acres, hail and wind days,
    claims from heat and drought). Their column holds the figure or a gap code; "zero" names a 0 drawn grey, "kn" a gap
-   drawn grey, "cover" an unread state drawn as an outline. */
+   drawn grey, "cover" an unread state drawn as an outline.
+   Batch 2, PR C2 adds ARC-CO for soybeans and wheat under Program; a layer's "dp" sets the decimal places it prints. */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
@@ -50,7 +51,7 @@ function isOld(k){ return !!k&&!LAY[k]; }
 function val(f,l){ var r=ROWS[f], v=r?r[COL[l.col]]:null; return typeof v==='number'?v:null; }
 function gap(f,l){ var r=ROWS[f], g=r&&l.gcol?r[COL[l.gcol]]:null; return typeof g==='string'?g:null; }
 function money(v,dp){ return '$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp}); }
-function dp(l){ return l.key==='arc'||l.key==='prf'||l.key==='cost'?2:0; }
+function dp(l){ return l.dp!=null?l.dp:l.key==='arc'||l.key==='prf'||l.key==='cost'?2:0; }
 function n0(v){ return Number(v).toLocaleString('en-US',{maximumFractionDigits:2}); }
 function show(v,l){
   if(l.unit==='$') return money(v,dp(l));
