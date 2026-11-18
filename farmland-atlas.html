@@ -670,6 +670,7 @@ details.fa-arith .body a{color:var(--gold)}
 .fl-bar-y{font-size:.55rem;white-space:nowrap}
 </style>
 <link rel="stylesheet" href="/components/src-fold.css?v=2">
+<link rel="stylesheet" href="/components/atlas-now.css?v=1">
 <script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
@@ -701,9 +702,23 @@ details.fa-arith .body a{color:var(--gold)}
 
 <main id="main" tabindex="-1" class="fa-page">
 
+  <section class="an" id="an" aria-labelledby="an-h1">
+    <h1 class="an-h1" id="an-h1">Farmland Atlas: land value, rent and risk by county</h1>
+    <p class="an-lede" id="an-lede">Drought, land, grain, farm program and risk for every county, on one map.</p>
+    <p class="an-sub" id="an-sub">Loading the newest Drought Monitor map.</p>
+    <div class="an-tabs" role="group" aria-label="Questions"><button type="button" class="an-tab" data-q="" aria-pressed="true">All five</button><button type="button" class="an-tab" data-q="weather" aria-pressed="false">Weather</button><button type="button" class="an-tab" data-q="land" aria-pressed="false">Land</button><button type="button" class="an-tab" data-q="grain" aria-pressed="false">Grain</button><button type="button" class="an-tab" data-q="program" aria-pressed="false">Program</button><button type="button" class="an-tab" data-q="risk" aria-pressed="false">Risk</button></div>
+    <div class="an-stage"><div class="an-mapcol">
+      <div class="an-maphead"><span class="an-maptitle" id="an-maptitle">Drought now</span><span class="an-zoom"><select id="an-st" aria-label="Zoom to a state"><option value="">All fifty states</option></select><button type="button" id="an-all" hidden>All states</button></span></div>
+      <div class="an-svgwrap"><svg id="an-svg" viewBox="34 30 830 564" role="img" aria-label="County map"><defs><pattern id="an-hx" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="4" style="fill:var(--an-gap-bg)"/><line x1="0" y1="0" x2="0" y2="4" style="stroke:var(--an-gap-line)" stroke-width="1.2"/></pattern></defs></svg></div>
+      <p class="an-legend" id="an-legend"></p>
+      <ul class="an-key" id="an-key"></ul>
+      <p class="an-read" id="an-read" role="status" aria-live="polite">Tap a county for its figure and its page.</p>
+      <div class="an-acts"><a class="pri" id="an-pic" href="/farmland-atlas/states/">Save the picture</a><button type="button" id="an-copy">Copy link</button><span class="fa-note" id="an-copied" role="status"></span></div>
+    </div><div class="an-side" id="an-side" aria-live="polite"></div></div>
+  </section>
+  <h2 class="an-more" id="fa-every">Every layer, one county at a time</h2>
+
   <div class="fa-hero">
-    <div class="fa-eyebrow page-kicker">The fifty states · county by county · public record only</div>
-    <h1>Farmland Atlas: land value, rent and risk by county</h1>
     <p class="page-lede">Every county in the fifty states on the public record: land value, rent, yield, the insurance record, drought, night heat, water and who farms it. Pick a layer, then tap a county.</p>
     <div class="fa-meta" id="fa-meta">
       <span>Built <b id="fa-built">-</b></span>
@@ -2692,6 +2707,7 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 var h=(location.hash||'').replace(/^#/,'').split('&').filter(function(p){return p&&p.slice(0,2)!=='l=';});h.push('l=afida');location.hash=h.join('&');
 var m=document.getElementById('fa-app')||document.querySelector('.fa-map');if(m)m.scrollIntoView({behavior:'smooth'});});})();
 </script>
-  <script src="/components/next-links.js?v=4" defer></script>
+  <script src="/components/atlas-now.js?v=1" defer></script>
+<script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>
