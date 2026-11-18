@@ -25,17 +25,29 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-17"
   },
-  "cash-bids/iowa/harcourt.html": {
+  "cash-bids/iowa/knoke.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
+   "since": "2026-11-18"
   },
-  "cash-bids/iowa/moorland.html": {
+  "cash-bids/iowa/langdon.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
+   "since": "2026-11-18"
   },
-  "cash-bids/iowa/spencer.html": {
+  "cash-bids/iowa/lanyon.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
+   "since": "2026-11-18"
+  },
+  "cash-bids/iowa/morton-mills.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-18"
+  },
+  "cash-bids/iowa/rands.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-18"
+  },
+  "cash-bids/iowa/roelyn.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-18"
   },
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
