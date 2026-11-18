@@ -539,7 +539,7 @@ function vint(){
 function vcount(){
   var n=$('an-n'), w=$('an-nw'), k=0, f; if(!n) return;
   if(S.s){ for(f in HAS) if(inView(f)) k++; } else k=NOW.rows.length;
-  n.textContent=k.toLocaleString('en-US'); if(w) w.textContent=S.s?viewName()+' counties':'counties';
+  n.textContent=k.toLocaleString('en-US'); if(w) w.textContent=S.s?' '+viewName()+' counties':' counties';
 }
 // the national folds lower on the page read the Atlas file: drawn the first time one is opened
 function folds(){
