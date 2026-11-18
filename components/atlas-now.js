@@ -239,6 +239,7 @@ function pick(f,quiet,fromRecord){
   $('an-rec').addEventListener('click',function(){ record(f,'tap'); });
   if(!quiet){ setLink(); save(); }
   if(fromRecord){ setLink(); }
+  if(!quiet||fromRecord){ try{ document.dispatchEvent(new CustomEvent('atlas-county',{detail:f})); }catch(e){} }
 }
 function record(f,how){
   oldList().then(function(){ window.AtlasLayers.panel(f,how); ga('atlas_now_record',{fips:f}); }).catch(function(){

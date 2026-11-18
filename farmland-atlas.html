@@ -857,7 +857,7 @@ d.addEventListener('toggle',go);if(/(^|[#&])l=ten_rent(&|$)/.test(location.hash)
 (function(){var d=document.getElementById('fa-foreign');if(!d)return;
 var land=null;
 function go(){if(!d.open||d.getAttribute('data-on'))return;d.setAttribute('data-on','1');
-var u=document.createElement('script');u.src='/components/usmap.js?v=1';u.onload=u.onerror=function(){var s=document.createElement('script');s.src='/components/atlas-foreign.js?v=2';s.onload=function(){window.AgForeign.load().then(function(ok){if(!ok)d.removeAttribute('data-on');if(land)land();},function(){if(land)land();});};
+var u=document.createElement('script');u.src='/components/usmap.js?v=1';u.onload=u.onerror=function(){var s=document.createElement('script');s.src='/components/atlas-foreign.js?v=3';s.onload=function(){window.AgForeign.load().then(function(ok){if(!ok)d.removeAttribute('data-on');if(land)land();},function(){if(land)land();});};
 s.onerror=function(){d.removeAttribute('data-on');if(land)land();};document.head.appendChild(s);};document.head.appendChild(u);}
 d.addEventListener('toggle',go);
 function want(){return /(^|[#&])(foreign|fl-[a-z-]+)(&|$)/.test(location.hash);}
