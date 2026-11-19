@@ -35,6 +35,7 @@
   },
   "29017": {
    "name": "Bollinger",
+   "no_response": true,
    "region": "South Central"
   },
   "29019": {
@@ -59,6 +60,7 @@
   },
   "29029": {
    "name": "Camden",
+   "no_response": true,
    "region": "Central"
   },
   "29031": {
@@ -87,6 +89,7 @@
   },
   "29043": {
    "name": "Christian",
+   "no_response": true,
    "region": "Southwest"
   },
   "29045": {
@@ -111,6 +114,7 @@
   },
   "29055": {
    "name": "Crawford",
+   "no_response": true,
    "region": "East"
   },
   "29057": {
@@ -135,6 +139,7 @@
   },
   "29067": {
    "name": "Douglas",
+   "no_response": true,
    "region": "South Central"
   },
   "29069": {
@@ -155,6 +160,7 @@
   },
   "29077": {
    "name": "Greene",
+   "no_response": true,
    "region": "Southwest"
   },
   "29079": {
@@ -187,6 +193,7 @@
   },
   "29093": {
    "name": "Iron",
+   "no_response": true,
    "region": "South Central"
   },
   "29095": {
@@ -199,6 +206,7 @@
   },
   "29099": {
    "name": "Jefferson",
+   "no_response": true,
    "region": "East"
   },
   "29101": {
@@ -251,6 +259,7 @@
   },
   "29125": {
    "name": "Maries",
+   "no_response": true,
    "region": "Central"
   },
   "29127": {
@@ -315,6 +324,7 @@
   },
   "29157": {
    "name": "Perry",
+   "no_response": true,
    "region": "East"
   },
   "29159": {
@@ -339,6 +349,7 @@
   },
   "29169": {
    "name": "Pulaski",
+   "no_response": true,
    "region": "Central"
   },
   "29171": {
@@ -359,10 +370,12 @@
   },
   "29179": {
    "name": "Reynolds",
+   "no_response": true,
    "region": "South Central"
   },
   "29181": {
    "name": "Ripley",
+   "no_response": true,
    "region": "South Central"
   },
   "29183": {
@@ -375,14 +388,17 @@
   },
   "29186": {
    "name": "Ste. Genevieve",
+   "no_response": true,
    "region": "East"
   },
   "29187": {
    "name": "St. Francois",
+   "no_response": true,
    "region": "East"
   },
   "29189": {
    "name": "St. Louis",
+   "no_response": true,
    "region": "East Urban (St. Louis)"
   },
   "29195": {
@@ -403,6 +419,7 @@
   },
   "29203": {
    "name": "Shannon",
+   "no_response": true,
    "region": "South Central"
   },
   "29205": {
@@ -423,6 +440,7 @@
   },
   "29213": {
    "name": "Taney",
+   "no_response": true,
    "region": "South Central"
   },
   "29215": {
@@ -439,10 +457,12 @@
   },
   "29221": {
    "name": "Washington",
+   "no_response": true,
    "region": "East"
   },
   "29223": {
    "name": "Wayne",
+   "no_response": true,
    "region": "South Central"
   },
   "29225": {
@@ -455,10 +475,12 @@
   },
   "29229": {
    "name": "Wright",
+   "no_response": true,
    "region": "South Central"
   }
  },
  "evidence": "opinion survey, region averages of reporting counties",
+ "no_response_from": "Figure 1, Survey regions (white) and counties with insufficient data (gray): read by laying the county outlines over the figure",
  "not_mapped": {
   "29510": {
    "name": "St. Louis",
@@ -497,6 +519,11 @@
     "29169",
     "29195"
    ],
+   "no_response": [
+    "29029",
+    "29125",
+    "29169"
+   ],
    "obs": {
     "crop_average": 53,
     "crop_good": 55,
@@ -506,6 +533,7 @@
     "pasture_good": 55,
     "pasture_poor": 51
    },
+   "reporting": 17,
    "value": {
     "crop_average": 6404,
     "crop_good": 8204,
@@ -532,6 +560,14 @@
     "29219",
     "29221"
    ],
+   "no_response": [
+    "29055",
+    "29099",
+    "29157",
+    "29186",
+    "29187",
+    "29221"
+   ],
    "obs": {
     "crop_average": 20,
     "crop_good": 20,
@@ -541,6 +577,7 @@
     "pasture_good": 21,
     "pasture_poor": 22
    },
+   "reporting": 5,
    "value": {
     "crop_average": 7458,
     "crop_good": 8492,
@@ -557,6 +594,9 @@
     "29183",
     "29189"
    ],
+   "no_response": [
+    "29189"
+   ],
    "obs": {
     "crop_average": 5,
     "crop_good": 5,
@@ -566,6 +606,7 @@
     "pasture_good": 5,
     "pasture_poor": 5
    },
+   "reporting": 1,
    "value": {
     "crop_average": 15875,
     "crop_good": 15625,
@@ -706,6 +747,17 @@
     "29225",
     "29229"
    ],
+   "no_response": [
+    "29017",
+    "29067",
+    "29093",
+    "29179",
+    "29181",
+    "29203",
+    "29213",
+    "29223",
+    "29229"
+   ],
    "obs": {
     "crop_average": 9,
     "crop_good": 9,
@@ -715,6 +767,7 @@
     "pasture_good": 23,
     "pasture_poor": 23
    },
+   "reporting": 8,
    "value": {
     "crop_average": 5100,
     "crop_good": 6444,
@@ -772,6 +825,10 @@
     "29145",
     "29209"
    ],
+   "no_response": [
+    "29043",
+    "29077"
+   ],
    "obs": {
     "crop_average": 13,
     "crop_good": 13,
@@ -781,6 +838,7 @@
     "pasture_good": 16,
     "pasture_poor": 16
    },
+   "reporting": 8,
    "value": {
     "crop_average": 7248,
     "crop_good": 8357,
@@ -841,10 +899,12 @@
  "respondents": 417,
  "source": {
   "authors": "Juo-Han Tsay, TaylorAnn Washburn and Ben Brown",
+  "date_words": "survey of March to May 2025, page reviewed July 2025",
   "org": "University of Missouri Extension",
   "ref": "mu-g401",
   "released": "July 2025",
   "sha256": "bd2b4c3dc0d316aa89556f42aebcb07ed591c2c251a535b29a534240d44dc66d",
+  "survey": "March to May 2025",
   "title": "Missouri Farmland Values Opinion Survey (G401)",
   "url": "https://extension.missouri.edu/publications/g401"
  },
