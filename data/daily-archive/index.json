@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-19",
+      "date_display": "Thursday, November 19, 2026",
+      "headline": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due",
+      "teaser": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-19",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-18",
       "date_display": "Wednesday, November 18, 2026",
       "headline": "December lean hogs fell $2.25 Tuesday to $53.10",
@@ -2855,5 +2866,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-18T12:03:47.142571+00:00"
+  "updated": "2026-11-19T14:35:51.733530+00:00"
 }
