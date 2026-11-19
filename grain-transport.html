@@ -348,6 +348,6 @@
   var more=$('gt-more'),moreDone=0;if(more)more.addEventListener('toggle',function(){if(!more.open||moreDone)return;moreDone=1;loadSeries(MORE).then(function(){$('gt-charts-more').innerHTML=MORE.map(card).join('')||'<p class="gt-mut">None of these could be read yet.</p>';});});
 })();
   </script>
-  <script src="/components/loader.js?v=20" defer></script>
+  <script src="/components/loader.js?v=21" defer></script>
 </body>
 </html>
