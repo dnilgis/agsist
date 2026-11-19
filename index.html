@@ -14,7 +14,7 @@
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
   <script src="/components/price-local.js?v=16"></script>
-  <script src="/components/bid-age.js?v=2"></script>
+  <script src="/components/bid-age.js?v=3"></script>
 <link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=4">
 <link rel="stylesheet" href="/css/home.css?v=48">
@@ -247,7 +247,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <main id="main" class="main" role="main" tabindex="-1">
-  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-date.hb-sol::before{content:none}#hero-band .hb-sep.hb-sepw{display:none}#hero-band .hb-ovn{display:none;margin:0 0 4px}html.has-zip #hero-band.hb-ovnl .hb-ovn{display:block;font-size:.824rem;line-height:1.3;min-height:1.3em;color:var(--text-dim)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:43px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:66px}html.has-zip #hero-band.hb-ovnl .hb-ovn{min-height:2.6em}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
+  <style>/* 2026-11-19: on a phone (under 560 px) with a ZIP, the overnight move sits in each bid's own cell (.hb-ovc, the same words per crop), not as a two-line row above the grid, and before the open or in the overnight hours Sell grain and My field sit side by side, as they do from 521 px: the My field heading stays on the first screen at 390x844. Each bid cell holds seven lines then: four for the bid (its month and basis take two at 390) and three for the move ("Jan soybeans trading overnight (7:01 pm), settle not posted yet."). *//* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-date.hb-sol::before{content:none}#hero-band .hb-sep.hb-sepw{display:none}#hero-band .hb-ovn{display:none;margin:0 0 4px}html.has-zip #hero-band.hb-ovnl .hb-ovn{display:block;font-size:.824rem;line-height:1.3;min-height:1.3em;color:var(--text-dim)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:43px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:66px}html.has-zip #hero-band.hb-ovnl #hb-ovn{display:none}html.has-zip #hero-band.hb-ovnl .hb-bid .hb-ovc{display:block}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}html.has-zip #hero-band.hb-ovnl .hb-bid .hb-s{min-height:9.8em}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .jobs{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) :is(.job-sell,.job-field){grid-column:auto}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .job-sell{padding-right:12px}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .job-field{padding-left:12px;border-left:1px solid var(--border-2)}}#hero-band .hb-ovc{display:none}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
     <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}try{if(window.AgBidAge&&AgBidAge.between(new Date()))hb.classList.add('hb-preopen');if(window.AgBidAge&&AgBidAge.ovnLive(new Date()))hb.classList.add('hb-ovnl');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
@@ -703,6 +703,7 @@ try {
       if(status==='pending'){set(id+'-v','<span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span>');}
       else set(id+'-v',DASH);
       set(id+'-s','<span class="hb-l">'+esc(STATE[status]||('No '+word+' bid '+ring))+'</span>');
+      paintOvn();
     }
     /* The time line over the bids: before the 8:30 am open (or on a weekend or holiday) a bid posted after the
        last close says so (components/bid-age.js); otherwise the site's Updated stamp with its old-bid note
@@ -717,6 +718,12 @@ try {
       var o=agePrices?AgBidAge.ovnLine(agePrices,bidSyms,new Date()):null,on=!!AgBidAge.ovnLive(new Date());
       if(hb)hb.classList.toggle('hb-ovnl',on);
       el.textContent=on&&o?o.text:'';
+      /* the same words, each crop in its own bid cell: shown under 560 px, where the row above is not */
+      [['hb-corn','ZC'],['hb-soy','ZS']].forEach(function(a){
+        var s=$(a[0]+'-s');if(!s)return;
+        var c=s.querySelector('.hb-ovc');if(!c){c=document.createElement('span');c.className='hb-l hb-ovc';s.appendChild(c);}
+        c.textContent=on&&o&&o.parts?o.parts[a[1]]:'';
+      });
     }
     function paintAge(){
       paintOvn();
@@ -783,6 +790,7 @@ try {
         if(ho&&num(ho.cash)){var hd=ctDay(ho.posted);lines.push('<span class="hb-l hb-ho">Higher older bid <span class="hb-nw">'+qd(ho.cash)+(hd?SEP+hd:'')+'</span></span>');}
         set(id+'-s',lines.join(''));
       });
+      paintOvn();
       if(typeof sepFit==='function')sepFit();
     }
     /* A tap opens that elevator's row in the card when the card can; else it
