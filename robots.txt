@@ -11,6 +11,23 @@ Allow: /data/land/*/summary.json
 # The farm sale map's pin files (section and town points): out of search too.
 Disallow: /data/land-sales/map/
 
+# Tool views reached by a query string: each is the same page drawn for one ZIP, county, slot or swath, and each
+# page names its clean address as canonical. Crawlers spent their visits on thousands of these instead of the
+# pages themselves. The clean pages (/prf, /prf/<state>, /arc-plc/<state>/<county>, /cash-bids/<state>/<town>,
+# /hail-map/<state> ...) stay open; a rule here ends at "?", so it never covers a page path.
+Disallow: /prf?
+Disallow: /fast-facts?
+Disallow: /arc-plc?
+Disallow: /rain-print?
+Disallow: /cash-bids?
+Disallow: /store-or-sell?
+Disallow: /rain-radar?
+Disallow: /field-scout?
+Disallow: /newsletter-block
+Disallow: /sponsor-apply
+Disallow: /hail-map?
+Disallow: /prf-sponsor?
+
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml
 Sitemap: https://agsist.com/sitemap-atlas.xml
