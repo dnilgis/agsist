@@ -1,0 +1,1 @@
+One slim sticky bar, the home ticker its second line, the sponsor line and promos after each page's answer (styles.css?v=30, css/home.css?v=51, field-scout.css?v=8, loader.js?v=22 and CV 110)
