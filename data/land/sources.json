@@ -1,0 +1,4163 @@
+{
+ "about": "Every state's land figures on the AGSIST Farmland Atlas: which ones we show, who publishes them, the survey dates, the level (county or the survey's own region) and the next release where the publisher has stated one. Built from the data files by scripts/land_sources.py; never typed by hand.",
+ "built": "2026-11-19",
+ "older_months": 24,
+ "states": {
+  "AK": {
+   "best": "usda",
+   "name": "Alaska",
+   "next": null,
+   "sources": []
+  },
+  "AL": {
+   "best": "usda",
+   "name": "Alabama",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 67
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/AL.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 67
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "AR": {
+   "best": "usda",
+   "name": "Arkansas",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 75
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/AR.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 75
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "AZ": {
+   "best": "usda",
+   "name": "Arizona",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 14
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/AZ.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 15
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "CA": {
+   "best": "usda",
+   "name": "California",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 55
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/CA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 58
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "CO": {
+   "best": "region",
+   "name": "Colorado",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 57
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/CO.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 63
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 64,
+      "regions": 2,
+      "respondents": "more than 235"
+     },
+     "evidence": "survey of producers, landowners, lenders, consultants and agents, region ranges and medians",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/land/co/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Colorado State University Extension",
+     "ref": "csu-custom-rates-2025-pdf",
+     "released": "Apr 2026",
+     "states": null,
+     "survey": "2025",
+     "survey_end": "2025-12",
+     "title": "2025 Land Rental and Custom Rates for Colorado Farms and Ranches",
+     "url": "https://abm.extension.colostate.edu/"
+    }
+   ]
+  },
+  "CT": {
+   "best": "region",
+   "name": "Connecticut",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 7
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/CT.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 8
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 15,
+      "regions": 1
+     },
+     "evidence": "ranges from verified farm sales, region by region, by appraisers",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/neus/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Northeast Chapter ASFMRA with Cornell Cooperative Extension",
+     "ref": "asfmra-ne-land-trends-2026-pdf",
+     "released": "2026",
+     "states": [
+      "CT",
+      "MA",
+      "NH",
+      "NY",
+      "PA",
+      "RI",
+      "VT"
+     ],
+     "survey": "2025 sales",
+     "survey_end": "2025-12",
+     "title": "2026 US Northeast Land Value Trends",
+     "url": "https://www.asfmra.org/land-trends"
+    }
+   ]
+  },
+  "DE": {
+   "best": "usda",
+   "name": "Delaware",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 3
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/DE.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 3
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "FL": {
+   "best": "usda",
+   "name": "Florida",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 59
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/FL.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 65
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "GA": {
+   "best": "usda",
+   "name": "Georgia",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 135
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/GA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 159
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "HI": {
+   "best": "usda",
+   "name": "Hawaii",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 4
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    }
+   ]
+  },
+  "IA": {
+   "best": "county",
+   "name": "Iowa",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 99
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/IA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 99
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 99,
+      "responses": 1450
+     },
+     "evidence": "Iowa State survey of typical rents",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/land/ia/isu-rent.json",
+     "kind": "survey",
+     "level": "county",
+     "map_level": "county",
+     "next": null,
+     "older": false,
+     "publisher": "Iowa State University Extension and Outreach",
+     "ref": "isu-cash-rent-c2-10",
+     "released": "May 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Cash Rental Rates for Iowa 2026 Survey",
+     "url": "https://www.extension.iastate.edu/agdm/wholefarm/pdf/c2-10.pdf"
+    },
+    {
+     "counts": {
+      "counties": 99
+     },
+     "evidence": "Iowa State survey of land values",
+     "figures": [
+      "value"
+     ],
+     "file": "data/land/ia/isu-values.json",
+     "kind": "survey",
+     "level": "county",
+     "map_level": "county",
+     "next": null,
+     "older": false,
+     "publisher": "Iowa State University (CARD and ISU Extension and Outreach)",
+     "ref": "isu-land-values-county-2025-pdf",
+     "released": "Dec 2025",
+     "states": null,
+     "survey": "Nov 1, 2025",
+     "survey_end": "2025-11",
+     "title": "Iowa State University Land Value Survey 2025",
+     "url": "https://farmland.card.iastate.edu/files/inline-files/2025%20and%202024%20Iowa%20Average%20Land%20Values%20by%20County.pdf"
+    }
+   ]
+  },
+  "ID": {
+   "best": "usda",
+   "name": "Idaho",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 43
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/ID.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 44
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "IL": {
+   "best": "region",
+   "name": "Illinois",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 102
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/IL.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 102
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 101,
+      "of": 102,
+      "regions": 10
+     },
+     "evidence": "regional committees of farm managers and rural appraisers, from verified 2025 sales and leases",
+     "figures": [
+      "value"
+     ],
+     "file": "data/land/il/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Illinois Society of Professional Farm Managers and Rural Appraisers",
+     "ref": "ispfmra-2026-land-values-pdf",
+     "released": "Mar 2026",
+     "states": null,
+     "survey": "2025 sales",
+     "survey_end": "2025-12",
+     "title": "2026 Illinois Farmland Values and Lease Trends",
+     "url": "https://ispfmra.org/land-values-archive/"
+    }
+   ]
+  },
+  "IN": {
+   "best": "region",
+   "name": "Indiana",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 92
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/IN.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 92
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 92,
+      "regions": 6,
+      "respondents": 127
+     },
+     "evidence": "opinion survey of farmland professionals, region averages",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/in/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Purdue University, Department of Agricultural Economics",
+     "ref": "purdue-paer-2026-24-pdf",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Purdue Farmland Values and Cash Rent Survey",
+     "url": "https://ag.purdue.edu/commercialag/home/paer-publication/2026-08-paer-purdue-farmland-values-and-cash-rent-survey-results/"
+    }
+   ]
+  },
+  "KS": {
+   "best": "county",
+   "name": "Kansas",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 105
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/KS.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 105
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 105
+     },
+     "evidence": "model-based estimate, K-State",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/land/ks/rent.json",
+     "kind": "survey",
+     "level": "county",
+     "map_level": "county",
+     "next": null,
+     "older": false,
+     "publisher": "Kansas State University, Department of Agricultural Economics",
+     "ref": "data/land/ks/rent.json",
+     "released": "Oct 2026",
+     "states": null,
+     "survey": "model estimate for 2027",
+     "survey_end": "2026-10",
+     "title": "2027 Kansas County-Level Cash Rental Rates",
+     "url": "https://www.agmanager.info/land-leasing/land-rental-rates"
+    },
+    {
+     "counts": {
+      "counties": 104
+     },
+     "evidence": "average of reported sales, K-State",
+     "figures": [
+      "value"
+     ],
+     "file": "data/land/ks/survey.json",
+     "kind": "survey",
+     "level": "county",
+     "map_level": "county",
+     "next": null,
+     "older": false,
+     "publisher": "Kansas State University Agricultural Economics and KSFMRA",
+     "ref": "ksu-land-values-book-2025-pdf",
+     "released": "Jan 12, 2026",
+     "states": null,
+     "survey": "Oct 2024 to Sep 2025",
+     "survey_end": "2025-09",
+     "title": "Kansas Agricultural Land Values and Trends 2025 (2025 Kansas Land Values Book)",
+     "url": "https://www.agmanager.info/sites/default/files/pdf/2025%20KS%20Ag%20Land%20Values%20011226%20web.pdf"
+    }
+   ]
+  },
+  "KY": {
+   "best": "region",
+   "name": "Kentucky",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 110
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/KY.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 120
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 120,
+      "regions": 8,
+      "respondents": 70
+     },
+     "evidence": "survey of county Extension (ANR) agents, subregion averages of county estimates",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/ky/regions.json",
+     "kind": "survey",
+     "level": "subregion",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "University of Kentucky Cooperative Extension Service",
+     "ref": "uky-aec-102-pdf",
+     "released": "Sep 2025",
+     "states": null,
+     "survey": "Jan 2025",
+     "survey_end": "2025-01",
+     "title": "Kentucky ANR Agent Land Value and Cash Rent Survey (AEC-102)",
+     "url": "https://publications.mgcafe.uky.edu/aec-102"
+    }
+   ]
+  },
+  "LA": {
+   "best": "usda",
+   "name": "Louisiana",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 61
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/LA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 64
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "MA": {
+   "best": "region",
+   "name": "Massachusetts",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 12
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/MA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 14
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 14,
+      "regions": 1
+     },
+     "evidence": "ranges from verified farm sales, region by region, by appraisers",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/neus/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Northeast Chapter ASFMRA with Cornell Cooperative Extension",
+     "ref": "asfmra-ne-land-trends-2026-pdf",
+     "released": "2026",
+     "states": [
+      "CT",
+      "MA",
+      "NH",
+      "NY",
+      "PA",
+      "RI",
+      "VT"
+     ],
+     "survey": "2025 sales",
+     "survey_end": "2025-12",
+     "title": "2026 US Northeast Land Value Trends",
+     "url": "https://www.asfmra.org/land-trends"
+    }
+   ]
+  },
+  "MD": {
+   "best": "usda",
+   "name": "Maryland",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 23
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/MD.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 23
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "ME": {
+   "best": "usda",
+   "name": "Maine",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 14
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/ME.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 16
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "MI": {
+   "best": "usda",
+   "name": "Michigan",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 75
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/MI.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 83
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "MN": {
+   "best": "county",
+   "name": "Minnesota",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 84
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/MN.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 87
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 52
+     },
+     "evidence": "rents paid, FINBIN farm records",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/land/mn/survey.json",
+     "kind": "survey",
+     "level": "county",
+     "map_level": "county",
+     "next": null,
+     "older": false,
+     "publisher": "Center for Farm Financial Management, University of Minnesota",
+     "ref": "umn-cffm-mn-county-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2025",
+     "survey_end": "2025-12",
+     "title": "Cropland Rental Rates for Minnesota Counties",
+     "url": "https://cffm.umn.edu/publications/farm-management/cropland-rental-rates-minnesota-counties"
+    }
+   ]
+  },
+  "MO": {
+   "best": "region",
+   "name": "Missouri",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 114
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/MO.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 114
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 114,
+      "of": 115,
+      "regions": 11,
+      "respondents": 417
+     },
+     "evidence": "opinion survey, region averages of reporting counties",
+     "figures": [
+      "value"
+     ],
+     "file": "data/land/mo/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "University of Missouri Extension",
+     "ref": "mu-g401",
+     "released": "Jul 2025",
+     "states": null,
+     "survey": "Mar to May 2025",
+     "survey_end": "2025-05",
+     "title": "Missouri Farmland Values Opinion Survey (G401)",
+     "url": "https://extension.missouri.edu/publications/g401"
+    }
+   ]
+  },
+  "MS": {
+   "best": "usda",
+   "name": "Mississippi",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 81
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/MS.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 82
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "MT": {
+   "best": "usda",
+   "name": "Montana",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 56
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/MT.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 56
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "NC": {
+   "best": "usda",
+   "name": "North Carolina",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 97
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/NC.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 100
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "ND": {
+   "best": "county",
+   "name": "North Dakota",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 53
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/ND.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 53
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 53,
+      "reports": "1,600"
+     },
+     "evidence": "state survey of farmers",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/nd/survey.json",
+     "kind": "survey",
+     "level": "county",
+     "map_level": "county",
+     "next": null,
+     "older": false,
+     "publisher": "North Dakota Department of Trust Lands",
+     "ref": "bench-cash-rent-5",
+     "released": "Apr 2026",
+     "states": null,
+     "survey": "Dec 2025 to Mar 2026",
+     "survey_end": "2026-03",
+     "title": "2026 County Rents and Prices, North Dakota",
+     "url": "https://www.land.nd.gov/sites/www/files/documents/Surface/Rent%20Survey/2026%20County%20Rents%20and%20Prices%20North%20Dakota.pdf"
+    }
+   ]
+  },
+  "NE": {
+   "best": "region",
+   "name": "Nebraska",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 93
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/NE.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 93
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 93,
+      "regions": 8
+     },
+     "evidence": "opinion survey of expert panel members, district averages",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/ne/regions.json",
+     "kind": "survey",
+     "level": "district",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "University of Nebraska-Lincoln, Center for Agricultural Profitability",
+     "ref": "unl-ne-farm-real-estate-2026-pdf",
+     "released": "Jun 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Nebraska Farm Real Estate Market Highlights 2025-2026",
+     "url": "https://cap.unl.edu/realestate/"
+    }
+   ]
+  },
+  "NH": {
+   "best": "usda",
+   "name": "New Hampshire",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 10
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/NH.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 10
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "NJ": {
+   "best": "usda",
+   "name": "New Jersey",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 14
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/NJ.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 21
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "NM": {
+   "best": "usda",
+   "name": "New Mexico",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 32
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/NM.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 33
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "NV": {
+   "best": "usda",
+   "name": "Nevada",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 12
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/NV.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 17
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "NY": {
+   "best": "region",
+   "name": "New York",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 51
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/NY.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 60
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 55,
+      "of": 62,
+      "regions": 6
+     },
+     "evidence": "ranges from verified farm sales, region by region, by appraisers",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/neus/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Northeast Chapter ASFMRA with Cornell Cooperative Extension",
+     "ref": "asfmra-ne-land-trends-2026-pdf",
+     "released": "2026",
+     "states": [
+      "CT",
+      "MA",
+      "NH",
+      "NY",
+      "PA",
+      "RI",
+      "VT"
+     ],
+     "survey": "2025 sales",
+     "survey_end": "2025-12",
+     "title": "2026 US Northeast Land Value Trends",
+     "url": "https://www.asfmra.org/land-trends"
+    }
+   ]
+  },
+  "OH": {
+   "best": "region",
+   "name": "Ohio",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 88
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/OH.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 88
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 39,
+      "of": 88,
+      "regions": 2,
+      "respondents": 132
+     },
+     "evidence": "opinion survey of farmland professionals, region averages",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/oh/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Ohio State University Extension",
+     "ref": "osu-western-ohio-2025-26-pdf",
+     "released": "2026",
+     "states": null,
+     "survey": "Jan to Apr 2026",
+     "survey_end": "2026-04",
+     "title": "Western Ohio Cropland Values and Cash Rents 2025-26",
+     "url": "https://farmoffice.osu.edu/farm-management-tools/farm-management-publications/cash-rents"
+    }
+   ]
+  },
+  "OK": {
+   "best": "usda",
+   "name": "Oklahoma",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 77
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/OK.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 77
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "OR": {
+   "best": "usda",
+   "name": "Oregon",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 36
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/OR.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 36
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "PA": {
+   "best": "region",
+   "name": "Pennsylvania",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 63
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/PA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 67
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 7,
+      "of": 67,
+      "regions": 1
+     },
+     "evidence": "ranges from verified farm sales, region by region, by appraisers",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/neus/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Northeast Chapter ASFMRA with Cornell Cooperative Extension",
+     "ref": "asfmra-ne-land-trends-2026-pdf",
+     "released": "2026",
+     "states": [
+      "CT",
+      "MA",
+      "NH",
+      "NY",
+      "PA",
+      "RI",
+      "VT"
+     ],
+     "survey": "2025 sales",
+     "survey_end": "2025-12",
+     "title": "2026 US Northeast Land Value Trends",
+     "url": "https://www.asfmra.org/land-trends"
+    }
+   ]
+  },
+  "RI": {
+   "best": "region",
+   "name": "Rhode Island",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 5
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 5,
+      "regions": 1
+     },
+     "evidence": "ranges from verified farm sales, region by region, by appraisers",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/neus/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Northeast Chapter ASFMRA with Cornell Cooperative Extension",
+     "ref": "asfmra-ne-land-trends-2026-pdf",
+     "released": "2026",
+     "states": [
+      "CT",
+      "MA",
+      "NH",
+      "NY",
+      "PA",
+      "RI",
+      "VT"
+     ],
+     "survey": "2025 sales",
+     "survey_end": "2025-12",
+     "title": "2026 US Northeast Land Value Trends",
+     "url": "https://www.asfmra.org/land-trends"
+    }
+   ]
+  },
+  "SC": {
+   "best": "usda",
+   "name": "South Carolina",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 44
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/SC.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 46
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "SD": {
+   "best": "region",
+   "name": "South Dakota",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 66
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/SD.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 66
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "clusters": 15,
+      "counties": 66,
+      "regions": 8,
+      "respondents": 68,
+      "responses": 190
+     },
+     "evidence": "expert opinion survey, region averages",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/sd/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "SDSU Extension, South Dakota State University",
+     "ref": "sdsu-p00117-2026-pdf",
+     "released": "Jun 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "South Dakota Agricultural Land Market Trends, 1991-2026",
+     "url": "https://extension.sdstate.edu/south-dakota-agricultural-land-market-trends"
+    }
+   ]
+  },
+  "TN": {
+   "best": "usda",
+   "name": "Tennessee",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 95
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/TN.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 95
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "TX": {
+   "best": "usda",
+   "name": "Texas",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 254
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/TX.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 254
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "UT": {
+   "best": "usda",
+   "name": "Utah",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 29
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/UT.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 29
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "VA": {
+   "best": "usda",
+   "name": "Virginia",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 93
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/VA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 98
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "VT": {
+   "best": "region",
+   "name": "Vermont",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 13
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/VT.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 14
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 9,
+      "of": 14,
+      "regions": 3
+     },
+     "evidence": "ranges from verified farm sales, region by region, by appraisers",
+     "figures": [
+      "rent",
+      "value"
+     ],
+     "file": "data/land/neus/regions.json",
+     "kind": "survey",
+     "level": "region",
+     "map_level": "region",
+     "next": null,
+     "older": false,
+     "publisher": "Northeast Chapter ASFMRA with Cornell Cooperative Extension",
+     "ref": "asfmra-ne-land-trends-2026-pdf",
+     "released": "2026",
+     "states": [
+      "CT",
+      "MA",
+      "NH",
+      "NY",
+      "PA",
+      "RI",
+      "VT"
+     ],
+     "survey": "2025 sales",
+     "survey_end": "2025-12",
+     "title": "2026 US Northeast Land Value Trends",
+     "url": "https://www.asfmra.org/land-trends"
+    }
+   ]
+  },
+  "WA": {
+   "best": "usda",
+   "name": "Washington",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 37
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/WA.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 39
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "WI": {
+   "best": "county",
+   "name": "Wisconsin",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 69
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/WI.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 70
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 69
+     },
+     "evidence": "average of recorded sales, UW-Madison Extension",
+     "figures": [
+      "value"
+     ],
+     "file": "data/land/wi/survey.json",
+     "kind": "survey",
+     "level": "county",
+     "map_level": "county",
+     "next": null,
+     "older": false,
+     "publisher": "UW-Madison Division of Extension",
+     "ref": "uw-wi-ag-land-prices-2025-t2-pdf",
+     "released": "May 2026",
+     "states": null,
+     "survey": "2025",
+     "survey_end": "2025-12",
+     "title": "Wisconsin Agricultural Land Prices 2025",
+     "url": "https://farms.extension.wisc.edu/articles/wisconsin-agricultural-land-prices/"
+    }
+   ]
+  },
+  "WV": {
+   "best": "usda",
+   "name": "West Virginia",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 42
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/WV.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 55
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  },
+  "WY": {
+   "best": "usda",
+   "name": "Wyoming",
+   "next": null,
+   "sources": [
+    {
+     "counts": {
+      "counties": 23
+     },
+     "evidence": "USDA survey",
+     "figures": [
+      "rent"
+     ],
+     "file": "data/cash-rent/WY.json",
+     "kind": "usda-rent",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-cash-rents",
+     "released": "Aug 2026",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-08",
+     "title": "Cash Rents Survey, county estimates",
+     "url": ""
+    },
+    {
+     "counts": {
+      "counties": 23
+     },
+     "evidence": "census of every farm",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/atlas.json",
+     "kind": "census-value",
+     "level": "county",
+     "map_level": "usda",
+     "next": null,
+     "older": true,
+     "publisher": "USDA NASS",
+     "ref": "census-of-agriculture",
+     "released": "",
+     "states": null,
+     "survey": "2022",
+     "survey_end": "2022-12",
+     "title": "Census of Agriculture 2022, county land and buildings value",
+     "url": ""
+    },
+    {
+     "counts": {},
+     "evidence": "USDA survey",
+     "figures": [
+      "value"
+     ],
+     "file": "data/atlas/state-value.json",
+     "kind": "usda-state-value",
+     "level": "state",
+     "map_level": "usda",
+     "next": null,
+     "older": false,
+     "publisher": "USDA NASS",
+     "ref": "nass-land-values",
+     "released": "",
+     "states": null,
+     "survey": "2026",
+     "survey_end": "2026-12",
+     "title": "Land Values, state cropland value",
+     "url": ""
+    }
+   ]
+  }
+ },
+ "survey_files": [
+  "data/land/co/regions.json",
+  "data/land/ia/isu-rent.json",
+  "data/land/ia/isu-values.json",
+  "data/land/il/regions.json",
+  "data/land/in/regions.json",
+  "data/land/ks/rent.json",
+  "data/land/ks/survey.json",
+  "data/land/ky/regions.json",
+  "data/land/mn/survey.json",
+  "data/land/mo/regions.json",
+  "data/land/nd/survey.json",
+  "data/land/ne/regions.json",
+  "data/land/neus/regions.json",
+  "data/land/oh/regions.json",
+  "data/land/sd/regions.json",
+  "data/land/wi/survey.json"
+ ]
+}
