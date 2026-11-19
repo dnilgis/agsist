@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '109';
+  var CV = '110';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -243,8 +243,6 @@
     var ov  = document.getElementById('draw-ov');
     var dc  = document.getElementById('draw-close');
     if (ham) {
-      ham.style.minHeight = '44px';
-      ham.style.minWidth  = '44px';
       ham.setAttribute('aria-expanded', 'false');
       ham.setAttribute('aria-controls', 'drawer');
       if (!ham.getAttribute('aria-label')) ham.setAttribute('aria-label', 'Open navigation menu');
@@ -563,8 +561,9 @@
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
-  /* Sitewide sponsor line under the nav (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot, which
-     prints no reader figure (Nov 19, 2026: those are on /sponsor only). */
+  /* Sitewide sponsor line (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot, which prints no reader
+     figure (Nov 19, 2026: those are on /sponsor only). It sits right after the page's answer, in the room #sw-slot holds
+     there; a page without one gets it just above the footer, so it never moves the first screen. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function swSold(sp) {
     return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
@@ -586,13 +585,15 @@
     line.id = 'ag-sw';
     line.className = 'sw-line';
     line.setAttribute('aria-label', 'Sponsor');
-    var home = document.getElementById('sw-home');
-    var inHome = false;
-    try { inHome = !!home && window.getComputedStyle(home).display !== 'none'; } catch (e) {}
-    var nav = document.getElementById('topnav');
-    if (inHome) home.appendChild(line);
-    else if (nav && nav.parentNode === parent) parent.insertBefore(line, nav.nextSibling);
-    else if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
+    var slot = document.getElementById('sw-slot');
+    if (!slot) {
+      var foot = document.getElementById('site-footer') || document.querySelector('footer.footer');
+      if (!foot || !foot.parentNode) return;
+      slot = document.createElement('div');
+      slot.id = 'sw-slot'; slot.className = 'sw-slot sw-slot--end';
+      foot.parentNode.insertBefore(slot, foot);
+    }
+    slot.appendChild(line);
     var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
     Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json')]).then(function (r) {
       var o = swLine(r[0], r[1], null, preview);

@@ -1280,7 +1280,7 @@ details>summary:hover{color:var(--text)}
 @media(max-width:900px){
 #bids-list-area>a,main a[href="/contact"],.land-links a,a[href="/usda-calendar#priced-in"]:not(.wr-c),.tip-b,.signup-disc a,#f1>.bidnet-note,.main a[href^="tel:"],.main a[href^="mailto:"],.main a[href="/privacy"],.signup-disc a{min-height:44px!important;display:inline-flex!important;align-items:center}
 .idx1-extras-field input{min-height:44px!important;font-size:1rem!important}
-.ticker-track .t-link{min-height:44px;display:inline-flex!important;align-items:center}
+.ticker-track .t-link{min-height:28px;display:inline-flex!important;align-items:center}
 .crop-full-link,.export-full-link,.cot-full-link,.ratio-link,.wx-chart-toggle,.wx-hourly-toggle,.faq-a a{display:inline-flex!important;align-items:center;min-height:44px}
 }
 /* ===== block 13 of 23 id="ui-r8" ===== */
@@ -1608,17 +1608,13 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){
 .ticker-pause{display:none}
 }
-/* Phone tap target, 2026-10-09: the ticker is 38px tall on a phone, so the
-   button's hit area reaches 1px above and below it (40px) through a
-   transparent ::after. The strip and the ticker row clip sideways only (both
-   hold nothing taller than the row), so the scrolling track is still cut off
-   at the edges. Browsers without overflow:clip keep the 38px button. */
+/* Phone, 2026-10-09: the strip and the ticker row clip sideways only (both hold nothing taller than the row), so
+   the scrolling track is still cut off at the edges. Nov 19, 2026: the ticker is the sticky bar's 28px second line;
+   the pause button is the row's full 28px, inside the 24px tap floor, and no longer reaches over the bar or the page. */
 @media(max-width:600px){
 @supports (overflow:clip){
 .prices-strip,.prices-strip .ticker-outer{overflow-x:clip;overflow-y:visible}
 }
-.ticker-pause{position:relative}
-.ticker-pause::after{content:"";position:absolute;left:0;right:0;top:min(0px,calc(50% - 20px));bottom:min(0px,calc(50% - 20px))}
 }
 /* ===== WAVE2-F: "What do you raise?" picker */
 .pk-btn{cursor:pointer}
@@ -2614,14 +2610,15 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 .hero-band{margin-left:0;margin-right:0}
 }
 
-/* The sitewide sponsor line on phones (Nov 11, 2026): the three jobs keep the first screen, so on the homepage
-   the line sits right under them in #sw-home instead of under the menu (components/loader.js). The header
-   placeholder holds no room for it here; #sw-home holds its own. */
-.sw-home{display:none}
-@media (max-width:520px){
-  :root{--sw-h:0px}
-  .sw-home{display:block;height:54px;margin:.6rem 0 .2rem}
-  .sw-home .sw-line{height:54px;padding:4px 0}
-}
+/* The sitewide sponsor line (Nov 11, 2026; every width since Nov 19): the three jobs keep the first screen, so on the
+   homepage the line sits right under them in #sw-slot (components/styles.css holds its room, loader.js fills it). */
+#hb-jobs + .sw-slot{margin:.6rem 0 .2rem}
+/* Nov 19, 2026: "What do you raise?" moved from above the ticker to the foot of Today near me, after the answer:
+   one plain line on the card's hairline, not a band of its own. */
+.job-near .idx1-subbar{width:auto;margin:0;padding:.25rem 0 0!important;background:none;border:0;border-top:1px solid var(--border);row-gap:0}
+.job-near .idx1-subbar>.pk-btn{order:-1}
+/* the month fills in after load ("Season" to "September" at most): hold its width so the line wraps at first paint */
+.job-near #s7-jump-m{display:inline-block;min-width:9ch}
+.job-near .pk-panel{padding:12px 0 14px}
 /* Nov 13: one style for every home section title: body font, sentence case, plain text colour, no family colour */
 html[data-theme][data-look] body #main :is(.sec-title,.m-fold>summary.m-fold-sum>span,.wr-k){color:var(--text)!important;font-family:var(--font-body)!important;text-transform:none!important;letter-spacing:0!important}
