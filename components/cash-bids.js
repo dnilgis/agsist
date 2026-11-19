@@ -2552,8 +2552,11 @@ function doSearch(zip){
     var isLate=!!(lateInfo&&lateInfo.late),elevBefore=isLate?currentElevators.length:0,pinsBefore=pinnedKeys.slice();
     /* first: this phone's last look at this ZIP, drawn while the live read runs (below) */
     var isFirst=!!(lateInfo&&lateInfo.first);
+    if(!isFirst)liveShown=true;
     var hw=document.getElementById('cb-wait');if(hw&&hw.parentNode)hw.parentNode.removeChild(hw);
     if(!isFirst){goBtn.disabled=false;results.removeAttribute('aria-busy');}
+    /* the live answer after a last look takes the same room: what the last look drew keeps its height (held below) */
+    if(!isFirst&&lookShown)holdLookRoom();
     renderDegraded(null);
     /* cb-glance: the network failed -- fall back to the last network snapshot this phone saved, dated. */
     if(err&&!bids.length&&window.CBGlance){var _sn=CBGlance.snapshot(zip,radius);if(_sn){err=null;bids=_sn.rows;warn=_sn.note;}}
@@ -2586,6 +2589,8 @@ function doSearch(zip){
       announce('Error: unable to load bids. '+err.message);return;
     }
     if(warn)renderDegraded(warn);
+    else if(!isFirst&&lookShown&&!err){var dg=document.getElementById('cb-degraded');
+      if(dg){dg.textContent='Live bids loaded '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(' AM',' am').replace(' PM',' pm')+'. Each card says when its elevator posted.';dg.style.display='block';}}
     hasSearched=true;
     lastFetchTime=new Date();
     /* A late answer can land inside these 400 ms; its own line then replaces
@@ -2669,6 +2674,7 @@ function doSearch(zip){
     syncFilterBar(currentFilter);
     renderBids(currentBids);
     renderBestBids(currentElevators);
+    if(!isFirst&&lookShown)applyLookCards();
     renderEarnings();
     updateCompareBar();
     cbFirstResultsDone();
@@ -2687,14 +2693,47 @@ function doSearch(zip){
      the live read takes. When this phone holds its last network read for this ZIP (CBGlance.snapshot: at most a week
      old, network rows only), those bids are drawn at once, each card with its own posted time, under one line that
      says when they were saved; the live read replaces them when it lands. Only on the first search of the visit. */
+  /* Nov 19, 2026 (review): only a last look from the last FIRST_LOOK_MAX_MS draws first; an older one could be read as
+     today's price. It is not drawn: the held room and the live read cover it (the failure path still offers it, dated). */
+  var lookShown=false,liveShown=false;
+  releaseLookRoom();
   if(!hasSearched&&window.CBGlance){
     var first=null;try{first=CBGlance.snapshot(zip,radius);}catch(e){first=null;}
-    if(first&&first.rows&&first.rows.length){
-      var fr=first.rows.map(function(b){var o={};for(var k in b)o[k]=b[k];o.stale=false;return o;});
-      onBids(null,fr,lastLookNote(first.savedAt,zip),{first:true});
+    var age=first?Date.now()-(+first.savedAt||0):-1;
+    if(first&&first.rows&&first.rows.length&&age>=0&&age<=FIRST_LOOK_MAX_MS){
+      /* drawn once the page's other parts (the deferred Watch button, cb-alerts.js) are in, so the status line is the
+         size the live one will be; the held room shows until then. Never over a live answer that came first. */
+      var paintLook=function(){
+        if(liveShown||cbSearchSeq>seq0)return;
+        var fr=first.rows.map(function(b){var o={};for(var k in b)o[k]=b[k];o.stale=false;return o;});
+        /* the status line says what the live one will (every row is a board the network read itself) */
+        var pl={};fr.forEach(function(b){pl[(b.facility||'')+'|'+(b.city||b.town||'')]=1;});
+        cbNetStats={places:Object.keys(pl).length,rows:fr.length,duplicatesResolved:0,nationalPlaces:null};renderNetStats();
+        onBids(null,fr,lastLookNote(first.savedAt,zip),{first:true});
+        lookShown=true;
+      };
+      var seq0=cbSearchSeq+1;   /* fetchBids below takes the next number */
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',paintLook);else paintLook();
     }
   }
   fetchBids(zip,radius,onBids);
+}
+var FIRST_LOOK_MAX_MS=12*3600e3;
+/* THE ROOM THE LAST LOOK TOOK. When the live bids replace it, the status line, the note under it and the best-price
+   cards keep at least the height they had, so the swap moves nothing on screen (site standard: layout shift under
+   0.01). Released when the reader starts the next search (a tap, so any shift then is theirs). */
+var LOOK_ROOM=['cb-status','cb-degraded','best-bids-section'];
+function holdLookRoom(){
+  LOOK_ROOM.forEach(function(id){var e=document.getElementById(id);if(e&&e.offsetHeight)e.style.minHeight=e.offsetHeight+'px';});
+  LOOK_CARDS=Array.prototype.map.call(document.querySelectorAll('#best-bids-grid > *'),function(c){return c.offsetHeight;});
+}
+var LOOK_CARDS=[];
+function applyLookCards(){
+  Array.prototype.forEach.call(document.querySelectorAll('#best-bids-grid > *'),function(c,i){if(LOOK_CARDS[i])c.style.minHeight=LOOK_CARDS[i]+'px';});
+}
+function releaseLookRoom(){
+  LOOK_ROOM.forEach(function(id){var e=document.getElementById(id);if(e)e.style.minHeight='';});
+  LOOK_CARDS=[];
 }
 /* 'Your last look at 51250, saved 9:10 am yesterday. Checking each elevator for newer bids.' */
 function lastLookNote(savedAt,zip){
