@@ -101,6 +101,17 @@ jobs:
             if python3 scripts/generated_sets.py pull-rebase farmland-atlas --autostash && git push; then
               echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0
             fi
+            echo "rebase or push failed: rebuilding the Atlas pages on the newer main"
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            python scripts/build_atlas_pages.py
+            git add -A farmland-atlas farmland-atlas.html data/pointers sitemap-atlas.xml
+            git reset -q -- farmland-atlas/compare.html farmland-atlas/sheet.html || true
+            python scripts/generated_sets.py dependents farmland-atlas --stage || true
+            if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+            git commit -q -m "pages: rebuild Farmland Atlas county and state pages"
+            if git push -q origin HEAD:main; then echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0; fi
             sleep $((30 * i))
           done
           echo "push failed after 4 attempts"; exit 1
