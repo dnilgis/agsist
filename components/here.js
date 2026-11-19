@@ -601,7 +601,7 @@
     drawFingerprint(p);
     drawUnusual(p);
     drawLong(S.county);
-    S.depth = Promise.all([css('/components/rain-county.css?v=16'), drawFirst(p), loadElev(p.fips, S.where)]);
+    S.depth = Promise.all([css('/components/rain-county.css?v=17'), drawFirst(p), loadElev(p.fips, S.where)]);
     return S.depth;
   }
   function drawFingerprint(p) {
@@ -767,7 +767,7 @@
     if (buy) buy.addEventListener('click', function () { track('rain_print_promo_click', { placement: 'fast-facts', page: location.pathname }); });
     // the chart draws at once (components/rain-chart.js is loaded with the page; loaded here if it is not)
     var cb = document.querySelector('#h-rp-box .rce');
-    if (cb) loadScript('/components/rain-chart.js?v=1', function () { return !!(window.AgRainChart && window.AgRainChart.mount); }).then(function (ok) { if (ok && cb.isConnected) window.AgRainChart.mount(cb); });
+    if (cb) loadScript('/components/rain-chart.js?v=2', function () { return !!(window.AgRainChart && window.AgRainChart.mount); }).then(function (ok) { if (ok && cb.isConnected) window.AgRainChart.mount(cb); });
     loadScript(RCP, function () { return !!(window.AgRainCountyPrint && window.AgRainCountyPrint.mount); }).then(function (ok) {
       if (ok && el.isConnected) return window.AgRainCountyPrint.mount(el);
     });
