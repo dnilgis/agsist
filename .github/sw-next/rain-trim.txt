@@ -1,0 +1,1 @@
+Rain county pages: lighter pages with the same text, the next-door chips and Farm tools row styled from the shared sheet (rain-county.css?v=18, here.js?v=53)

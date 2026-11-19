@@ -601,7 +601,7 @@
     drawFingerprint(p);
     drawUnusual(p);
     drawLong(S.county);
-    S.depth = Promise.all([css('/components/rain-county.css?v=17'), drawFirst(p), loadElev(p.fips, S.where)]);
+    S.depth = Promise.all([css('/components/rain-county.css?v=18'), drawFirst(p), loadElev(p.fips, S.where)]);
     return S.depth;
   }
   function drawFingerprint(p) {
