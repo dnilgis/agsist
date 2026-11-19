@@ -1,89 +1,89 @@
 {
-  "updated": "2026-11-13",
+  "updated": "2026-11-19",
   "marketing_year": "2026/27",
   "note": "USDA FAS Export Sales Reporting.",
   "corn": {
-    "weekly_net_mt": 1294589,
-    "cumulative_mt": 24791199,
+    "weekly_net_mt": 2881405,
+    "cumulative_mt": 27672604,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-29",
+    "report_date": "2026-11-05",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 37360530,
-    "prev_year_week": "2025-10-30",
-    "vs_prev_year_pct": -33.6,
-    "unknown_outstanding_mt": 3213399,
-    "released_at": "2026-11-05T13:30:00Z"
+    "prev_year_cumulative_mt": 38340055,
+    "prev_year_week": "2025-11-06",
+    "vs_prev_year_pct": -27.8,
+    "unknown_outstanding_mt": 3273447,
+    "released_at": "2026-11-12T13:30:00Z"
   },
   "soybeans": {
-    "weekly_net_mt": 1456120,
-    "cumulative_mt": 30233822,
+    "weekly_net_mt": 1154772,
+    "cumulative_mt": 31388594,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-29",
+    "report_date": "2026-11-05",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 17196380,
-    "prev_year_week": "2025-10-30",
-    "vs_prev_year_pct": 75.8,
+    "prev_year_cumulative_mt": 17647534,
+    "prev_year_week": "2025-11-06",
+    "vs_prev_year_pct": 77.9,
     "china": {
-      "commitments_mt": 15948067,
-      "shipped_mt": 7570067,
-      "outstanding_mt": 8378000,
-      "weekly_net_mt": 873880,
-      "week_ending": "2026-10-29",
+      "commitments_mt": 16637232,
+      "shipped_mt": 8836232,
+      "outstanding_mt": 7801000,
+      "weekly_net_mt": 689165,
+      "week_ending": "2026-11-05",
       "marketing_year": "2026/27"
     },
-    "unknown_outstanding_mt": 5603500,
-    "released_at": "2026-11-05T13:30:00Z"
+    "unknown_outstanding_mt": 5369400,
+    "released_at": "2026-11-12T13:30:00Z"
   },
   "wheat": {
-    "weekly_net_mt": 538028,
-    "cumulative_mt": 12056591,
+    "weekly_net_mt": 182844,
+    "cumulative_mt": 12239435,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-29",
+    "report_date": "2026-11-05",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 16804526,
-    "prev_year_week": "2025-10-30",
-    "vs_prev_year_pct": -28.3,
-    "unknown_outstanding_mt": 318280,
+    "prev_year_cumulative_mt": 17267004,
+    "prev_year_week": "2025-11-06",
+    "vs_prev_year_pct": -29.1,
+    "unknown_outstanding_mt": 278459,
     "classes": {
       "hrw": {
         "label": "HRW",
-        "weekly_net_mt": 108446,
-        "cumulative_mt": 2463716,
-        "prev_year_cumulative_mt": 6440778
+        "weekly_net_mt": 62745,
+        "cumulative_mt": 2526461,
+        "prev_year_cumulative_mt": 6454069
       },
       "srw": {
         "label": "SRW",
-        "weekly_net_mt": 52298,
-        "cumulative_mt": 1739560,
-        "prev_year_cumulative_mt": 2286503
+        "weekly_net_mt": 36592,
+        "cumulative_mt": 1776152,
+        "prev_year_cumulative_mt": 2387753
       },
       "hrs": {
         "label": "HRS",
-        "weekly_net_mt": 227149,
-        "cumulative_mt": 3701772,
-        "prev_year_cumulative_mt": 4160385
+        "weekly_net_mt": 68307,
+        "cumulative_mt": 3770079,
+        "prev_year_cumulative_mt": 4283312
       },
       "white": {
         "label": "White",
-        "weekly_net_mt": 147135,
-        "cumulative_mt": 3789821,
-        "prev_year_cumulative_mt": 3623210
+        "weekly_net_mt": 14803,
+        "cumulative_mt": 3804624,
+        "prev_year_cumulative_mt": 3791547
       },
       "durum": {
         "label": "Durum",
-        "weekly_net_mt": 3000,
-        "cumulative_mt": 361722,
-        "prev_year_cumulative_mt": 293650
+        "weekly_net_mt": 397,
+        "cumulative_mt": 362119,
+        "prev_year_cumulative_mt": 350323
       }
     },
-    "released_at": "2026-11-05T13:30:00Z"
+    "released_at": "2026-11-12T13:30:00Z"
   },
-  "report_date": "2026-10-29",
-  "fetched": "2026-11-13T13:24:25Z",
-  "released_at": "2026-11-05T13:30:00Z",
+  "report_date": "2026-11-05",
+  "fetched": "2026-11-19T13:09:52Z",
+  "released_at": "2026-11-12T13:30:00Z",
   "released_basis": "schedule",
   "released_rule": "week ending Thursday, released the next Thursday 8:30 am ET (Friday after a Thursday holiday)"
 }
