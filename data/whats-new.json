@@ -23,6 +23,13 @@
    "link": "/usda-calendar"
   },
   {
+   "id": "2026-11-19-daily-price-sessions",
+   "date": "2026-11-19",
+   "title": "Daily prices name their session",
+   "line": "The Daily keeps the overnight move and the previous day's settle apart, each with its day, so a morning gain is never written as yesterday's.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-18-arc-plc-wheat-dollars",
    "date": "2026-11-18",
    "title": "ARC/PLC wheat: expected payments are back",

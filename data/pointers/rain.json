@@ -17,6 +17,10 @@
    "to": "/rain/arkansas",
    "since": "2026-10-14"
   },
+  "rain/arkansas/crawford-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-11-19"
+  },
   "rain/arkansas/desha-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -24,10 +28,6 @@
   "rain/arkansas/ouachita-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-11-17"
-  },
-  "rain/arkansas/poinsett-county.html": {
-   "to": "/rain/arkansas",
-   "since": "2026-11-16"
   },
   "rain/california/sutter-county.html": {
    "to": "/rain/california",
@@ -72,10 +72,6 @@
   "rain/kansas/jewell-county.html": {
    "to": "/rain/kansas",
    "since": "2026-11-16"
-  },
-  "rain/kentucky/carter-county.html": {
-   "to": "/rain/kentucky",
-   "since": "2026-11-02"
   },
   "rain/kentucky/garrard-county.html": {
    "to": "/rain/kentucky",
@@ -209,6 +205,10 @@
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
   },
+  "rain/tennessee/unicoi-county.html": {
+   "to": "/rain/tennessee",
+   "since": "2026-11-19"
+  },
   "rain/texas/concho-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -228,10 +228,6 @@
   "rain/texas/franklin-county.html": {
    "to": "/rain/texas",
    "since": "2026-11-12"
-  },
-  "rain/texas/hartley-county.html": {
-   "to": "/rain/texas",
-   "since": "2026-11-16"
   },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
