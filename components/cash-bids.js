@@ -2539,14 +2539,21 @@ function doSearch(zip){
      navigating into the results region during a search found nothing at all
      and no way to tell a slow search from a finished empty one. */
   results.setAttribute('aria-busy','true');
-  results.innerHTML='<div class="cb-skeleton"><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>';
+  /* A SAVED ZIP HOLDS ITS ROOM FROM THE FIRST PAINT (Nov 19, 2026): #cb-wait, shown by the head's cb-zip class, sits
+     where the bids appear and runs past the fold, so the first answer moves nothing on screen. A second skeleton
+     under it would only push the page around. */
+  var held=document.getElementById('cb-wait');
+  results.innerHTML=(held&&!hasSearched&&document.documentElement.classList.contains('cb-zip'))?'':
+    '<div class="cb-skeleton"><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>';
   var radius=parseInt(radiusSel.value,10)||50;
   gaEvent('bids_search',{zip:zip,radius:radius});
   announce('Searching for bids near '+zip+'\u2026');
-  fetchBids(zip,radius,function(err,bids,warn,lateInfo){
+  var onBids=function(err,bids,warn,lateInfo){
     var isLate=!!(lateInfo&&lateInfo.late),elevBefore=isLate?currentElevators.length:0,pinsBefore=pinnedKeys.slice();
-    goBtn.disabled=false;
-    results.removeAttribute('aria-busy');
+    /* first: this phone's last look at this ZIP, drawn while the live read runs (below) */
+    var isFirst=!!(lateInfo&&lateInfo.first);
+    var hw=document.getElementById('cb-wait');if(hw&&hw.parentNode)hw.parentNode.removeChild(hw);
+    if(!isFirst){goBtn.disabled=false;results.removeAttribute('aria-busy');}
     renderDegraded(null);
     /* cb-glance: the network failed -- fall back to the last network snapshot this phone saved, dated. */
     if(err&&!bids.length&&window.CBGlance){var _sn=CBGlance.snapshot(zip,radius);if(_sn){err=null;bids=_sn.rows;warn=_sn.note;}}
@@ -2587,7 +2594,7 @@ function doSearch(zip){
     if(!isLate)cbAnnTimer=setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
     /* Nov 4, 2026: both saved-place keys at once (components/saved-place.js), so home, rent and ARC/PLC start at this ZIP too. */
     try{if(window.AgSavedPlace){AgSavedPlace.save(zip);AgSavedPlace.full();}else localStorage.setItem('agsist_zip',zip);}catch(e){}
-    goBtn.textContent='\u21BB Refresh';
+    if(!isFirst)goBtn.textContent='\u21BB Refresh';
     currentBids=bids;pinnedKeys=isLate?pinsBefore:[];if(!isLate){cbPinsHidden=false;cbPinsDropped={};cbPinsQuiet=true;}
     if(window.CBGlance&&!isLate)CBGlance.newSearch();
     /* Built from the bids that just arrived, not from a hardcoded list of
@@ -2672,9 +2679,30 @@ function doSearch(zip){
       else announce('Live bids loaded. '+bids.length+' elevator listings.');
       return;
     }
+    if(isFirst)return;
     gaEvent('bids_loaded',{zip:zip,radius:radius,elevators:currentElevators.length,bids:bids.length});
     try{var p=new URLSearchParams(window.location.search);p.set('zip',zip);p.set('r',radius);history.replaceState(null,'','?'+p.toString());}catch(e){}
-  });
+  };
+  /* THE LAST LOOK FIRST (Nov 19, 2026). A returning reader's first screen used to be an empty skeleton for the seconds
+     the live read takes. When this phone holds its last network read for this ZIP (CBGlance.snapshot: at most a week
+     old, network rows only), those bids are drawn at once, each card with its own posted time, under one line that
+     says when they were saved; the live read replaces them when it lands. Only on the first search of the visit. */
+  if(!hasSearched&&window.CBGlance){
+    var first=null;try{first=CBGlance.snapshot(zip,radius);}catch(e){first=null;}
+    if(first&&first.rows&&first.rows.length){
+      var fr=first.rows.map(function(b){var o={};for(var k in b)o[k]=b[k];o.stale=false;return o;});
+      onBids(null,fr,lastLookNote(first.savedAt,zip),{first:true});
+    }
+  }
+  fetchBids(zip,radius,onBids);
+}
+/* 'Your last look at 51250, saved 9:10 am yesterday. Checking each elevator for newer bids.' */
+function lastLookNote(savedAt,zip){
+  var d=new Date(+savedAt),now=new Date();
+  var t=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(' AM',' am').replace(' PM',' pm');
+  var y=new Date(now);y.setDate(now.getDate()-1);
+  var day=d.toDateString()===now.toDateString()?'today':d.toDateString()===y.toDateString()?'yesterday':d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  return 'Your last look at '+zip+', saved on this phone '+t+' '+day+'. Checking each elevator for newer bids\u2026';
 }
 
 goBtn.addEventListener('click',function(){doSearch();});
@@ -2778,7 +2806,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
   if(z&&/^\d{5}$/.test(z)){
     zipInput.value=z;
     if(r&&['25','50','100','150','250'].indexOf(r)>=0)radiusSel.value=r;
-    setTimeout(function(){doSearch(z);},150);
+    setTimeout(function(){doSearch(z);},0);
   } else {
     try{
       var saved=localStorage.getItem('agsist_zip');
@@ -2786,7 +2814,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
       if(!(saved&&/^\d{5}$/.test(saved))){try{saved=String((JSON.parse(localStorage.getItem('agsist-wx-loc')||'null')||{}).zip||'');}catch(x){saved='';}}
       if(saved&&/^\d{5}$/.test(saved)&&!zipInput.value.trim()){
         zipInput.value=saved;
-        setTimeout(function(){ doSearch(saved); }, 300); // v2 panel: auto-run for returning farmers
+        setTimeout(function(){ doSearch(saved); }, 0); // auto-run for returning farmers, at once: the head held its room (cb-zip)
       }
     }catch(e){}
   }

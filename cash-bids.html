@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* cb-zip-early: a saved ZIP (or ?zip=) searches on load (components/cash-bids.js), so the blocks for a reader with no ZIP never paint for it and the room for its bids is held from the first paint */try{var _z=new URLSearchParams(location.search).get('zip')||localStorage.getItem('agsist_zip')||'';if(!/^\d{5}$/.test(_z)){try{_z=String((JSON.parse(localStorage.getItem('agsist-wx-loc')||'null')||{}).zip||'');}catch(x){_z='';}}if(/^\d{5}$/.test(_z))document.documentElement.classList.add('cb-zip');}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script><!-- static-nav:fonts -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -508,6 +508,25 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .bid-del-spot{color:var(--green);font-weight:700;font-size:0.78rem;letter-spacing:.04em}
 .bid-del-fwd{color:var(--text-dim);font-size:0.785rem}
 .cb-skel::after{content:'';display:block;height:140px}
+/* the first screen (Nov 19, 2026): with a saved ZIP the bids' room is held from the first paint (#cb-wait, down past the fold) and the no-ZIP blocks never show; with none, real posted bids (#cb-top, baked by the town page job) come first */
+#cb-wait{display:none}
+html.cb-zip #cb-wait{display:block;min-height:max(560px,calc(100vh - 260px));margin:.2rem 0 0}
+html.cb-zip #cb-top,html.cb-zip #cb-sample{display:none}
+.cb-wait-t{margin:0 0 .6rem;font-size:.9rem;color:var(--text-muted)}
+.cb-wait-t b{color:var(--text)}
+#cb-wait .cb-skel{margin:0 0 .85rem}
+.cb-top{margin:.4rem 0 1.4rem;text-align:left}
+.cb-top h2{font-size:1.15rem;margin:0 0 .25rem;line-height:1.3}
+.cbx-n{margin:0 0 .55rem;font-size:.85rem;color:var(--text-muted);line-height:1.45}
+.cbx{width:100%;border-collapse:collapse;font-size:.88rem;table-layout:fixed}
+.cbx th,.cbx td{text-align:left;vertical-align:top;padding:.45rem .4rem .45rem 0;border-bottom:1px solid var(--border)}
+.cbx thead th{font-size:.75rem;color:var(--text-muted);font-weight:600}
+.cbx thead th:first-child,.cbx tbody th{width:22%}
+.cbx tbody th{font-weight:700;color:var(--text)}
+.cbx td b{display:block;font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--text)}
+.cbx td a{color:var(--brand,var(--gold));font-weight:600}
+.cbx-e,.cbx-t{display:block;color:var(--text-muted);font-size:.78rem;line-height:1.35}
+.cbx-t time{white-space:nowrap}
 
 </style>
 <link rel="stylesheet" href="/components/cb-layout.css?v=2">
@@ -612,9 +631,10 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
         <button class="cb-filt" data-filter="other" aria-pressed="false" aria-label="Other grains">Other</button>
       </div>
     </div>
+    <div id="cb-wait" aria-hidden="true"><p class="cb-wait-t"><b>Finding the bids near your ZIP</b>, straight from each elevator&rsquo;s board&#8230;</p><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>
     <div id="cb-status" class="cb-status" style="display:none">
-      <span class="cb-count" id="cb-elev-count">0</span>
-      <span id="cb-status-label">within&#8230;</span>
+      <span class="cb-count" id="cb-elev-count"></span>
+      <span id="cb-status-label"></span>
       <span id="cb-net-stats" style="display:none"></span>
       <span id="cb-status-timer" data-agsist-timer data-mode="since" style="display:none"></span>
       <span id="cb-status-source">AGSIST elevator network</span>
@@ -658,6 +678,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
     </details>
     <div id="cb-results" role="region" aria-label="Cash bid results">
       <div class="cb-empty">
+        <!--CB-TOP--><!--/CB-TOP-->
         <div class="cb-sample cb-sample-wait" id="cb-sample" aria-hidden="true"></div><noscript><style>.cb-sample-wait{display:none}</style></noscript>
       </div>
     </div>
@@ -819,7 +840,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <script src="/components/cb-rank.js?v=7"></script>
 <script src="/components/cb-vs-state.js?v=4"></script>
 <script src="/components/cb-sample.js?v=11" defer></script>
-<script src="/components/bids-fallback.js?v=1"></script><script src="/components/bid-period.js?v=1"></script><script src="/components/cash-bids.js?v=24"></script>
+<script src="/components/bids-fallback.js?v=1"></script><script src="/components/bid-period.js?v=1"></script><script src="/components/cash-bids.js?v=25"></script>
   <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>
