@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18T19:55:40Z",
+ "updated": "2026-11-19T19:55:27Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -62,8 +62,8 @@
     "graded_on": null,
     "entry_final": true,
     "mark": {
-     "date": "2026-11-18",
-     "close": 435.0
+     "date": "2026-11-19",
+     "close": 439.0
     }
    },
    {
@@ -86,8 +86,8 @@
     "graded_on": null,
     "entry_final": true,
     "mark": {
-     "date": "2026-11-18",
-     "close": 1216.0
+     "date": "2026-11-19",
+     "close": 1207.25
     }
    },
    {
@@ -111,8 +111,8 @@
     "note": "Entry set to the settled 2026-11-17 close 595.25 (read 595.0 that evening).",
     "entry_final": true,
     "mark": {
-     "date": "2026-11-18",
-     "close": 571.25
+     "date": "2026-11-19",
+     "close": 579.0
     }
    },
    {
@@ -135,8 +135,8 @@
     "graded_on": null,
     "entry_final": true,
     "mark": {
-     "date": "2026-11-18",
-     "close": 611.0
+     "date": "2026-11-19",
+     "close": 627.0
     }
    }
   ]
@@ -651,8 +651,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 435.0
+    "date": "2026-11-19",
+    "close": 439.0
    }
   },
   {
@@ -676,8 +676,8 @@
    "note": "Entry set to the settled 2026-10-26 close 1252.5 (read 1253.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 1216.0
+    "date": "2026-11-19",
+    "close": 1207.25
    }
   },
   {
@@ -701,8 +701,8 @@
    "note": "Entry set to the settled 2026-10-26 close 616.0 (read 615.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 571.25
+    "date": "2026-11-19",
+    "close": 579.0
    }
   },
   {
@@ -726,8 +726,8 @@
    "note": "Entry set to the settled 2026-10-26 close 659.0 (read 658.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 611.0
+    "date": "2026-11-19",
+    "close": 627.0
    }
   },
   {
@@ -751,8 +751,8 @@
    "note": "Entry set to the settled 2026-11-09 close 439.25 (read 438.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 435.0
+    "date": "2026-11-19",
+    "close": 439.0
    }
   },
   {
@@ -776,8 +776,8 @@
    "note": "Entry set to the settled 2026-11-09 close 1188.25 (read 1187.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 1216.0
+    "date": "2026-11-19",
+    "close": 1207.25
    }
   },
   {
@@ -801,8 +801,8 @@
    "note": "Entry set to the settled 2026-11-09 close 588.0 (read 587.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 571.25
+    "date": "2026-11-19",
+    "close": 579.0
    }
   },
   {
@@ -826,8 +826,8 @@
    "note": "Entry set to the settled 2026-11-09 close 632.5 (read 631.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 611.0
+    "date": "2026-11-19",
+    "close": 627.0
    }
   },
   {
@@ -850,8 +850,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 435.0
+    "date": "2026-11-19",
+    "close": 439.0
    }
   },
   {
@@ -874,8 +874,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 1216.0
+    "date": "2026-11-19",
+    "close": 1207.25
    }
   },
   {
@@ -899,8 +899,8 @@
    "note": "Entry set to the settled 2026-11-17 close 595.25 (read 595.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 571.25
+    "date": "2026-11-19",
+    "close": 579.0
    }
   },
   {
@@ -923,8 +923,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-18",
-    "close": 611.0
+    "date": "2026-11-19",
+    "close": 627.0
    }
   }
  ],
@@ -988,7 +988,7 @@
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-11-18T19:55:40Z",
+  "computed": "2026-11-19T19:55:27Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "append 2026-11-10",
   "cutoff": "2026-10-02",
