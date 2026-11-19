@@ -1,1 +1,0 @@
-Rain county pages: the last 24 hours and 7 days from radar under the answer, Rain Print box below the monthly table (rain-chart.js?v=2 loads rain-recent.js?v=1, rain-county.css?v=17, here.js?v=52); cash bids: a saved ZIP holds its room and draws a same-day last look at once, real posted bids for a reader with no ZIP (cash-bids.js?v=25)
