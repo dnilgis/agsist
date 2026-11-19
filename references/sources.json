@@ -2760,7 +2760,7 @@
     {"id": "asfmra-ne-land-trends-2026-pdf", "kind": "pdf",
      "url": "https://higherlogicdownload.s3.amazonaws.com/ASFMRA/aeb240ec-5d8f-447f-80ff-3c90f13db621/UploadedFiles/T3XzC1y3SR6w8PhGDm9w_ASFMRA_CCE_Northeast_Land_Trends_Report_202606_Final.pdf",
      "title": "Northeast Chapter ASFMRA and Cornell Cooperative Extension: 2026 US Northeast Land Value Trends, PDF",
-     "why": "Northeast regional land values and rents (data/land/ne-us/regions.json): the region tables, region maps and terms"},
+     "why": "Northeast regional land values and rents (data/land/neus/regions.json): the region tables, region maps and terms"},
     {"id": "asfmra-land-trends", "kind": "html",
      "url": "https://www.asfmra.org/land-trends",
      "title": "ASFMRA: Land Trends (report page)",
