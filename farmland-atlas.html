@@ -567,7 +567,7 @@ try{if(/(^|[?&])s=/.test(location.search)||/(^|[#&])s=/.test(location.hash))docu
 <!--/SEED:an-lede-->
   <section class="an" id="an" aria-labelledby="an-h1">
 <!--SEED:an-tiles0-->
-<div class="an-tiles an-tiles0" id="an-tiles0" role="group" aria-label="The five numbers"><div class="an-tile"><span class="an-tl">In drought</span><b class="an-tb">41.7%</b><span class="an-ts">Lower 48 states, map of Nov 10</span></div><div class="an-tile"><span class="an-tl">Sale median, some states</span><b class="an-tb">$9,470</b><span class="an-ts">An acre, 313 counties: FL, IL, IN, NJ, VT, WI</span></div><div class="an-tile"><span class="an-tl">Corn basis</span><b class="an-tb">30¢ under</b><span class="an-ts">603 counties, 24 states, vs Dec '26</span></div><div class="an-tile"><span class="an-tl">ARC-CO corn, a base acre</span><b class="an-tb">$10.89</b><span class="an-ts">2026, median of 2,238 counties</span></div><div class="an-tile"><span class="an-tl">Claims per $100 covered</span><b class="an-tb">$8.59</b><span class="an-ts">A year, median of 2,318 counties</span></div></div>
+<div class="an-tiles an-tiles0" id="an-tiles0" role="group" aria-label="The five numbers"><div class="an-tile"><span class="an-tl">In drought</span><b class="an-tb">41.7%</b><span class="an-ts">Lower 48 states, map of Nov 10</span></div><div class="an-tile"><span class="an-tl">Sale median, some states</span><b class="an-tb">$9,470</b><span class="an-ts">An acre, 313 counties: FL, IL, IN, NJ, VT, WI</span></div><div class="an-tile"><span class="an-tl">Corn basis</span><b class="an-tb">30¢ under</b><span class="an-ts">603 counties, 24 states, vs Dec '26</span></div><div class="an-tile"><span class="an-tl">ARC-CO corn, a base acre</span><b class="an-tb">$10.89</b><span class="an-ts">2026, median of 2,238 counties</span></div><div class="an-tile"><span class="an-tl">Claims per $100 covered</span><b class="an-tb">$8.59</b><span class="an-ts">A year, 2016 to 2025, median of 2,318 counties</span></div></div>
 <!--/SEED:an-tiles0-->
     <div class="an-tiles" id="an-tiles" role="group" aria-label="The five numbers" hidden></div>
     <div class="an-tabs" role="group" aria-label="Questions"><button type="button" class="an-tab" data-q="" aria-pressed="true">All five</button><button type="button" class="an-tab" data-q="weather" aria-pressed="false">Weather</button><button type="button" class="an-tab" data-q="land" aria-pressed="false">Land</button><button type="button" class="an-tab" data-q="grain" aria-pressed="false">Grain</button><button type="button" class="an-tab" data-q="program" aria-pressed="false">Program</button><button type="button" class="an-tab" data-q="risk" aria-pressed="false">Risk</button></div>
@@ -583,7 +583,9 @@ try{if(/(^|[?&])s=/.test(location.search)||/(^|[#&])s=/.test(location.hash))docu
 <!--SEED:an-legend-->
 <p class="an-legend" id="an-legend">Each county shows the worst drought level that covers at least half of it, on the U.S. Drought Monitor map of Nov 10, 2026. Grey has none.</p>
 <!--/SEED:an-legend-->
-      <p class="an-gap" id="an-gap" hidden></p>
+<!--SEED:an-gap-->
+<p class="an-gap" id="an-gap">Not counted: <b>9</b> with no county figure.</p>
+<!--/SEED:an-gap-->
       <p class="an-read" id="an-read" role="status" aria-live="polite">Tap a county for its figure and its page.</p>
       <div class="an-acts"><a class="pri" id="an-pic" href="/farmland-atlas/states/">Save the U.S. drought picture</a><button type="button" id="an-copy">Copy link to this map</button><span class="fa-note" id="an-copied" role="status"></span></div>
       <a class="fa-mycty" id="fa-mycty" href="/farmland-atlas/states/" hidden></a>

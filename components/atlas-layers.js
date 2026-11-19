@@ -257,6 +257,9 @@ function loadSide(k){
       else if(r[0]&&k==='rentrev'&&!r[0].pair_rule){ S.why='this cash rent file divides dryland rent by a yield that mixes irrigated and dryland acres; the ratio returns with the next NASS refresh'; }
       else if(r[0]&&(k!=='afida'||(r[1]&&r[1].latest_year))){ S.d=r[0]; S.n=r[1]; S.ok=true; }
       if(k==='rentrev'&&S.ok){ for(var rf in S.d.counties){ var py=S.d.counties[rf].py; if(py&&(!RREV_LATEST||py>RREV_LATEST)) RREV_LATEST=py; } }
+      // a read that failed (no answer in 10 s, an error, a 500) is not kept: the next ask, the fold's Try again or a
+      // reopen, reads the file again
+      if(!r[0]||(S.nat&&!r[1]&&!S.ok)) S.p=null;
       S.done=true; return S;
     });
   }

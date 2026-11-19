@@ -25,8 +25,8 @@
 /* Nov 18 (slow connections): the page's HTML carries the opening answer (scripts/atlas_now.py bake_hub, from the same
    now.json): the answer line, the tiles (#an-tiles0), the drought key (#an-key0) and its caption. Once the data is in,
    the same markup is drawn here in place and the baked copies go, so nothing moves. Each read gives up after 10 s;
-   then the map box says the map did not load, gives the day the figures above are from, and offers Try again. The
-   answer line follows the map in view: the U.S. or the open state (now.json ans), for each question's headline map. */
+   then the map box says the map did not load, that the figures above are from different days (the drought map is
+   older than the bids) with the newest one's day, and offers Try again. The answer line follows the map in view: the U.S. or the open state (now.json ans), for each question's headline map. */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
@@ -588,7 +588,7 @@ function wait(on){
   var w=$('an-wait'); if(!w) return;
   if(on){ w.textContent='Loading the county map.'; return; }
   var d=($('an-lede')||{}).getAttribute?$('an-lede').getAttribute('data-day'):'';
-  w.innerHTML='The map did not load.'+(d?' The figures above are from '+esc(d)+'.':'')+' <button type="button" id="an-retry">Try again</button>';
+  w.innerHTML='The map did not load.'+(d?' The figures above are from different days; the newest is from '+esc(d)+'.':'')+' <button type="button" id="an-retry">Try again</button>';
   $('an-retry').addEventListener('click',function(){ ga('atlas_now_retry',{}); start(); });
 }
 var BUSY=false;
