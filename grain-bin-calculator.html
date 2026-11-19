@@ -211,18 +211,8 @@
     <div class="calc-title"><h1>Grain bin calculator</h1></div>
     <p class="gb-byline">Updated <time datetime="2026-10-16">Oct 16, 2026</time></p>
     <p class="gb-intro" style="font-size:.95rem;color:var(--text-dim);line-height:1.5;margin:.2rem 0 .8rem">A 30 by 24 ft round bin holds about 13,600 bushels of grain, level full. Free grain bin capacity calculator: type the bin&rsquo;s width (diameter) and its wall height up to where the roof starts (eave height). It shows how many bushels the bin holds and what they weigh, and with a price, what the grain is worth after drying shrink. It starts with a 30 by 24 ft bin. Bin Print, first below, maps your whole bin yard: every bin&rsquo;s bushels, what is in it now and a sheet to print for you or your crew.</p>
-    <!-- Bin Print: the bin yard tool (components/bin-yard.js). bin-yard.js runs right after this section, before
-         anything below is parsed, and draws the whole tool at once, so nothing on the page moves. -->
-    <section id="bin-print" class="by" aria-labelledby="by-h">
-      <h2 class="by-h2" id="by-h">Bin Print: map your bin yard</h2>
-      <p class="by-lede">Put your bins on a map: each one&rsquo;s bushels, bushels per foot of grain, what is in it now and market bushels, and the yard&rsquo;s total and open space. Print it, or send a crew sheet to your drivers.</p>
-      <div id="by-root" class="by-root"><noscript><p class="by-fine">Bin Print needs JavaScript turned on.</p></noscript></div>
-      <div class="gb-ask" aria-live="off" aria-atomic="false"><div data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div></div>
-    </section>
     <script src="/components/grain-bin.js?v=4"></script>
     <script src="/components/grain-shrink.js?v=4"></script>
-    <script src="/components/share-kit.js?v=1"></script>
-    <script src="/components/bin-yard.js?v=3"></script>
     <div class="grid-2">
 
       <!-- INPUT PANEL -->
@@ -501,11 +491,24 @@
         </div>
       </div><!-- /results panel -->
     </div>
+    <!-- Bin Print: the bin yard tool (components/bin-yard.js). bin-yard.js runs right after this section, before
+         anything below is parsed (below the single-bin calculator since Nov 19, so a quick check needs no scroll), and draws the whole tool at once, so nothing on the page moves. -->
+    <section id="bin-print" class="by" aria-labelledby="by-h">
+      <h2 class="by-h2" id="by-h">Bin Print: map your bin yard</h2>
+      <p class="by-lede">Put your bins on a map: each one&rsquo;s bushels, bushels per foot of grain, what is in it now and market bushels, and the yard&rsquo;s total and open space. Print it, or send a crew sheet to your drivers.</p>
+      <div id="by-root" class="by-root"><noscript><p class="by-fine">Bin Print needs JavaScript turned on.</p></noscript></div>
+      <div class="gb-ask" aria-live="off" aria-atomic="false"><div data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div></div>
+    </section>
+    <script src="/components/share-kit.js?v=1"></script>
+    <script src="/components/bin-yard.js?v=3"></script>
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="grain-bin-calculator"></aside><!-- /grid-2 -->
 
     <div class="content-section">
       <h2>How to use this grain bin calculator</h2>
       <p>Enter your bin diameter and eave height (or length, width, and depth for rectangular storage), choose your crop, and the calculator shows total bushel capacity, weight, and, if you enter a market price, estimated net value after moisture shrink and drying costs. The depth slider lets you model a partially filled bin. Use the Hopper option for bins with an inverted-cone floor; the calculator automatically adds the hopper cone volume to your total.</p>
+      <h2 id="bushel-math">How the bushel math works</h2>
+      <p>A round bin is a cylinder: bushels = 3.1416 &times; radius &times; radius &times; grain depth, all in feet, &times; 0.8036 bushels per cubic foot (1 bushel = 1.2445 cubic feet).</p>
+      <p class="gb-worked">Worked example: a 30 ft bin with 24 ft of grain at the eave, level full. The radius is 15 ft, so the floor is 3.1416 &times; 15 &times; 15 = <span data-gbm="floor">706.86</span> sq ft. Times 24 ft of grain is <span data-gbm="ft3">16,964.6</span> cubic feet. Times 0.8036 is <span data-gbm="bu">13,632.8</span> bushels, about 13,630 bu. A 25&deg; peak on top adds <span data-gbm="peak">1,648.1</span> cubic feet, or <span data-gbm="peakbu">1,324</span> bu more. These are bin bushels by volume, with no pack; the calculator above turns them into market bushels at your test weight.</p>
 
 <!--BINCHART:START-->
       <h2 id="size-chart">Grain bin size chart: bushels by diameter and eave height</h2>
