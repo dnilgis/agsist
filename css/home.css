@@ -2534,7 +2534,7 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 /* held up front (cls-reserved): three lines of about three rows each, and the two-row date line */
 #cot-glance{min-height:144px}
 /* the full chart, after the table: a plain button, not a band (Nov 19) */
-.cot-full{display:inline-flex;align-self:flex-start;width:fit-content;align-items:center;min-height:44px;padding:0 14px;margin:.15rem 0 .35rem;border:1px solid var(--border-g,var(--border));border-radius:var(--r-md,8px);color:var(--text);font-size:.82rem;font-weight:700;text-decoration:none}
+.cot-full{display:inline-flex;align-self:flex-start;width:fit-content;align-items:center;min-height:44px;padding:0 14px;margin:.15rem 0 .35rem;border:1px solid var(--border-g,var(--border));border-radius:var(--r-md);color:var(--text);font-size:.82rem;font-weight:700;text-decoration:none}
 .cot-full::after{content:"\00a0\2192";color:var(--gold)}
 .cot-full:hover{border-color:var(--gold)}
 @media(max-width:900px){.m-fold>summary.m-fold-sum~#f-cot-intel>.sec-head{display:none}}
