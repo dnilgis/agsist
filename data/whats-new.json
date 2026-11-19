@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-19-atlas-north-dakota-survey",
+   "date": "2026-11-19",
+   "title": "North Dakota county rents and land prices",
+   "line": "North Dakota counties now show the state Trust Lands survey of rents and land prices, with report counts, beside USDA's figures on the Atlas and the rent page.",
+   "link": "/rent/north-dakota"
+  },
+  {
    "id": "2026-11-19-farmland-atlas-review-fixes",
    "date": "2026-11-19",
    "title": "Farmland Atlas keys you can check",
