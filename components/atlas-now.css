@@ -67,7 +67,7 @@
 .an-key i.kn{background:var(--an-none)}
 .an-key i.kx{background:repeating-linear-gradient(45deg,var(--an-gap-bg) 0 3px,var(--an-gap-line) 3px 4.5px)}
 /* a caution (read with care, depends on your PLC yield): dots, never the missing-figure hatch */
-.an-key i.kc,.an-rk-l i.kc{background:radial-gradient(circle,var(--an-care-dot) 1.3px,transparent 1.6px) 0 0/5px 5px,var(--an-gap-bg)}
+.an-key i.kc,.an-rk-l i.kc{background:radial-gradient(circle,var(--an-care-dot) 1.3px,transparent 1.6px) 0 0/5px 5px,var(--an-gap-bg)} /* plain-look-ok: the caution dot pattern of the map key, a data swatch with hard dots, not a soft fill */
 .an-key i.ko{background:var(--bg,transparent);border:1.5px solid var(--an-state)}
 #an-svg[data-scale=drought] .k0{fill:var(--an-drought-k0)}#an-svg[data-scale=drought] .k1{fill:var(--an-drought-k1)}#an-svg[data-scale=drought] .k2{fill:var(--an-drought-k2)}#an-svg[data-scale=drought] .k3{fill:var(--an-drought-k3)}#an-svg[data-scale=drought] .k4{fill:var(--an-drought-k4)}
 #an-svg[data-scale=money] .k0{fill:var(--an-money-k0)}#an-svg[data-scale=money] .k1{fill:var(--an-money-k1)}#an-svg[data-scale=money] .k2{fill:var(--an-money-k2)}#an-svg[data-scale=money] .k3{fill:var(--an-money-k3)}#an-svg[data-scale=money] .k4{fill:var(--an-money-k4)}
