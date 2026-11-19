@@ -56,6 +56,10 @@ REPO=$(awk '$1=="repo"{print $2}' "$CONF")
 BRANCH=$(awk '$1=="branch"{print $2}' "$CONF")
 FIXED_MODE=$(awk '$1=="mode"{print $2}' "$CONF")
 mapfile -t PATHS < <(awk '$1=="path"{print $2}' "$CONF")
+# BUILD-RULES 74a (Nov 19, 2026): an exported ENGINE_DIR on a worktree of the engine-agsist branch, or on the shared
+# clone, is refused; nothing commits onto a linked or shared engine-agsist. scripts/dev/engine_guard.sh is an engine
+# file (not there before the overlay); CI is exempt inside it.
+guard() { local gs="$ROOT/scripts/dev/engine_guard.sh"; [ -f "$gs" ] || return 0; bash "$gs" "$@"; }
 SCRATCH=.engine-src
 PAIR=.engine-pair
 MAIN_BRANCH=main
@@ -485,6 +489,7 @@ PY
       echo "$BRANCH"
     fi ;;
   pull)
+    guard dir || exit 1
     refuse_tracked
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
     EB="${ENGINE_BRANCH:-$(bash "$0" pair)}"
@@ -513,6 +518,8 @@ PY
     echo "engine: $(git -C "$ED" rev-parse --short HEAD) ($EB) from $ED copied into $ROOT (${PATHS[*]})" ;;
   save)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
+    guard dir || exit 1
+    guard commit "$ED" --shared-only || exit 1
     [ -e "$ED/.git" ] || { echo "engine: no engine clone at $ED (run engine.sh pull first)" >&2; exit 1; }
     for p in "${PATHS[@]}"; do
       [ -e "$ROOT/$p" ] || { echo "engine: $ROOT/$p is missing; nothing saved" >&2; exit 1; }
@@ -530,6 +537,7 @@ PY
     echo "push it: git -C $ED push origin $BRANCH" ;;
   changed)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
+    guard dir || exit 1
     note="$(changed_note)"
     { [ -f "$note" ] && grep -vx '[*]' "$note"
       if [ -e "$ED/.git" ]; then
