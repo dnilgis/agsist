@@ -479,6 +479,7 @@
     {
      "counts": {
       "counties": 15,
+      "planning_regions": 7,
       "regions": 1
      },
      "evidence": "ranges from verified farm sales, region by region, by appraisers",
@@ -1254,7 +1255,8 @@
     },
     {
      "counts": {
-      "counties": 104
+      "counties": 103,
+      "of": 105
      },
      "evidence": "average of reported sales, K-State",
      "figures": [
@@ -1854,7 +1856,8 @@
     },
     {
      "counts": {
-      "counties": 52
+      "counties": 52,
+      "of": 87
      },
      "evidence": "rents paid, FINBIN farm records",
      "figures": [
@@ -3970,7 +3973,8 @@
     },
     {
      "counts": {
-      "counties": 69
+      "counties": 67,
+      "of": 72
      },
      "evidence": "average of recorded sales, UW-Madison Extension",
      "figures": [
