@@ -585,6 +585,8 @@
     line.className = 'sw-line';
     line.setAttribute('aria-label', 'Sponsor');
     var slot = document.getElementById('sw-slot');
+    // one sponsor ask after the answer: a page whose state card follows its answer holds no slot and shows no line
+    if (!slot && document.querySelector('[data-state-spot]')) return;
     if (!slot) {
       var foot = document.getElementById('site-footer') || document.querySelector('footer.footer');
       if (!foot || !foot.parentNode) return;
