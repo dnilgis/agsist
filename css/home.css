@@ -2503,11 +2503,18 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 /* COT at a glance (2026-11-04): three plain lines, the email ask and the ranges behind a tap */
 .cot-gl-asof{font-size:.765rem;color:var(--text-muted);line-height:1.45;margin:0 0 .35rem}
 .cot-glance{list-style:none;margin:0 0 .45rem;padding:0;display:flex;flex-direction:column;gap:0}
-.cot-gl-line{font-size:.82rem;line-height:1.3;color:var(--text);min-height:44px;border-bottom:1px solid var(--border)}
+.cot-gl-line{font-size:.82rem;line-height:1.3;color:var(--text);min-height:48px;border-bottom:1px solid var(--border)}
 .cot-gl-line b{font-weight:800}
-.cot-gl-a{display:grid;grid-template-columns:7.9em minmax(0,1fr) 4.4em;gap:.45rem;align-items:center;min-height:44px;color:inherit;text-decoration:none;white-space:nowrap;font-variant-numeric:tabular-nums}
-.cot-gl-a>span:nth-child(2){white-space:normal;line-height:1.2}
-.cot-gl-r{text-align:right}
+/* Nov 19 (owner, 390 px): the change cell was cut off ("−31,423 con..."). One column grid for the
+   header row and the rows: market | funds' net position | change in the week. Every cell wraps
+   inside its column (no nowrap), so nothing runs past the card at 320 to 430 px. */
+.cot-gl-hd,.cot-gl-a{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr) minmax(0,.9fr);gap:.5rem;align-items:center}
+.cot-gl-hd{font-size:.72rem;line-height:1.25;color:var(--text-muted);font-weight:700;padding:0 0 .3rem;border-bottom:1px solid var(--border);align-items:end;min-height:2.5em}
+.cot-gl-hd>span:last-child,.cot-gl-r{text-align:right}
+.cot-gl-a{min-height:47px;padding:.3rem 0;color:inherit;text-decoration:none;font-variant-numeric:tabular-nums;line-height:1.2}
+.cot-gl-a>*{min-width:0;overflow-wrap:anywhere}
+.cot-gl-v{display:block;font-weight:700}
+.cot-gl-a small{display:block;font-size:.72rem;line-height:1.25;color:var(--text-muted)}
 .cot-gl-a b{text-decoration:underline;text-decoration-color:var(--border-g);text-underline-offset:3px}
 .cot-gl-a:hover b{text-decoration-color:var(--gold)}
 .cot-glance[aria-busy="true"] .cot-gl-line{opacity:.5}
@@ -2520,8 +2527,22 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 .cot-ask:has(>[data-signup-ask][hidden]){display:none}
 .cot-detail[open]>.cot-caption{margin-top:.2rem}
 /* held up front (cls-reserved): three lines of about three rows each, and the two-row date line */
-#cot-glance{min-height:132px}
+#cot-glance{min-height:144px}
+/* the full chart, after the table: a plain button, not a band (Nov 19) */
+.cot-full{display:inline-flex;align-self:flex-start;width:fit-content;align-items:center;min-height:44px;padding:0 14px;margin:.15rem 0 .35rem;border:1px solid var(--border-g,var(--border));border-radius:var(--r-md,8px);color:var(--text);font-size:.82rem;font-weight:700;text-decoration:none}
+.cot-full::after{content:"\00a0\2192";color:var(--gold)}
+.cot-full:hover{border-color:var(--gold)}
+@media(max-width:900px){.m-fold>summary.m-fold-sum~#f-cot-intel>.sec-head{display:none}}
+/* Yield nowcast (Nov 19): one plain line when withheld; the heading, the crop boxes and the source line
+   (.nc-in) only with an estimate. The line holds room for five lines (the longest reason at 320 px). */
+#nowcast-widget .nc-in[hidden]{display:none!important}
+.nc-foot{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.2rem .75rem}
+.nc-week{flex:1 1 15rem;font-size:.8rem;line-height:1.45;color:var(--text-muted)}
+#nowcast-widget:not(.nc-on) .nc-week{min-height:7.25em}
 #cot-gl-asof{min-height:2.3em}
+/* Nov 19: the date line under the table holds its two lines (it read "CFTC · Updated weekly" on one line
+   until cot.json landed, then two); the crowding badge in the head is hidden from the start (never shown on home since Nov 6) */
+#cot-date{display:block;line-height:1.6;min-height:3.2em}
 
 /* ===== 2026-11-06: "Today and
    this week" (components/happening.js, baked by scripts/seed_static.py happening_seed). Phone and tablet: a full-width
