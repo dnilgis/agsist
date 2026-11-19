@@ -153,11 +153,13 @@ jobs:
             cp "$SAVE"/og/* img/og/ 2>/dev/null || true
             python3 scripts/dev/quiet.py rain-pages -- python scripts/build_county_rain.py
             python3 scripts/dev/quiet.py rain-pages-check -- python scripts/build_county_rain.py --check
+            python3 scripts/dev/quiet.py atlas-pages -- python scripts/build_atlas_pages.py || { echo "::warning::The Atlas pages did not build; the rain data and pages go out alone and the cash bid pages job rebuilds the Atlas."; git checkout -q HEAD -- farmland-atlas farmland-atlas.html sitemap-atlas.xml; git clean -fdq -- farmland-atlas; }
             python3 scripts/dev/quiet.py place-pct -- python scripts/build_place_pct.py
             python3 scripts/dev/quiet.py cross-links -- python scripts/cross_links.py --stamp
             git add -A data/atlas/pct
             git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
-            python scripts/generated_sets.py dependents rain --stage || true
+            git add -A farmland-atlas.html sitemap-atlas.xml
+            python scripts/generated_sets.py dependents rain farmland-atlas --stage || true
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
             N=$(ls data/rain/*.json 2>/dev/null | wc -l)
             git commit -q -m "data: county rain ($N states)"
