@@ -886,7 +886,7 @@
     {"id": "bench-cash-rent-5", "kind": "pdf",
      "url": "https://www.land.nd.gov/sites/www/files/documents/Surface/Rent%20Survey/2026%20County%20Rents%20and%20Prices%20North%20Dakota.pdf",
      "title": "Benchmark cash-rent: North Dakota Land Dept county rents 2026",
-     "why": "/cash-rent competitor benchmark Oct 16, 2026 (government)"},
+     "why": "North Dakota county rents and land prices (data/land/nd/survey.json, pinned sha256 8d8bdd8f): the Atlas ND layer and county sheets, /rent/north-dakota survey columns"},
     {"id": "bench-cash-rent-6", "kind": "html",
      "url": "https://www.profarmer.com/news/agriculture-news/2026-average-iowa-cash-rent-eases",
      "title": "Benchmark cash-rent: Iowa Farm Bureau / Pro Farmer news on the ISU survey",
