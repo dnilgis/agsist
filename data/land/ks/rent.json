@@ -1,0 +1,1280 @@
+{
+ "about": "K-State's model-based county cash rent estimates for the 2027 crop year: a tenant's breakeven blended toward survey evidence. Not a survey of rents paid and not a USDA figure.",
+ "anchors": {
+  "NASS": "the 2026 USDA irrigated survey",
+  "none": "no anchor: the model's breakeven",
+  "prior": "the 2025 K-State estimate"
+ },
+ "counties": {
+  "20001": {
+   "name": "Allen",
+   "nonirr": {
+    "est": 56,
+    "high": 102,
+    "low": 27
+   }
+  },
+  "20003": {
+   "name": "Anderson",
+   "nonirr": {
+    "est": 56,
+    "high": 108,
+    "low": 24
+   }
+  },
+  "20005": {
+   "name": "Atchison",
+   "nonirr": {
+    "est": 124,
+    "high": 211,
+    "low": 73
+   }
+  },
+  "20007": {
+   "name": "Barber",
+   "nonirr": {
+    "est": 34,
+    "high": 49,
+    "low": 12
+   }
+  },
+  "20009": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 162,
+    "high": 319,
+    "low": 73
+   },
+   "name": "Barton",
+   "nonirr": {
+    "est": 36,
+    "high": 63,
+    "low": 16
+   }
+  },
+  "20011": {
+   "name": "Bourbon",
+   "nonirr": {
+    "est": 51,
+    "high": 91,
+    "low": 28
+   }
+  },
+  "20013": {
+   "irr": {
+    "anchor": "prior",
+    "est": 295,
+    "high": 458,
+    "low": 239
+   },
+   "name": "Brown",
+   "nonirr": {
+    "est": 221,
+    "high": 319,
+    "low": 163
+   }
+  },
+  "20015": {
+   "name": "Butler",
+   "nonirr": {
+    "est": 43,
+    "high": 92,
+    "low": 10
+   }
+  },
+  "20017": {
+   "name": "Chase",
+   "nonirr": {
+    "est": 50,
+    "high": 91,
+    "low": 21
+   }
+  },
+  "20019": {
+   "name": "Chautauqua",
+   "nonirr": {
+    "est": 18,
+    "high": 51,
+    "low": 0
+   }
+  },
+  "20021": {
+   "name": "Cherokee",
+   "nonirr": {
+    "est": 56,
+    "high": 98,
+    "low": 23
+   }
+  },
+  "20023": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 204,
+    "high": 355,
+    "low": 118
+   },
+   "name": "Cheyenne",
+   "nonirr": {
+    "est": 44,
+    "high": 66,
+    "low": 24
+   }
+  },
+  "20025": {
+   "name": "Clark",
+   "nonirr": {
+    "est": 34,
+    "high": 52,
+    "low": 13
+   }
+  },
+  "20027": {
+   "irr": {
+    "anchor": "prior",
+    "est": 286,
+    "high": 452,
+    "low": 191
+   },
+   "name": "Clay",
+   "nonirr": {
+    "est": 88,
+    "high": 137,
+    "low": 54,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20029": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 283,
+    "high": 441,
+    "low": 193
+   },
+   "name": "Cloud",
+   "nonirr": {
+    "est": 92,
+    "high": 136,
+    "low": 66
+   }
+  },
+  "20031": {
+   "name": "Coffey",
+   "nonirr": {
+    "est": 49,
+    "high": 94,
+    "low": 20
+   }
+  },
+  "20033": {
+   "name": "Comanche",
+   "nonirr": {
+    "est": 28,
+    "high": 43,
+    "low": 19,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20035": {
+   "name": "Cowley",
+   "nonirr": {
+    "est": 42,
+    "high": 73,
+    "low": 15
+   }
+  },
+  "20037": {
+   "name": "Crawford",
+   "nonirr": {
+    "est": 59,
+    "high": 102,
+    "low": 28
+   }
+  },
+  "20039": {
+   "irr": {
+    "anchor": "prior",
+    "est": 243,
+    "high": 388,
+    "low": 160
+   },
+   "name": "Decatur",
+   "nonirr": {
+    "est": 47,
+    "high": 79,
+    "low": 22,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20041": {
+   "irr": {
+    "anchor": "prior",
+    "est": 186,
+    "high": 326,
+    "low": 107
+   },
+   "name": "Dickinson",
+   "nonirr": {
+    "est": 51,
+    "high": 85,
+    "low": 21
+   }
+  },
+  "20043": {
+   "irr": {
+    "anchor": "prior",
+    "est": 263,
+    "high": 374,
+    "low": 238
+   },
+   "name": "Doniphan",
+   "nonirr": {
+    "est": 232,
+    "high": 349,
+    "low": 163
+   }
+  },
+  "20045": {
+   "name": "Douglas",
+   "nonirr": {
+    "est": 72,
+    "high": 136,
+    "low": 34
+   }
+  },
+  "20047": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 200,
+    "high": 363,
+    "low": 108
+   },
+   "name": "Edwards",
+   "nonirr": {
+    "est": 32,
+    "high": 54,
+    "low": 15
+   }
+  },
+  "20049": {
+   "name": "Elk",
+   "nonirr": {
+    "est": 41,
+    "high": 75,
+    "low": 16,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20051": {
+   "name": "Ellis",
+   "nonirr": {
+    "est": 45,
+    "high": 70,
+    "low": 24
+   }
+  },
+  "20053": {
+   "name": "Ellsworth",
+   "nonirr": {
+    "est": 36,
+    "high": 62,
+    "low": 12
+   }
+  },
+  "20055": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 220,
+    "high": 369,
+    "low": 135
+   },
+   "name": "Finney",
+   "nonirr": {
+    "est": 40,
+    "high": 64,
+    "low": 20,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20057": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 203,
+    "high": 366,
+    "low": 110
+   },
+   "name": "Ford",
+   "nonirr": {
+    "est": 52,
+    "high": 76,
+    "low": 29,
+    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+   }
+  },
+  "20059": {
+   "name": "Franklin",
+   "nonirr": {
+    "est": 60,
+    "high": 112,
+    "low": 27
+   }
+  },
+  "20061": {
+   "irr": {
+    "anchor": "prior",
+    "est": 224,
+    "high": 366,
+    "low": 142
+   },
+   "name": "Geary",
+   "nonirr": {
+    "est": 74,
+    "high": 129,
+    "low": 39
+   }
+  },
+  "20063": {
+   "irr": {
+    "anchor": "prior",
+    "est": 173,
+    "high": 308,
+    "low": 97
+   },
+   "name": "Gove",
+   "nonirr": {
+    "est": 40,
+    "high": 71,
+    "low": 17
+   }
+  },
+  "20065": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 132,
+    "high": 274,
+    "low": 51
+   },
+   "name": "Graham",
+   "nonirr": {
+    "est": 33,
+    "high": 59,
+    "low": 19
+   }
+  },
+  "20067": {
+   "irr": {
+    "anchor": "prior",
+    "est": 220,
+    "high": 376,
+    "low": 130
+   },
+   "name": "Grant",
+   "nonirr": {
+    "est": 24,
+    "high": 41,
+    "low": 11
+   }
+  },
+  "20069": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 168,
+    "high": 328,
+    "low": 77
+   },
+   "name": "Gray",
+   "nonirr": {
+    "est": 48,
+    "high": 75,
+    "low": 25
+   }
+  },
+  "20071": {
+   "irr": {
+    "anchor": "prior",
+    "est": 194,
+    "high": 339,
+    "low": 112
+   },
+   "name": "Greeley",
+   "nonirr": {
+    "est": 39,
+    "high": 58,
+    "low": 22
+   }
+  },
+  "20073": {
+   "name": "Greenwood",
+   "nonirr": {
+    "est": 49,
+    "high": 83,
+    "low": 26
+   }
+  },
+  "20075": {
+   "irr": {
+    "anchor": "prior",
+    "est": 211,
+    "high": 354,
+    "low": 129
+   },
+   "name": "Hamilton",
+   "nonirr": {
+    "est": 27,
+    "high": 40,
+    "low": 14,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20077": {
+   "name": "Harper",
+   "nonirr": {
+    "est": 38,
+    "high": 52,
+    "low": 16
+   }
+  },
+  "20079": {
+   "irr": {
+    "anchor": "prior",
+    "est": 248,
+    "high": 404,
+    "low": 160
+   },
+   "name": "Harvey",
+   "nonirr": {
+    "est": 54,
+    "high": 90,
+    "low": 25
+   }
+  },
+  "20081": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 174,
+    "high": 343,
+    "low": 78
+   },
+   "name": "Haskell",
+   "nonirr": {
+    "est": 36,
+    "high": 64,
+    "low": 16
+   }
+  },
+  "20083": {
+   "irr": {
+    "anchor": "prior",
+    "est": 169,
+    "high": 310,
+    "low": 89
+   },
+   "name": "Hodgeman",
+   "nonirr": {
+    "est": 32,
+    "high": 49,
+    "low": 16
+   }
+  },
+  "20085": {
+   "name": "Jackson",
+   "nonirr": {
+    "est": 93,
+    "high": 163,
+    "low": 53
+   }
+  },
+  "20087": {
+   "name": "Jefferson",
+   "nonirr": {
+    "est": 84,
+    "high": 163,
+    "low": 36
+   }
+  },
+  "20089": {
+   "irr": {
+    "anchor": "prior",
+    "est": 324,
+    "high": 489,
+    "low": 230
+   },
+   "name": "Jewell",
+   "nonirr": {
+    "est": 76,
+    "high": 128,
+    "low": 42,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20091": {
+   "name": "Johnson",
+   "nonirr": {
+    "est": 56,
+    "high": 111,
+    "low": 25,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20093": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 233,
+    "high": 379,
+    "low": 149
+   },
+   "name": "Kearny",
+   "nonirr": {
+    "est": 27,
+    "high": 46,
+    "low": 12,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20095": {
+   "irr": {
+    "anchor": "prior",
+    "est": 182,
+    "high": 337,
+    "low": 94
+   },
+   "name": "Kingman",
+   "nonirr": {
+    "est": 38,
+    "high": 54,
+    "low": 14
+   }
+  },
+  "20097": {
+   "irr": {
+    "anchor": "prior",
+    "est": 251,
+    "high": 419,
+    "low": 155
+   },
+   "name": "Kiowa",
+   "nonirr": {
+    "est": 39,
+    "high": 60,
+    "low": 23,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20099": {
+   "name": "Labette",
+   "nonirr": {
+    "est": 49,
+    "high": 86,
+    "low": 20
+   }
+  },
+  "20101": {
+   "irr": {
+    "anchor": "prior",
+    "est": 173,
+    "high": 307,
+    "low": 96
+   },
+   "name": "Lane",
+   "nonirr": {
+    "est": 35,
+    "high": 59,
+    "low": 16,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20103": {
+   "name": "Leavenworth",
+   "nonirr": {
+    "est": 79,
+    "high": 145,
+    "low": 40
+   }
+  },
+  "20105": {
+   "name": "Lincoln",
+   "nonirr": {
+    "est": 55,
+    "high": 84,
+    "low": 33
+   }
+  },
+  "20107": {
+   "name": "Linn",
+   "nonirr": {
+    "est": 78,
+    "high": 122,
+    "low": 52
+   }
+  },
+  "20109": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 156,
+    "high": 296,
+    "low": 76
+   },
+   "name": "Logan",
+   "nonirr": {
+    "est": 40,
+    "high": 71,
+    "low": 19
+   }
+  },
+  "20111": {
+   "name": "Lyon",
+   "nonirr": {
+    "est": 57,
+    "high": 99,
+    "low": 30
+   }
+  },
+  "20113": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 182,
+    "high": 344,
+    "low": 90
+   },
+   "name": "McPherson",
+   "nonirr": {
+    "est": 56,
+    "high": 86,
+    "low": 28
+   }
+  },
+  "20115": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 122,
+    "high": 261,
+    "low": 43
+   },
+   "name": "Marion",
+   "nonirr": {
+    "est": 44,
+    "high": 82,
+    "low": 14
+   }
+  },
+  "20117": {
+   "irr": {
+    "anchor": "prior",
+    "est": 277,
+    "high": 428,
+    "low": 209
+   },
+   "name": "Marshall",
+   "nonirr": {
+    "est": 111,
+    "high": 187,
+    "low": 66,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20119": {
+   "irr": {
+    "anchor": "prior",
+    "est": 220,
+    "high": 398,
+    "low": 118
+   },
+   "name": "Meade",
+   "nonirr": {
+    "est": 37,
+    "high": 59,
+    "low": 20,
+    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+   }
+  },
+  "20121": {
+   "name": "Miami",
+   "nonirr": {
+    "est": 69,
+    "high": 120,
+    "low": 40
+   }
+  },
+  "20123": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 178,
+    "high": 321,
+    "low": 96
+   },
+   "name": "Mitchell",
+   "nonirr": {
+    "est": 61,
+    "high": 97,
+    "low": 35
+   }
+  },
+  "20125": {
+   "name": "Montgomery",
+   "nonirr": {
+    "est": 54,
+    "high": 89,
+    "low": 27
+   }
+  },
+  "20127": {
+   "name": "Morris",
+   "nonirr": {
+    "est": 49,
+    "high": 91,
+    "low": 22
+   }
+  },
+  "20129": {
+   "irr": {
+    "anchor": "prior",
+    "est": 175,
+    "high": 321,
+    "low": 92
+   },
+   "name": "Morton",
+   "nonirr": {
+    "est": 24,
+    "high": 35,
+    "low": 14,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20131": {
+   "name": "Nemaha",
+   "nonirr": {
+    "est": 135,
+    "high": 219,
+    "low": 89
+   }
+  },
+  "20133": {
+   "name": "Neosho",
+   "nonirr": {
+    "est": 44,
+    "high": 86,
+    "low": 14
+   }
+  },
+  "20135": {
+   "irr": {
+    "anchor": "prior",
+    "est": 159,
+    "high": 292,
+    "low": 83
+   },
+   "name": "Ness",
+   "nonirr": {
+    "est": 33,
+    "high": 54,
+    "low": 15
+   }
+  },
+  "20137": {
+   "irr": {
+    "anchor": "prior",
+    "est": 252,
+    "high": 400,
+    "low": 167
+   },
+   "name": "Norton",
+   "nonirr": {
+    "est": 44,
+    "high": 84,
+    "low": 16
+   }
+  },
+  "20139": {
+   "name": "Osage",
+   "nonirr": {
+    "est": 56,
+    "high": 105,
+    "low": 26
+   }
+  },
+  "20141": {
+   "irr": {
+    "anchor": "prior",
+    "est": 231,
+    "high": 377,
+    "low": 148
+   },
+   "name": "Osborne",
+   "nonirr": {
+    "est": 46,
+    "high": 76,
+    "low": 29
+   }
+  },
+  "20143": {
+   "irr": {
+    "anchor": "prior",
+    "est": 222,
+    "high": 362,
+    "low": 143
+   },
+   "name": "Ottawa",
+   "nonirr": {
+    "est": 61,
+    "high": 95,
+    "low": 33
+   }
+  },
+  "20145": {
+   "irr": {
+    "anchor": "prior",
+    "est": 256,
+    "high": 409,
+    "low": 168
+   },
+   "name": "Pawnee",
+   "nonirr": {
+    "est": 38,
+    "high": 62,
+    "low": 17
+   }
+  },
+  "20147": {
+   "irr": {
+    "anchor": "prior",
+    "est": 270,
+    "high": 416,
+    "low": 191
+   },
+   "name": "Phillips",
+   "nonirr": {
+    "est": 55,
+    "high": 97,
+    "low": 26
+   }
+  },
+  "20149": {
+   "irr": {
+    "anchor": "none",
+    "est": 342,
+    "high": 497,
+    "low": 253
+   },
+   "name": "Pottawatomie",
+   "nonirr": {
+    "est": 88,
+    "high": 160,
+    "low": 46
+   }
+  },
+  "20151": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 180,
+    "high": 344,
+    "low": 87
+   },
+   "name": "Pratt",
+   "nonirr": {
+    "est": 37,
+    "high": 58,
+    "low": 18
+   }
+  },
+  "20153": {
+   "irr": {
+    "anchor": "prior",
+    "est": 214,
+    "high": 355,
+    "low": 134
+   },
+   "name": "Rawlins",
+   "nonirr": {
+    "est": 53,
+    "high": 82,
+    "low": 29
+   }
+  },
+  "20155": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 217,
+    "high": 376,
+    "low": 127
+   },
+   "name": "Reno",
+   "nonirr": {
+    "est": 42,
+    "high": 65,
+    "low": 17
+   }
+  },
+  "20157": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 284,
+    "high": 451,
+    "low": 189
+   },
+   "name": "Republic",
+   "nonirr": {
+    "est": 111,
+    "high": 175,
+    "low": 70
+   }
+  },
+  "20159": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 197,
+    "high": 351,
+    "low": 109
+   },
+   "name": "Rice",
+   "nonirr": {
+    "est": 45,
+    "high": 74,
+    "low": 16
+   }
+  },
+  "20161": {
+   "name": "Riley",
+   "nonirr": {
+    "est": 73,
+    "high": 130,
+    "low": 39
+   }
+  },
+  "20163": {
+   "name": "Rooks",
+   "nonirr": {
+    "est": 39,
+    "high": 64,
+    "low": 27,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20165": {
+   "irr": {
+    "anchor": "prior",
+    "est": 185,
+    "high": 334,
+    "low": 100
+   },
+   "name": "Rush",
+   "nonirr": {
+    "est": 48,
+    "high": 72,
+    "low": 28,
+    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+   }
+  },
+  "20167": {
+   "name": "Russell",
+   "nonirr": {
+    "est": 34,
+    "high": 58,
+    "low": 16
+   }
+  },
+  "20169": {
+   "irr": {
+    "anchor": "none",
+    "est": 204,
+    "high": 337,
+    "low": 128
+   },
+   "name": "Saline",
+   "nonirr": {
+    "est": 52,
+    "high": 79,
+    "low": 26
+   }
+  },
+  "20171": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 138,
+    "high": 283,
+    "low": 55
+   },
+   "name": "Scott",
+   "nonirr": {
+    "est": 48,
+    "high": 80,
+    "low": 25,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20173": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 203,
+    "high": 359,
+    "low": 114
+   },
+   "name": "Sedgwick",
+   "nonirr": {
+    "est": 45,
+    "high": 72,
+    "low": 19
+   }
+  },
+  "20175": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 164,
+    "high": 327,
+    "low": 72
+   },
+   "name": "Seward",
+   "nonirr": {
+    "est": 30,
+    "high": 49,
+    "low": 21
+   }
+  },
+  "20177": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 233,
+    "high": 379,
+    "low": 149
+   },
+   "name": "Shawnee",
+   "nonirr": {
+    "est": 61,
+    "high": 125,
+    "low": 22
+   }
+  },
+  "20179": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 224,
+    "high": 369,
+    "low": 142
+   },
+   "name": "Sheridan",
+   "nonirr": {
+    "est": 51,
+    "high": 83,
+    "low": 38,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20181": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 232,
+    "high": 380,
+    "low": 147
+   },
+   "name": "Sherman",
+   "nonirr": {
+    "est": 50,
+    "high": 77,
+    "low": 30
+   }
+  },
+  "20183": {
+   "irr": {
+    "anchor": "prior",
+    "est": 211,
+    "high": 347,
+    "low": 133
+   },
+   "name": "Smith",
+   "nonirr": {
+    "est": 68,
+    "high": 119,
+    "low": 33
+   }
+  },
+  "20185": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 181,
+    "high": 338,
+    "low": 92
+   },
+   "name": "Stafford",
+   "nonirr": {
+    "est": 38,
+    "high": 60,
+    "low": 15
+   }
+  },
+  "20187": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 121,
+    "high": 273,
+    "low": 35
+   },
+   "name": "Stanton",
+   "nonirr": {
+    "est": 26,
+    "high": 43,
+    "low": 11
+   }
+  },
+  "20189": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 157,
+    "high": 316,
+    "low": 67
+   },
+   "name": "Stevens",
+   "nonirr": {
+    "est": 29,
+    "high": 45,
+    "low": 19
+   }
+  },
+  "20191": {
+   "irr": {
+    "anchor": "prior",
+    "est": 232,
+    "high": 381,
+    "low": 146
+   },
+   "name": "Sumner",
+   "nonirr": {
+    "est": 46,
+    "high": 67,
+    "low": 22
+   }
+  },
+  "20193": {
+   "irr": {
+    "anchor": "NASS",
+    "est": 225,
+    "high": 372,
+    "low": 141
+   },
+   "name": "Thomas",
+   "nonirr": {
+    "est": 52,
+    "high": 84,
+    "low": 31,
+    "mix_flag": "FSA and NASS disagree about the county crop mix"
+   }
+  },
+  "20195": {
+   "name": "Trego",
+   "nonirr": {
+    "est": 35,
+    "high": 59,
+    "low": 15
+   }
+  },
+  "20197": {
+   "irr": {
+    "anchor": "none",
+    "est": 314,
+    "high": 465,
+    "low": 227
+   },
+   "name": "Wabaunsee",
+   "nonirr": {
+    "est": 50,
+    "high": 112,
+    "low": 15
+   }
+  },
+  "20199": {
+   "irr": {
+    "anchor": "prior",
+    "est": 194,
+    "high": 337,
+    "low": 113
+   },
+   "name": "Wallace",
+   "nonirr": {
+    "est": 42,
+    "high": 69,
+    "low": 22
+   }
+  },
+  "20201": {
+   "irr": {
+    "anchor": "prior",
+    "est": 259,
+    "high": 418,
+    "low": 168
+   },
+   "name": "Washington",
+   "nonirr": {
+    "est": 102,
+    "high": 170,
+    "low": 61
+   }
+  },
+  "20203": {
+   "irr": {
+    "anchor": "prior",
+    "est": 194,
+    "high": 337,
+    "low": 113
+   },
+   "name": "Wichita",
+   "nonirr": {
+    "est": 44,
+    "high": 72,
+    "low": 22
+   }
+  },
+  "20205": {
+   "name": "Wilson",
+   "nonirr": {
+    "est": 60,
+    "high": 103,
+    "low": 29
+   }
+  },
+  "20207": {
+   "name": "Woodson",
+   "nonirr": {
+    "est": 47,
+    "high": 94,
+    "low": 15
+   }
+  },
+  "20209": {
+   "name": "Wyandotte",
+   "nonirr": {
+    "est": 65,
+    "high": 103,
+    "low": 39,
+    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+   }
+  }
+ },
+ "evidence": "model-based estimate, K-State",
+ "source": {
+  "authors": "Gregg Ibendahl and Daniel O'Brien",
+  "files": {
+   "irr": {
+    "ref": "ksu-cash-rents-2027-irr-pdf",
+    "sha256": "d33dd69fb77e1a5b75fff509ffee1c0f84a4eea1ddc9ae8486acc3ae90eb23eb",
+    "title": "Irrigated Cropland",
+    "url": "https://www.agmanager.info/sites/default/files/pdf/2027_irrigated_cash_rents_Final.pdf"
+   },
+   "nonirr": {
+    "ref": "ksu-cash-rents-2027-nonirr-pdf",
+    "sha256": "0061c228a0b59a71633e5f1be80750706f24381bba2eaaf7851831e0c0f215a6",
+    "title": "Non-Irrigated Cropland",
+    "url": "https://www.agmanager.info/sites/default/files/pdf/2027_non_irrigated_cash_rents_FINAL.pdf"
+   }
+  },
+  "org": "Kansas State University, Department of Agricultural Economics",
+  "page": "https://www.agmanager.info/land-leasing/land-rental-rates",
+  "released": "October 2026",
+  "terms": "Cited as: 2027 Kansas County-Level Cash Rental Rates, Gregg Ibendahl and Daniel O'Brien, Kansas State University Department of Agricultural Economics, October 2026 (AgManager.info). The PDFs print no reuse terms.",
+  "title": "2027 Kansas County-Level Cash Rental Rates"
+ },
+ "state": "KS",
+ "what": {
+  "anchor": "irrigated: the evidence the estimate was blended toward",
+  "est": "the published estimate (KSU 2027), dollars an acre",
+  "high": "at a high price (90th percentile)",
+  "low": "the estimate at a low corn price (10th percentile)"
+ },
+ "year": 2027
+}
