@@ -103,12 +103,14 @@
     return null;
   }
   /* data: prices.json; syms: {ZC: 'ZCZ26' | null, ZS: 'ZSF27' | null}, each card's bid contract.
-     -> {text, html, items} or null (outside the overnight hours of a trading session) */
+     -> {text, html, items, parts} or null (outside the overnight hours of a trading session).
+     parts: the same words for each crop alone, {ZC: "Dec corn down 3¢ overnight (7:01 am).", ZS: ...}, or
+     "Overnight quote not available." for a crop with none: on a phone each bid's own cell carries its line. */
   function ovnLine(data, syms, now) {
     now = now || new Date();
     var P = px(), live = ovnLive(now), nt = (now instanceof Date ? now : new Date(now)).getTime();
     if (!live) return null;
-    var quotes = data && data.quotes, rolled = quotes && P.roll ? P.roll(quotes) : quotes, items = [], missing = [];
+    var quotes = data && data.quotes, rolled = quotes && P.roll ? P.roll(quotes) : quotes, items = [], missing = [], by = {};
     ['ZC', 'ZS'].forEach(function (root) {
       var sym = syms && syms[root] && new RegExp('^' + root + '[FGHJKMNQUVXZ]\\d{2}$').test(syms[root]) ? syms[root] : '';
       var it = null, own = sym && quotes ? findSym(quotes, sym) : null, r = own ? ovnOf(own, live, nt) : null;
@@ -119,7 +121,7 @@
         var fr = ft && ft[1] !== sym ? ovnOf(fq, live, nt) : null;
         if (fr && fr !== 'stale') it = { name: cname(ft[1], live), net: fr.net, at: fr.at, front: !!sym };
       }
-      if (it) items.push(it); else missing.push(CROP[root]);
+      if (it) { items.push(it); by[root] = it; } else missing.push(CROP[root]);
     });
     var word = function (it) {
       return it.name + (it.front ? ' (front month)' : '') + (it.net == null ? ' trading' : it.net === 0 ? ' unchanged' : (it.net < 0 ? ' down\u00a0' : ' up\u00a0') + cents(it.net));
@@ -133,7 +135,12 @@
       text += '.';
       if (missing.length) text += ' ' + (missing[0] === 'corn' ? 'Corn' : 'Soybean') + ' overnight quote not available.';
     } else text = 'Overnight quote not available.';
-    return { text: text, items: items, html: esc(text) };
+    var parts = {};
+    ['ZC', 'ZS'].forEach(function (root) {
+      var it = by[root];
+      parts[root] = it ? word(it) + ' overnight (' + tm(it.at) + ')' + (it.net == null ? ', settle not posted yet' : '') + '.' : 'Overnight quote not available.';
+    });
+    return { text: text, items: items, html: esc(text), parts: parts };
   }
 
   /* -> {text, html, session} or null (keep the site's Updated stamp) */
