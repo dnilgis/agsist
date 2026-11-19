@@ -312,6 +312,8 @@ function answer(l){
   var A=NOW.ans&&NOW.ans[S.s||'US'], el=$('an-lede'); if(!A||!el) return;
   var k=l&&A[l.key]?l.key:(l&&l.q?headOf(l.q):'drought'); if(!A[k]) k='drought';
   if(A[k]) el.innerHTML=strong(A[k]);
+  // the counties a state's line leaves out, named under the map (the line itself keeps its height)
+  var g=$('an-gap'); if(g){ g.hidden=!A[k+'_gap']; g.innerHTML=A[k+'_gap']?strong(A[k+'_gap']):''; }
 }
 function shortLab(t){ var m=/^(\$?[\d.,]+)([%\u00a2]?) to (\$?[\d.,]+)([%\u00a2]?)(.*)$/.exec(t); return m?m[1]+(m[2]&&m[2]===m[4]?'':m[2])+'\u2013'+m[3]+m[4]+m[5]:t; }
 var KEYPIN=null;
@@ -389,6 +391,7 @@ function zoom(st){
   $('an-svg').setAttribute('viewBox',vb.map(function(v){return Math.round(v*10)/10;}).join(' '));
   root.classList.toggle('zoomed',!!S.s); $('an-st').value=S.s; $('an-all').hidden=!S.s;
   if(NOW&&layerOf(S.m)&&(!layerOf(S.m).old||OL[S.m])) paint();
+  if(NOW&&$('an-tiles')&&!$('an-tiles').hidden&&$('an-tiles').getAttribute('data-s')!==(S.s||'US')){ tiles(); side(); }   // the tiles and the answers follow the state
   setLink(); save();
 }
 function pick(f,quiet,fromRecord){
@@ -428,16 +431,18 @@ function thumbs(){
   });
 }
 function headOf(q){ return NOW.questions.filter(function(x){return x.key===q;})[0].head; }
+// a question's answer for the view: the open state's own sentence (now.json ans, its headline map), else the U.S. one
+function qsay(q,gap){ var A=S.s&&NOW.ans&&NOW.ans[S.s], k=A&&headOf(q.key); if(gap) return A?A[k+'_gap']:NOW.say[q.key+'_sub']; return A&&A[k]?A[k]:NOW.say[q.key]; }
 function side(){
   var box=$('an-side'), h='';
   if(!S.q){
     h='<h2 class="an-qh">Pick a question</h2><div class="an-qgrid">'+NOW.questions.map(function(q){
-      return '<button type="button" class="an-qcard" data-q="'+q.key+'"><canvas width="166" height="113" data-layer="'+q.head+'" aria-hidden="true"></canvas><span><b class="an-ql">'+esc(q.label)+'</b><span class="an-qq">'+esc(q.ask)+'</span><span class="an-qa">'+strong(NOW.say[q.key])+'</span></span></button>';
+      return '<button type="button" class="an-qcard" data-q="'+q.key+'"><canvas width="166" height="113" data-layer="'+q.head+'" aria-hidden="true"></canvas><span><b class="an-ql">'+esc(q.label)+'</b><span class="an-qq">'+esc(q.ask)+'</span><span class="an-qa">'+strong(qsay(q))+'</span></span></button>';
     }).join('')+'</div>';
   }else{
     var q=NOW.questions.filter(function(x){return x.key===S.q;})[0];
     var more=OLD?Object.keys(OLD).map(function(k){return OLD[k];}).filter(function(l){ return l.q===S.q&&!l.off; }):null;
-    h='<p class="an-ask">'+esc(q.ask)+'</p><p class="an-ans">'+strong(NOW.say[q.key])+'</p>'+(NOW.say[q.key+'_sub']?'<p class="an-ans2">'+strong(NOW.say[q.key+'_sub'])+'</p>':'')+
+    h='<p class="an-ask">'+esc(q.ask)+'</p><p class="an-ans">'+strong(qsay(q))+'</p>'+(qsay(q,1)?'<p class="an-ans2">'+strong(qsay(q,1))+'</p>':'')+
       '<h2 class="an-qh">Maps one tap down</h2><div class="an-dl">'+NOW.layers.filter(function(l){return l.q===S.q;}).map(function(l){
         return '<button type="button" class="an-dbtn" data-m="'+l.key+'" aria-pressed="'+(l.key===S.m)+'"><canvas width="96" height="65" data-layer="'+l.key+'" aria-hidden="true"></canvas><span>'+esc(l.label)+(l.key===q.head?' <small>headline</small>':'')+'</span></button>';
       }).join('')+'</div>'+
@@ -459,9 +464,11 @@ function go(q,keepM){
   if(!keepM||!l||(S.q&&l.q!==S.q)) S.m=S.q?headOf(S.q):'drought';
   tabs(); paint(); side(); setLink(); save();
 }
+// the five tiles: the open state's own (now.json st_tiles), else the U.S. ones
 function tiles(){
-  var box=$('an-tiles'); if(!box||!NOW.tiles) return;
-  box.innerHTML=NOW.tiles.map(function(t){
+  var box=$('an-tiles'), T=S.s&&NOW.st_tiles&&NOW.st_tiles[S.s]||NOW.tiles; if(!box||!T) return;
+  box.setAttribute('data-s',T===NOW.tiles?'US':S.s);
+  box.innerHTML=T.map(function(t){
     return '<button type="button" class="an-tile" data-q="'+esc(t.q)+'"><span class="an-tl">'+esc(t.label)+'</span><b class="an-tb">'+esc(t.big.t)+'</b><span class="an-ts">'+esc(t.sub.t)+'</span></button>'; }).join('');
   [].forEach.call(box.querySelectorAll('.an-tile'),function(b){ b.addEventListener('click',function(){ ui(); go(b.getAttribute('data-q')); ga('atlas_now_tile',{q:b.getAttribute('data-q')}); }); });
   box.hidden=false; var t0=$('an-tiles0'); if(t0) t0.parentNode.removeChild(t0);
