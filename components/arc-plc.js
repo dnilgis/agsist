@@ -620,7 +620,10 @@
           (c.parts.some(function (p) { return p.dsrc === 'state'; }) ? 'the state average for this crop and practice (the county has too few years)' : 'this county&rsquo;s FSA yields') + ' in the same year';
         var how = { oct: 'how far each past year&rsquo;s season-average price ended from its October futures (scaled to average 1)', fut: 'each past year&rsquo;s price change, scaled to average 1',
           yoy_scaled: 'past price changes', corn_oct: 'past price changes',
-          yoy: 'each past year&rsquo;s price change' }[sc.kind] || 'past price changes';
+          yoy: 'each past year&rsquo;s price change',
+          /* wheat's own spread (the build's wheat_method): how far USDA's same-month price missed the final one */
+          fcst: sc.fc ? 'how far USDA&rsquo;s ' + sc.fc.month + ' ' + cr.label.toLowerCase() + ' price missed the final season-average price (scaled to average 1' +
+            (sc.fc.mid && sc.fc.mid.length ? '; for ' + sc.fc.mid[0] + (sc.fc.mid.length > 1 ? ' to ' + sc.fc.mid[sc.fc.mid.length - 1] : '') + ' USDA printed a range, and we use its middle' : '') + ')' : '' }[sc.kind] || 'past price changes';
         h += '<p class="ap-small">Scenarios: ' + sc.center_label + ', ' + pm(sc.center) + ', moved by ' + how + ', ' +
           v.rows[0].t + ' to ' + v.rows[v.rows.length - 1].t + ' (' + v.n + ' years), paired with ' + ysrc + '.' +
           (sc.alt != null ? ' Futures-based start for comparison: ' + pm(sc.alt) + ' (' + esc(sc.alt_contract || '') + ' October average ' + (/^\d{4}-\d\d-\d\d/.test(sc.alt_date || '') ? 'through ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+sc.alt_date.slice(5, 7) - 1] + ' ' + (+sc.alt_date.slice(8, 10)) : 'so far') + ', ' + sc.alt_days + ' of ' + sc.alt_of + ' days, &times; ' + sc.oct_mean.toFixed(3) + ').' : '') +
