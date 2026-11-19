@@ -2696,6 +2696,26 @@
     {"id": "ksu-cash-rents-2027-irr-pdf", "kind": "pdf",
      "url": "https://www.agmanager.info/sites/default/files/pdf/2027_irrigated_cash_rents_Final.pdf",
      "title": "K-State: Kansas County-Level Irrigated Cash Rental Rates 2027, PDF",
-     "why": "Kansas county cash rents (data/land/ks/rent.json): the irrigated county estimates and their method"}
+     "why": "Kansas county cash rents (data/land/ks/rent.json): the irrigated county estimates and their method"},
+    {"id": "ksu-cash-rents-2027-nonirr-pdf", "kind": "pdf",
+     "url": "https://www.agmanager.info/sites/default/files/pdf/2027_non_irrigated_cash_rents_FINAL.pdf",
+     "title": "K-State: Kansas County-Level Non-Irrigated Cash Rental Rates 2027, PDF",
+     "why": "Kansas county cash rents (data/land/ks/rent.json): the non-irrigated county estimates and their method"},
+    {"id": "uw-wi-ag-land-prices-2025-t1-pdf", "kind": "pdf",
+     "url": "https://docs.google.com/spreadsheets/d/1wk-KbpPPhswcdwmCdlpjn2m28DFEPJwK/export?format=pdf",
+     "title": "UW-Madison Extension: Wisconsin Agricultural Land Prices 2025, Appendix Table 1 (minimum, average and maximum sale price by county), PDF export of the linked sheet",
+     "why": "Wisconsin county land prices (data/land/wi/survey.json): the county averages"},
+    {"id": "uw-wi-ag-land-prices-2025-t2-pdf", "kind": "pdf",
+     "url": "https://docs.google.com/spreadsheets/d/17n1FNb6ULAUdwIL-SLvkHy_RsnbiPPlx/export?format=pdf",
+     "title": "UW-Madison Extension: Wisconsin Agricultural Land Prices 2025, Appendix Table 2 (detailed breakdown by county), PDF export of the linked sheet",
+     "why": "Wisconsin county land prices (data/land/wi/survey.json): the county sale counts"},
+    {"id": "uw-wi-ag-land-prices-2025-t1", "kind": "html",
+     "url": "https://docs.google.com/spreadsheets/d/1wk-KbpPPhswcdwmCdlpjn2m28DFEPJwK/htmlview",
+     "title": "UW-Madison Extension: Wisconsin Agricultural Land Prices 2025, Appendix Table 1 (the linked sheet as a web page)",
+     "why": "Wisconsin county land prices: the same table when the PDF export is refused"},
+    {"id": "uw-wi-ag-land-prices-2025-t2", "kind": "html",
+     "url": "https://docs.google.com/spreadsheets/d/17n1FNb6ULAUdwIL-SLvkHy_RsnbiPPlx/htmlview",
+     "title": "UW-Madison Extension: Wisconsin Agricultural Land Prices 2025, Appendix Table 2 (the linked sheet as a web page)",
+     "why": "Wisconsin county land prices: the same table when the PDF export is refused"}
 ]
 }
