@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Nov 2026 12:04:35 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 19 Nov 2026 14:36:35 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due</title>
+      <link>https://agsist.com/daily/2026-11-19</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-19</guid>
+      <pubDate>Thu, 19 Nov 2026 14:35:39 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>Corn gave back 11¼ cents Wednesday and wheat gave back 25¼, the worst day for both in weeks.
+• Grains edge up after drop
+• Hogs lag, cattle firm
+Read more: https://agsist.com/daily/2026-11-19</description>
+    </item>
     <item>
       <title>December lean hogs fell $2.25 Tuesday to $53.10</title>
       <link>https://agsist.com/daily/2026-11-18</link>
@@ -344,17 +355,6 @@ Read more: https://agsist.com/daily/2026-10-22</description>
 • Grains keep sliding on harvest
 • Cattle and hogs firm; crude near $100
 Read more: https://agsist.com/daily/2026-10-21</description>
-    </item>
-    <item>
-      <title>Corn at $4.67¾ and beans at $12.57½ barely move after losing streaks</title>
-      <link>https://agsist.com/daily/2026-10-20</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-20</guid>
-      <pubDate>Tue, 20 Oct 2026 10:47:29 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Corn at $4.67¾ and soybeans at $12.57½ are both a few cents higher overnight, which is hardly a bounce after streaks of five and six lower closes. A farmer holding unpriced bushels is still looking at the lowest prices of the run.
-• Grains bounce after losing runs
-• Crude slips but stays above $100
-Read more: https://agsist.com/daily/2026-10-20</description>
     </item>
   </channel>
 </rss>
