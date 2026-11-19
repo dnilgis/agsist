@@ -12,8 +12,8 @@
        Same files as scripts/inject_static_nav.py FONTS. -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/components/styles.css?v=29" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="preload" href="/components/styles.css?v=30" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=30">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -347,7 +347,7 @@
 <div id="site-footer"></div>
 <script src="/components/usmap.js?v=1" defer></script>
 <script>document.addEventListener('DOMContentLoaded',function(){var h=document.getElementById('rh-map');if(!h||!window.AgUSMap)return;var d=JSON.parse(h.getAttribute('data-map')),p=false,m;function st(){var o={};for(var k in d){var x=d[k];o[k]=p?{fill:x.pc||'',text:x.pv==='n/a'?'no pasture rent published':x.pv+' an acre, pasture',href:x.h}:{fill:x.c,text:x.v+' an acre, cropland',href:x.h};}return o;}m=AgUSMap.mount(h,{states:st(),hint:'Tap a state for every county.',name:'Map of median county cash rent by state'});var sw=document.querySelector('.rh-sw');if(!sw)return;var cc=document.querySelector('.rh-ccap'),pc=document.querySelector('.rh-pcap');sw.addEventListener('click',function(e){var b=e.target.closest('button[data-rh]');if(!b)return;p=b.getAttribute('data-rh')==='p';Array.prototype.forEach.call(sw.querySelectorAll('button'),function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});if(cc)cc.hidden=p;if(pc)pc.hidden=!p;m.update(st());});});</script>
-<script src="/components/loader.js?v=21"></script>
+<script src="/components/loader.js?v=22"></script>
 <script>
 (function(){var t=document.getElementById('rs-table');if(!t)return;
 var ths=t.tHead.rows[0].cells,dir=1,last=-1;
