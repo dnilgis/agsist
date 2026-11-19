@@ -45,6 +45,7 @@ jobs:
           node scripts/test_elevator_watch.mjs
           python3 scripts/send_zip_alert.py --selftest
           python3 scripts/test_zip_alert.py
+          python3 scripts/send_welcome.py --selftest
       - name: Send
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
@@ -76,3 +77,22 @@ jobs:
           REPLY_TO: ${{ secrets.REPLY_TO }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
         run: python3 scripts/send_zip_alert.py
+      # one welcome to each new Daily reader (scripts/send_welcome.py); only on the hourly schedule or by hand, which
+      # share the one 'elevator-watch' concurrency group, so two runs never claim the same signups at once
+      - name: Welcome new Daily readers
+        if: ${{ !cancelled() && steps.gate.outcome == 'success' && github.event_name != 'workflow_run' }}
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          DAILY_WELCOME_LIVE: ${{ vars.DAILY_WELCOME_LIVE }}
+          DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
+        run: python3 scripts/send_welcome.py
