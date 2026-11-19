@@ -16,6 +16,13 @@
    "link": "/rent/north-dakota"
   },
   {
+   "id": "2026-11-19-atlas-rain-county-average",
+   "date": "2026-11-19",
+   "title": "Atlas rain matches the county rain page",
+   "line": "The Farmland Atlas county sheet and rain map now show the same rain figure the county's rain page leads with: the county average from the PRISM grid where there is one.",
+   "link": "/farmland-atlas#l=rain"
+  },
+  {
    "id": "2026-11-19-atlas-region-surveys",
    "date": "2026-11-19",
    "title": "Indiana, Nebraska, Missouri and South Dakota region surveys",
