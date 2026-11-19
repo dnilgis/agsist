@@ -1,19 +1,4 @@
 {
- "about": "Next releases a publisher has stated, keyed by the ref of the survey file now on the Farmland Atlas (the source.ref in data/land/<state>/*.json). scripts/land_sources.py reads it; a source not listed here prints 'not announced'. Add a date only from the publisher's own announcement, never a guess; when the survey file is replaced (a new ref), its old entry stops matching on its own.",
- "refs": {
-  "isu-land-values-county-2025-pdf": {
-   "date": "2026-12-08",
-   "words": "Dec 8, 2026, 10 a.m. CT",
-   "what": "Iowa State University Land Value Survey 2026",
-   "said_by": "Iowa State University (CARD)",
-   "checked": "2026-11-19"
-  },
-  "unl-ne-farm-real-estate-2026-pdf": {
-   "date": "2027-03",
-   "words": "mid-March 2027 (preliminary), June 2027 (final)",
-   "what": "Nebraska Farm Real Estate Market Survey 2026-2027",
-   "said_by": "University of Nebraska-Lincoln, Center for Agricultural Profitability",
-   "checked": "2026-11-19"
-  }
- }
+ "about": "Next releases a publisher has stated, keyed by the ref of the survey file now on the Farmland Atlas (the source.ref in data/land/<state>/*.json). scripts/land_sources.py reads it; a source not listed here prints 'not announced'. An entry is used only with the publisher's own words for it: 'source_ref' (the copy on the references branch it was read from) and 'quote' (the sentence that states the date), besides 'date' (YYYY-MM-DD, or YYYY-MM for a month), 'words', 'what' and 'checked'. Never a guess, never a date read only in outside research. When the survey file is replaced (a new ref), its old entry stops matching on its own.",
+ "refs": {}
 }
