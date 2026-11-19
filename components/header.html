@@ -80,6 +80,7 @@
 .nav-adv{display:none;align-items:center;min-height:44px;padding:0 .3rem;font-size:.8rem;font-weight:600;color:var(--text-muted);text-decoration:none;white-space:nowrap}
 .nav-adv:hover,.nav-adv:focus-visible{color:var(--brand)}
 @media (min-width:1200px){.nav-adv{display:inline-flex}}
+a.nav-top{text-decoration:none;white-space:nowrap}
 @media (max-width:1360px){.nav-btn .nav-ic{display:none}.nav-btn{padding:.45rem .6rem}}
 @media (max-width:1100px){.nav-email{display:none}.zip-chip{max-width:150px}}
 @media (max-width:1060px){.nav-btn{padding:.45rem .42rem;font-size:.8rem}.zip-chip{max-width:136px}.zip-chip svg{display:none}.nav-logo{margin-right:.75rem}}
@@ -130,6 +131,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <img class="lg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148">
     </a>
     <div class="nav-menu">
+      <a href="/cash-bids" class="nav-btn nav-top">Cash bids</a>
       <div class="nav-dd" id="dd-markets">
         <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-markets-panel">Prices<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="dd-markets-panel" class="nav-panel nav-cols nav-cols-3">
@@ -169,7 +171,6 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
             <a href="/hay-prices">Hay</a>
             <a href="/haymow"><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
             <a href="/lrp">LRP</a>
-            <a href="/prf">PRF</a>
           </div>
         </div>
       </div>
@@ -220,6 +221,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
           <div class="nav-col">
             <div class="nav-q">Programs</div>
             <a href="/arc-plc">ARC or PLC</a>
+            <a href="/prf">PRF</a>
             <a href="/farm-bill">Farm bill</a>
           </div>
           <div class="nav-col">
@@ -278,8 +280,8 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
   <section class="draw-place" aria-labelledby="dp-h">
     <h2 class="draw-place-h" id="dp-h">My place <span class="draw-place-z" id="dp-zip"></span></h2>
     <div class="draw-place-row">
-      <a href="/fast-facts" class="draw-pl" id="dp-here">Everything near me</a>
       <a href="/cash-bids" class="draw-pl" id="dp-bids">Bids near me</a>
+      <a href="/fast-facts" class="draw-pl" id="dp-here">Everything near me</a>
       <a href="/rain#radar" class="draw-pl" id="dp-rain">Rain at my field</a>
       <a href="/rent/" class="draw-pl" id="dp-rent">Rent in my county</a>
     </div>
@@ -320,7 +322,6 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <a href="/hay-prices" class="draw-item">Hay</a>
       <a href="/haymow" class="draw-item"><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
       <a href="/lrp" class="draw-item">LRP</a>
-      <a href="/prf" class="draw-item">PRF</a>
     </div>
   </section>
   <section class="draw-sec draw-grp" aria-labelledby="dg-field">
@@ -366,6 +367,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
     <h3 class="draw-sub">Programs</h3>
     <div class="draw-links">
       <a href="/arc-plc" class="draw-item">ARC or PLC</a>
+      <a href="/prf" class="draw-item">PRF</a>
       <a href="/farm-bill" class="draw-item">Farm bill</a>
     </div>
     <h3 class="draw-sub">Selling</h3>

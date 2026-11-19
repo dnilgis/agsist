@@ -91,7 +91,7 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add -A farmland-atlas data/pointers sitemap-atlas.xml
+          git add -A farmland-atlas farmland-atlas.html data/pointers sitemap-atlas.xml
           git reset -q -- farmland-atlas/compare.html farmland-atlas/sheet.html || true
           python scripts/generated_sets.py dependents farmland-atlas --stage || true
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi

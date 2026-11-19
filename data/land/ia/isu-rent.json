@@ -1,0 +1,1001 @@
+{
+ "about": "Iowa State University survey of typical cash rents for corn and soybean land, by land quality third. Opinions of farmers, landowners, lenders and farm managers about typical rents in their county, not rents of individual farms. Not a USDA number.",
+ "state": "IA",
+ "evidence": "Iowa State survey of typical rents",
+ "year": 2026,
+ "what": {
+  "overall": "overall average typical rent, corn and soybean land, dollars an acre",
+  "high": "typical rent, high quality third",
+  "medium": "typical rent, medium quality third",
+  "low": "typical rent, low quality third",
+  "n": "responses for the county"
+ },
+ "responses": 1450,
+ "min_responses": 5,
+ "source": {
+  "org": "Iowa State University Extension and Outreach",
+  "title": "Cash Rental Rates for Iowa 2026 Survey",
+  "file": "Ag Decision Maker File C2-10, FM 1851",
+  "released": "May 2026",
+  "url": "https://www.extension.iastate.edu/agdm/wholefarm/pdf/c2-10.pdf",
+  "ref": "isu-cash-rent-c2-10",
+  "copy": "manual/isu-cash-rent-c2-10.pdf",
+  "sha256": "c6a3aa2edf389071ecf3b6a9a7dae00246569486ebf1824a1b210c50d2e8be01"
+ },
+ "districts": {
+  "1": {
+   "n": 216,
+   "overall": 290,
+   "high": 331,
+   "medium": 291,
+   "low": 249
+  },
+  "2": {
+   "n": 199,
+   "overall": 272,
+   "high": 313,
+   "medium": 274,
+   "low": 229
+  },
+  "3": {
+   "n": 108,
+   "overall": 291,
+   "high": 342,
+   "medium": 291,
+   "low": 239
+  },
+  "4": {
+   "n": 188,
+   "overall": 292,
+   "high": 338,
+   "medium": 292,
+   "low": 248
+  },
+  "5": {
+   "n": 261,
+   "overall": 287,
+   "high": 330,
+   "medium": 284,
+   "low": 248
+  },
+  "6": {
+   "n": 138,
+   "overall": 274,
+   "high": 324,
+   "medium": 274,
+   "low": 223
+  },
+  "7": {
+   "n": 129,
+   "overall": 250,
+   "high": 290,
+   "medium": 252,
+   "low": 208
+  },
+  "8": {
+   "n": 103,
+   "overall": 215,
+   "high": 257,
+   "medium": 211,
+   "low": 176
+  },
+  "9": {
+   "n": 108,
+   "overall": 255,
+   "high": 300,
+   "medium": 253,
+   "low": 212
+  }
+ },
+ "counties": {
+  "19001": {
+   "name": "Adair",
+   "district": 7,
+   "n": 21,
+   "overall": 225,
+   "high": 262,
+   "medium": 225,
+   "low": 188
+  },
+  "19003": {
+   "name": "Adams",
+   "district": 7,
+   "n": 11,
+   "overall": 246,
+   "high": 297,
+   "medium": 251,
+   "low": 191
+  },
+  "19005": {
+   "name": "Allamakee",
+   "district": 3,
+   "n": 13,
+   "reported_with": [
+    "Winneshiek"
+   ],
+   "overall": 274,
+   "high": 314,
+   "medium": 279,
+   "low": 229
+  },
+  "19007": {
+   "name": "Appanoose",
+   "district": 8,
+   "n": 7,
+   "overall": 219,
+   "high": 272,
+   "medium": 205,
+   "low": 181
+  },
+  "19009": {
+   "name": "Audubon",
+   "district": 4,
+   "n": 11,
+   "overall": 288,
+   "high": 333,
+   "medium": 291,
+   "low": 241
+  },
+  "19011": {
+   "name": "Benton",
+   "district": 6,
+   "n": 25,
+   "overall": 292,
+   "high": 334,
+   "medium": 297,
+   "low": 245
+  },
+  "19013": {
+   "name": "Black Hawk",
+   "district": 3,
+   "n": 19,
+   "overall": 301,
+   "high": 356,
+   "medium": 299,
+   "low": 248
+  },
+  "19015": {
+   "name": "Boone",
+   "district": 5,
+   "n": 21,
+   "overall": 285,
+   "high": 328,
+   "medium": 277,
+   "low": 249
+  },
+  "19017": {
+   "name": "Bremer",
+   "district": 3,
+   "n": 9,
+   "overall": 305,
+   "high": 356,
+   "medium": 311,
+   "low": 250
+  },
+  "19019": {
+   "name": "Buchanan",
+   "district": 3,
+   "n": 14,
+   "overall": 274,
+   "high": 318,
+   "medium": 270,
+   "low": 232
+  },
+  "19021": {
+   "name": "Buena Vista",
+   "district": 1,
+   "n": 13,
+   "overall": 292,
+   "high": 331,
+   "medium": 301,
+   "low": 244
+  },
+  "19023": {
+   "name": "Butler",
+   "district": 2,
+   "n": 15,
+   "overall": 297,
+   "high": 347,
+   "medium": 295,
+   "low": 249
+  },
+  "19025": {
+   "name": "Calhoun",
+   "district": 4,
+   "n": 29,
+   "overall": 276,
+   "high": 308,
+   "medium": 279,
+   "low": 240
+  },
+  "19027": {
+   "name": "Carroll",
+   "district": 4,
+   "n": 13,
+   "overall": 293,
+   "high": 352,
+   "medium": 288,
+   "low": 240
+  },
+  "19029": {
+   "name": "Cass",
+   "district": 7,
+   "n": 16,
+   "overall": 255,
+   "high": 296,
+   "medium": 257,
+   "low": 212
+  },
+  "19031": {
+   "name": "Cedar",
+   "district": 6,
+   "n": 16,
+   "overall": 274,
+   "high": 316,
+   "medium": 270,
+   "low": 236
+  },
+  "19033": {
+   "name": "Cerro Gordo",
+   "district": 2,
+   "n": 16,
+   "overall": 265,
+   "high": 298,
+   "medium": 271,
+   "low": 225
+  },
+  "19035": {
+   "name": "Cherokee",
+   "district": 1,
+   "n": 26,
+   "overall": 306,
+   "high": 351,
+   "medium": 308,
+   "low": 258
+  },
+  "19037": {
+   "name": "Chickasaw",
+   "district": 3,
+   "n": 10,
+   "overall": 310,
+   "high": 350,
+   "medium": 314,
+   "low": 265
+  },
+  "19039": {
+   "name": "Clarke",
+   "district": 8,
+   "n": 7,
+   "overall": 207,
+   "high": 246,
+   "medium": 210,
+   "low": 165
+  },
+  "19041": {
+   "name": "Clay",
+   "district": 1,
+   "n": 16,
+   "overall": 273,
+   "high": 302,
+   "medium": 268,
+   "low": 251
+  },
+  "19043": {
+   "name": "Clayton",
+   "district": 3,
+   "n": 9,
+   "overall": 269,
+   "high": 309,
+   "medium": 270,
+   "low": 227
+  },
+  "19045": {
+   "name": "Clinton",
+   "district": 6,
+   "n": 14,
+   "overall": 282,
+   "high": 325,
+   "medium": 278,
+   "low": 245
+  },
+  "19047": {
+   "name": "Crawford",
+   "district": 4,
+   "n": 16,
+   "overall": 304,
+   "high": 343,
+   "medium": 308,
+   "low": 261
+  },
+  "19049": {
+   "name": "Dallas",
+   "district": 5,
+   "n": 19,
+   "overall": 290,
+   "high": 330,
+   "medium": 283,
+   "low": 257
+  },
+  "19051": {
+   "name": "Davis",
+   "district": 9,
+   "n": 8,
+   "overall": 200,
+   "high": 241,
+   "medium": 196,
+   "low": 163
+  },
+  "19053": {
+   "name": "Decatur",
+   "district": 8,
+   "n": 11,
+   "reported_with": [
+    "Ringgold"
+   ],
+   "overall": 201,
+   "high": 235,
+   "medium": 200,
+   "low": 169
+  },
+  "19055": {
+   "name": "Delaware",
+   "district": 3,
+   "n": 11,
+   "overall": 325,
+   "high": 377,
+   "medium": 328,
+   "low": 269
+  },
+  "19057": {
+   "name": "Des Moines",
+   "district": 9,
+   "n": 10,
+   "overall": 272,
+   "high": 336,
+   "medium": 264,
+   "low": 215
+  },
+  "19059": {
+   "name": "Dickinson",
+   "district": 1,
+   "n": 10,
+   "overall": 257,
+   "high": 294,
+   "medium": 265,
+   "low": 211
+  },
+  "19061": {
+   "name": "Dubuque",
+   "district": 3,
+   "n": 6,
+   "overall": 321,
+   "high": 413,
+   "medium": 308,
+   "low": 242
+  },
+  "19063": {
+   "name": "Emmet",
+   "district": 1,
+   "n": 9,
+   "overall": 248,
+   "high": 284,
+   "medium": 244,
+   "low": 215
+  },
+  "19065": {
+   "name": "Fayette",
+   "district": 3,
+   "n": 10,
+   "overall": 253,
+   "high": 303,
+   "medium": 258,
+   "low": 198
+  },
+  "19067": {
+   "name": "Floyd",
+   "district": 2,
+   "n": 8,
+   "overall": 235,
+   "high": 256,
+   "medium": 236,
+   "low": 212
+  },
+  "19069": {
+   "name": "Franklin",
+   "district": 2,
+   "n": 29,
+   "overall": 288,
+   "high": 329,
+   "medium": 292,
+   "low": 243
+  },
+  "19071": {
+   "name": "Fremont",
+   "district": 7,
+   "n": 11,
+   "overall": 246,
+   "high": 282,
+   "medium": 248,
+   "low": 207
+  },
+  "19073": {
+   "name": "Greene",
+   "district": 4,
+   "n": 17,
+   "overall": 275,
+   "high": 317,
+   "medium": 275,
+   "low": 234
+  },
+  "19075": {
+   "name": "Grundy",
+   "district": 5,
+   "n": 20,
+   "overall": 300,
+   "high": 340,
+   "medium": 297,
+   "low": 264
+  },
+  "19077": {
+   "name": "Guthrie",
+   "district": 4,
+   "n": 16,
+   "overall": 255,
+   "high": 298,
+   "medium": 254,
+   "low": 213
+  },
+  "19079": {
+   "name": "Hamilton",
+   "district": 5,
+   "n": 15,
+   "overall": 282,
+   "high": 311,
+   "medium": 284,
+   "low": 250
+  },
+  "19081": {
+   "name": "Hancock",
+   "district": 2,
+   "n": 17,
+   "overall": 267,
+   "high": 313,
+   "medium": 268,
+   "low": 219
+  },
+  "19083": {
+   "name": "Hardin",
+   "district": 5,
+   "n": 33,
+   "overall": 288,
+   "high": 336,
+   "medium": 278,
+   "low": 249
+  },
+  "19085": {
+   "name": "Harrison",
+   "district": 4,
+   "n": 15,
+   "overall": 284,
+   "high": 329,
+   "medium": 282,
+   "low": 242
+  },
+  "19087": {
+   "name": "Henry",
+   "district": 9,
+   "n": 16,
+   "overall": 283,
+   "high": 331,
+   "medium": 280,
+   "low": 239
+  },
+  "19089": {
+   "name": "Howard",
+   "district": 3,
+   "n": 7,
+   "overall": 276,
+   "high": 323,
+   "medium": 277,
+   "low": 228
+  },
+  "19091": {
+   "name": "Humboldt",
+   "district": 2,
+   "n": 21,
+   "overall": 274,
+   "high": 318,
+   "medium": 273,
+   "low": 231
+  },
+  "19093": {
+   "name": "Ida",
+   "district": 4,
+   "n": 10,
+   "overall": 317,
+   "high": 357,
+   "medium": 325,
+   "low": 268
+  },
+  "19095": {
+   "name": "Iowa",
+   "district": 6,
+   "n": 7,
+   "overall": 279,
+   "high": 327,
+   "medium": 282,
+   "low": 228
+  },
+  "19097": {
+   "name": "Jackson",
+   "district": 6,
+   "n": 13,
+   "overall": 258,
+   "high": 346,
+   "medium": 237,
+   "low": 190
+  },
+  "19099": {
+   "name": "Jasper",
+   "district": 5,
+   "n": 21,
+   "overall": 282,
+   "high": 322,
+   "medium": 278,
+   "low": 246
+  },
+  "19101": {
+   "name": "Jefferson",
+   "district": 9,
+   "n": 7,
+   "overall": 255,
+   "high": 292,
+   "medium": 259,
+   "low": 214
+  },
+  "19103": {
+   "name": "Johnson",
+   "district": 6,
+   "n": 11,
+   "overall": 273,
+   "high": 336,
+   "medium": 286,
+   "low": 199
+  },
+  "19105": {
+   "name": "Jones",
+   "district": 6,
+   "n": 14,
+   "overall": 268,
+   "high": 305,
+   "medium": 269,
+   "low": 229
+  },
+  "19107": {
+   "name": "Keokuk",
+   "district": 9,
+   "n": 11,
+   "overall": 244,
+   "high": 298,
+   "medium": 230,
+   "low": 205
+  },
+  "19109": {
+   "name": "Kossuth",
+   "district": 2,
+   "n": 18,
+   "overall": 280,
+   "high": 330,
+   "medium": 282,
+   "low": 229
+  },
+  "19111": {
+   "name": "Lee",
+   "district": 9,
+   "n": 13,
+   "overall": 286,
+   "high": 309,
+   "medium": 284,
+   "low": 266
+  },
+  "19113": {
+   "name": "Linn",
+   "district": 6,
+   "n": 16,
+   "overall": 279,
+   "high": 322,
+   "medium": 272,
+   "low": 245
+  },
+  "19115": {
+   "name": "Louisa",
+   "district": 9,
+   "n": 10,
+   "overall": 259,
+   "high": 297,
+   "medium": 262,
+   "low": 217
+  },
+  "19117": {
+   "name": "Lucas",
+   "district": 8,
+   "n": 13,
+   "overall": 187,
+   "high": 225,
+   "medium": 185,
+   "low": 151
+  },
+  "19119": {
+   "name": "Lyon",
+   "district": 1,
+   "n": 10,
+   "overall": 331,
+   "high": 397,
+   "medium": 327,
+   "low": 269
+  },
+  "19121": {
+   "name": "Madison",
+   "district": 8,
+   "n": 15,
+   "overall": 220,
+   "high": 254,
+   "medium": 218,
+   "low": 188
+  },
+  "19123": {
+   "name": "Mahaska",
+   "district": 9,
+   "n": 13,
+   "reported_with": [
+    "Wapello"
+   ],
+   "overall": 243,
+   "high": 295,
+   "medium": 247,
+   "low": 187
+  },
+  "19125": {
+   "name": "Marion",
+   "district": 8,
+   "n": 17,
+   "overall": 235,
+   "high": 278,
+   "medium": 233,
+   "low": 193
+  },
+  "19127": {
+   "name": "Marshall",
+   "district": 5,
+   "n": 26,
+   "overall": 289,
+   "high": 330,
+   "medium": 291,
+   "low": 246
+  },
+  "19129": {
+   "name": "Mills",
+   "district": 7,
+   "n": 15,
+   "overall": 269,
+   "high": 303,
+   "medium": 270,
+   "low": 235
+  },
+  "19131": {
+   "name": "Mitchell",
+   "district": 2,
+   "n": 14,
+   "overall": 273,
+   "high": 326,
+   "medium": 277,
+   "low": 216
+  },
+  "19133": {
+   "name": "Monona",
+   "district": 4,
+   "n": 12,
+   "overall": 319,
+   "high": 378,
+   "medium": 311,
+   "low": 268
+  },
+  "19135": {
+   "name": "Monroe",
+   "district": 8,
+   "n": 6,
+   "overall": 233,
+   "high": 288,
+   "medium": 228,
+   "low": 185
+  },
+  "19137": {
+   "name": "Montgomery",
+   "district": 7,
+   "n": 13,
+   "overall": 260,
+   "high": 304,
+   "medium": 261,
+   "low": 216
+  },
+  "19139": {
+   "name": "Muscatine",
+   "district": 6,
+   "n": 13,
+   "overall": 261,
+   "high": 313,
+   "medium": 272,
+   "low": 198
+  },
+  "19141": {
+   "name": "O'Brien",
+   "district": 1,
+   "n": 22,
+   "overall": 308,
+   "high": 337,
+   "medium": 313,
+   "low": 274
+  },
+  "19143": {
+   "name": "Osceola",
+   "district": 1,
+   "n": 9,
+   "overall": 281,
+   "high": 319,
+   "medium": 290,
+   "low": 235
+  },
+  "19145": {
+   "name": "Page",
+   "district": 7,
+   "n": 12,
+   "overall": 242,
+   "high": 286,
+   "medium": 241,
+   "low": 198
+  },
+  "19147": {
+   "name": "Palo Alto",
+   "district": 1,
+   "n": 16,
+   "overall": 280,
+   "high": 326,
+   "medium": 276,
+   "low": 238
+  },
+  "19149": {
+   "name": "Plymouth",
+   "district": 1,
+   "n": 37,
+   "overall": 292,
+   "high": 331,
+   "medium": 290,
+   "low": 255
+  },
+  "19151": {
+   "name": "Pocahontas",
+   "district": 1,
+   "n": 26,
+   "overall": 284,
+   "high": 325,
+   "medium": 281,
+   "low": 247
+  },
+  "19153": {
+   "name": "Polk",
+   "district": 5,
+   "n": 21,
+   "overall": 267,
+   "high": 320,
+   "medium": 261,
+   "low": 219
+  },
+  "19155": {
+   "name": "Pottawattamie",
+   "district": 7,
+   "n": 21,
+   "overall": 282,
+   "high": 325,
+   "medium": 279,
+   "low": 242
+  },
+  "19157": {
+   "name": "Poweshiek",
+   "district": 5,
+   "n": 17,
+   "overall": 291,
+   "high": 329,
+   "medium": 294,
+   "low": 251
+  },
+  "19159": {
+   "name": "Ringgold",
+   "district": 8,
+   "n": 11,
+   "reported_with": [
+    "Decatur"
+   ],
+   "overall": 201,
+   "high": 235,
+   "medium": 200,
+   "low": 169
+  },
+  "19161": {
+   "name": "Sac",
+   "district": 4,
+   "n": 21,
+   "overall": 291,
+   "high": 334,
+   "medium": 290,
+   "low": 248
+  },
+  "19163": {
+   "name": "Scott",
+   "district": 6,
+   "n": 9,
+   "overall": 271,
+   "high": 319,
+   "medium": 280,
+   "low": 214
+  },
+  "19165": {
+   "name": "Shelby",
+   "district": 4,
+   "n": 20,
+   "overall": 293,
+   "high": 337,
+   "medium": 291,
+   "low": 250
+  },
+  "19167": {
+   "name": "Sioux",
+   "district": 1,
+   "n": 22,
+   "overall": 332,
+   "high": 371,
+   "medium": 334,
+   "low": 292
+  },
+  "19169": {
+   "name": "Story",
+   "district": 5,
+   "n": 33,
+   "overall": 281,
+   "high": 317,
+   "medium": 282,
+   "low": 245
+  },
+  "19171": {
+   "name": "Tama",
+   "district": 5,
+   "n": 18,
+   "overall": 313,
+   "high": 376,
+   "medium": 308,
+   "low": 255
+  },
+  "19173": {
+   "name": "Taylor",
+   "district": 7,
+   "n": 9,
+   "overall": 227,
+   "high": 258,
+   "medium": 238,
+   "low": 184
+  },
+  "19175": {
+   "name": "Union",
+   "district": 8,
+   "n": 8,
+   "overall": 231,
+   "high": 284,
+   "medium": 224,
+   "low": 186
+  },
+  "19177": {
+   "name": "Van Buren",
+   "district": 9,
+   "n": 9,
+   "overall": 214,
+   "high": 258,
+   "medium": 218,
+   "low": 168
+  },
+  "19179": {
+   "name": "Wapello",
+   "district": 9,
+   "n": 13,
+   "reported_with": [
+    "Mahaska"
+   ],
+   "overall": 243,
+   "high": 295,
+   "medium": 247,
+   "low": 187
+  },
+  "19181": {
+   "name": "Warren",
+   "district": 8,
+   "n": 7,
+   "overall": 242,
+   "high": 294,
+   "medium": 233,
+   "low": 200
+  },
+  "19183": {
+   "name": "Washington",
+   "district": 9,
+   "n": 11,
+   "overall": 294,
+   "high": 340,
+   "medium": 290,
+   "low": 251
+  },
+  "19185": {
+   "name": "Wayne",
+   "district": 8,
+   "n": 12,
+   "overall": 173,
+   "high": 197,
+   "medium": 177,
+   "low": 145
+  },
+  "19187": {
+   "name": "Webster",
+   "district": 5,
+   "n": 17,
+   "overall": 282,
+   "high": 316,
+   "medium": 282,
+   "low": 247
+  },
+  "19189": {
+   "name": "Winnebago",
+   "district": 2,
+   "n": 14,
+   "overall": 289,
+   "high": 330,
+   "medium": 285,
+   "low": 252
+  },
+  "19191": {
+   "name": "Winneshiek",
+   "district": 3,
+   "n": 13,
+   "reported_with": [
+    "Allamakee"
+   ],
+   "overall": 274,
+   "high": 314,
+   "medium": 279,
+   "low": 229
+  },
+  "19193": {
+   "name": "Woodbury",
+   "district": 4,
+   "n": 8,
+   "overall": 315,
+   "high": 365,
+   "medium": 304,
+   "low": 275
+  },
+  "19195": {
+   "name": "Worth",
+   "district": 2,
+   "n": 14,
+   "overall": 250,
+   "high": 279,
+   "medium": 254,
+   "low": 216
+  },
+  "19197": {
+   "name": "Wright",
+   "district": 2,
+   "n": 33,
+   "overall": 275,
+   "high": 319,
+   "medium": 278,
+   "low": 229
+  }
+ }
+}

@@ -989,7 +989,9 @@
     var ok = b && b.status === 'ok', lab = ok ? b.label : 'futures';
     function words(m) { return cents(m * 100) + ' ' + (m < 0 ? 'under' : 'over') + ' ' + lab; }
     if (local && local.n >= 3 && local.median != null) {
-      return { label: label, value: words(local.median), date: isoDay(local.when) || (ok ? isoDay(b.asOf) : ''),
+      /* the label carries the scope beside the price (Nov 18 outside review: "40¢ under" for the county's elevators and
+         "35¢ under" for the bids within 50 miles read as one figure that disagreed) */
+      return { label: label + ', ' + local.n + ' bids within ' + BID_MILES + ' mi', value: words(local.median), date: isoDay(local.when) || (ok ? isoDay(b.asOf) : ''),
         ctx: 'Middle of ' + local.n + ' bids within ' + BID_MILES + ' mi of ' + (from || 'here') + '.' + (ok ? ' ' + STATES[st] + ': ' + words(b.median) + ', ' + medOf(b.n, b.companies) + '.' : '') + usda,
         src: ['Basis', href], paper: 'Posted elevator bids' + (usda ? '; USDA AgTransport' : '') };
     }
