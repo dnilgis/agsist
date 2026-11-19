@@ -366,8 +366,12 @@
   if (!doc.querySelector('link[href^="/components/county-print.css"]')) load('link', { rel: 'stylesheet', href: CSS });
   if (!root.AgQR) load('script', { src: QR_JS, async: true }).onload = function () { soon(); };
   var ST = (live && live.getAttribute('data-st')) || '';
-  if (/^[A-Z]{2}$/.test(ST) && root.fetch) root.fetch('/farmland-atlas/loc/' + ST.toLowerCase() + '.json').then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (j) { LOC = j; soon(); }, function () {});
+  /* the state locator gives up after 10 s (a slow or dead connection): the sheet prints without it */
+  if (/^[A-Z]{2}$/.test(ST) && root.fetch) (function () {
+    var c = root.AbortController ? new root.AbortController() : null, t = setTimeout(function () { if (c) c.abort(); }, 10000);
+    root.fetch('/farmland-atlas/loc/' + ST.toLowerCase() + '.json', c ? { signal: c.signal } : {}).then(function (r) { clearTimeout(t); return r.ok ? r.json() : null; })
+      .then(function (j) { LOC = j; soon(); }, function () { clearTimeout(t); });
+  })();
   /* the page's own "Figures as of" date, for the sheet's footer */
   var AS_OF = (((doc.querySelector('main') || doc.body).textContent.match(/Figures as of ([A-Z][a-z]{2} \d{1,2}, \d{4})/)) || [])[1] || '';
   function current() { return sheet(CP, root.AgCountyFacts || {}, { name: NAME, state: STATE, url: URL_, fips: FIPS, now: Date.now(), asOf: AS_OF }); }

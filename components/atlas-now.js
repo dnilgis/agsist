@@ -22,9 +22,16 @@
    ranked lists give one sentence when every county ties, and the picture button names the map it saves and shows
    only when that picture exists (drought: the U.S. or the state; land value: the county); every other map offers
    "Copy link to this map", the old-style #l=, #s= link. */
+/* Nov 18 (slow connections): the page's HTML carries the opening answer (scripts/atlas_now.py bake_hub, from the same
+   now.json): the answer line, the tiles (#an-tiles0), the drought key (#an-key0) and its caption. Once the data is in,
+   the same markup is drawn here in place and the baked copies go, so nothing moves. Each read gives up after 10 s;
+   then the map box says the map did not load, that the figures above are from different days (the drought map is
+   older than the bids) with the newest one's day, and offers Try again. The answer line follows the map in view: the U.S. or the open state (now.json ans), for each question's headline map. */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
+// the page's inline fallback (farmland-atlas.html) waits 10 s for this flag before it says the map did not load
+window.AtlasNowRan=true;
 var D='/farmland-atlas/data/', NOW=null, GEO=null, IDX={}, ROWS={}, COL={}, LAY={}, PATHS={}, HAS={}, STATE_OF={};
 var S={q:'',m:'',s:'',c:'',sc:'st'}, OLD=null, OLDP=null, OL={}, DEC=null, DEEP=null;
 // the old map's layers that are the same figure as a headline map open that map
@@ -49,7 +56,14 @@ function strong(sent){
   return t;
 }
 function ga(n,p){ try{ if(window.gaEvent) window.gaEvent(n,p); }catch(e){} }
-function get(u){ return fetch(u,{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error(u); return r.json(); }); }
+// a read that has not answered in 10 s (or not finished in 60 s) has failed, like an error or a 500
+function get(u){
+  var c=window.AbortController?new AbortController():null, t=setTimeout(function(){ if(c) c.abort(); },10000), all;
+  return fetch(u,c?{cache:'no-cache',signal:c.signal}:{cache:'no-cache'}).then(function(r){
+    clearTimeout(t); if(!r.ok) throw new Error(u); all=setTimeout(function(){ if(c) c.abort(); },60000);
+    return r.json().then(function(j){ clearTimeout(all); return j; });
+  },function(e){ clearTimeout(t); throw e; });
+}
 function isOld(k){ return !!k&&!LAY[k]; }
 
 // ---------- values, bins and words (headline maps)
@@ -219,7 +233,8 @@ function oldList(){
   if(!OLDP){
     OLDP=new Promise(function(ok,no){
       if(window.AtlasLayers) return ok();
-      var s=document.createElement('script'); s.src='/components/atlas-layers.js?v=2'; s.onload=function(){ ok(); }; s.onerror=function(){ OLDP=null; no(new Error('layers')); };
+      var s=document.createElement('script'), to=setTimeout(function(){ s.onload=s.onerror=null; OLDP=null; no(new Error('layers')); },10000);   // 10 s, as every read
+      s.src='/components/atlas-layers.js?v=3'; s.onload=function(){ clearTimeout(to); ok(); }; s.onerror=function(){ clearTimeout(to); OLDP=null; no(new Error('layers')); };
       document.head.appendChild(s);
     }).then(function(){
       var names={}; for(var k in NOW.states) names[k]=NOW.states[k].name;
@@ -281,7 +296,9 @@ function paint(){
   $('an-key').innerHTML='<li class="an-kh">'+esc(viewName())+' counties</li>'+keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
     var t=x[1]+' '+Number(x[2]).toLocaleString('en-US')+(x[3]?' '+x[3]:'');
     return '<li><button type="button" data-k="'+x[0]+'" aria-pressed="false" aria-label="Show '+esc(t)+' on the map"><i class="'+x[0]+'"'+bg+'></i>'+esc(ph?(l.key==='drought'&&/^k\d$/.test(x[0])?DRS[+x[0].slice(1)]:shortLab(x[1])):x[1])+' <b>'+Number(x[2]).toLocaleString('en-US')+'</b></button></li>'; }).join('');
+  $('an-key').hidden=false; var k0=$('an-key0'); if(k0) k0.parentNode.removeChild(k0);
   $('an-key').scrollLeft=0;
+  answer(l);
   $('an-svg').setAttribute('aria-label','County map: '+l.label);
   var dw=$('an-dec'); dw.hidden=!l.slider;
   if(l.slider&&!dw.options.length){ window.AtlasLayers.decades.forEach(function(t,i){ var o=document.createElement('option'); o.value=i; o.textContent=t; dw.appendChild(o); }); dw.value=DEC==null?window.AtlasLayers.decades.length-1:DEC; }
@@ -292,6 +309,14 @@ function paint(){
 // on a phone a range reads "21-30%" (en dash) and a drought level by its Drought Monitor code ("D1"), so the key takes
 // three rows on the common maps and each swatch stays a full 24 px tap; the button's label keeps the full words
 var DRS=['D0','D1','D2','D3','D4'];
+// the answer line under the title: the U.S. or the open state, for this map's question's headline map
+function answer(l){
+  var A=NOW.ans&&NOW.ans[S.s||'US'], el=$('an-lede'); if(!A||!el) return;
+  var k=l&&A[l.key]?l.key:(l&&l.q?headOf(l.q):'drought'); if(!A[k]) k='drought';
+  if(A[k]) el.innerHTML=strong(A[k]);
+  // the counties a state's line leaves out, named under the map (the line itself keeps its height)
+  var g=$('an-gap'); if(g){ g.hidden=!A[k+'_gap']; g.innerHTML=A[k+'_gap']?strong(A[k+'_gap']):''; }
+}
 function shortLab(t){ var m=/^(\$?[\d.,]+)([%\u00a2]?) to (\$?[\d.,]+)([%\u00a2]?)(.*)$/.exec(t); return m?m[1]+(m[2]&&m[2]===m[4]?'':m[2])+'\u2013'+m[3]+m[4]+m[5]:t; }
 var KEYPIN=null;
 function wireKey(){
@@ -368,6 +393,7 @@ function zoom(st){
   $('an-svg').setAttribute('viewBox',vb.map(function(v){return Math.round(v*10)/10;}).join(' '));
   root.classList.toggle('zoomed',!!S.s); $('an-st').value=S.s; $('an-all').hidden=!S.s;
   if(NOW&&layerOf(S.m)&&(!layerOf(S.m).old||OL[S.m])) paint();
+  if(NOW&&$('an-tiles')&&!$('an-tiles').hidden&&$('an-tiles').getAttribute('data-s')!==(S.s||'US')){ tiles(); side(); }   // the tiles and the answers follow the state
   setLink(); save();
 }
 function pick(f,quiet,fromRecord){
@@ -407,16 +433,18 @@ function thumbs(){
   });
 }
 function headOf(q){ return NOW.questions.filter(function(x){return x.key===q;})[0].head; }
+// a question's answer for the view: the open state's own sentence (now.json ans, its headline map), else the U.S. one
+function qsay(q,gap){ var A=S.s&&NOW.ans&&NOW.ans[S.s], k=A&&headOf(q.key); if(gap) return A?A[k+'_gap']:NOW.say[q.key+'_sub']; return A&&A[k]?A[k]:NOW.say[q.key]; }
 function side(){
   var box=$('an-side'), h='';
   if(!S.q){
     h='<h2 class="an-qh">Pick a question</h2><div class="an-qgrid">'+NOW.questions.map(function(q){
-      return '<button type="button" class="an-qcard" data-q="'+q.key+'"><canvas width="166" height="113" data-layer="'+q.head+'" aria-hidden="true"></canvas><span><b class="an-ql">'+esc(q.label)+'</b><span class="an-qq">'+esc(q.ask)+'</span><span class="an-qa">'+strong(NOW.say[q.key])+'</span></span></button>';
+      return '<button type="button" class="an-qcard" data-q="'+q.key+'"><canvas width="166" height="113" data-layer="'+q.head+'" aria-hidden="true"></canvas><span><b class="an-ql">'+esc(q.label)+'</b><span class="an-qq">'+esc(q.ask)+'</span><span class="an-qa">'+strong(qsay(q))+'</span></span></button>';
     }).join('')+'</div>';
   }else{
     var q=NOW.questions.filter(function(x){return x.key===S.q;})[0];
     var more=OLD?Object.keys(OLD).map(function(k){return OLD[k];}).filter(function(l){ return l.q===S.q&&!l.off; }):null;
-    h='<p class="an-ask">'+esc(q.ask)+'</p><p class="an-ans">'+strong(NOW.say[q.key])+'</p>'+(NOW.say[q.key+'_sub']?'<p class="an-ans2">'+strong(NOW.say[q.key+'_sub'])+'</p>':'')+
+    h='<p class="an-ask">'+esc(q.ask)+'</p><p class="an-ans">'+strong(qsay(q))+'</p>'+(qsay(q,1)?'<p class="an-ans2">'+strong(qsay(q,1))+'</p>':'')+
       '<h2 class="an-qh">Maps one tap down</h2><div class="an-dl">'+NOW.layers.filter(function(l){return l.q===S.q;}).map(function(l){
         return '<button type="button" class="an-dbtn" data-m="'+l.key+'" aria-pressed="'+(l.key===S.m)+'"><canvas width="96" height="65" data-layer="'+l.key+'" aria-hidden="true"></canvas><span>'+esc(l.label)+(l.key===q.head?' <small>headline</small>':'')+'</span></button>';
       }).join('')+'</div>'+
@@ -438,11 +466,14 @@ function go(q,keepM){
   if(!keepM||!l||(S.q&&l.q!==S.q)) S.m=S.q?headOf(S.q):'drought';
   tabs(); paint(); side(); setLink(); save();
 }
+// the five tiles: the open state's own (now.json st_tiles), else the U.S. ones
 function tiles(){
-  var box=$('an-tiles'); if(!box||!NOW.tiles) return;
-  box.innerHTML=NOW.tiles.map(function(t){
+  var box=$('an-tiles'), T=S.s&&NOW.st_tiles&&NOW.st_tiles[S.s]||NOW.tiles; if(!box||!T) return;
+  box.setAttribute('data-s',T===NOW.tiles?'US':S.s);
+  box.innerHTML=T.map(function(t){
     return '<button type="button" class="an-tile" data-q="'+esc(t.q)+'"><span class="an-tl">'+esc(t.label)+'</span><b class="an-tb">'+esc(t.big.t)+'</b><span class="an-ts">'+esc(t.sub.t)+'</span></button>'; }).join('');
   [].forEach.call(box.querySelectorAll('.an-tile'),function(b){ b.addEventListener('click',function(){ ui(); go(b.getAttribute('data-q')); ga('atlas_now_tile',{q:b.getAttribute('data-q')}); }); });
+  box.hidden=false; var t0=$('an-tiles0'); if(t0) t0.parentNode.removeChild(t0);
 }
 
 // ---------- links and the picture
@@ -553,22 +584,37 @@ function folds(){
       oldList().then(function(){ window.AtlasLayers.national(); }).catch(function(){ d.removeAttribute('data-on'); }); }); });
 }
 
-Promise.all([get(D+'now.json'),get(D+'geo-us.json'),get(D+'counties-index.json').catch(function(){ return []; })]).then(function(res){
-  NOW=res[0]; GEO=res[1];
-  NOW.cols.forEach(function(c,i){ COL[c]=i; });
-  NOW.rows.forEach(function(r){ ROWS[r[0]]=r; });
-  NOW.layers.forEach(function(l){ LAY[l.key]=l; });
-  (res[2]||[]).forEach(function(x){ IDX[x[0]]=[x[1],x[2]]; STATE_OF[x[0]]=String(x[1]).slice(-2); });
-  buildMap(); wire(); tiles(); folds(); vint();
-  var deep=readLink();
-  if(S.m&&!LAY[S.m]&&!deep) deep={l:S.m};
-  if(S.q&&!NOW.questions.some(function(x){return x.key===S.q;})) S.q='';
-  root.classList.add('ready');
-  var later=deep?applyDeep(deep):null;
-  if(!later){ go(S.q,!!S.m); if(S.s) zoom(S.s); if(S.c) pick(S.c,true); if(deep&&deep.c) record(deep.c,'link'); }
-  else { tabs(); side(); waitOld(S.m); }
-}).catch(function(){
-  var n=$('fa-nodata'); if(n) n.hidden=false;
-  root.classList.add('failed');
-});
+// the map box while the data comes: "Loading the county map."; if it does not come, one line and Try again, and the
+// answer, tiles, key and caption baked into the page stay as they are
+function wait(on){
+  var w=$('an-wait'); if(!w) return;
+  if(on){ w.textContent='Loading the county map.'; return; }
+  var d=($('an-lede')||{}).getAttribute?$('an-lede').getAttribute('data-day'):'';
+  w.innerHTML='The map did not load.'+(d?' The figures above are from different days; the newest is from '+esc(d)+'.':'')+' <button type="button" id="an-retry">Try again</button>';
+  $('an-retry').addEventListener('click',function(){ ga('atlas_now_retry',{}); start(); });
+}
+var BUSY=false;
+function start(){
+  if(BUSY||NOW) return; BUSY=true;
+  root.classList.remove('failed'); wait(true);
+  Promise.all([get(D+'now.json'),get(D+'geo-us.json'),get(D+'counties-index.json').catch(function(){ return []; })]).then(function(res){
+    BUSY=false; NOW=res[0]; GEO=res[1];
+    NOW.cols.forEach(function(c,i){ COL[c]=i; });
+    NOW.rows.forEach(function(r){ ROWS[r[0]]=r; });
+    NOW.layers.forEach(function(l){ LAY[l.key]=l; });
+    (res[2]||[]).forEach(function(x){ IDX[x[0]]=[x[1],x[2]]; STATE_OF[x[0]]=String(x[1]).slice(-2); });
+    buildMap(); wire(); tiles(); folds(); vint();
+    var deep=readLink();
+    if(S.m&&!LAY[S.m]&&!deep) deep={l:S.m};
+    if(S.q&&!NOW.questions.some(function(x){return x.key===S.q;})) S.q='';
+    root.classList.add('ready');
+    var later=deep?applyDeep(deep):null;
+    if(!later){ go(S.q,!!S.m); if(S.s) zoom(S.s); if(S.c) pick(S.c,true); if(deep&&deep.c) record(deep.c,'link'); }
+    else { tabs(); side(); waitOld(S.m); }
+  }).catch(function(){
+    BUSY=false; if(root.classList.contains('ready')) return; NOW=null;
+    root.classList.add('failed'); wait(false);
+  });
+}
+start();
 })();
