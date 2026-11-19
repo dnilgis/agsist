@@ -22,6 +22,8 @@
   }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
+  /* the zone's name as the builder says it (TZ_OF in scripts/build_county_rain.py) */
+  var TZN = { 'America/New_York': 'Eastern', 'America/Chicago': 'Central', 'America/Denver': 'Mountain', 'America/Phoenix': 'Mountain', 'America/Los_Angeles': 'Pacific' };
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   /* '2026-11-19T07:00:00Z', 'America/Chicago', 'Central' -> '1 am Central, Nov 19' */
@@ -43,15 +45,14 @@
     var v = doc.counties && doc.counties[fips];
     if (!end || !(Date.parse(end) > Date.parse(have))) return false;
     if (!v || v.length < 2 || v[0] == null || v[1] == null || !isFinite(v[0]) || !isFinite(v[1])) return false;
-    var dds = box.querySelectorAll('dd[data-w]'), t = box.querySelector('time');
-    if (dds.length !== 2 || !t) return false;
-    var said = when(end, box.getAttribute('data-tz'), box.getAttribute('data-tzn'));
+    var dds = box.querySelectorAll('dd'), t = box.querySelector('time'), tz = box.getAttribute('data-tz');
+    if (dds.length !== 2 || !t || !TZN[tz]) return false;
+    var said = when(end, tz, TZN[tz]);
     if (!said) return false;
     for (var i = 0; i < 2; i++) {
       var n = dds[i].firstChild;
-      if (n && n.nodeType === 3) n.nodeValue = (v[+dds[i].getAttribute('data-w')] / 100).toFixed(2) + ' ';
+      if (n && n.nodeType === 3) n.nodeValue = (v[i] / 100).toFixed(2) + ' ';
     }
-    t.setAttribute('datetime', end);
     t.textContent = said;
     box.setAttribute('data-end', end);
     return true;
