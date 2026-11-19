@@ -590,7 +590,7 @@
       var foot = document.getElementById('site-footer') || document.querySelector('footer.footer');
       if (!foot || !foot.parentNode) return;
       slot = document.createElement('div');
-      slot.id = 'sw-slot'; slot.className = 'sw-slot sw-slot--end';
+      slot.id = 'sw-slot'; slot.className = 'sw-slot sw-slot--wide';
       foot.parentNode.insertBefore(slot, foot);
     }
     slot.appendChild(line);
