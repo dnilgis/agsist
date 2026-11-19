@@ -1,8 +1,8 @@
 {
- "about": "K-State's model-based county cash rent estimates for the 2027 crop year: a tenant's breakeven blended toward survey evidence. Not a survey of rents paid and not a USDA figure.",
+ "about": "K-State's model-based county cash rent estimates for the 2027 crop year: a tenant's breakeven, anchored to survey or prior-year evidence where there is any. Not a survey of rents paid and not a USDA figure.",
  "anchors": {
   "NASS": "the 2026 USDA irrigated survey",
-  "none": "no anchor: the model's breakeven",
+  "none": "no anchor: the raw breakeven, published unchanged",
   "prior": "the 2025 K-State estimate"
  },
  "counties": {
@@ -140,7 +140,7 @@
     "est": 88,
     "high": 137,
     "low": 54,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20029": {
@@ -171,7 +171,7 @@
     "est": 28,
     "high": 43,
     "low": 19,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20035": {
@@ -202,7 +202,7 @@
     "est": 47,
     "high": 79,
     "low": 22,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20041": {
@@ -261,7 +261,7 @@
     "est": 41,
     "high": 75,
     "low": 16,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20051": {
@@ -292,7 +292,7 @@
     "est": 40,
     "high": 64,
     "low": 20,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20057": {
@@ -307,7 +307,7 @@
     "est": 52,
     "high": 76,
     "low": 29,
-    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+    "mix_flag": "larger"
    }
   },
   "20059": {
@@ -422,7 +422,7 @@
     "est": 27,
     "high": 40,
     "low": 14,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20077": {
@@ -503,7 +503,7 @@
     "est": 76,
     "high": 128,
     "low": 42,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20091": {
@@ -512,7 +512,7 @@
     "est": 56,
     "high": 111,
     "low": 25,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20093": {
@@ -527,7 +527,7 @@
     "est": 27,
     "high": 46,
     "low": 12,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20095": {
@@ -556,7 +556,7 @@
     "est": 39,
     "high": 60,
     "low": 23,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20099": {
@@ -579,7 +579,7 @@
     "est": 35,
     "high": 59,
     "low": 16,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20103": {
@@ -668,7 +668,7 @@
     "est": 111,
     "high": 187,
     "low": 66,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20119": {
@@ -683,7 +683,7 @@
     "est": 37,
     "high": 59,
     "low": 20,
-    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+    "mix_flag": "larger"
    }
   },
   "20121": {
@@ -736,7 +736,7 @@
     "est": 24,
     "high": 35,
     "low": 14,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20131": {
@@ -945,7 +945,7 @@
     "est": 39,
     "high": 64,
     "low": 27,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20165": {
@@ -960,7 +960,7 @@
     "est": 48,
     "high": 72,
     "low": 28,
-    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+    "mix_flag": "larger"
    }
   },
   "20167": {
@@ -997,7 +997,7 @@
     "est": 48,
     "high": 80,
     "low": 25,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20173": {
@@ -1054,7 +1054,7 @@
     "est": 51,
     "high": 83,
     "low": 38,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20181": {
@@ -1153,7 +1153,7 @@
     "est": 52,
     "high": 84,
     "low": 31,
-    "mix_flag": "FSA and NASS disagree about the county crop mix"
+    "mix_flag": "flag"
    }
   },
   "20195": {
@@ -1242,11 +1242,21 @@
     "est": 65,
     "high": 103,
     "low": 39,
-    "mix_flag": "FSA and NASS disagree about the county crop mix by more still"
+    "mix_flag": "larger"
    }
   }
  },
  "evidence": "model-based estimate, K-State",
+ "mix_note": {
+  "flag": "FSA and NASS disagree about the county crop mix by more than 15 percentage points.",
+  "informational": "The flag is informational.",
+  "larger": "The disagreement is larger still.",
+  "pp": 15
+ },
+ "raw_note": {
+  "what": "raw breakeven is published unchanged",
+  "why": "neither a NASS irrigated rate nor a prior KSU estimate"
+ },
  "source": {
   "authors": "Gregg Ibendahl and Daniel O'Brien",
   "files": {
