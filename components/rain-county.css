@@ -230,3 +230,15 @@
   .rc-print-top.rc-print-off figcaption > span[hidden] { display: block !important; visibility: hidden; }
 }
 @media (min-width: 561px) { .rc-print-top.rc-print-on > .rce-top { display: none; } }
+/* Lately: the radar's last 24 hours and 7 days over the county (scripts/build_county_rain.py recent_box). An estimate looks
+   like one: a dashed box with no fill and the word "estimate", next to the solid observed figures below it. Two lines are
+   held for the source and time, which components/rain-recent.js rewrites in place. */
+.rc-now { border: 1px dashed var(--border-2, var(--border)); border-radius: var(--r-md); padding: .5rem .8rem .55rem; margin: 0 0 1rem; max-width: 40em; }
+.rc-now-h { margin: 0 0 .25rem; font-size: var(--fs-sm); color: var(--text); }
+.rc-est { display: inline-block; font-size: var(--fs-xs); color: var(--text-muted); border: 1px dashed currentColor; border-radius: var(--r-pill); padding: 0 .45rem; margin-left: .3rem; }
+.rc-now dl { display: grid; grid-template-columns: 1fr 1fr; gap: .2rem .8rem; margin: 0; }
+.rc-now dt { font-size: var(--fs-xs); color: var(--text-muted); margin: 0; }
+.rc-now dd { margin: 0; font-size: 1.3rem; font-weight: 700; font-family: var(--font-mono, monospace); color: var(--text); white-space: nowrap; }
+.rc-now dd small { font-size: var(--fs-xs); font-weight: 400; color: var(--text-muted); font-family: var(--font-body, inherit); }
+.rc-now-t { margin: .3rem 0 0; font-size: var(--fs-xs); line-height: 1.45; color: var(--text-muted); min-height: 2.9em; }
+.rc-now-t time { white-space: nowrap; }
