@@ -2,6 +2,34 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-19-farmland-atlas-review-fixes",
+   "date": "2026-11-19",
+   "title": "Farmland Atlas keys you can check",
+   "line": "Atlas map keys now print the cents that tell their bins apart, cautions look different from missing figures, and each county figure names its years.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-19-one-page-per-question",
+   "date": "2026-11-19",
+   "title": "Short addresses for company bid pages",
+   "line": "Town bid pages lead with the town, company pages open at short addresses, and a board our own price checks refuse stays listed, without prices, for up to 30 days.",
+   "link": "/cash-bids/company/landus-cooperative"
+  },
+  {
+   "id": "2026-11-19-usda-calendar-next-reports",
+   "date": "2026-11-19",
+   "title": "Next USDA reports up top",
+   "line": "The USDA calendar now opens with the next date and Eastern time of WASDE, Crop Production and Crop Progress.",
+   "link": "/usda-calendar"
+  },
+  {
+   "id": "2026-11-18-arc-plc-wheat-dollars",
+   "date": "2026-11-18",
+   "title": "ARC/PLC wheat: expected payments are back",
+   "line": "Wheat county pages print 2026 expected ARC-CO and PLC payments again, from how far USDA's November wheat price has missed the final price since 2015.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-18-drought-map-atlas",
    "date": "2026-11-18",
    "title": "Drought map links open the Farmland Atlas",
@@ -9,11 +37,32 @@
    "link": "/farmland-atlas#l=drought"
   },
   {
+   "id": "2026-11-18-farmland-atlas-first-paint",
+   "date": "2026-11-18",
+   "title": "Atlas answers before the map loads",
+   "line": "The Farmland Atlas shows its dated answer before the map loads, says so with a Try again button if the map does not come, and answers for the state you open.",
+   "link": "/farmland-atlas"
+  },
+  {
    "id": "2026-11-18-farmland-atlas-key-counts",
    "date": "2026-11-18",
    "title": "Atlas key counts the state you open",
    "line": "Open a state on the Farmland Atlas and the key counts that state's counties. The picture button names the map it saves.",
    "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-iowa-state-land-surveys",
+   "date": "2026-11-18",
+   "title": "Iowa State land values and rent by land quality",
+   "line": "Iowa county pages and Iowa rent now show Iowa State's 2025 land value and 2026 rent for high, medium and low quality ground, each dated.",
+   "link": "/rent/iowa"
+  },
+  {
+   "id": "2026-11-18-menu-cash-bids-prf",
+   "date": "2026-11-18",
+   "title": "Cash bids on the menu bar",
+   "line": "Cash bids now has its own link on the menu bar and comes first under My place on phones. PRF moved to Programs, next to ARC or PLC.",
+   "link": "/cash-bids"
   },
   {
    "id": "2026-11-18-sponsor-numbers-same-day",
