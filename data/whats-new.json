@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-19-atlas-extension-surveys",
+   "date": "2026-11-19",
+   "title": "Minnesota, Wisconsin and Kansas survey figures",
+   "line": "Minnesota rents paid, Wisconsin land sale prices and K-State's Kansas rent estimates and land values now sit beside USDA's on the Atlas and the rent pages.",
+   "link": "/rent/minnesota"
+  },
+  {
    "id": "2026-11-19-atlas-north-dakota-survey",
    "date": "2026-11-19",
    "title": "North Dakota county rents and land prices",
