@@ -554,6 +554,7 @@ details.fa-arith .body a{color:var(--gold)}
   .ls-tap b{display:inline}
   .ls-tap:focus-visible{outline:2px solid var(--gold,#d4a23f)}
   .ls-nx{display:block;margin-left:auto;font-weight:400;font-size:.74rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis}
+  .ls-nx::before{content:"Next: "}.ls-nx:empty::before{content:"Next: not announced"}
   .ls-t td{display:none;border:0;padding:.1rem 0 .4rem}
   .ls-t tr.ls-open td{display:block}
   .ls-t td::before{display:block;font-size:.7rem;color:var(--text-muted)}
@@ -655,7 +656,7 @@ var FILL={county:'#2e7d4f',region:'#7fb08f',usda:'#c9d6cd'},WORD={county:'county
 function rows(){return [].slice.call(b.querySelectorAll('tr'));}
 t.querySelector('thead').addEventListener('click',function(e){var x=e.target.closest('button[data-k]');if(!x)return;var k=+x.getAttribute('data-k'),th=x.parentNode,
 up=th.getAttribute('aria-sort')!=='ascending';[].forEach.call(t.querySelectorAll('thead th'),function(h){h.setAttribute('aria-sort','none');});th.setAttribute('aria-sort',up?'ascending':'descending');
-rows().map(function(r){return [r.children[k].getAttribute('data-v')||'',r.children[0].getAttribute('data-v'),r];}).sort(function(p,q){var a=p[0],c=q[0],n=!isNaN(a)&&!isNaN(c)&&a!==''&&c!=='';
+rows().map(function(r){var n=r.querySelector('th b').textContent;return [k?r.children[k].getAttribute('data-v')||'':n,n,r];}).sort(function(p,q){var a=p[0],c=q[0],n=!isNaN(a)&&!isNaN(c)&&a!==''&&c!=='';
 var d=n?(+a)-(+c):a.localeCompare(c);return (up?d:-d)||p[1].localeCompare(q[1]);}).forEach(function(z){b.appendChild(z[2]);});});
 function open(r,on){r.classList.toggle('ls-open',on);var x=r.querySelector('.ls-tap');if(x)x.setAttribute('aria-expanded',on?'true':'false');}
 b.addEventListener('click',function(e){var x=e.target.closest('.ls-tap');if(!x)return;var r=x.closest('tr');open(r,!r.classList.contains('ls-open'));});
@@ -663,7 +664,7 @@ function hash(){var m=/^#src-([a-z]{2})$/.exec(location.hash||''),r=m&&document.
 rows().forEach(function(z){z.classList.remove('ls-hit');});r.classList.add('ls-hit');open(r,true);}
 hash();window.addEventListener('hashchange',hash);
 var host=document.getElementById('ls-map'),done=false;if(!host)return;
-function draw(){if(done)return;done=true;var m={};rows().forEach(function(r){var s=r.getAttribute('data-st'),l=r.getAttribute('data-best');if(s&&FILL[l])m[s]={fill:FILL[l],text:WORD[l],href:'#src-'+s.toLowerCase()};});
+function draw(){if(done)return;done=true;var m={};rows().forEach(function(r){var s=r.id.slice(4).toUpperCase(),l=r.getAttribute('data-best');if(s&&FILL[l])m[s]={fill:FILL[l],text:WORD[l],href:'#src-'+s.toLowerCase()};});
 if(!Object.keys(m).length){host.hidden=true;return;}
 function go(){if(window.AgUSMap)window.AgUSMap.mount(host,{states:m,hint:'Tap a state for its row in the table.',name:'Land figures by source, by state'});}
 if(window.AgUSMap){go();return;}var s=document.createElement('script');s.src='/components/usmap.js?v=1';s.onload=go;document.head.appendChild(s);}

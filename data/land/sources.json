@@ -1,5 +1,5 @@
 {
- "about": "Every state's land figures on the AGSIST Farmland Atlas: which ones we show, who publishes them, the survey dates, the level (county or the survey's own region) and the next release where the publisher has stated one. Built from the data files by scripts/land_sources.py; never typed by hand.",
+ "about": "Every state's land figures on the AGSIST Farmland Atlas: which ones we show, who publishes them, the survey dates, the level (county or the survey's own region) and the next release where the publisher has stated one. Built from the data files; never typed by hand.",
  "built": "2026-11-19",
  "older_months": 24,
  "states": {
