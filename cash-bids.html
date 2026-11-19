@@ -513,7 +513,6 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <link rel="stylesheet" href="/components/cb-layout.css?v=2">
 </head><body>
 <a href="#main" class="skip">Skip to content</a>
-<noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is required to search for cash grain bids. Please enable JavaScript in your browser.</div></noscript>
 <div id="cb-toast" class="cb-toast" role="status" aria-live="polite"></div>
 <div id="cb-live" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
 <div id="site-header">
@@ -589,6 +588,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
         <input id="cb-zip" class="cb-lookup-input" type="tel" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code" placeholder="Enter ZIP code" aria-label="ZIP code to find cash grain bids">
         <button id="cb-go" class="cb-lookup-btn">Search</button>
       </div>
+      <noscript><p class="cb-noscript" style="font-size:.85rem;color:var(--text-dim);margin:.4rem 0">The ZIP search runs in your browser. Every town&rsquo;s bids are also on its own page: pick a state under <a href="/basis#states">bids by state</a>, or a company under <a href="/cash-bids/company/">bids by company</a>.</p></noscript>
       <div class="cb-radius-row">
         <label for="cb-radius" class="cb-sr">How far to look</label>
         <select id="cb-radius">
