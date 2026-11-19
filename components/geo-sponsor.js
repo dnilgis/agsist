@@ -18,8 +18,8 @@
  * [data-state-spot] box each page builder writes directly below the main answer.
  * The box holds its height from the first paint (components/styles.css), so the
  * card lands without moving anything. With no live sponsor for that state the
- * spot shows that it is open: the state's engaged visits and page views from
- * data/sponsor-spots.json (engaged visits from the state, views of its pages) and its price from data/rate-card.json. Two sponsor
+ * spot shows that it is open, with no figure and no price (Nov 19, 2026: reader figures are on /sponsor only;
+ * data/rate-card.json says whether the state opens soon). Two sponsor
  * names never share a screen: when the sitewide line is sold and the spot is in
  * the first screen, a sold state card goes to the first place below the fold.
  *
@@ -143,39 +143,15 @@
     var t = card && (card.tiers || []).filter(function (x) { return x.id === 'state'; })[0];
     return !!(t && (t.opens_soon || []).indexOf(st) >= 0);
   }
-  function num(n) { return Number(n).toLocaleString('en-US'); }
-  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  function dayTxt(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
-  /* The open state spot sells itself (decided Nov 13): what the buyer gets (the card on that state's pages and for its
-     readers), that STATE's own engaged visits over GA4's own window (data/sponsor-spots.json proof.states) with its
-     dates, and the sitewide readers labelled as all of AGSIST (engaged visits and search clicks; AI answer citations
-     stay in the /sponsor table). A state with no figure of its
-     own shows none; under SMALL visits the sitewide totals come first and the state's own figure follows, named as the
-     state's. One button to /sponsor with the state picked. No price. */
-  var SMALL = 100;
-  function openHtml(st, card, spots) {
+  /* The open state spot (Nov 19, 2026: the site's reader figures are shown on /sponsor only): what the buyer gets
+     (the card on that state's pages and for its readers), that the spot is open (or opens soon), where to see who
+     reads AGSIST and the price, and one button to /sponsor with the state picked. No figure and no price. */
+  function openHtml(st, card) {
     var name = NAMES[st];
     if (!name) return '';
-    var pr = (spots && spots.proof) || {}, ls = (spots && spots.lists) || {}, ps = pr.states || {};
-    var e = ps.engaged && ps.engaged[st];
-    var has = typeof e === 'number' && e > 0 && ps.start && ps.end && ps.days > 0;
-    var soon = held(card, st), nm = esc(name);
-    var gets = 'Your card on every ' + nm + ' page and for ' + nm + ' readers. ';
-    var stTxt = has ? nm + ' readers: <b>' + num(e) + '</b> engaged visits, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '. ' : '';
-    /* the sitewide pair: each with its own dates (one date span when both share it), and said to overlap */
-    var site = [], en = pr.engaged, se = pr.search;
-    var hasE = !!(en && en.total > 0 && en.start && en.end), hasS = !!(se && se.total > 0 && se.start && se.end);
-    var one = hasE && hasS && en.start === se.start && en.end === se.end;
-    var span = function (w) { return dayTxt(w.start) + ' to ' + dayTxt(w.end); };
-    if (hasE) site.push('<b>' + num(en.total) + '</b> engaged visits' + (one ? '' : ' (' + span(en) + ')'));
-    if (hasS) site.push('<b>' + num(se.total) + '</b> search clicks' + (one ? '' : ' (' + span(se) + (hasE ? '; they overlap' : '') + ')'));
-    if (one) site[1] += ' (they overlap)';
-    var lst = ls.people > 0 ? '<b>' + num(ls.people) + '</b> on our email lists' : ls.daily > 0 ? '<b>' + num(ls.daily) + '</b> on the Daily email' : '';
-    if (lst && ls.asOf) lst += ' (' + dayTxt(ls.asOf) + ')';
-    var siteTxt = site.length ? 'All of AGSIST' + (one ? ', ' + span(en) : '') + ': ' + site.join(', ') + (lst ? '; ' + lst : '') + '. ' : (lst ? 'All of AGSIST: ' + lst + '. ' : '');
-    var body = gets + (has && e >= SMALL ? stTxt + siteTxt : siteTxt + stTxt);
+    var nm = esc(name), soon = held(card, st);
     return '<div class="ss-box ss-open"><p class="ss-tag">' + nm + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
-      '<p class="ss-txt">' + body.replace(/\s+$/, '') + '</p>' +
+      '<p class="ss-txt">Your card on every ' + nm + ' page and for ' + nm + ' readers. See who reads AGSIST and the price on the sponsor page.</p>' +
       '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + ' <span class="ss-go-x">on AGSIST</span></a></div>';
   }
   /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the
@@ -300,9 +276,8 @@
     var sp = spot();
     if (!sp) return;
     Promise.all([getJSON('/data/rate-card.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
-                 getJSON('/data/sponsor-spots.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
                  css()]).then(function (r) {
-      var html = openHtml(st, r[0], r[1]);
+      var html = openHtml(st, r[0]);
       if (html) sp.innerHTML = html;
     });
   }
