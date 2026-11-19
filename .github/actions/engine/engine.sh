@@ -56,9 +56,30 @@ REPO=$(awk '$1=="repo"{print $2}' "$CONF")
 BRANCH=$(awk '$1=="branch"{print $2}' "$CONF")
 FIXED_MODE=$(awk '$1=="mode"{print $2}' "$CONF")
 mapfile -t PATHS < <(awk '$1=="path"{print $2}' "$CONF")
-# BUILD-RULES 74a (Nov 19, 2026): an exported ENGINE_DIR on a worktree of the engine-agsist branch, or on the shared
-# clone, is refused; nothing commits onto a linked or shared engine-agsist. scripts/dev/engine_guard.sh is an engine
-# file (not there before the overlay); CI is exempt inside it.
+# BUILD-RULES 74a (Nov 19, 2026): the engine clone is never a worktree of the shared engine-agsist branch.
+# guard_dir/guard_switch are inline so the very first pull (before scripts/dev/engine_guard.sh is copied in)
+# is guarded too; CI is exempt. guard_commit comes from the engine file when it is there.
+guard_dir() { # ENGINE_DIR (set) on a worktree on engine-agsist, or on the shared clone
+  local d="${ENGINE_DIR:-}" gd cd why=""
+  [ -n "$d" ] && [ "${GITHUB_ACTIONS:-}" != true ] && git -C "$d" rev-parse --git-dir >/dev/null 2>&1 || return 0
+  gd=$(git -C "$d" rev-parse --absolute-git-dir 2>/dev/null); cd=$(git -C "$d" rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+  if [ "$(git -C "$d" symbolic-ref --short -q HEAD)" = engine-agsist ]; then why="it is a worktree on the engine-agsist branch"
+  elif [ "$gd" = "$cd" ] && [ "$(git -C "$d" worktree list --porcelain 2>/dev/null | grep -c '^worktree ')" -gt 1 ]; then why="it is the shared clone"; fi
+  [ -z "$why" ] && return 0
+  echo "REFUSED (BUILD-RULES 74a): ENGINE_DIR=$d, and $why. Unset ENGINE_DIR: pull would switch that worktree onto the shared local engine-agsist." >&2
+  return 1
+}
+guard_switch() { # pull is about to check out $2 in $1: not in a linked worktree whose branch changes, nor onto a branch checked out elsewhere
+  local d="$1" t="$2" cur here other
+  [ "${GITHUB_ACTIONS:-}" != true ] && git -C "$d" rev-parse --git-dir >/dev/null 2>&1 || return 0
+  cur=$(git -C "$d" symbolic-ref --short -q HEAD); [ "$cur" = "$t" ] && return 0
+  here=$(cd "$(git -C "$d" rev-parse --show-toplevel)" && pwd -P)
+  other=$(git -C "$d" worktree list --porcelain | awk -v t="refs/heads/$t" -v h="$here" '/^worktree /{w=substr($0,10)} $0=="branch " t && w!=h {print w}' | head -1)
+  if [ "$(git -C "$d" rev-parse --absolute-git-dir)" != "$(git -C "$d" rev-parse --path-format=absolute --git-common-dir)" ] || [ -n "$other" ]; then
+    echo "REFUSED (BUILD-RULES 74a): engine.sh pull would switch $d from ${cur:-a detached HEAD} to $t, but it is a linked worktree${other:+ and $t is checked out in $other}. Unset ENGINE_DIR (a pull never switches a worktree it did not clone)." >&2
+    return 1
+  fi
+}
 guard() { local gs="$ROOT/scripts/dev/engine_guard.sh"; [ -f "$gs" ] || return 0; bash "$gs" "$@"; }
 SCRATCH=.engine-src
 PAIR=.engine-pair
@@ -489,10 +510,11 @@ PY
       echo "$BRANCH"
     fi ;;
   pull)
-    guard dir || exit 1
+    guard_dir || exit 1
     refuse_tracked
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
     EB="${ENGINE_BRANCH:-$(bash "$0" pair)}"
+    [ -e "$ED/.git" ] && { guard_switch "$ED" "$EB" || exit 1; }
     if [ -e "$ED/.git" ]; then
       git -C "$ED" fetch -q origin "$EB" || { echo "engine: could not fetch $EB into $ED" >&2; exit 1; }
       if [ "$(git -C "$ED" symbolic-ref --short -q HEAD)" != "$EB" ]; then
@@ -518,7 +540,7 @@ PY
     echo "engine: $(git -C "$ED" rev-parse --short HEAD) ($EB) from $ED copied into $ROOT (${PATHS[*]})" ;;
   save)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
-    guard dir || exit 1
+    guard_dir || exit 1
     guard commit "$ED" --shared-only || exit 1
     [ -e "$ED/.git" ] || { echo "engine: no engine clone at $ED (run engine.sh pull first)" >&2; exit 1; }
     for p in "${PATHS[@]}"; do
@@ -537,7 +559,7 @@ PY
     echo "push it: git -C $ED push origin $BRANCH" ;;
   changed)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
-    guard dir || exit 1
+    guard_dir || exit 1
     note="$(changed_note)"
     { [ -f "$note" ] && grep -vx '[*]' "$note"
       if [ -e "$ED/.git" ]; then
