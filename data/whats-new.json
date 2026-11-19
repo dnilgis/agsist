@@ -16,6 +16,20 @@
    "link": "/rent/north-dakota"
   },
   {
+   "id": "2026-11-19-atlas-region-surveys",
+   "date": "2026-11-19",
+   "title": "Indiana, Nebraska, Missouri and South Dakota region surveys",
+   "line": "University land surveys now show each Indiana, Nebraska, Missouri and South Dakota county its region's land value, plus rent outside Missouri, on the Atlas.",
+   "link": "/rent/indiana"
+  },
+  {
+   "id": "2026-11-19-daily-headline-subject",
+   "date": "2026-11-19",
+   "title": "The Daily's subject is the news",
+   "line": "AGSIST Daily's subject line now carries the day's headline, and corn, soybean and wheat prices with one number to watch sit right under the lead.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-19-farmland-atlas-review-fixes",
    "date": "2026-11-19",
    "title": "Farmland Atlas keys you can check",
@@ -28,6 +42,13 @@
    "title": "Short addresses for company bid pages",
    "line": "Town bid pages lead with the town, company pages open at short addresses, and a board our own price checks refuse stays listed, without prices, for up to 30 days.",
    "link": "/cash-bids/company/landus-cooperative"
+  },
+  {
+   "id": "2026-11-19-slim-header",
+   "date": "2026-11-19",
+   "title": "The answer comes first",
+   "line": "A slimmer menu bar, and the sponsor line and other notes now sit below each page's answer instead of above it.",
+   "link": "/"
   },
   {
    "id": "2026-11-19-usda-calendar-next-reports",

@@ -191,7 +191,7 @@
        container, so sticky works against the page. Browsers without clip fall back to
        hidden; there sticky would pin inside .fs-app and open a gap under the app bar,
        so it is only switched on where clip is supported. */
-    @supports (overflow:clip){ @media(min-width:821px){ .fs-stage{ position:sticky; top:82px; } } }
+    @supports (overflow:clip){ @media(min-width:821px){ .fs-stage{ position:sticky; top:58px; } } }
     /* undertray (see-the-invisible + saved) */
     .fs-undertray{ display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start; padding:14px 18px; border-top:1px solid var(--line); background:var(--surface); }
     .fs-undertray .fs-god{ margin:0; flex:1 1 260px; }
