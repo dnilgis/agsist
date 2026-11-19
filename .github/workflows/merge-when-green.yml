@@ -6,7 +6,16 @@ on:
     types: [completed]
   pull_request_target:
     types: [labeled]
+  # a service worker note merged by hand: the bot sets the number
+  push:
+    branches: [main]
+    paths: ['.github/sw-next/**']
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: print what it would do (comments, engine pushes, merges, the service worker commit); change nothing
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -42,4 +51,7 @@ jobs:
       - name: merge the green ones
         env:
           GH_TOKEN: ${{ github.token }}
+          # the engine repository: read the same-named branch, push the squash to its default branch (never force)
+          ENGINE_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '' }}
         run: python3 scripts/dev/merge_when_green.py
