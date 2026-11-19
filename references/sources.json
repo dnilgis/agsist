@@ -2752,7 +2752,7 @@
     {"id": "ispfmra-2026-land-values-pdf", "kind": "pdf",
      "url": "https://ispfmra.org/download/2026-land-values-report/",
      "title": "ISPFMRA: 2026 Illinois Farmland Values and Lease Trends, PDF",
-     "why": "Illinois regional land values and rents (data/land/il/regions.json): the region tables, region map and terms"},
+     "why": "Illinois regional land values and rents (data/land/il/regions.json): the region tables, region map and terms. The link gives refs a web page; the owner's hand copy is manual/ispfmra-2026-land-values-pdf.pdf (sha256 f7e50656abfa5652de5e480915c46fc4e121708f734c63312ddb0700393ec16d)"},
     {"id": "ispfmra-land-values-archive", "kind": "html",
      "url": "https://ispfmra.org/land-values-archive/",
      "title": "ISPFMRA: Land Values Archive (report page)",
