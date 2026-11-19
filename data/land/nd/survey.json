@@ -1,5 +1,5 @@
 {
- "about": "County land values from a state survey of farmers. Not recorded sales: the price of rented land is what farmers and ranchers reported as the average for their locality. Read from the PDF by scripts/build_land_survey.py; each value keeps its PDF row. A value is null where the survey withheld it (D).",
+ "about": "County land values from a state survey of farmers. Not recorded sales. A value is null where the survey withheld it (D).",
  "counties": {
   "38001": {
    "cropland": {
@@ -1929,7 +1929,7 @@
   "ref": "bench-cash-rent-5",
   "released": "April 2026",
   "sha256": "8d8bdd8f5f532b96ecfe231dda6254460784d7e6c4e500b44c150ed820c038ff",
-  "terms": "State agency report; cited and linked.",
+  "terms": "Cited as: 2026 County Rents and Prices, North Dakota, April 2026; survey funded by the North Dakota Department of Trust Lands.",
   "title": "2026 County Rents and Prices, North Dakota",
   "url": "https://www.land.nd.gov/sites/www/files/documents/Surface/Rent%20Survey/2026%20County%20Rents%20and%20Prices%20North%20Dakota.pdf"
  },
