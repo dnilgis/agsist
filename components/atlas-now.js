@@ -30,6 +30,8 @@
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
+// the page's inline fallback (farmland-atlas.html) waits 10 s for this flag before it says the map did not load
+window.AtlasNowRan=true;
 var D='/farmland-atlas/data/', NOW=null, GEO=null, IDX={}, ROWS={}, COL={}, LAY={}, PATHS={}, HAS={}, STATE_OF={};
 var S={q:'',m:'',s:'',c:'',sc:'st'}, OLD=null, OLDP=null, OL={}, DEC=null, DEEP=null;
 // the old map's layers that are the same figure as a headline map open that map

@@ -891,6 +891,13 @@ var h=(location.hash||'').replace(/^#/,'').split('&').filter(function(p){return 
 });})();
 </script>
   <script src="/components/atlas-now.js?v=10" defer></script>
+<script>/* if the map script itself does not come (an error, a dead connection), after 10 s the map box says so with Try
+   again (a reload), as the script does for its data, and a linked map's column shows again (atlas-now.css .failed) */
+setTimeout(function(){if(window.AtlasNowRan)return;var r=document.getElementById('an'),w=document.getElementById('an-wait');if(!r||!w)return;
+r.classList.add('failed');var l=document.getElementById('an-lede'),d=l?l.getAttribute('data-day'):'';
+w.textContent='The map did not load.'+(d?' The figures above are from different days; the newest is from '+d+'.':'')+' ';
+var b=document.createElement('button');b.type='button';b.id='an-retry';b.textContent='Try again';b.addEventListener('click',function(){location.reload();});w.appendChild(b);},10000);
+</script>
 <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>
