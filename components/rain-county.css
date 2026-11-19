@@ -230,3 +230,11 @@
   .rc-print-top.rc-print-off figcaption > span[hidden] { display: block !important; visibility: hidden; }
 }
 @media (min-width: 561px) { .rc-print-top.rc-print-on > .rce-top { display: none; } }
+/* Lately: the radar's last 24 hours and 7 days over the county (scripts/build_county_rain.py recent_box), one line. An
+   estimate looks like one: a dashed box with no fill and the word "estimate", above the solid observed figures. The numbers
+   are fixed width, so components/rain-recent.js can rewrite them and the time in place without moving the line. */
+.rc-now { border: 1px dashed var(--border-2, var(--border)); border-radius: var(--r-md); padding: .5rem .8rem; margin: 0 0 1rem; max-width: 40em; font-size: var(--fs-sm); line-height: 1.7; color: var(--text-muted); }
+.rc-now > b:first-child { color: var(--text); margin-right: .45rem; }
+.rc-now > i { display: inline-block; font-style: normal; font-size: var(--fs-xs); line-height: 1.4; border: 1px dashed currentColor; border-radius: var(--r-pill); padding: 0 .45rem; margin-right: .6rem; }
+.rc-now > b + b, .rc-now > i ~ b { display: inline-block; min-width: 5ch; text-align: right; font-family: var(--font-mono, monospace); font-size: 1.12rem; color: var(--text); }
+.rc-now time { white-space: nowrap; }
