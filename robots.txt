@@ -27,6 +27,16 @@ Disallow: /newsletter-block
 Disallow: /sponsor-apply
 Disallow: /hail-map?
 Disallow: /prf-sponsor?
+# Nov 19, second pass: the same kind of view on six more pages, each linked from thousands of generated pages
+# (the county radar link, the printable ARC/PLC sheet, the list-your-elevator form filled in for one elevator, the Daily
+# sign-up, the lease form for one state, the farm sale map for one state). /custom-rates?st= stays open: a state with
+# no page of its own is only there.
+Disallow: /rain?
+Disallow: /arc-plc/sheet?
+Disallow: /list-your-elevator?
+Disallow: /daily?
+Disallow: /cash-lease?
+Disallow: /land-sales/?
 
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml
