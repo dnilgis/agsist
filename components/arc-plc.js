@@ -543,7 +543,8 @@
     var VC = { plc: 'plc', arc: 'arc', lean_plc: 'lean-plc', lean_arc: 'lean-arc', close: 'close', none: 'neither' };
     function vcls(v) { return 'ap-w-' + (VC[v] || 'withheld'); }
     var why = '';
-    /* the build's BOR_WHY: why the expected dollars are not printed (1: too few years of the crop's own prices) */
+    /* the build's BOR_WHY: why the expected dollars are not printed (1: too few years of the crop's own prices); a crop with its
+       own exact reason (sc.bw, wheat_why in the build) prints that instead */
     var BOR_WHY = ['Expected payments are not printed for this crop: it does not have enough of its own price history.', 'Expected payments are not printed for this crop: it does not have enough of its own price history.'];
     /* one plain sentence, numbers beside the call; mirrors verdict_line in the build script */
     function vline(Y, v) {
@@ -551,7 +552,7 @@
       if (v.verdict === 'noprice') return '<b>' + Y + ': no ' + Y + ' price yet.</b> There is no ' + Y + ' price outlook for this crop we can check against past years, so no call. Type a price to see the dollars at that price.';
       /* no dollars (sc.nousd): the call and the year counts only */
       var B = v.nousd;
-      var nums = B ? 'PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '. ' + BOR_WHY[v.borFew ? 1 : 0] + ' Type a price to see the dollars at that price.' :
+      var nums = B ? 'PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '. ' + (v.bw || BOR_WHY[v.borFew ? 1 : 0]) + ' Type a price to see the dollars at that price.' :
         'Expected ' + pay$(v.plc) + ' PLC vs ' + pay$(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';
       if (v.verdict === 'none') return '<b>' + Y + ': neither expected to pay.</b> ' + nums;
       if (v.verdict === 'close') return '<b>' + Y + ': close, either one.</b> ' + (B ? 'Too small or too uncertain to call. ' : 'About ' + money(Math.abs(v.diff)) + ' apart, too small or too uncertain to call. ') + nums;
@@ -583,7 +584,7 @@
         }
         var cy = { erp: cr.erp.erp, bp: cr.bp.value, loan: cr.loan, py: c.py, parts: parts };
         var v = sc.kind === 'noprice' ? { verdict: 'noprice', n: 0 } : scenarios(cy, sc.center, sc.ratios, null, { borrowed: !!sc.borrowed, alt: sc.alt });
-        if (sc.nousd && v.borrowed) { v.nousd = true; v.borFew = sc.kind === 'corn_oct'; }
+        if (sc.nousd && v.borrowed) { v.nousd = true; v.borFew = sc.kind === 'corn_oct'; v.bw = sc.bw ? sc.bw.full : ''; }
         why = sc.why || '';
         if (Y === year) cur = { v: v, cr: cr, cy: cy, sc: sc };
         /* the assumptions go beside the answer, not only at the foot of the block (trust panel, Oct 25) */
@@ -607,7 +608,7 @@
         var paid = v.rows.filter(function (r) { return r.arc > 0; }).length;
         h += '<p><b>Why.</b> PLC pays on any season-average price below ' + pm(cy.erp) + ', up to ' + money(maxP) + ' per base acre at the ' + pm(cy.loan) +
           ' loan rate, so it protects against a deep price drop. ARC-CO is capped at ' + money(maxA) + ' per base acre but also pays when the county&rsquo;s yield is short; it paid something in ' +
-          paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pm(sc.center) + ', ' + (v.nousd ? 'the expected payments are not printed: this crop does not have enough of its own price history.' : 'PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.') + '</p>';
+          paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pm(sc.center) + ', ' + (v.nousd ? 'the expected payments are not printed: ' + (sc.bw ? sc.bw.tail : 'this crop does not have enough of its own price history.') : 'PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.' + (sc.method ? ' ' + sc.method : '')) + '</p>';
         if (c.price != null) {
           var u = scenarios(cy, sc.center, sc.ratios, c.price);
           /* one price held all year: not the call above, which spreads the price (arcfix item 7) */
@@ -619,7 +620,10 @@
           (c.parts.some(function (p) { return p.dsrc === 'state'; }) ? 'the state average for this crop and practice (the county has too few years)' : 'this county&rsquo;s FSA yields') + ' in the same year';
         var how = { oct: 'how far each past year&rsquo;s season-average price ended from its October futures (scaled to average 1)', fut: 'each past year&rsquo;s price change, scaled to average 1',
           yoy_scaled: 'past price changes', corn_oct: 'past price changes',
-          yoy: 'each past year&rsquo;s price change' }[sc.kind] || 'past price changes';
+          yoy: 'each past year&rsquo;s price change',
+          /* wheat's own spread (the build's wheat_method): how far USDA's same-month price missed the final one */
+          fcst: sc.fc ? 'how far USDA&rsquo;s ' + sc.fc.month + ' ' + cr.label.toLowerCase() + ' price missed the final season-average price (scaled to average 1' +
+            (sc.fc.mid && sc.fc.mid.length ? '; for ' + sc.fc.mid[0] + (sc.fc.mid.length > 1 ? ' to ' + sc.fc.mid[sc.fc.mid.length - 1] : '') + ' USDA printed a range, and we use its middle' : '') + ')' : '' }[sc.kind] || 'past price changes';
         h += '<p class="ap-small">Scenarios: ' + sc.center_label + ', ' + pm(sc.center) + ', moved by ' + how + ', ' +
           v.rows[0].t + ' to ' + v.rows[v.rows.length - 1].t + ' (' + v.n + ' years), paired with ' + ysrc + '.' +
           (sc.alt != null ? ' Futures-based start for comparison: ' + pm(sc.alt) + ' (' + esc(sc.alt_contract || '') + ' October average ' + (/^\d{4}-\d\d-\d\d/.test(sc.alt_date || '') ? 'through ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+sc.alt_date.slice(5, 7) - 1] + ' ' + (+sc.alt_date.slice(8, 10)) : 'so far') + ', ' + sc.alt_days + ' of ' + sc.alt_of + ' days, &times; ' + sc.oct_mean.toFixed(3) + ').' : '') +
