@@ -561,9 +561,8 @@
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
-  /* Sitewide sponsor line (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot, which prints no reader
-     figure (Nov 19, 2026: those are on /sponsor only). It sits right after the page's answer, in the room #sw-slot holds
-     there; a page without one gets it just above the footer, so it never moves the first screen. */
+  /* Sitewide sponsor line: sold, else the open spot (no reader figure). It fills #sw-slot after the answer; with no
+     slot it goes above the footer. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function swSold(sp) {
     return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));

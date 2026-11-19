@@ -607,6 +607,8 @@ summary:focus-visible, .pc:focus-visible {
 body.no-sw{--sw-h:0px}
 @media (scripting:none){:root{--sw-h:0px}}
 #site-header{height:50px;overflow:hidden}
+/* custom rates column names stick under the 50px bar (custom-rates.css says 74/62px; set here, with the bar) */
+body .cr-tw-v{--cr-stick:50px}
 @media (scripting:none){#site-header{height:auto;overflow:visible}}
 .sw-slot{display:block;box-sizing:border-box;height:var(--sw-h);margin:1rem 0}
 body.no-sw .sw-slot{display:none}
@@ -628,7 +630,7 @@ html[data-theme="light"] .sw-line--sold .sw-in a{color:#a8380a}
 .state-spot{display:block;box-sizing:border-box;min-height:var(--ss-h);max-width:760px;margin:1.25rem 0}
 .state-spot[hidden]{display:none}
 .state-spot .geo-spon{margin:0;max-width:none}
-@media print{.sw-line,.state-spot{display:none!important}}
+@media print{.sw-line,.sw-slot,.state-spot{display:none!important}}
 [data-signup-ask]:not([data-sa-ready]):not([data-variant]){display:block;box-sizing:border-box;min-height:122px;margin:14px 0}
 @media (min-width:520px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:101px}}
 @media (min-width:900px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:73px}}
