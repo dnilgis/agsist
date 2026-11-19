@@ -5,6 +5,11 @@
    Nothing here draws a map. The layer rules, the side files and the record are the old map's own, moved unchanged. */
 (function(){
 'use strict';
+// every read on this page gives up after 10 s (a slow or dead connection), so no box waits on a file forever: the
+// caller's own failure path runs, as it does for an error (Nov 18, 2026)
+var fetch=function(u,o){ var c=window.AbortController?new AbortController():null, t=setTimeout(function(){ if(c) c.abort(); },10000), x={}, k;
+  for(k in (o||{})) x[k]=o[k]; if(c) x.signal=c.signal;
+  return window.fetch(u,x).then(function(r){ clearTimeout(t); return r; },function(e){ clearTimeout(t); throw e; }); };
 var $=function(id){return document.getElementById(id);};
 var DATA='/data/atlas/';
 var ATLAS=null, GEO=null, READS=null, HOST={};
@@ -247,11 +252,14 @@ function loadSide(k){
   var S=SIDE[k];
   if(!S.p){
     var get1=function(u){ return fetch(u,{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}); };
-    S.p=Promise.all([get1(S.url), S.nat?get1(S.nat):Promise.resolve(null)]).then(function(r){
+    S.p=Promise.all([k==='tenure'&&window.AgTenureFile?window.AgTenureFile():get1(S.url), S.nat?get1(S.nat):Promise.resolve(null)]).then(function(r){
       if(r[0]&&k==='more'&&r[0].generated!==ATLAS.generated){ S.why='the weather and livestock file is from another build; reload the page'; }
       else if(r[0]&&k==='rentrev'&&!r[0].pair_rule){ S.why='this cash rent file divides dryland rent by a yield that mixes irrigated and dryland acres; the ratio returns with the next NASS refresh'; }
       else if(r[0]&&(k!=='afida'||(r[1]&&r[1].latest_year))){ S.d=r[0]; S.n=r[1]; S.ok=true; }
       if(k==='rentrev'&&S.ok){ for(var rf in S.d.counties){ var py=S.d.counties[rf].py; if(py&&(!RREV_LATEST||py>RREV_LATEST)) RREV_LATEST=py; } }
+      // a read that failed (no answer in 10 s, an error, a 500) is not kept: the next ask, the fold's Try again or a
+      // reopen, reads the file again
+      if(!r[0]||(S.nat&&!r[1]&&!S.ok)) S.p=null;
       S.done=true; return S;
     });
   }

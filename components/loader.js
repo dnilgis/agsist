@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '108';
+  var CV = '109';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -152,7 +152,7 @@
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!a) return;
       var dd = a.closest('.nav-dd');
-      send(a, 'desktop', txt(dd && dd.querySelector('.nav-btn')));
+      send(a, 'desktop', dd ? txt(dd.querySelector('.nav-btn')) : 'Top');   // a link straight on the bar (Cash bids) is group Top
     }, true);   // capture: each panel keeps its own clicks from bubbling (it stays open on a click inside)
     var dr = document.getElementById('drawer');
     if (dr) dr.addEventListener('click', function (e) {
@@ -558,12 +558,13 @@
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=6';
+    s.src = BASE + '/components/geo-sponsor.js?v=7';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
-  /* Sitewide sponsor line under the nav (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot. */
+  /* Sitewide sponsor line under the nav (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot, which
+     prints no reader figure (Nov 19, 2026: those are on /sponsor only). */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function swSold(sp) {
     return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
@@ -593,17 +594,17 @@
     else if (nav && nav.parentNode === parent) parent.insertBefore(line, nav.nextSibling);
     else if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
     var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
-    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json'), swGet('/data/sponsor-spots.json')]).then(function (r) {
-      var o = swLine(r[0], r[1], r[2], preview);
+    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json')]).then(function (r) {
+      var o = swLine(r[0], r[1], null, preview);
       if (o.sold) {
         line.className = 'sw-line sw-line--sold';
         if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
       }
       if (o.sold) { line.innerHTML = o.html; return; }
-      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(r[2], BASE); } catch (e) {} };
+      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(null, BASE); } catch (e) {} };
       if (window.AgsistSwOpen) return f();
       var s = document.createElement('script');
-      s.src = BASE + '/components/sw-open.js?v=2'; s.async = true; s.onload = f;
+      s.src = BASE + '/components/sw-open.js?v=3'; s.async = true; s.onload = f;
       document.head.appendChild(s);
     });
   }

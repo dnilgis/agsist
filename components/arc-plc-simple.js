@@ -86,7 +86,7 @@
     /* no expected dollars (flag 64): the reason for this crop (flag 128: too few years of its own prices), and
        "held at Leans" only where the borrowed swings lowered a clear pick (flag 512); gap_line in the build script */
     if ((v.f & 64) && (w === 'plc' || w === 'arc' || w === 'close' || w.indexOf('lean_') === 0)) {
-      var bw = BOR_WHY[v.f & 128 ? 1 : 0];
+      var bw = c.bw || BOR_WHY[v.f & 128 ? 1 : 0];
       if (w === 'close') return 'Too close to call. ' + bw;
       var bs = w.indexOf('lean_') === 0 ? w.slice(5) : w, bo = bs === 'plc' ? 'arc' : 'plc';
       var bt = WORD[bs] + ' leads across the ' + v.n + ' price years we ran, but that swings from year to year.';
@@ -149,7 +149,7 @@
   function cardOf(art, seg) {
     var lv = art.querySelector('.ap-lv'), rng = null;
     try { rng = JSON.parse(art.getAttribute('data-rng') || 'null'); } catch (e) {}
-    return { rng: rng, lc: art.getAttribute('data-lc'), cen: art.getAttribute('data-cen') || '', pu: art.getAttribute('data-pu'),
+    return { rng: rng, lc: art.getAttribute('data-lc'), bw: art.getAttribute('data-bw') || '', cen: art.getAttribute('data-cen') || '', pu: art.getAttribute('data-pu'),
       oth: art.getAttribute('data-oth') || '', irr: /^irr(:|$)/.test(lv.getAttribute('data-e') || ''),
       ly: seg.getAttribute('data-ly'), oy: seg.getAttribute('data-oy') };
   }

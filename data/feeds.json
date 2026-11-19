@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 98,
- "with_known_cadence": 98,
+ "count": 97,
+ "with_known_cadence": 97,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -430,6 +430,7 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",
@@ -653,6 +654,7 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Build State Stats (USDA NASS)",
@@ -767,6 +769,7 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Build State Stats (USDA NASS)",
@@ -2193,6 +2196,7 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",
@@ -2573,29 +2577,6 @@
    "url": null,
    "crons": [
     "10 22 * * *"
-   ],
-   "max_gap_hours": 24.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/sponsor-spots.json",
-   "pages": [
-    "prf-sponsor.html"
-   ],
-   "written_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "touched_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "1 launch every day at about 6am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "12 11 * * *"
    ],
    "max_gap_hours": 24.0,
    "quiet": null,
@@ -3073,6 +3054,7 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",

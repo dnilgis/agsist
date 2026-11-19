@@ -22,9 +22,16 @@
    ranked lists give one sentence when every county ties, and the picture button names the map it saves and shows
    only when that picture exists (drought: the U.S. or the state; land value: the county); every other map offers
    "Copy link to this map", the old-style #l=, #s= link. */
+/* Nov 18 (slow connections): the page's HTML carries the opening answer (scripts/atlas_now.py bake_hub, from the same
+   now.json): the answer line, the tiles (#an-tiles0), the drought key (#an-key0) and its caption. Once the data is in,
+   the same markup is drawn here in place and the baked copies go, so nothing moves. Each read gives up after 10 s;
+   then the map box says the map did not load, that the figures above are from different days (the drought map is
+   older than the bids) with the newest one's day, and offers Try again. The answer line follows the map in view: the U.S. or the open state (now.json ans), for each question's headline map. */
 (function(){
 'use strict';
 var root=document.getElementById('an'); if(!root) return;
+// the page's inline fallback (farmland-atlas.html) waits 10 s for this flag before it says the map did not load
+window.AtlasNowRan=true;
 var D='/farmland-atlas/data/', NOW=null, GEO=null, IDX={}, ROWS={}, COL={}, LAY={}, PATHS={}, HAS={}, STATE_OF={};
 var S={q:'',m:'',s:'',c:'',sc:'st'}, OLD=null, OLDP=null, OL={}, DEC=null, DEEP=null;
 // the old map's layers that are the same figure as a headline map open that map
@@ -49,7 +56,14 @@ function strong(sent){
   return t;
 }
 function ga(n,p){ try{ if(window.gaEvent) window.gaEvent(n,p); }catch(e){} }
-function get(u){ return fetch(u,{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error(u); return r.json(); }); }
+// a read that has not answered in 10 s (or not finished in 60 s) has failed, like an error or a 500
+function get(u){
+  var c=window.AbortController?new AbortController():null, t=setTimeout(function(){ if(c) c.abort(); },10000), all;
+  return fetch(u,c?{cache:'no-cache',signal:c.signal}:{cache:'no-cache'}).then(function(r){
+    clearTimeout(t); if(!r.ok) throw new Error(u); all=setTimeout(function(){ if(c) c.abort(); },60000);
+    return r.json().then(function(j){ clearTimeout(all); return j; });
+  },function(e){ clearTimeout(t); throw e; });
+}
 function isOld(k){ return !!k&&!LAY[k]; }
 
 // ---------- values, bins and words (headline maps)
@@ -74,10 +88,13 @@ function show(v,l){
   if(l.unit==='gd') return v>0?'ARC-CO higher by '+money(v,2):v<0?'PLC higher by '+money(-v,2):'even';
   return String(v);
 }
-function cut(v,l){ if(l.unit==='$'||l.unit==='gd') return money(Math.abs(v),0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2);
+function cut(v,l,kd){ if(l.unit==='$'||l.unit==='gd') return money(Math.abs(v),kd||0); if(l.unit==='c') return cents(v); if(l.unit==='x') return v.toFixed(2);
   if(l.unit==='ac') return n0(v)+' acres'; if(l.unit==='d') return n0(v)+' days'; if(l.unit==='mw') return n0(v)+' MW';
   if(l.unit==='gdd'||l.unit==='hd') return n0(v); if(l.unit==='pc') return (v>0?'+':'')+v+'%';
   return v+(l.unit==='%'?'%':l.unit==='F'?' F':''); }
+// the decimals a dollar key prints: whole dollars when every cut is whole, else cents, so no bin reads "$2 to $2"
+// and a county's $2.47 lands in a bin a reader can check (Nov 18 outside review)
+function keyDp(cs,l){ if(l.unit!=='$'&&l.unit!=='gd') return 0; for(var i=0;i<cs.length;i++) if(Math.abs(cs[i]-Math.round(cs[i]))>1e-9) return 2; return 0; }
 // basis in words: 65¢ under, even, 10¢ over
 function cents(v){ var c=Math.round(Math.abs(v)*100); return c?c+'¢ '+(v<0?'under':'over'):'even'; }
 function basisKey(cs,n){
@@ -90,8 +107,9 @@ function basisKey(cs,n){
 }
 // ARC-CO minus PLC: five bins around even, orange where PLC has the higher estimate, blue where ARC-CO has
 function gapKey(cs,n,l){
-  return [['k0','PLC higher by more than '+cut(cs[0],l),n.k0],['k1','PLC higher by '+cut(cs[1],l)+' to '+cut(cs[0],l),n.k1],
-    ['k2','Within '+cut(cs[2],l)+' either way',n.k2],['k3','ARC-CO higher by '+cut(cs[2],l)+' to '+cut(cs[3],l),n.k3],['k4','ARC-CO higher by '+cut(cs[3],l)+' or more',n.k4]];
+  var kd=keyDp(cs,l); function c(v){ return cut(v,l,kd); }
+  return [['k0','PLC higher by more than '+c(cs[0]),n.k0],['k1','PLC higher by '+c(cs[1])+' to '+c(cs[0]),n.k1],
+    ['k2','Within '+c(cs[2])+' either way',n.k2],['k3','ARC-CO higher by '+c(cs[2])+' to '+c(cs[3]),n.k3],['k4','ARC-CO higher by '+c(cs[3])+' or more',n.k4]];
 }
 var DRN=['Abnormally dry (D0)','Moderate (D1)','Severe (D2)','Extreme (D3)','Exceptional (D4)'];
 // partial layers: a state we do not read is an empty outline (ko), not a few hundred hatched counties
@@ -120,7 +138,9 @@ function setLocal(l){
   $('an-scl-note').textContent=S.sc==='st'?'Colors set for '+nm+' alone; other states are grey.':'Colors on the US scale; the key counts '+nm+' counties.';
   if(S.sc!=='st') return;
   var a=inState(l).sort(function(x,y){return x-y;});
-  LOCAL={key:l.key, st:S.s, cuts:qcuts(a,l.old&&OL[l.key].doy)};
+  // land value: the state's own cuts from now.json, the ones its county share picture prints, so the two keys agree
+  var vc=l.key==='value'&&NOW.states[S.s]&&NOW.states[S.s].val_cuts;
+  LOCAL={key:l.key, st:S.s, cuts:vc&&vc.length?vc.slice():qcuts(a,l.old&&OL[l.key].doy)};
 }
 function cls(f,l){
   if(outOf(f)) return 'kz';
@@ -129,7 +149,7 @@ function cls(f,l){
   if(l.key==='drought'){ if(v==null) return 'kx'; return v<0?'kn':'k'+v; }
   if(g==='nost'&&(COVER[l.key]||l.cover)) return 'ko';
   if((l.scale==='count'||l.zero)&&v===0) return 'kn';
-  if(v==null){ if(g==='none'&&(l.key==='basis')||l.kn&&g===l.kn) return 'kn'; return 'kx'; }
+  if(v==null){ if(l.kc&&l.kc.indexOf(g)>=0) return 'kc'; if(l.kn&&g===l.kn) return 'kn'; return 'kx'; }
   var cs=cutsOf(l), i=0; while(i<cs.length&&v>=cs[i]) i++;
   if(l.scale==='count') i=Math.max(0,i-1);
   return 'k'+i;
@@ -138,6 +158,7 @@ function cls(f,l){
 function inView(f){ return !S.s||(STATE_OF[f]||f.slice(0,2))===S.s; }
 function viewName(){ return S.s?(NOW.states[S.s]&&NOW.states[S.s].name||S.s):'U.S.'; }
 function count(l){ var n={}, f; for(f in HAS){ if(!inView(f)) continue; var c=cls(f,l); if(c!=='kz') n[c]=(n[c]||0)+1; } return n; }
+function isOut(l){ var f, k=0; for(f in HAS){ if((STATE_OF[f]||f.slice(0,2))!==S.s) continue; k++; if(cls(f,l)!=='ko') return false; } return k>0; }
 function outStates(l){ var o={}, f; for(f in HAS) if(inView(f)&&cls(f,l)==='ko') o[(STATE_OF[f]||f.slice(0,2))]=1; return Object.keys(o).length; }
 function keyItems(l){
   var out=[], n=count(l), f;
@@ -150,10 +171,11 @@ function keyItems(l){
     if(l.scale==='rain'){ out.push(['k0','Under '+cs[0]+'%',n.k0]); for(var j=1;j<cs.length;j++) out.push(['k'+j,cs[j-1]+' to '+cs[j]+'%',n['k'+j]]); out.push(['k'+cs.length,cs[cs.length-1]+'% or more',n['k'+cs.length]]); }
     else if(l.unit==='c'&&cs.length){ out=out.concat(basisKey(cs,n)); }
     else if(l.unit==='gd'&&cs.length===4){ out=out.concat(gapKey(cs,n,l)); }
-    else if(cs.length){ out.push(['k0','Under '+cut(cs[0],l),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l)+' to '+cut(cs[k],l),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l)+' or more',n['k'+cs.length]]); }
+    else if(cs.length){ var kd=keyDp(cs,l); out.push(['k0','Under '+cut(cs[0],l,kd),n.k0]); for(var k=1;k<cs.length;k++) out.push(['k'+k,cut(cs[k-1],l,kd)+' to '+cut(cs[k],l,kd),n['k'+k]]); out.push(['k'+cs.length,cut(cs[cs.length-1],l,kd)+' or more',n['k'+cs.length]]); }
     if(l.kn) out.push(['kn',l.gaps[l.kn],n.kn]);
   }
-  var gx={}; for(f in HAS){ if(inView(f)&&!outOf(f)&&cls(f,l)==='kx'){ var g=gap(f,l)||'nodata'; gx[g]=(gx[g]||0)+1; } }
+  var gx={}, gc={}; for(f in HAS){ if(inView(f)&&!outOf(f)){ var c=cls(f,l), g; if(c==='kx'){ g=gap(f,l)||'nodata'; gx[g]=(gx[g]||0)+1; } else if(c==='kc'){ g=gap(f,l); gc[g]=(gc[g]||0)+1; } } }
+  Object.keys(gc).forEach(function(g){ out.push(['kc',(l.gaps&&l.gaps[g])||'Read with care',gc[g]]); });
   Object.keys(gx).forEach(function(g){ out.push(['kx',(l.gaps&&l.gaps[g])||'No figure',gx[g]]); });
   if(n.ko) out.push(['ko','States we do not read',outStates(l),'states']);
   return out.filter(function(x){ return x[2]; });
@@ -163,8 +185,17 @@ function line(f,l){
   if(l.key==='drought') return v==null?((l.gaps&&l.gaps[g])||'No county figure'):(v<0?'No drought level covers half the county':DRN[v]+' covers at least half the county');
   if(v==null) return (l.gaps&&l.gaps[g])||'No figure';
   if(l.zero&&v===0) return l.label+': '+l.zero.toLowerCase();
-  return l.label+': '+show(v,l)+(l.key==='basis'?' '+NOW.dates.basis_vs+' futures':l.key==='sbasis'?' '+NOW.dates.sbasis_vs+' futures':'');
+  return l.label+when(f,l)+': '+show(v,l)+(l.key==='basis'?' '+NOW.dates.basis_vs+' futures':l.key==='sbasis'?' '+NOW.dates.sbasis_vs+' futures':'');
 }
+// the years or day a county figure is for, beside its label (Nov 18 outside review: a ratio and an ARC-CO gap with no
+// years beside them): the claims window of that county, the ARC-CO program year and the estimates' day
+function when(f,l){
+  var D=NOW.dates||{}, r=ROWS[f];
+  if(l.key==='cost'||l.key==='lr'){ var cy=r&&COL.cy!=null?r[COL.cy]:null; return cy?', '+cy:D.cost_from?', '+D.cost_from+' to '+D.cost_to:''; }
+  if(/^arc/.test(l.key)&&D.arc_year) return ', '+D.arc_year+(D.arc?' (estimates of '+dayW(D.arc)+')':'');
+  return '';
+}
+function dayW(iso){ var d=new Date(String(iso).slice(0,10)+'T12:00:00Z'); return isNaN(d)?String(iso):d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}); }
 
 // ---------- the folded layers: their values come from atlas-layers.js, their bins and key from here
 function sig(v,n){ if(v===0||!isFinite(v)) return v; var m=Math.pow(10,Math.floor(Math.log(Math.abs(v))/Math.LN10)-n+1); return Math.round(v/m)*m; }
@@ -219,7 +250,8 @@ function oldList(){
   if(!OLDP){
     OLDP=new Promise(function(ok,no){
       if(window.AtlasLayers) return ok();
-      var s=document.createElement('script'); s.src='/components/atlas-layers.js?v=2'; s.onload=function(){ ok(); }; s.onerror=function(){ OLDP=null; no(new Error('layers')); };
+      var s=document.createElement('script'), to=setTimeout(function(){ s.onload=s.onerror=null; OLDP=null; no(new Error('layers')); },10000);   // 10 s, as every read
+      s.src='/components/atlas-layers.js?v=3'; s.onload=function(){ clearTimeout(to); ok(); }; s.onerror=function(){ clearTimeout(to); OLDP=null; no(new Error('layers')); };
       document.head.appendChild(s);
     }).then(function(){
       var names={}; for(var k in NOW.states) names[k]=NOW.states[k].name;
@@ -251,6 +283,9 @@ var SVGNS='http://www.w3.org/2000/svg';
 function buildMap(){
   var svg=$('an-svg'), g=document.createElementNS(SVGNS,'g'), st=document.createElementNS(SVGNS,'g');
   svg.setAttribute('viewBox',GEO.vb.join(' '));
+  // the caution pattern (dots): a figure to read with care, never the missing-figure hatch (#an-hx)
+  var df=svg.querySelector('defs'); if(df&&!$('an-kc')){ var pt=document.createElementNS(SVGNS,'pattern'); pt.setAttribute('id','an-kc'); pt.setAttribute('width','5'); pt.setAttribute('height','5'); pt.setAttribute('patternUnits','userSpaceOnUse');
+    pt.innerHTML='<rect width="5" height="5" style="fill:var(--an-gap-bg)"/><circle cx="2.5" cy="2.5" r="1.1" style="fill:var(--an-care-dot)"/>'; df.appendChild(pt); }
   Object.keys(GEO.c).forEach(function(f){ var p=document.createElementNS(SVGNS,'path'); p.setAttribute('d',GEO.c[f]); p.setAttribute('data-f',f); g.appendChild(p); PATHS[f]=p; HAS[f]=true; });
   g.setAttribute('class','an-c'); st.setAttribute('class','an-s');
   Object.keys(GEO.s).forEach(function(k){ var p=document.createElementNS(SVGNS,'path'); p.setAttribute('d',GEO.s[k]); st.appendChild(p); });
@@ -272,6 +307,9 @@ function paint(){
   for(var f in PATHS) PATHS[f].setAttribute('class',cls(f,l)+(hit&&hit[f]?' line':''));
   $('an-maptitle').textContent=l.label;
   var leg=l.old?(OL[l.key].natline||'')+'<span>'+esc(OL[l.key].title)+'.</span> '+(OL[l.key].why?'<span>'+esc(OL[l.key].why)+'.</span> ':'')+(OL[l.key].note||''):strong(l.legend);
+  // a partial map zoomed to a state it does not cover says so first, with the states it does (Nov 18 outside review)
+  if(!l.old&&(COVER[l.key]||l.cover)&&S.s&&isOut(l)){ var nm=NOW.states[S.s]&&NOW.states[S.s].name||S.s, sl=l.key==='sale'?(NOW.dates.sale_list||[]):[];
+    leg='<span class="an-nost">'+esc(l.key==='sale'?'No recorded farm sales for '+nm+' on this map: we read them in '+sl.join(', ')+' only.':'No elevator bids we read in '+nm+' yet.')+'</span> '+leg; }
   $('an-legend').innerHTML=leg;
   // the rented map brings the census tenure table with it, as the old rented layer did (the fold under the map)
   if(l.key==='rented'){ var tf=$('fa-tenure'); if(tf&&!tf.open) tf.open=true; }
@@ -281,7 +319,9 @@ function paint(){
   $('an-key').innerHTML='<li class="an-kh">'+esc(viewName())+' counties</li>'+keyItems(l).map(function(x){ var bg=/^k\d$/.test(x[0])?' style="background:'+cs.getPropertyValue('--an-'+l.scale+'-'+x[0]).trim()+'"':'';
     var t=x[1]+' '+Number(x[2]).toLocaleString('en-US')+(x[3]?' '+x[3]:'');
     return '<li><button type="button" data-k="'+x[0]+'" aria-pressed="false" aria-label="Show '+esc(t)+' on the map"><i class="'+x[0]+'"'+bg+'></i>'+esc(ph?(l.key==='drought'&&/^k\d$/.test(x[0])?DRS[+x[0].slice(1)]:shortLab(x[1])):x[1])+' <b>'+Number(x[2]).toLocaleString('en-US')+'</b></button></li>'; }).join('');
+  $('an-key').hidden=false; var k0=$('an-key0'); if(k0) k0.parentNode.removeChild(k0);
   $('an-key').scrollLeft=0;
+  answer(l);
   $('an-svg').setAttribute('aria-label','County map: '+l.label);
   var dw=$('an-dec'); dw.hidden=!l.slider;
   if(l.slider&&!dw.options.length){ window.AtlasLayers.decades.forEach(function(t,i){ var o=document.createElement('option'); o.value=i; o.textContent=t; dw.appendChild(o); }); dw.value=DEC==null?window.AtlasLayers.decades.length-1:DEC; }
@@ -292,6 +332,14 @@ function paint(){
 // on a phone a range reads "21-30%" (en dash) and a drought level by its Drought Monitor code ("D1"), so the key takes
 // three rows on the common maps and each swatch stays a full 24 px tap; the button's label keeps the full words
 var DRS=['D0','D1','D2','D3','D4'];
+// the answer line under the title: the U.S. or the open state, for this map's question's headline map
+function answer(l){
+  var A=NOW.ans&&NOW.ans[S.s||'US'], el=$('an-lede'); if(!A||!el) return;
+  var k=l&&A[l.key]?l.key:(l&&l.q?headOf(l.q):'drought'); if(!A[k]) k='drought';
+  if(A[k]) el.innerHTML=strong(A[k]);
+  // the counties a state's line leaves out, named under the map (the line itself keeps its height)
+  var g=$('an-gap'); if(g){ g.hidden=!A[k+'_gap']; g.innerHTML=A[k+'_gap']?strong(A[k+'_gap']):''; }
+}
 function shortLab(t){ var m=/^(\$?[\d.,]+)([%\u00a2]?) to (\$?[\d.,]+)([%\u00a2]?)(.*)$/.exec(t); return m?m[1]+(m[2]&&m[2]===m[4]?'':m[2])+'\u2013'+m[3]+m[4]+m[5]:t; }
 var KEYPIN=null;
 function wireKey(){
@@ -340,7 +388,7 @@ function rail(){
   function row(r){ var c=PATHS[r.f]?String(PATHS[r.f].getAttribute('class')||'').split(' ')[0]:'kx', bg=/^k\d$/.test(c)?cs.getPropertyValue('--an-'+l.scale+'-'+c).trim():'';
     var nm=IDX[r.f]?IDX[r.f][0]:r.f; if(S.s) nm=nm.replace(/, [A-Z]{2}$/,'');
     return '<li><button type="button" data-f="'+r.f+'"'+(r.f===S.c?' class="me" aria-current="true"':'')+'><i class="'+c+'"'+(bg?' style="background:'+bg+'"':'')+'></i><span class="nm">'+esc(nm)+'</span><span class="v">'+esc(rword(l,r.v))+'</span></button></li>'; }
-  function side(head,rows,tiedAt,tied){ return '<div class="an-rk"><h3 class="an-rk-h">'+head+' in '+esc(scope)+'</h3>'+(tied>k?'<p class="an-rk-n">'+tied.toLocaleString('en-US')+' counties tied at '+esc(rword(l,tiedAt))+'.</p>':'<ol class="an-rk-l">'+rows.map(row).join('')+'</ol>')+'</div>'; }
+  function side(head,rows,tiedAt,tied){ return '<div class="an-rk"><h3 class="an-rk-h">'+head+' in '+esc(scope)+'</h3>'+(tied>k?'<p class="an-rk-n">'+tied.toLocaleString('en-US')+' of the '+n.toLocaleString('en-US')+' counties with 10,000 acres or more in farms tie at '+esc(rword(l,tiedAt))+'.</p>':'<ol class="an-rk-l">'+rows.map(row).join('')+'</ol>')+'</div>'; }
   if(n<4) h='<p class="an-rk-n">'+(n?'Only '+n:'No')+' '+(n===1?'county':'counties')+' with 10,000 acres or more in farms in '+esc(scope)+' '+(n===1?'has':'have')+' a figure on this map'+(n?', too few to list':'')+'.</p>';
   else if(list[0].v===list[n-1].v) h='<p class="an-rk-n an-rk-tie">All '+n.toLocaleString('en-US')+' counties with 10,000 acres or more in farms in '+esc(scope)+' read the same: '+esc(rword(l,list[0].v))+'.</p>';
   else {
@@ -368,6 +416,7 @@ function zoom(st){
   $('an-svg').setAttribute('viewBox',vb.map(function(v){return Math.round(v*10)/10;}).join(' '));
   root.classList.toggle('zoomed',!!S.s); $('an-st').value=S.s; $('an-all').hidden=!S.s;
   if(NOW&&layerOf(S.m)&&(!layerOf(S.m).old||OL[S.m])) paint();
+  if(NOW&&$('an-tiles')&&!$('an-tiles').hidden&&$('an-tiles').getAttribute('data-s')!==(S.s||'US')){ tiles(); side(); }   // the tiles and the answers follow the state
   setLink(); save();
 }
 function pick(f,quiet,fromRecord){
@@ -389,11 +438,14 @@ function pick(f,quiet,fromRecord){
 function record(f,how){
   oldList().then(function(){ window.AtlasLayers.panel(f,how==='jump'?'tap':how); ga('atlas_now_record',{fips:f});
     // the jump: the record opens under the map and the page goes to it
-    if(how==='jump') setTimeout(function(){ var p=$('fa-panel')||$('an-panel'); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); },60); }).catch(function(){
+    // (Nov 18 outside review: the jump stopped short on a phone while the record was still growing above its top)
+    if(how==='jump'){ var go2=function(){ var p=$('fa-panel')||$('an-panel'); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); return p; };
+      setTimeout(go2,60); setTimeout(function(){ var p=$('fa-panel')||$('an-panel'); if(p&&Math.abs(p.getBoundingClientRect().top)>40) p.scrollIntoView({block:'start'}); },900); } }).catch(function(){
     $('an-read').insertAdjacentHTML('beforeend',' <span>The full record did not load; the county page has it.</span>'); });
 }
 
 // ---------- the questions
+function dots(x,c){ var p=document.createElement('canvas'); p.width=p.height=4; var y=p.getContext('2d'); y.fillStyle=c('gap-bg'); y.fillRect(0,0,4,4); y.fillStyle=c('care-dot'); y.fillRect(1,1,1.6,1.6); return x.createPattern(p,'repeat'); }
 function hatch(x,c){ var p=document.createElement('canvas'); p.width=p.height=4; var y=p.getContext('2d'); y.fillStyle=c('gap-bg'); y.fillRect(0,0,4,4); y.strokeStyle=c('gap-line'); y.lineWidth=1.2; y.beginPath(); y.moveTo(0,4); y.lineTo(4,0); y.stroke(); return x.createPattern(p,'repeat'); }
 function thumbs(){
   if(!window.Path2D) return;
@@ -401,22 +453,24 @@ function thumbs(){
   [].forEach.call(root.querySelectorAll('canvas[data-layer]'),function(cv){
     var l=LAY[cv.getAttribute('data-layer')], scale=l.scale, x=cv.getContext('2d'), vb=GEO.vb, k=cv.width/vb[2];
     var col={}; function c(n){ if(!col[n]) col[n]=cs.getPropertyValue('--an-'+scale+'-'+n).trim()||cs.getPropertyValue('--an-'+n).trim()||'#888'; return col[n]; }
-    var hx=hatch(x,c);
+    var hx=hatch(x,c), dx=dots(x,c);
     x.setTransform(k,0,0,k,-vb[0]*k,-vb[1]*k); x.clearRect(vb[0],vb[1],vb[2],vb[3]);
-    for(var f in GEO.c){ var n=cls(f,l); if(n==='ko') continue; x.fillStyle=n==='kx'?hx:n==='kn'?c('none'):c(n); x.fill(new Path2D(GEO.c[f])); }
+    for(var f in GEO.c){ var n=cls(f,l); if(n==='ko') continue; x.fillStyle=n==='kx'?hx:n==='kc'?dx:n==='kn'?c('none'):c(n); x.fill(new Path2D(GEO.c[f])); }
   });
 }
 function headOf(q){ return NOW.questions.filter(function(x){return x.key===q;})[0].head; }
+// a question's answer for the view: the open state's own sentence (now.json ans, its headline map), else the U.S. one
+function qsay(q,gap){ var A=S.s&&NOW.ans&&NOW.ans[S.s], k=A&&headOf(q.key); if(gap) return A?A[k+'_gap']:NOW.say[q.key+'_sub']; return A&&A[k]?A[k]:NOW.say[q.key]; }
 function side(){
   var box=$('an-side'), h='';
   if(!S.q){
     h='<h2 class="an-qh">Pick a question</h2><div class="an-qgrid">'+NOW.questions.map(function(q){
-      return '<button type="button" class="an-qcard" data-q="'+q.key+'"><canvas width="166" height="113" data-layer="'+q.head+'" aria-hidden="true"></canvas><span><b class="an-ql">'+esc(q.label)+'</b><span class="an-qq">'+esc(q.ask)+'</span><span class="an-qa">'+strong(NOW.say[q.key])+'</span></span></button>';
+      return '<button type="button" class="an-qcard" data-q="'+q.key+'"><canvas width="166" height="113" data-layer="'+q.head+'" aria-hidden="true"></canvas><span><b class="an-ql">'+esc(q.label)+'</b><span class="an-qq">'+esc(q.ask)+'</span><span class="an-qa">'+strong(qsay(q))+'</span></span></button>';
     }).join('')+'</div>';
   }else{
     var q=NOW.questions.filter(function(x){return x.key===S.q;})[0];
     var more=OLD?Object.keys(OLD).map(function(k){return OLD[k];}).filter(function(l){ return l.q===S.q&&!l.off; }):null;
-    h='<p class="an-ask">'+esc(q.ask)+'</p><p class="an-ans">'+strong(NOW.say[q.key])+'</p>'+(NOW.say[q.key+'_sub']?'<p class="an-ans2">'+strong(NOW.say[q.key+'_sub'])+'</p>':'')+
+    h='<p class="an-ask">'+esc(q.ask)+'</p><p class="an-ans">'+strong(qsay(q))+'</p>'+(qsay(q,1)?'<p class="an-ans2">'+strong(qsay(q,1))+'</p>':'')+
       '<h2 class="an-qh">Maps one tap down</h2><div class="an-dl">'+NOW.layers.filter(function(l){return l.q===S.q;}).map(function(l){
         return '<button type="button" class="an-dbtn" data-m="'+l.key+'" aria-pressed="'+(l.key===S.m)+'"><canvas width="96" height="65" data-layer="'+l.key+'" aria-hidden="true"></canvas><span>'+esc(l.label)+(l.key===q.head?' <small>headline</small>':'')+'</span></button>';
       }).join('')+'</div>'+
@@ -438,11 +492,14 @@ function go(q,keepM){
   if(!keepM||!l||(S.q&&l.q!==S.q)) S.m=S.q?headOf(S.q):'drought';
   tabs(); paint(); side(); setLink(); save();
 }
+// the five tiles: the open state's own (now.json st_tiles), else the U.S. ones
 function tiles(){
-  var box=$('an-tiles'); if(!box||!NOW.tiles) return;
-  box.innerHTML=NOW.tiles.map(function(t){
-    return '<button type="button" class="an-tile" data-q="'+esc(t.q)+'"><span class="an-tl">'+esc(t.label)+'</span><b class="an-tb">'+esc(t.big.t)+'</b><span class="an-ts">'+esc(t.sub.t)+'</span></button>'; }).join('');
-  [].forEach.call(box.querySelectorAll('.an-tile'),function(b){ b.addEventListener('click',function(){ ui(); go(b.getAttribute('data-q')); ga('atlas_now_tile',{q:b.getAttribute('data-q')}); }); });
+  var box=$('an-tiles'), T=S.s&&NOW.st_tiles&&NOW.st_tiles[S.s]||NOW.tiles; if(!box||!T) return;
+  box.setAttribute('data-s',T===NOW.tiles?'US':S.s);
+  box.innerHTML=T.map(function(t){
+    return '<button type="button" class="an-tile" data-q="'+esc(t.q)+'"'+(t.m?' data-m="'+esc(t.m)+'"':'')+'><span class="an-tl">'+esc(t.label)+'</span><b class="an-tb">'+esc(t.big.t)+'</b><span class="an-ts">'+esc(t.sub.t)+'</span></button>'; }).join('');
+  [].forEach.call(box.querySelectorAll('.an-tile'),function(b){ b.addEventListener('click',function(){ ui(); var m=b.getAttribute('data-m'); if(m&&layerOf(m)){ S.m=m; go(b.getAttribute('data-q'),true); } else go(b.getAttribute('data-q')); ga('atlas_now_tile',{q:b.getAttribute('data-q')}); }); });
+  box.hidden=false; var t0=$('an-tiles0'); if(t0) t0.parentNode.removeChild(t0);
 }
 
 // ---------- links and the picture
@@ -536,7 +593,10 @@ function mine(f){
 }
 // the sources and vintages, and the day the Atlas was built (now.json, from atlas.json's own notes)
 function vint(){
-  var b=$('an-built'); if(b&&NOW.built){ var d=new Date(String(NOW.built).slice(0,10)+'T12:00:00Z'); b.textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}); }
+  var b=$('an-built'); if(b&&NOW.built){ b.textContent=dayW(NOW.built);
+    // the county record's build day is not the maps' day (Nov 18 outside review): name each
+    var lb=b.previousSibling; if(lb&&lb.nodeType===3) lb.nodeValue=lb.nodeValue.replace(/built\s*$/,'county records built ');
+    if(NOW.maps&&!$('an-mapsday')){ b.insertAdjacentHTML('afterend','<span id="an-mapsday">, maps updated to <b>'+esc(dayW(NOW.maps))+'</b></span>'); } }
   vcount();
   var v=$('an-vint'); if(v&&NOW.vint) v.innerHTML=NOW.vint.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('');
 }
@@ -553,22 +613,37 @@ function folds(){
       oldList().then(function(){ window.AtlasLayers.national(); }).catch(function(){ d.removeAttribute('data-on'); }); }); });
 }
 
-Promise.all([get(D+'now.json'),get(D+'geo-us.json'),get(D+'counties-index.json').catch(function(){ return []; })]).then(function(res){
-  NOW=res[0]; GEO=res[1];
-  NOW.cols.forEach(function(c,i){ COL[c]=i; });
-  NOW.rows.forEach(function(r){ ROWS[r[0]]=r; });
-  NOW.layers.forEach(function(l){ LAY[l.key]=l; });
-  (res[2]||[]).forEach(function(x){ IDX[x[0]]=[x[1],x[2]]; STATE_OF[x[0]]=String(x[1]).slice(-2); });
-  buildMap(); wire(); tiles(); folds(); vint();
-  var deep=readLink();
-  if(S.m&&!LAY[S.m]&&!deep) deep={l:S.m};
-  if(S.q&&!NOW.questions.some(function(x){return x.key===S.q;})) S.q='';
-  root.classList.add('ready');
-  var later=deep?applyDeep(deep):null;
-  if(!later){ go(S.q,!!S.m); if(S.s) zoom(S.s); if(S.c) pick(S.c,true); if(deep&&deep.c) record(deep.c,'link'); }
-  else { tabs(); side(); waitOld(S.m); }
-}).catch(function(){
-  var n=$('fa-nodata'); if(n) n.hidden=false;
-  root.classList.add('failed');
-});
+// the map box while the data comes: "Loading the county map."; if it does not come, one line and Try again, and the
+// answer, tiles, key and caption baked into the page stay as they are
+function wait(on){
+  var w=$('an-wait'); if(!w) return;
+  if(on){ w.textContent='Loading the county map.'; return; }
+  var d=($('an-lede')||{}).getAttribute?$('an-lede').getAttribute('data-day'):'';
+  w.innerHTML='The map did not load.'+(d?' The figures above are from different days; the newest is from '+esc(d)+'.':'')+' <button type="button" id="an-retry">Try again</button>';
+  $('an-retry').addEventListener('click',function(){ ga('atlas_now_retry',{}); start(); });
+}
+var BUSY=false;
+function start(){
+  if(BUSY||NOW) return; BUSY=true;
+  root.classList.remove('failed'); wait(true);
+  Promise.all([get(D+'now.json'),get(D+'geo-us.json'),get(D+'counties-index.json').catch(function(){ return []; })]).then(function(res){
+    BUSY=false; NOW=res[0]; GEO=res[1];
+    NOW.cols.forEach(function(c,i){ COL[c]=i; });
+    NOW.rows.forEach(function(r){ ROWS[r[0]]=r; });
+    NOW.layers.forEach(function(l){ LAY[l.key]=l; });
+    (res[2]||[]).forEach(function(x){ IDX[x[0]]=[x[1],x[2]]; STATE_OF[x[0]]=String(x[1]).slice(-2); });
+    buildMap(); wire(); tiles(); folds(); vint();
+    var deep=readLink();
+    if(S.m&&!LAY[S.m]&&!deep) deep={l:S.m};
+    if(S.q&&!NOW.questions.some(function(x){return x.key===S.q;})) S.q='';
+    root.classList.add('ready');
+    var later=deep?applyDeep(deep):null;
+    if(!later){ go(S.q,!!S.m); if(S.s) zoom(S.s); if(S.c) pick(S.c,true); if(deep&&deep.c) record(deep.c,'link'); }
+    else { tabs(); side(); waitOld(S.m); }
+  }).catch(function(){
+    BUSY=false; if(root.classList.contains('ready')) return; NOW=null;
+    root.classList.add('failed'); wait(false);
+  });
+}
+start();
 })();

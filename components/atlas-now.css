@@ -3,7 +3,7 @@
    strong D4, the same five colours as the share pictures (scripts/atlas_pictures.py DROUGHT_DK). Gaps are hatched with a plain label in the key.
    Two-colour scales: rain against normal, basis, and ARC-CO minus PLC (arcplc: orange PLC higher, grey about even, blue
    ARC-CO higher; never red and green). */
-.an{--an-gap-bg:#f6f7f5;--an-gap-line:#c3c9c3;--an-none:#e4e7e3;--an-stroke:var(--bg,#f6f7f5);--an-state:#4a524e;--an-hl:#161a18;
+.an{--an-gap-bg:#f6f7f5;--an-gap-line:#c3c9c3;--an-care-dot:#5d6662;--an-none:#e4e7e3;--an-stroke:var(--bg,#f6f7f5);--an-state:#4a524e;--an-hl:#161a18;
   --an-drought-k0:#f3d98c;--an-drought-k1:#f2ad5b;--an-drought-k2:#e57b3a;--an-drought-k3:#cc4a2c;--an-drought-k4:#c02c44;
   --an-money-k0:#efe3c2;--an-money-k1:#d9bf7f;--an-money-k2:#b8933e;--an-money-k3:#8a6514;--an-money-k4:#523b0a;
   --an-basis-k0:#d3ebe6;--an-basis-k1:#93cdc2;--an-basis-k2:#4fa597;--an-basis-k3:#227a6d;--an-basis-k4:#0f4d45;
@@ -16,7 +16,7 @@
   --an-arcplc-k0:#b3541e;--an-arcplc-k1:#eba872;--an-arcplc-k2:#d6d9d5;--an-arcplc-k3:#9cc3e4;--an-arcplc-k4:#2c6aa8;
   --an-green-k0:#e2efdc;--an-green-k1:#b5d6a7;--an-green-k2:#7fb26c;--an-green-k3:#4d8a3c;--an-green-k4:#2a5c20;
   --an-accent:#8a6514;margin:0 0 1.6rem}
-:root:not([data-theme="light"]) .an{--an-gap-bg:#232b2d;--an-gap-line:#7a878a;--an-none:#1f2627;--an-stroke:var(--bg,#0a0c0d);--an-state:#9aa49f;--an-hl:#ffffff;
+:root:not([data-theme="light"]) .an{--an-gap-bg:#232b2d;--an-gap-line:#7a878a;--an-care-dot:#c9d1d2;--an-none:#1f2627;--an-stroke:var(--bg,#0a0c0d);--an-state:#9aa49f;--an-hl:#ffffff;
   --an-drought-k0:#f3d98c;--an-drought-k1:#f2ad5b;--an-drought-k2:#e57b3a;--an-drought-k3:#cc4a2c;--an-drought-k4:#c02c44;
   --an-money-k0:#73633a;--an-money-k1:#937f4b;--an-money-k2:#b39a5b;--an-money-k3:#d3b66c;--an-money-k4:#f3d27c;
   --an-basis-k0:#4d6b64;--an-basis-k1:#61877f;--an-basis-k2:#76a39a;--an-basis-k3:#8ac0b4;--an-basis-k4:#9fdccf;
@@ -30,7 +30,7 @@
   --an-green-k0:#556a52;--an-green-k1:#6d8768;--an-green-k2:#84a57f;--an-green-k3:#9cc296;--an-green-k4:#b4e0ad;
   --an-accent:#d4a23f}
 .an-h1{font-size:.95rem!important;font-weight:600!important;color:var(--text-dim)!important;margin:0 0 .3rem!important}
-.an-lede{font-family:var(--font-display);font-size:clamp(1.05rem,3.2vw,1.45rem);line-height:1.25;font-weight:800;color:var(--text);margin:0 0 .6rem;letter-spacing:-.01em}
+.an-lede{font-family:var(--font-display);font-size:clamp(1.05rem,3.2vw,1.45rem);line-height:1.25;font-weight:800;color:var(--text);margin:0 0 .6rem;letter-spacing:-.01em;min-height:2.5em}
 .an-lede b,.an-ans b,.an-qa b,.an-legend b{color:var(--an-accent)}
 /* five headline tiles, one number each: one row that scrolls sideways on a phone, so the map stays on the first screen */
 .an-tiles{display:flex;gap:.5rem;overflow-x:auto;scrollbar-width:none;margin:0 -16px .6rem;padding:0 16px;height:5.6rem}
@@ -55,6 +55,10 @@
 .an-zoom select{max-width:9.5rem}
 .an-zoom select,.an-zoom button,.an-acts a,.an-acts button,#an-read button{font:600 .88rem var(--font-body,inherit);border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:4px;padding:.4rem .7rem;min-height:38px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
 .an-svgwrap{position:relative;aspect-ratio:830/564}
+/* the map box before the data comes (and if it does not): one line over the empty map, so nothing below it moves */
+.an-wait{position:absolute;left:0;right:0;top:38%;margin:0 auto;max-width:22rem;padding:.6rem .8rem;text-align:center;font-size:.95rem;line-height:1.45;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:4px}
+.an-wait button{margin-left:.3rem;min-height:36px;padding:.25rem .8rem;border:1px solid var(--an-accent,var(--gold));border-radius:4px;background:var(--surface);color:var(--text);font:inherit;font-weight:600;cursor:pointer}
+.an.ready .an-wait{display:none}
 .an-insets span{position:absolute;transform:translateY(-110%);font-size:.72rem;line-height:1;color:var(--text-dim);pointer-events:none}
 .an.zoomed .an-insets{display:none}
 #an-svg{width:100%;height:100%;display:block;touch-action:manipulation}
@@ -63,9 +67,11 @@
 #an-svg .an-c path{stroke:var(--an-stroke);stroke-width:.4px;stroke-linejoin:round;cursor:pointer}
 #an-svg .an-s path{fill:none;stroke:var(--an-state);stroke-width:1.1px;stroke-linejoin:round;pointer-events:none}
 #an-svg .an-hl{fill:none;stroke:var(--an-hl);stroke-width:2px;pointer-events:none}
-#an-svg .kn{fill:var(--an-none)} #an-svg .kx{fill:url(#an-hx)} #an-svg .ko{fill:var(--bg,transparent);stroke:none}
+#an-svg .kn{fill:var(--an-none)} #an-svg .kx{fill:url(#an-hx)} #an-svg .kc{fill:url(#an-kc)} #an-svg .ko{fill:var(--bg,transparent);stroke:none}
 .an-key i.kn{background:var(--an-none)}
 .an-key i.kx{background:repeating-linear-gradient(45deg,var(--an-gap-bg) 0 3px,var(--an-gap-line) 3px 4.5px)}
+/* a caution (read with care, depends on your PLC yield): dots, never the missing-figure hatch */
+.an-key i.kc,.an-rk-l i.kc{background:radial-gradient(circle,var(--an-care-dot) 1.3px,transparent 1.6px) 0 0/5px 5px,var(--an-gap-bg)} /* plain-look-ok: the caution dot pattern of the map key, a data swatch with hard dots, not a soft fill */
 .an-key i.ko{background:var(--bg,transparent);border:1.5px solid var(--an-state)}
 #an-svg[data-scale=drought] .k0{fill:var(--an-drought-k0)}#an-svg[data-scale=drought] .k1{fill:var(--an-drought-k1)}#an-svg[data-scale=drought] .k2{fill:var(--an-drought-k2)}#an-svg[data-scale=drought] .k3{fill:var(--an-drought-k3)}#an-svg[data-scale=drought] .k4{fill:var(--an-drought-k4)}
 #an-svg[data-scale=money] .k0{fill:var(--an-money-k0)}#an-svg[data-scale=money] .k1{fill:var(--an-money-k1)}#an-svg[data-scale=money] .k2{fill:var(--an-money-k2)}#an-svg[data-scale=money] .k3{fill:var(--an-money-k3)}#an-svg[data-scale=money] .k4{fill:var(--an-money-k4)}
@@ -87,7 +93,7 @@
 .an-key .an-kh{font-weight:600;color:var(--text)}
 /* on a phone each key row is a 24 px tap (WCAG 2.5.8), the labels are short (atlas-now.js shortLab, DRS) and the map head is
    a little lower, so the key, the map and the legend's first line still fit on the first screen */
-@media(max-width:699px){.an-key li button{min-height:24px}.an-key{margin-bottom:0;line-height:1.25;min-height:4.5rem;column-gap:.55rem}.an-maphead{min-height:32px}.an-legend{margin-top:.25rem}.an-maphead .an-zoom select,.an-maphead .an-zoom button{min-height:32px}.an-tiles,.an-tabs{margin-bottom:.4rem}.an-lede{margin-bottom:.45rem}}
+@media(max-width:699px){.an-key li button,.an-key .an-kb{min-height:24px}.an-key{margin-bottom:0;line-height:1.25;min-height:4.5rem;column-gap:.55rem}.an-maphead{min-height:32px}.an-legend{margin-top:.25rem}.an-maphead .an-zoom select,.an-maphead .an-zoom button{min-height:32px}.an-tiles,.an-tabs{margin-bottom:.4rem}.an-lede{margin-bottom:.45rem}}
 @media(min-width:700px){.an-key{min-height:3.9rem}}
 .an.ui .an-key{min-height:0}
 .an-key li{display:flex;align-items:center;gap:.3rem;flex:0 1 auto;min-width:0}.an-key button{text-align:left}.an-key b{color:var(--text);font-weight:600}
@@ -105,6 +111,12 @@
 .an-ask{color:var(--an-accent);font-weight:700;margin:0 0 .3rem}
 .an-ans{font-size:1.12rem;line-height:1.45;font-weight:700;color:var(--text);margin:0 0 .4rem}
 .an-ans2{font-size:.95rem;line-height:1.5;color:var(--text-dim);margin:0 0 .9rem}
+.an-gap{font-size:.85rem;line-height:1.45;color:var(--text-dim);margin:0 0 .35rem}
+@media(max-width:699px){html.an-linked .an-lede{min-height:3.75em}}
+/* a link to a state or to another map: the baked U.S. drought key, caption and note are not that map's, so the map
+   column waits unseen (its room held) until the data draws the linked map; the loading line and a failed load still show */
+html.an-linked .an:not(.ready):not(.failed) .an-mapcol,html.an-maplinked .an:not(.ready):not(.failed) .an-mapcol{visibility:hidden}
+html.an-linked .an:not(.ready):not(.failed) .an-wait,html.an-maplinked .an:not(.ready):not(.failed) .an-wait{visibility:visible}
 .an-dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem}
 .an-dbtn{display:flex;flex-direction:column;gap:.35rem;align-items:flex-start;text-align:left;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:4px;padding:.55rem;cursor:pointer;font:600 .88rem var(--font-body,inherit);min-height:44px}
 .an-dbtn[aria-pressed="true"]{border-color:var(--an-accent);box-shadow:inset 0 0 0 1px var(--an-accent)}
@@ -112,7 +124,9 @@
 .an-acts{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.4rem 0 0}
 .an-acts .pri{border-color:var(--an-accent);color:var(--an-accent)}
 .an-note{font-size:.85rem;color:var(--text-dim);margin:.6rem 0 0}
-.an:not(.ready) .an-stage,.an:not(.ready) .an-tabs,.an:not(.ready) .an-tiles{visibility:hidden}.an.failed .an-stage,.an.failed .an-tabs,.an.failed .an-tiles{display:none}
+/* before the data the baked answer, tiles, key and caption show; the question buttons wait for the data */
+.an:not(.ready) .an-tabs{pointer-events:none}
+.an-tiles[hidden],.an-key[hidden]{display:none}.an-tiles0 .an-tile{cursor:default}
 .an.waiting #an-svg{opacity:.35}
 #an-dec{max-width:6.5rem}
 .an-qh2{margin-top:1rem}
@@ -125,10 +139,13 @@
 .an-read .fa-cc-v{display:inline;font-weight:700}.an-read .fa-cc-u{font-size:.85em;font-weight:500}.an-read .fa-cc-r{display:block;color:var(--text-dim);font-size:.9rem;margin:.15rem 0}
 .an-read .fa-cc-print{margin-right:.9rem}.an-read .fa-thin{color:var(--text)}
 /* the old map's reader tools, restored under the one map (batch 2 review, Nov 18) */
-.an-key button{display:flex;align-items:center;gap:.3rem;background:none;border:0;padding:0 .1rem;font:inherit;color:inherit;cursor:pointer;min-height:1.6rem;border-radius:4px}
+.an-key button,.an-key .an-kb{display:flex;align-items:center;gap:.3rem;background:none;border:0;padding:0 .1rem;font:inherit;color:inherit;cursor:pointer;min-height:1.6rem;border-radius:4px}
+.an-key .an-kb{cursor:default}
+/* the baked key (#an-key0) carries both labels; the page width picks one, as atlas-now.js does */
+.an-key .an-kp{display:none}@media(max-width:699px){.an-key .an-kp{display:inline}.an-key .an-kf{display:none}}
 .an-key button[aria-pressed="true"]{outline:2px solid var(--an-accent,var(--gold));outline-offset:1px}
 #an-svg[data-hk] .an-c path{opacity:.18}
-#an-svg[data-hk="k0"] .an-c path.k0,#an-svg[data-hk="k1"] .an-c path.k1,#an-svg[data-hk="k2"] .an-c path.k2,#an-svg[data-hk="k3"] .an-c path.k3,#an-svg[data-hk="k4"] .an-c path.k4,#an-svg[data-hk="k5"] .an-c path.k5,#an-svg[data-hk="kn"] .an-c path.kn,#an-svg[data-hk="kx"] .an-c path.kx,#an-svg[data-hk="ko"] .an-c path.ko{opacity:1}
+#an-svg[data-hk="k0"] .an-c path.k0,#an-svg[data-hk="k1"] .an-c path.k1,#an-svg[data-hk="k2"] .an-c path.k2,#an-svg[data-hk="k3"] .an-c path.k3,#an-svg[data-hk="k4"] .an-c path.k4,#an-svg[data-hk="k5"] .an-c path.k5,#an-svg[data-hk="kn"] .an-c path.kn,#an-svg[data-hk="kx"] .an-c path.kx,#an-svg[data-hk="kc"] .an-c path.kc,#an-svg[data-hk="ko"] .an-c path.ko{opacity:1}
 #an-svg .an-c path.kz{fill:var(--an-none);opacity:.35}
 #an-svg .an-c path.line{stroke:var(--an-hl);stroke-width:1.3px;vector-effect:non-scaling-stroke}
 .an-scl{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 .4rem}.an-scl[hidden],.an-linew[hidden]{display:none}

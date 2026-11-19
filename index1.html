@@ -14,10 +14,10 @@
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
   <script src="/components/price-local.js?v=16"></script>
-  <script src="/components/bid-age.js?v=2"></script>
+  <script src="/components/bid-age.js?v=3"></script>
 <link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=4">
-<link rel="stylesheet" href="/css/home.css?v=48">
+<link rel="stylesheet" href="/css/home.css?v=50">
 <!-- Nov 7: no first paint until the three jobs and the Farmland sales block are parsed whole (Chrome lifts the block
      when the expected element opens, so it names the first one after them, under the Futures heading). A paint between two parser
      chunks drew the block half built, and its chevrons (centred over rows still arriving) jumped 3 to 50px when the rest
@@ -251,7 +251,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <main id="main" class="main" role="main" tabindex="-1">
-  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-date.hb-sol::before{content:none}#hero-band .hb-sep.hb-sepw{display:none}#hero-band .hb-ovn{display:none;margin:0 0 4px}html.has-zip #hero-band.hb-ovnl .hb-ovn{display:block;font-size:.824rem;line-height:1.3;min-height:1.3em;color:var(--text-dim)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:43px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:66px}html.has-zip #hero-band.hb-ovnl .hb-ovn{min-height:2.6em}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
+  <style>/* 2026-11-19: on a phone (under 560 px) with a ZIP, the overnight move sits in each bid's own cell (.hb-ovc, the same words per crop), not as a two-line row above the grid, and Sell grain and My field sit side by side at every hour, as they do from 521 px: the My field heading stays on the first screen at 390x844, with a long place name and a two-line basis too. Each bid cell holds seven lines then: four for the bid (its month and basis take two at 390) and three for the move ("Jan soybeans trading overnight (7:01 pm), settle not posted yet."). *//* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-date.hb-sol::before{content:none}#hero-band .hb-sep.hb-sepw{display:none}#hero-band .hb-ovn{display:none;margin:0 0 4px}html.has-zip #hero-band.hb-ovnl .hb-ovn{display:block;font-size:.824rem;line-height:1.3;min-height:1.3em;color:var(--text-dim)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:43px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:66px}html.has-zip #hero-band.hb-ovnl #hb-ovn{display:none}html.has-zip #hero-band.hb-ovnl .hb-bid .hb-ovc{display:block}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}html.has-zip #hero-band.hb-ovnl .hb-bid .hb-s{min-height:9.8em}html.has-zip #hero-band .jobs{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}html.has-zip #hero-band :is(.job-sell,.job-field){grid-column:auto}html.has-zip #hero-band .job-sell{padding-right:12px}html.has-zip #hero-band .job-field{padding-left:12px;border-left:1px solid var(--border-2)}}#hero-band .hb-ovc{display:none}/* 2026-11-19 (rule 75b): from 560 px the row holds the longest words it can be given, two lines at every width (measured 424 to 990 px wide: the evening line before the settle, and two read times with front months, never three) */html.has-zip #hero-band.hb-ovnl #hb-ovn{min-height:2.6em}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
     <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}try{if(window.AgBidAge&&AgBidAge.between(new Date()))hb.classList.add('hb-preopen');if(window.AgBidAge&&AgBidAge.ovnLive(new Date()))hb.classList.add('hb-ovnl');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
@@ -707,6 +707,7 @@ try {
       if(status==='pending'){set(id+'-v','<span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span>');}
       else set(id+'-v',DASH);
       set(id+'-s','<span class="hb-l">'+esc(STATE[status]||('No '+word+' bid '+ring))+'</span>');
+      paintOvn();
     }
     /* The time line over the bids: before the 8:30 am open (or on a weekend or holiday) a bid posted after the
        last close says so (components/bid-age.js); otherwise the site's Updated stamp with its old-bid note
@@ -721,6 +722,12 @@ try {
       var o=agePrices?AgBidAge.ovnLine(agePrices,bidSyms,new Date()):null,on=!!AgBidAge.ovnLive(new Date());
       if(hb)hb.classList.toggle('hb-ovnl',on);
       el.textContent=on&&o?o.text:'';
+      /* the same words, each crop in its own bid cell: shown under 560 px, where the row above is not */
+      [['hb-corn','ZC'],['hb-soy','ZS']].forEach(function(a){
+        var s=$(a[0]+'-s');if(!s)return;
+        var c=s.querySelector('.hb-ovc');if(!c){c=document.createElement('span');c.className='hb-l hb-ovc';s.appendChild(c);}
+        c.textContent=on&&o&&o.parts?o.parts[a[1]]:'';
+      });
     }
     function paintAge(){
       paintOvn();
@@ -787,6 +794,7 @@ try {
         if(ho&&num(ho.cash)){var hd=ctDay(ho.posted);lines.push('<span class="hb-l hb-ho">Higher older bid <span class="hb-nw">'+qd(ho.cash)+(hd?SEP+hd:'')+'</span></span>');}
         set(id+'-s',lines.join(''));
       });
+      paintOvn();
       if(typeof sepFit==='function')sepFit();
     }
     /* A tap opens that elevator's row in the card when the card can; else it
@@ -1279,12 +1287,14 @@ try {
   </div>
 <details class="m-fold m-fold--cot" open><summary class="m-fold-sum"><span>Positioning and yield <small>COT positioning &middot; yield nowcast</small></span></summary>
 <div class="fade-up" id="f-cot-intel">
-    <div class="sec-head"><h2 class="sec-title">Positioning and yield</h2><a href="/cot" class="sec-all">Full COT chart</a></div>
+    <div class="sec-head"><h2 class="sec-title">Positioning and yield</h2></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
-        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h">CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></span></div>
+        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h">CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict" hidden>Loading&hellip;</span></span></div>
         <p class="cot-gl-asof" id="cot-gl-asof">CFTC managed money, weekly.</p>
+        <div class="cot-gl-hd" aria-hidden="true"><span>Market</span><span>Funds&rsquo; net position, contracts</span><span>Change in the week</span></div>
         <ul class="cot-glance" id="cot-glance" aria-busy="true"><li class="cot-gl-line"></li><li class="cot-gl-line"></li><li class="cot-gl-line"></li></ul>
+        <a href="/cot" class="cot-full">Full COT chart</a>
         <details class="cot-ask" id="cot-ask"><summary>Get this every Friday by email</summary><div data-signup-ask="Funds this week by email" data-topic="cot" data-source="cot-weekly:home" data-btn="Email me" data-stack data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Every market in one short email after each weekly CFTC report. Free, its own list."></div></details>
         <details class="cot-detail" id="cot-detail"><summary>Ranges, price since the report, all markets</summary>
           <div class="cot-caption">Net position and the week&rsquo;s change, in futures contracts. Rank: net as a share of open interest, against every week since 2010. Bar: where the net sits in its 52-week range.</div>
@@ -1301,8 +1311,13 @@ try {
         </div>
       </div>
       <div class="ratio-widget" id="nowcast-widget">
-        <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict"></span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
+        <!-- Nov 19 (owner): out of season the estimate is withheld, and the card was a heading, two dashes and
+             "Withheld" three times. The page now starts as one plain line (#nc-week, its room held for the longest
+             reason at 320 px); components/home-yield.js fills it with the reason and the date, from the file's own
+             held_back reason when it is for the week on file. The heading, the two crop boxes and the source line
+             (.nc-in) show only when there is an estimate. -->
+        <div class="ratio-widget-head nc-in" hidden><h3 class="ratio-widget-title idx1-sub-h">Yield nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict"></span></div>
+        <div id="nc-grid" class="nc-in" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-lg)">
             <div style="font-size:.765rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn"></div>
@@ -1316,9 +1331,9 @@ try {
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
           </div>
         </div>
-        <div style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings.</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week"></span>
+        <div class="nc-in" hidden style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings.</div>
+        <div class="nc-foot">
+          <span class="nc-week" id="nc-week">Yield nowcast: loading&hellip;</span>
           <a href="/conditions#crop-size" class="ratio-link">How it&rsquo;s computed</a>
         </div>
       </div>
@@ -1721,7 +1736,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
        the real rule. Do not add a second counter here. */
   })();
   </script>
-<script src="/components/loader.js?v=20" defer></script>
+<script src="/components/loader.js?v=21" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
 <script src="/components/geo.js?v=41" defer></script>
 <script src="/components/elev-names.js?v=2" defer></script>
@@ -1730,10 +1745,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <link rel="stylesheet" href="/components/cb-myelev.css?v=3">
 <script src="/components/cb-myelev.js?v=10" defer></script>
 <script src="/components/homepage-extras.js?v=20" defer></script>
-<script src="/components/home-yield.js?v=14" defer></script>
+<script src="/components/home-yield.js?v=15" defer></script>
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/cot-glance.js?v=6"></script>
-<script src="/components/home.js?v=30"></script>
+<script src="/components/home.js?v=31"></script>
 <script src="/components/home-land.js?v=4" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
 <script src="/components/home-planting.js?v=8" defer></script>

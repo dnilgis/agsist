@@ -1,0 +1,368 @@
+/* /usda-calendar: What's priced in and the prediction bot scorecard, both in closed folds; loaded after first paint (Nov 19, 2026). */
+/* ---- What's priced in (was /whats-priced-in) ---- */
+:root{--wp-green:#4aab4c;--wp-gold:var(--gold);--wp-gold2:#e6b042;--wp-bg:#0f1311;--wp-panel:#161b18;--wp-panel2:#1d2420;--wp-line:#2a332d;--wp-txt:#e7ece8;--wp-mut:#9bb0a3;--wp-up:#4aab4c;--wp-dn:#e8706c;}
+.wp-wrap{max-width:900px;margin:0 auto;padding:var(--page-top) 1rem 3rem;color:var(--wp-txt);font-family:Inter,system-ui,sans-serif;}
+.wp-wrap h1{font-family:var(--font-display);font-weight:700;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.08;margin:.2rem 0 .4rem;text-wrap:balance;}
+.wp-wrap h2{font-family:var(--font-display);font-weight:600;font-size:1.25rem;margin:2rem 0 .6rem;color:var(--wp-gold2);}
+.wp-lede{color:var(--wp-mut);font-size:1.05rem;line-height:1.5;max-width:64ch;margin:.2rem 0 1.2rem;}
+.wp-sample{display:none;font-size:.82rem;color:var(--wp-gold2);background:var(--surface2);border:1px solid var(--wp-gold);border-radius:var(--r-md);padding:.5rem .75rem;margin:0 0 1rem;}
+.wp-card{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:var(--r-lg);padding:1.1rem 1.15rem 1.2rem;}
+.wp-card .hd{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
+.wp-card .rpt{font-family:var(--font-display);font-weight:700;font-size:1.4rem;color:#fff;}
+.wp-card .cd{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--wp-gold2);}
+.wp-metric{font-size:.95rem;color:var(--wp-mut);margin:.3rem 0 0;}
+.wp-exp{margin:1rem 0 0;font-size:1.05rem;line-height:1.5;}
+.wp-exp b{color:var(--wp-gold2);}
+.wp-range{display:flex;align-items:center;gap:.6rem;margin:1rem 0 .3rem;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--wp-mut);}
+.wp-rbar{position:relative;flex:1;height:10px;background:var(--wp-panel2);border:1px solid var(--wp-line);border-radius:var(--r-md);}
+.wp-rbar .span{position:absolute;top:-1px;bottom:-1px;background:rgba(74,171,76,.25);border-left:2px solid var(--wp-green);border-right:2px solid var(--wp-green);border-radius:4px;} /* plain-look-ok: the trade range drawn on a number line, a data mark */
+.wp-rbar .avg{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--wp-gold2);}
+.wp-odds{margin:1rem 0 0;}
+.wp-odds .o{margin:0 0 .5rem;}
+.wp-odds .ol{display:flex;justify-content:space-between;font-size:.85rem;margin:0 0 .2rem;}
+.wp-odds .ot{position:relative;height:8px;background:var(--wp-panel2);border-radius:var(--r-md);overflow:hidden;}
+.wp-odds .of{position:absolute;left:0;top:0;bottom:0;background:var(--wp-green);border-radius:var(--r-md);}
+/* EVERY NUMBER ON THE REPORT, one line each. 2026-09-11 The card above is unchanged;
+   this sits under it and is where a grower reads the whole report after the
+   print. Nothing here computes: every figure and every verdict arrives from
+   build_whats_priced_in.py already decided. */
+.wp-nums{margin:1.1rem 0 0;border:1px solid var(--wp-line);border-radius:var(--r-lg);overflow:hidden;overflow-x:auto;background:var(--wp-panel2);}
+.wp-nums .nh{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;flex-wrap:wrap;padding:.6rem .8rem;border-bottom:1px solid var(--wp-line);}
+.wp-nums .nh b{font-size:.9rem;color:var(--wp-txt);}
+.wp-nums .nh span{font-size:.76rem;color:var(--wp-mut);}
+.wp-nums table{width:100%;border-collapse:collapse;font-size:.86rem;}
+.wp-nums th{text-align:right;font-weight:600;color:var(--wp-mut);font-size:.78rem;letter-spacing:0;text-transform:none;padding:.5rem .8rem;border-bottom:1px solid var(--wp-line);}
+.wp-nums th:first-child,.wp-nums td:first-child{text-align:left;}
+.wp-nums td{text-align:right;padding:.55rem .8rem;border-bottom:1px solid var(--wp-line);color:var(--wp-txt);}
+.wp-nums tr:last-child td{border-bottom:none;}
+.wp-nums td.n{font-family:'JetBrains Mono',monospace;}
+.wp-nums td.wait{color:var(--wp-mut);font-style:normal;}
+.wp-nums .v{display:inline-block;font-size:.72rem;font-weight:700;padding:.1rem .4rem;border-radius:var(--r-md);margin-left:.4rem;}
+.wp-nums .v.bull{color:var(--wp-up);background:var(--surface2);}
+.wp-nums .v.bear{color:var(--wp-dn);background:var(--surface2);}
+.wp-nums .v.flat{color:var(--wp-mut);background:rgba(255,255,255,.06);}
+.wp-nums .src{padding:.55rem .8rem;font-size:.74rem;color:var(--wp-mut);border-top:1px solid var(--wp-line);}
+.wp-nums .src a{color:var(--wp-gold2);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
+@media(max-width:560px){.wp-nums th,.wp-nums td{padding:.45rem .3rem;font-size:.8rem;}.wp-nums th:first-child,.wp-nums td:first-child{padding-left:.6rem;}.wp-nums th:last-child,.wp-nums td:last-child{padding-right:.6rem;}.wp-nums td.n{font-size:.74rem;}.wp-nums th{font-size:.66rem;}}
+
+.wp-thr{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:1.1rem 0 0;}
+@media(max-width:520px){.wp-thr{grid-template-columns:1fr;}}
+.wp-thr .t{background:var(--wp-panel2);border:1px solid var(--wp-line);border-radius:var(--r-lg);padding:.7rem .8rem;border-top:3px solid var(--wp-line);}
+.wp-thr .t.bull{border-top-color:var(--wp-up);}
+.wp-thr .t.bear{border-top-color:var(--wp-dn);}
+.wp-thr .k{font-size:0.78rem;text-transform:none;letter-spacing:0;color:var(--wp-mut);}
+.wp-thr .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:#fff;margin:.2rem 0 0;}
+.wp-pos{font-size:.9rem;color:var(--wp-mut);margin:1rem 0 0;border-top:1px solid var(--wp-line);padding-top:.8rem;}
+#wp-history{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.wp-tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.4rem;min-width:560px;}
+.wp-tbl th,.wp-tbl td{text-align:left;padding:.55rem .5rem;border-bottom:1px solid var(--wp-line);vertical-align:top;}
+.wp-tbl th{font-size:0.785rem;text-transform:none;letter-spacing:0;color:var(--wp-mut);font-weight:600;white-space:nowrap;}
+.wp-tbl td:first-child,.wp-tbl td.num{white-space:nowrap;}
+.wp-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;}
+.wp-tag{font-family:var(--font-body);font-weight:700;font-size:0.775rem;white-space:nowrap;text-transform:none;letter-spacing:0;padding:.13rem .5rem;border-radius:var(--r-md);}
+.wp-tag.bull{color:var(--wp-up);background:var(--surface2);}
+.wp-tag.bear{color:var(--wp-dn);background:var(--surface2);}
+.wp-tag.flat{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+.wp-hg{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:var(--r-lg);padding:.65rem .95rem .35rem;margin:0 0 .9rem;}
+.wp-hg-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--wp-line);}
+.wp-hg-rpt{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:#fff;}
+.wp-hg-meta{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+.wp-hg-pill{font-size:0.77rem;font-weight:700;text-transform:none;letter-spacing:0;padding:.13rem .5rem;border-radius:var(--r-lg);white-space:nowrap;}
+.wp-hg-pill.surp{color:var(--wp-gold2);background:var(--surface2);}
+.wp-hg-pill.line{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+.wp-hg-date{font-family:'JetBrains Mono',monospace;font-size:0.785rem;color:var(--wp-gold2);white-space:nowrap;}
+.wp-hr{padding:.6rem 0;border-top:1px solid var(--wp-line);}
+.wp-hr:first-of-type{border-top:none;}
+.wp-hr-top{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;}
+.wp-hr-metric{font-weight:600;color:var(--wp-txt);font-size:.95rem;}
+.wp-hr-nums{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--wp-mut);margin:.3rem 0 .25rem;}
+.wp-hr-nums b.bull{color:var(--wp-up);} .wp-hr-nums b.bear{color:var(--wp-dn);} .wp-hr-nums b.flat{color:var(--wp-txt);}
+.wp-arrow{color:var(--wp-mut);padding:0 .15rem;}
+.wp-hr-reaction{font-size:.88rem;color:var(--wp-mut);line-height:1.45;}
+.wp-result{background:var(--wp-panel);border:1px solid var(--wp-line);border-left-width:4px;border-radius:var(--r-lg);padding:.9rem 1.05rem;margin:.2rem 0 1.4rem;}
+.wp-result.bull{border-left-color:var(--wp-up);} .wp-result.bear{border-left-color:var(--wp-dn);} .wp-result.flat{border-left-color:var(--wp-mut);}
+.wp-res-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.4rem;}
+.wp-res-k{font-family:var(--font-display);font-weight:700;font-size:1.08rem;color:#fff;}
+.wp-res-d{font-family:'JetBrains Mono',monospace;font-size:0.795rem;color:var(--wp-gold2);white-space:nowrap;}
+.wp-res-sum{font-size:.96rem;color:var(--wp-txt);margin-bottom:.55rem;line-height:1.45;}
+.wp-res-big{border-top:1px solid var(--wp-line);padding-top:.55rem;}
+.wp-res-row{display:flex;align-items:center;gap:.5rem;justify-content:space-between;flex-wrap:wrap;}
+.wp-res-metric{font-weight:600;color:#fff;}
+.wp-res-tag{font-family:var(--font-body);font-size:0.78rem;font-weight:700;padding:.12rem .5rem;border-radius:var(--r-md);text-transform:none;white-space:nowrap;}
+.wp-res-tag.bull{color:var(--wp-up);background:var(--surface2);}
+.wp-res-tag.bear{color:var(--wp-dn);background:var(--surface2);}
+.wp-res-tag.flat{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+.wp-res-nums{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--wp-mut);margin:.3rem 0;}
+.wp-res-nums b{color:var(--wp-txt);}
+.wp-res-reaction{font-size:.92rem;color:var(--wp-txt);line-height:1.5;margin-top:.3rem;}
+.wp-res-foot{font-size:.8rem;color:var(--wp-mut);margin-top:.55rem;}
+.wp-res-foot a{color:var(--wp-gold2);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
+.wp-last{border:1px solid var(--wp-line);border-left:2px solid var(--wp-gold);border-radius:var(--r-md);background:var(--wp-panel);padding:.7rem .9rem;margin:0 0 1rem;font-size:.92rem;line-height:1.5;color:var(--wp-txt);}
+.wp-last a{color:var(--wp-gold2);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
+@media(max-width:640px){
+  #wp-history{overflow-x:visible;}
+  .wp-tbl{min-width:0;display:block;font-size:.92rem;}
+  .wp-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .wp-tbl tbody{display:block;}
+  .wp-tbl tr{display:block;background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:var(--r-lg);padding:.7rem .85rem;margin:0 0 .7rem;}
+  .wp-tbl td{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border:none;padding:.25rem 0;white-space:normal;text-align:right;}
+  .wp-tbl td::before{content:attr(data-label);color:var(--wp-mut);font-size:0.775rem;text-transform:none;letter-spacing:0;font-weight:600;text-align:left;flex:0 0 auto;}
+  .wp-tbl td.num{font-family:'JetBrains Mono',monospace;}
+  .wp-tbl td[data-label="Metric"],.wp-tbl td[data-label="Reaction"]{display:block;text-align:left;}
+  .wp-tbl td[data-label="Metric"]::before,.wp-tbl td[data-label="Reaction"]::before{display:block;margin-bottom:.15rem;}
+  .wp-tbl td[data-label="Reaction"]{border-top:1px solid var(--wp-line);margin-top:.35rem;padding-top:.5rem;color:var(--wp-mut);}
+}
+.wp-faq details{border:1px solid var(--wp-line);border-radius:var(--r-lg);background:var(--wp-panel);margin:.5rem 0;padding:0 1rem;}
+.wp-faq summary{cursor:pointer;padding:.85rem 0;font-weight:600;list-style:none;}
+.wp-faq summary::-webkit-details-marker{display:none;}
+.wp-faq summary::after{content:"+";float:right;color:var(--wp-gold2);font-weight:700;}
+.wp-faq details[open] summary::after{content:"\2212";}
+.wp-faq p{margin:0 0 .9rem;color:var(--wp-mut);line-height:1.55;font-size:.95rem;}
+.wp-xlink{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.2rem;font-size:.85rem;}
+.wp-xlink a{display:inline-flex;align-items:center;gap:.3rem;background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:var(--r-lg);padding:.35rem .8rem;color:var(--wp-gold2);text-decoration:none;min-height:44px;}
+.wp-jump{margin:.2rem 0 1.1rem;font-size:.82rem;line-height:1.9;color:var(--wp-mut)}
+.wp-jump b{font-weight:700;color:var(--wp-mut);text-transform:none;letter-spacing:0;font-size:.72rem;margin-right:.15rem}
+.wp-jump a{color:var(--wp-mut);text-decoration:none;border-bottom:1px solid var(--wp-line);padding-bottom:1px}
+.wp-jump a:hover,.wp-jump a:focus-visible{color:var(--wp-gold2);border-bottom-color:var(--wp-gold2)}
+.wp-jump span{color:var(--wp-line);margin:0 .45rem}
+@media(max-width:560px){.wp-jump{line-height:1.5}.wp-jump a{display:inline-block;padding:.45rem 0 .2rem}}
+.wp-farmbox{border:1px solid var(--wp-line);border-left:2px solid var(--wp-gold);border-radius:var(--r-md);background:var(--wp-panel);padding:.8rem 1rem;margin:0 0 1.1rem;font-size:.92rem;line-height:1.55;color:var(--wp-mut);}
+.wp-farmbox b{color:#fff;}
+.wp-farmbox a{color:var(--wp-gold2);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
+.wp-xlink a:hover{border-color:var(--wp-gold);}
+.wp-method{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:var(--r-lg);padding:1.1rem 1.15rem;}
+.wp-method p{color:var(--wp-mut);line-height:1.55;font-size:.95rem;margin:0 0 .8rem;}
+.wp-method p:last-child{margin-bottom:0;}
+.wp-method b{color:var(--wp-txt);}
+.wp-method .src{font-size:.82rem;border-top:1px solid var(--wp-line);padding-top:.7rem;}
+.wp-method .tag{font-family:'JetBrains Mono',monospace;font-weight:700;}
+.wp-method .tag.bull{color:var(--wp-up);} .wp-method .tag.bear{color:var(--wp-dn);} .wp-method .tag.flat{color:var(--wp-mut);}
+.wp-cred{margin-top:1.6rem;font-size:.86rem;color:var(--wp-mut);line-height:1.5;border-top:1px solid var(--wp-line);padding-top:1rem;}
+.wp-cred a{color:var(--wp-gold2);}
+.wp-err{color:var(--wp-mut);background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:var(--r-lg);padding:1rem;}
+/* A BLOCK THAT IS NOT THERE, SAYING WHY. Four parts of the next-report card
+   used to vanish on a falsy check with nothing in their place, so a reader
+   could not tell an unpublished trade survey from one nobody collected. */
+.wp-gap{margin:.55rem 0 0;padding:.5rem .7rem;border-left:2px solid var(--wp-line);
+  color:var(--wp-mut);font-size:.82rem;line-height:1.5;max-width:64ch}
+.wp-gap b{color:var(--wp-mut);font-weight:600}
+.wp-hr-gap{font-size:.78rem;color:var(--wp-mut);margin-top:.15rem}
+
+:root{--as-green:#4aab4c;--as-gold:var(--gold);--as-gold2:#e6b042;--as-bg:#0f1311;--as-panel:#161b18;--as-panel2:#1d2420;--as-line:#2a332d;--as-txt:#e7ece8;--as-mut:#9bb0a3;--as-up:#4aab4c;--as-dn:#e8706c;}
+.as-ribbon{font-size:.85rem;color:var(--as-gold2);background:var(--surface2);border:1px solid var(--as-gold);border-radius:var(--r-md);padding:.6rem .8rem;margin:0 0 1.1rem;}
+.as-err{color:var(--as-mut);background:var(--as-panel);border:1px solid var(--as-line);border-radius:var(--r-lg);padding:1rem;}
+.as-tbl{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:.4rem;}
+.as-tbl th,.as-tbl td{text-align:left;padding:.6rem .55rem;border-bottom:1px solid var(--as-line);vertical-align:top;}
+.as-tbl th{font-size:0.78rem;text-transform:none;letter-spacing:0;color:var(--as-mut);font-weight:600;white-space:nowrap;}
+.as-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;}
+.as-tbl .rk{font-family:'JetBrains Mono',monospace;color:var(--as-mut);width:1.6rem;}
+.as-tbl .who{font-weight:600;color:#fff;}
+/* A record that is real but not yet rankable. Greyed, on the same table, under
+   a rule that says what the grey means, rather than in a hidden array. */
+.as-tbl tr.as-building td{opacity:.85}
+.as-tbl tr.as-split td{border-bottom:none;padding-top:.9rem;color:var(--as-mut);
+  font-size:.78rem;line-height:1.5;border-top:1px solid var(--as-line)}
+.as-wins{display:block;font-size:.72rem;color:var(--as-gold2,#d4a23f);margin-top:.1rem}
+/* A closest call that still lost to the trade consensus is not gold. */
+.as-wins.mut{color:var(--as-mut)}
+/* THE SPREAD, UNDER THE MEAN. Printed for every average of more than one call
+   so a reader can see how much of the gap between two averages is just range. */
+.as-spread{display:block;font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  font-weight:400;color:var(--as-mut);margin-top:.12rem;white-space:nowrap}
+/* One flex item per cell in the mobile card layout, or the two halves of a
+   number ("0%" and "0 of 4") get pushed to opposite ends of the row. */
+.as-cell{display:inline-block;text-align:right}
+/* The row that names what is being averaged. Same shape as as-split. */
+.as-tbl tr.as-cap td{border-bottom:1px solid var(--as-line);border-top:none;
+  color:var(--as-mut);font-size:.875rem;line-height:1.5;padding-top:.2rem}
+.as-tbl tr.as-cap td b{color:var(--as-txt)}
+.as-boardnote{background:var(--as-panel);border:1px solid var(--as-line);
+  border-left:3px solid var(--as-gold2);border-radius:var(--r-md);padding:.7rem .85rem;
+  margin:.7rem 0 0;font-size:.85rem;line-height:1.55;color:var(--as-mut)}
+.as-boardnote b{color:var(--as-txt)}
+.as-otherblk{margin-top:1.1rem}
+.as-ours{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--as-gold2,#d4a23f);border:1px solid var(--as-gold2,#d4a23f);border-radius:3px;padding:0 .28rem;margin-left:.35rem;vertical-align:.06em}
+.as-mut{color:var(--as-mut);font-size:.82rem}
+.as-tbl .firm{display:block;font-weight:400;font-size:.8rem;color:var(--as-mut);}
+.as-acc{color:var(--as-gold2);font-weight:700;}
+.as-beat{color:var(--as-up);} .as-beat.lo{color:var(--as-mut);}
+.as-bias{color:var(--as-mut);}
+.as-bias .hi{color:var(--as-dn);} .as-bias .lo{color:var(--as-up);}
+.as-legend{font-size:.8rem;color:var(--as-mut);line-height:1.5;margin-top:.6rem;}
+.as-legend b{color:var(--as-txt);}
+.as-legend a{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
+.as-panelbox{background:var(--as-panel);border:1px solid var(--as-line);border-radius:var(--card-r);padding:1rem 1.1rem;}
+.as-pa{padding:.5rem 0;border-bottom:1px solid var(--as-line);}
+.as-pa:last-child{border-bottom:none;}
+.as-pa .nm{font-weight:600;color:#fff;}
+.as-pa .fm{color:var(--as-mut);font-size:.82rem;}
+.as-pa .vals{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--as-txt);margin-top:.25rem;}
+.as-pa .vals span{color:var(--as-mut);}
+.as-lock{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--as-mut);white-space:nowrap;}
+.as-res-derived{font-size:.72rem;color:var(--as-mut);margin-left:.35rem;border-bottom:1px dotted var(--as-line);cursor:help;}
+.as-cell .as-res-derived{display:block;margin-left:0;font-size:.7rem;border-bottom:0;text-decoration:underline dotted;}
+.as-stamp{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--as-mut);margin:.1rem 0 .6rem;}
+.as-stamp.stale{color:var(--wp-dn);}
+.as-rep{background:var(--as-panel);border:1px solid var(--as-line);border-radius:var(--card-r);padding:1rem 1.1rem;margin-bottom:.8rem;}
+.as-rep .hd{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap;}
+.as-rep .rpt{font-family:var(--font-display);font-weight:700;font-size:1.2rem;color:#fff;}
+.as-rep .cd{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--as-gold2);}
+.as-met{margin-top:.9rem;border-top:1px solid var(--as-line);padding-top:.7rem;}
+.as-met .ml{font-weight:600;color:var(--as-txt);}
+.as-met .mc{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--as-mut);}
+.as-tag{font-family:var(--font-body);font-weight:700;font-size:0.77rem;white-space:nowrap;text-transform:none;letter-spacing:0;padding:.13rem .5rem;border-radius:var(--r-md);}
+.as-tag.bull{color:var(--as-up);background:var(--surface2);} .as-tag.bear{color:var(--as-dn);background:var(--surface2);} .as-tag.flat{color:var(--as-mut);background:rgba(155,176,163,.1);}
+.as-met-hd{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:baseline;}
+.as-arrow{color:var(--as-mut);padding:0 .1rem;}
+.as-res-row{display:flex;justify-content:space-between;gap:.6rem;font-size:.84rem;padding:.22rem 0;color:var(--as-mut);flex-wrap:wrap;}
+.as-res-who{color:var(--as-txt);} .as-res-who.best{color:var(--as-up);font-weight:600;}
+.as-res-stat{font-family:'JetBrains Mono',monospace;}
+.as-res-beat{color:var(--as-up);}
+.as-roster{display:flex;flex-wrap:wrap;gap:.5rem;}
+.as-chip{display:inline-flex;flex-direction:column;background:var(--as-panel2);border:1px solid var(--as-line);border-radius:var(--r-md);padding:.45rem .7rem;}
+.as-chip b{font-size:.88rem;color:#fff;} .as-chip span{font-size:0.787rem;color:var(--as-mut);}
+.as-method{background:var(--as-panel);border:1px solid var(--as-line);border-radius:var(--r-lg);padding:1.1rem 1.15rem;}
+.as-method p{color:var(--as-mut);line-height:1.55;font-size:.95rem;margin:0 0 .8rem;}
+.as-method p:last-child{margin-bottom:0;}
+.as-method b{color:var(--as-txt);}
+.as-method .src{font-size:.82rem;border-top:1px solid var(--as-line);padding-top:.7rem;}
+.as-faq details{border:1px solid var(--as-line);border-radius:var(--r-lg);background:var(--as-panel);margin:.5rem 0;padding:0 1rem;}
+.as-faq summary{cursor:pointer;padding:.85rem 0;font-weight:600;list-style:none;}
+.as-faq summary::-webkit-details-marker{display:none;}
+.as-faq summary::after{content:"+";float:right;color:var(--as-gold2);font-weight:700;}
+.as-faq details[open] summary::after{content:"\2212";}
+.as-faq p{margin:0 0 .9rem;color:var(--as-mut);line-height:1.55;font-size:.95rem;}
+.as-cred{margin-top:1.6rem;font-size:.86rem;color:var(--as-mut);line-height:1.5;border-top:1px solid var(--as-line);padding-top:1rem;}
+.as-cred a{color:var(--as-gold2);}
+@media(max-width:640px){
+  #as-board{overflow-x:visible;}
+  .as-tbl{display:block;min-width:0;}
+  .as-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .as-tbl tbody{display:block;}
+  .as-tbl tr{display:block;background:var(--as-panel);border:1px solid var(--as-line);border-radius:var(--r-lg);padding:.7rem .85rem;margin:0 0 .7rem;}
+  .as-tbl td{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;border:none;padding:.25rem 0;white-space:normal;text-align:right;}
+  .as-tbl td::before{content:attr(data-label);color:var(--as-mut);font-size:0.775rem;text-transform:none;letter-spacing:0;font-weight:600;text-align:left;flex:0 0 auto;}
+  .as-tbl td.num{font-family:'JetBrains Mono',monospace;}
+  .as-tbl td[data-label="Analyst"]{display:block;text-align:left;border-bottom:1px solid var(--as-line);margin-bottom:.35rem;padding-bottom:.4rem;}
+  .as-tbl td[data-label="Analyst"]::before{display:none;}
+  .as-tbl td[data-label="Analyst"] .who{font-size:1.05rem;}
+  /* The colspan note is prose, not a cell. Without this the card grid turns it
+     into a flex row and shoves "3 scored calls" to the right margin mid-sentence. */
+  .as-tbl tr.as-split{background:none;border:none;padding:0 .2rem;margin:-.25rem 0 .7rem;}
+  .as-tbl tr.as-split td{display:block;text-align:left;border-top:none;padding:0;}
+  .as-tbl tr.as-split td::before{display:none;}
+  .as-tbl tr.as-cap{background:none;border:none;padding:0 .2rem;margin:0 0 .6rem;}
+  .as-tbl tr.as-cap td{display:block;text-align:left;border:none;padding:0;}
+  .as-tbl tr.as-cap td::before{display:none;}
+  /* The spread sits under a right-aligned number in the card layout. */
+  .as-spread{text-align:right}
+}
+.as-sub{font-family:var(--font-display);font-weight:600;font-size:1.05rem;margin:1.5rem 0 .5rem;color:var(--wp-txt);}
+.as-pl-rep{background:var(--wp-panel);border:1px solid var(--wp-line);border-radius:var(--card-r);padding:.9rem 1rem;margin-bottom:.7rem;}
+.as-pl-hd{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;margin-bottom:.55rem;padding-bottom:.5rem;border-bottom:1px solid var(--wp-line);}
+.as-pl-rep-name{font-family:var(--font-display);font-weight:700;font-size:1.08rem;color:#fff;}
+.as-pl-date{font-family:'JetBrains Mono',monospace;font-size:0.795rem;color:var(--wp-gold2);}
+.as-pl-met{padding-top:.6rem;}
+.as-pl-met+.as-pl-met{border-top:1px solid var(--wp-line);margin-top:.55rem;}
+.as-pl-met-lbl{font-size:.82rem;color:var(--wp-mut);margin-bottom:.35rem;}
+.as-pl-met-lbl b{color:var(--wp-txt);font-size:.92rem;}
+.as-pl-call{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;padding:.28rem 0;}
+.as-pl-who{font-weight:600;color:#fff;font-size:.92rem;}
+.as-pl-link{color:#fff;text-decoration:none;border-bottom:1px dotted var(--wp-mut);display:inline-flex;align-items:center;min-height:44px;}
+.as-pl-link:hover{border-bottom-color:var(--wp-gold2);}
+.as-pl-firm{color:var(--wp-mut);font-size:0.795rem;}
+.as-pl-val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--wp-txt);margin-left:auto;}
+.as-pl-badge{font-family:'JetBrains Mono',monospace;font-size:0.782rem;font-weight:700;padding:.12rem .5rem;border-radius:var(--r-md);white-space:nowrap;}
+.as-pl-badge.bull{color:var(--wp-up);background:var(--surface2);}
+.as-pl-badge.bear{color:var(--wp-dn);background:var(--surface2);}
+.as-pl-badge.neut{color:var(--wp-mut);background:rgba(155,176,163,.1);}
+@media(max-width:560px){.as-pl-val{margin-left:0;}.as-pl-call{gap:.4rem;}}
+/* 2026-10-06 light-mode contrast: page gold text at 4.7:1+ */
+/* 2026-10-08: light mode gets a full light palette. The panels used to stay
+   dark while the page text took dark-page values, so the H1, lede and any
+   table on the page background were near-white on near-white. */
+:root[data-theme="light"]{
+  --wp-gold2:#8a6514;--wp-green:#2e7d4f;--wp-bg:#f6f7f5;--wp-panel:#ffffff;--wp-panel2:#f3f5f2;--wp-line:#d6dcd7;--wp-txt:#161a18;--wp-mut:#4a5650;--wp-up:#2e7d4f;--wp-dn:#b03e26;
+  --as-gold2:#8a6514;--as-green:#2e7d4f;--as-bg:#f6f7f5;--as-panel:#ffffff;--as-panel2:#f3f5f2;--as-line:#d6dcd7;--as-txt:#161a18;--as-mut:#4a5650;--as-up:#2e7d4f;--as-dn:#b03e26}
+/* Names that were hard-coded white for the dark panels. */
+[data-theme="light"] .as-tbl .who,[data-theme="light"] .as-pa .nm,[data-theme="light"] .as-rep .rpt,[data-theme="light"] .as-chip b,[data-theme="light"] .as-pl-rep-name,[data-theme="light"] .as-pl-who,[data-theme="light"] .as-pl-link,[data-theme="light"] .wp-card .rpt,[data-theme="light"] .wp-thr .v,[data-theme="light"] .wp-hg-rpt,[data-theme="light"] .wp-res-k,[data-theme="light"] .wp-res-metric,[data-theme="light"] .wp-farmbox b{color:var(--as-txt)}
+/* Greyed "building" rows: darker inks so the faded row still reads at 4.5:1. */
+[data-theme="light"] .as-tbl tr.as-building{--as-gold2:#75560f;--as-up:#256b41;--as-dn:#a93d24;--as-mut:#46524b}
+[data-theme="light"] .as-tbl tr.as-building td{opacity:.9}
+[data-theme="light"] .wp-nums .v.flat{background:rgba(22,26,24,.06)}
+/* Green on its own green tint: one step darker to clear 4.5:1. */
+[data-theme="light"] .wp-tag.bull,[data-theme="light"] .as-tag.bull,[data-theme="light"] .wp-res-tag.bull,[data-theme="light"] .as-pl-badge.bull,[data-theme="light"] .wp-nums .v.bull{color:#256b41}
+
+/* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
+details.fold{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:var(--r-lg);color:var(--text)}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary>*{grid-column:1}
+details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
+details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
+details.fold>summary:hover{background:var(--surface2)}
+details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0}
+details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
+.fold-title{display:block;font-weight:700;line-height:1.35}
+.fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
+.fold-body{padding:1rem 1rem 1.1rem}
+@media (max-width:600px){.fold-body{padding:.85rem .7rem 1rem}details.fold>summary{padding:.65rem .8rem}}
+@media (prefers-reduced-motion:reduce){details.fold>summary::after{transition:none}}
+.wp-wrap details.fold{background:var(--wp-panel);border-color:var(--wp-line)}
+.wp-wrap details.fold>summary{color:var(--wp-txt)}
+.wp-wrap details.fold>summary:hover{background:var(--wp-panel2)}
+.wp-wrap details.fold[open]>summary{border-bottom-color:var(--wp-line)}
+.wp-wrap details.fold>summary::after{border-color:var(--wp-gold2)}
+.wp-wrap details.fold>summary:focus-visible{outline-color:var(--wp-gold2)}
+.wp-wrap .fold-hint{color:var(--wp-mut)}
+.wp-wrap details.fold>summary>h2{font-size:1.15rem}
+.wp-wrap .fold-body>.wp-method{border:0;background:none;padding:0}
+.wp-wrap .fold-body>:first-child{margin-top:0}
+
+/* ---- Prediction bot scorecard (was /scorecard) ---- */
+    .pb-page{max-width:860px;margin:0 auto;padding:12px 1rem 4rem}
+    .pb-page h1{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--text);margin:0 0 .4rem;letter-spacing:-.01em}
+    .pb-page h2{font-size:1.05rem;color:var(--text);font-weight:700;margin:2.2rem 0 .7rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
+    .pb-page h3{font-size:.95rem;color:var(--text);font-weight:700;margin:1.2rem 0 .4rem}
+    .pb-page p,.pb-page li{color:var(--text-dim);line-height:1.7;font-size:.94rem}
+    .pb-page p+p{margin-top:.7rem}
+    .pb-page a{color:var(--gold)}
+    .pb-bc{font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted);margin-bottom:1rem}
+    .pb-bc a{color:var(--text-muted);text-decoration:none;display:inline-flex;align-items:center;min-height:40px}
+    .pb-sub{color:var(--text-dim);font-size:.98rem;max-width:640px}
+    .pb-verdicts{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin:1.4rem 0 .4rem}
+    .pb-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;min-width:0}
+    .pb-box-tag{font-family:var(--font-body);font-size:.74rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.35rem}
+    .pb-verdict{font-size:1.3rem;font-weight:800;color:var(--text);line-height:1.25;margin:0 0 .45rem}
+    .pb-box p{font-size:.88rem;margin:0}
+    .pb-box p+p{margin-top:.45rem}
+    .pb-note{font-size:.82rem;color:var(--text-muted)}
+    .pb-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.4rem 0}
+    /* Phone audit 2026-10-08: the last column carries the sentence (why, verdict, result note).
+       Squeezed to ~80px it made rows 900px tall; give it a reading width and let the table scroll.
+       The fade on the right edge says there is more to the side; JS drops it at the end. */
+    .pb-table td:last-child{min-width:16.25rem}
+    #pb-latest td:nth-child(6){min-width:12rem}
+    #pb-latest td:nth-child(5){white-space:nowrap}
+    .pb-wrap.pb-fade{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 2.5rem),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 2.5rem),transparent)}
+    .pb-table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:520px}
+    .pb-table th{font-family:var(--font-body);font-size:.78rem;letter-spacing:0;text-transform:none;color:var(--text-muted);text-align:left;font-weight:700;padding:.45rem .5rem;border-bottom:1px solid var(--border)}
+    .pb-table td{padding:.5rem;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top}
+    .pb-table td.num,.pb-table th.num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+    .pb-up{color:var(--green);font-weight:700}
+    .pb-down{color:var(--red);font-weight:700}
+    .pb-hit{color:var(--green);font-weight:700}
+    .pb-miss{color:var(--red);font-weight:700}
+    .pb-open{color:var(--text-muted)}
+    .pb-plain{font-size:1.05rem;line-height:1.55;color:var(--text);margin:.2rem 0 .8rem;max-width:62ch}
+    .pb-plain:empty{display:none}
+    .pb-math{border:1px solid var(--border);border-radius:var(--r-md);padding:.6rem .9rem;margin:.8rem 0;background:var(--surface)}
+    .pb-math summary{cursor:pointer;font-weight:700;color:var(--text);min-height:44px;display:flex;align-items:center}
+    .pb-math dl{margin:.4rem 0 0}
+    .pb-math dt{font-family:var(--font-mono);font-size:.76rem;color:var(--text-muted);margin-top:.6rem}
+    .pb-math dd{margin:.15rem 0 0;color:var(--text-dim);font-size:.9rem;line-height:1.6}
+    .pb-rules{margin:.4rem 0 0 1.1rem;padding:0}
+    .pb-more{margin-top:.8rem;width:100%;min-height:44px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-dim);font-family:var(--font-mono);font-size:.8rem;font-weight:700;cursor:pointer}
+    .pb-disc{font-size:.8rem;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);margin-top:2.4rem;padding-top:1rem}
+    @media(max-width:640px){.pb-verdicts{grid-template-columns:1fr}}
