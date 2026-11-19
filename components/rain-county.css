@@ -62,8 +62,10 @@
 .rc-faq summary { cursor: pointer; font-weight: 600; }
 .rc-faq p { margin: .45rem 0 0; color: var(--text-dim); }
 .rc-next { max-width: 48rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
-.rc-next a.rc-nb { display: block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
+.rc-next a { display: block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
 .rc-next small { display: block; color: var(--text-muted); font-size: 14px; line-height: 1.35; }
+/* the Farm tools row (scripts/cross_links.py tools_row(False), Nov 19, 2026): ROW_STYLE here, once, not on every page */
+.xl-tools { font-size: .85rem; line-height: 1.8; margin: 18px 0; }
 .rc-states { columns: 3 14em; padding: 0; list-style: none; }
 .rc-states li { break-inside: avoid; padding: .3rem 0; }
 .rc-states small { color: var(--text-muted); }
