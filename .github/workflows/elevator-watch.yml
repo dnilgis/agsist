@@ -77,8 +77,6 @@ jobs:
           REPLY_TO: ${{ secrets.REPLY_TO }}
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
         run: python3 scripts/send_zip_alert.py
-      # one welcome to each new Daily reader (scripts/send_welcome.py); only on the hourly schedule or by hand, which
-      # share the one 'elevator-watch' concurrency group, so two runs never claim the same signups at once
       - name: Welcome new Daily readers
         if: ${{ !cancelled() && steps.gate.outcome == 'success' && github.event_name != 'workflow_run' }}
         env:

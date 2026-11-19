@@ -687,8 +687,6 @@ jobs:
             [ "$i" = "3" ] && { git rebase --abort 2>/dev/null || true; exit 1; }
           done
 
-      # Nov 19 2026: the issue's scorecard (critic, fact check, gate, the email's line checks) to the private repo,
-      # and on Mondays the week's roll-up to Sig; never holds or changes the send (scripts/daily_scorecard.py)
       - name: Daily scorecard, private
         if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.send_email == true) && inputs.test_to_sig != true }}
         continue-on-error: true
