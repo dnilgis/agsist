@@ -553,9 +553,7 @@ details.fa-arith .body a{color:var(--gold)}
   .ls-tap{box-sizing:border-box;display:flex;align-items:center;gap:.4rem;width:100%;min-height:44px;cursor:pointer;font-size:.84rem;white-space:nowrap;overflow:hidden}
   .ls-tap b{display:inline}
   .ls-tap:focus-visible{outline:2px solid var(--gold,#d4a23f)}
-  .ls-nx{display:block;margin-left:auto;font-weight:400;font-size:.74rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis}
-  .ls-nx::before{content:"Next: "}.ls-nx:empty::before{content:"Next: not announced"}
-  .ls-t td{display:none;border:0;padding:.1rem 0 .4rem}
+  .ls-nx{display:block;margin-left:auto;font-weight:400;font-size:.74rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis}  .ls-t td{display:none;border:0;padding:.1rem 0 .4rem}
   .ls-t tr.ls-open td{display:block}
   .ls-t td::before{display:block;font-size:.7rem;color:var(--text-muted)}
   .ls-t td:nth-child(2)::before{content:"What we show"}.ls-t td:nth-child(3)::before{content:"Source"}
@@ -645,7 +643,7 @@ try{var L=location;if(/(^|[?&])s=/.test(L.search)||/(^|[#&])s=/.test(L.hash))doc
     <div class="ls-map" id="ls-map"></div>
     <p class="ls-leg" id="ls-leg">Shade: the closest state survey we show.<i class="ls-k-county"></i>County survey<i class="ls-k-region"></i>region survey<i class="ls-k-usda"></i>or USDA and Census figures only.</p>
     <table class="ls-t" id="ls-t"><caption class="sr-only">Each state's land figures on the Atlas, their source, survey date and next update</caption>
-      <thead><tr><th scope="col" aria-sort="ascending"><button type="button" data-k="0">State</button></th><th scope="col" aria-sort="none"><button type="button" data-k="1">What we show</button></th><th scope="col" aria-sort="none"><button type="button" data-k="2">Source</button></th><th scope="col" aria-sort="none"><button type="button" data-k="3">Survey date</button></th><th scope="col" aria-sort="none"><button type="button" data-k="4">Next update</button></th></tr></thead>
+      <!--SEED:landsrc-head--><!--/SEED:landsrc-head-->
       <tbody id="ls-rows"><!--SEED:landsrc-rows--><!--/SEED:landsrc-rows--></tbody>
     </table>
   </section>
@@ -654,7 +652,9 @@ try{var L=location;if(/(^|[?&])s=/.test(L.search)||/(^|[#&])s=/.test(L.hash))doc
 (function(){var t=document.getElementById('ls-t');if(!t)return;var b=document.getElementById('ls-rows');
 var FILL={county:'#2e7d4f',region:'#7fb08f',usda:'#c9d6cd'},WORD={county:'county survey',region:'region survey',usda:'USDA and Census figures only'};
 function rows(){return [].slice.call(b.querySelectorAll('tr'));}
-t.querySelector('thead').addEventListener('click',function(e){var x=e.target.closest('button[data-k]');if(!x)return;var k=+x.getAttribute('data-k'),th=x.parentNode,
+/* each row's button opens its row on a phone: it says so to a screen reader (set here, not in each baked row) */
+[].forEach.call(b.querySelectorAll('.ls-tap'),function(x){x.setAttribute('aria-expanded','false');});
+t.addEventListener('click',function(e){if(!e.target.closest('thead'))return;var x=e.target.closest('button[data-k]');if(!x)return;var k=+x.getAttribute('data-k'),th=x.parentNode,
 up=th.getAttribute('aria-sort')!=='ascending';[].forEach.call(t.querySelectorAll('thead th'),function(h){h.setAttribute('aria-sort','none');});th.setAttribute('aria-sort',up?'ascending':'descending');
 rows().map(function(r){var n=r.querySelector('th b').textContent;return [k?r.children[k].getAttribute('data-v')||'':n,n,r];}).sort(function(p,q){var a=p[0],c=q[0],n=!isNaN(a)&&!isNaN(c)&&a!==''&&c!=='';
 var d=n?(+a)-(+c):a.localeCompare(c);return (up?d:-d)||p[1].localeCompare(q[1]);}).forEach(function(z){b.appendChild(z[2]);});});
