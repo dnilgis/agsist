@@ -1,20 +1,20 @@
 {
  "hogs": {
-  "report_date": "2026-11-18",
+  "report_date": "2026-11-19",
   "slaughter_dates": [
-   "2026-11-17"
+   "2026-11-18"
   ],
   "negotiated": {
-   "head": 3049,
-   "base": 38.75,
-   "net": 38.47,
-   "carcass_wt": 224.61
+   "head": 2863,
+   "base": 36.7,
+   "net": 36.34,
+   "carcass_wt": 223.98
   },
   "total": {
-   "head": 239132,
-   "base": 61.12,
-   "net": 61.91,
-   "carcass_wt": 218.46
+   "head": 253013,
+   "base": 60.04,
+   "net": 61.14,
+   "carcass_wt": 219.48
   },
   "source": "USDA AMS, National Daily Direct Hog Prior Day Report - Slaughtered Swine (LM_HG201)"
  },
@@ -22,38 +22,33 @@
   "hogs": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-18T22:00:12Z"
+   "checked": "2026-11-19T21:56:12Z"
   },
   "cutout": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-18T22:00:12Z"
+   "checked": "2026-11-19T21:56:12Z"
   }
  },
  "cutout": {
-  "date": "2026-11-18",
-  "carcass": 69.48,
-  "loads": 253.42,
-  "change": 1.04,
+  "date": "2026-11-19",
+  "carcass": 68.66,
+  "loads": 239.2,
+  "change": -0.82,
   "primals": {
-   "loin": 68.4,
-   "butt": 97.19,
-   "picnic": 56.99,
-   "rib": 127.58,
-   "ham": 62.9,
-   "belly": 66.48
+   "loin": 66.23,
+   "butt": 95.97,
+   "picnic": 57.45,
+   "rib": 128.4,
+   "ham": 62.76,
+   "belly": 65.35
   },
   "source": "USDA AMS, National Daily Pork Report FOB Plant - Negotiated Sales - Afternoon (LM_PK602)"
  },
- "daily_line": "National negotiated cash hogs $38.75/cwt carcass base on 3,049 head (killed Nov 17); pork cutout $69.48/cwt on Nov 18. USDA AMS.",
- "updated": "2026-11-18T22:00:12Z",
+ "daily_line": "National negotiated cash hogs $36.70/cwt carcass base on 2,863 head (killed Nov 18); pork cutout $68.66/cwt on Nov 19. USDA AMS.",
+ "updated": "2026-11-19T21:56:12Z",
  "history": {
   "hogs": [
-   {
-    "d": "2026-08-11",
-    "base": 99.15,
-    "head": 5516
-   },
    {
     "d": "2026-08-12",
     "base": 99.61,
@@ -403,13 +398,14 @@
     "d": "2026-11-18",
     "base": 38.75,
     "head": 3049
+   },
+   {
+    "d": "2026-11-19",
+    "base": 36.7,
+    "head": 2863
    }
   ],
   "cutout": [
-   {
-    "d": "2026-08-11",
-    "carcass": 101.48
-   },
    {
     "d": "2026-08-12",
     "carcass": 100.15
@@ -689,6 +685,10 @@
    {
     "d": "2026-11-18",
     "carcass": 69.48
+   },
+   {
+    "d": "2026-11-19",
+    "carcass": 68.66
    }
   ],
   "hogs_ly": [
