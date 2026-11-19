@@ -1,0 +1,864 @@
+{
+ "about": "MU Extension's Missouri regions: farmland values per acre from the 2025 opinion survey (March to May 2025), good, average and poor cropland and pasture and irrigated cropland, with the observations behind each. A region's figure, not a county's.",
+ "counties": {
+  "29001": {
+   "name": "Adair",
+   "region": "North Central"
+  },
+  "29003": {
+   "name": "Andrew",
+   "region": "Northwest"
+  },
+  "29005": {
+   "name": "Atchison",
+   "region": "Northwest"
+  },
+  "29007": {
+   "name": "Audrain",
+   "region": "Northeast"
+  },
+  "29009": {
+   "name": "Barry",
+   "region": "Southwest"
+  },
+  "29011": {
+   "name": "Barton",
+   "region": "Southwest"
+  },
+  "29013": {
+   "name": "Bates",
+   "region": "West"
+  },
+  "29015": {
+   "name": "Benton",
+   "region": "Central"
+  },
+  "29017": {
+   "name": "Bollinger",
+   "region": "South Central"
+  },
+  "29019": {
+   "name": "Boone",
+   "region": "Central"
+  },
+  "29021": {
+   "name": "Buchanan",
+   "region": "Northwest"
+  },
+  "29023": {
+   "name": "Butler",
+   "region": "Southeast"
+  },
+  "29025": {
+   "name": "Caldwell",
+   "region": "Northwest"
+  },
+  "29027": {
+   "name": "Callaway",
+   "region": "Central"
+  },
+  "29029": {
+   "name": "Camden",
+   "region": "Central"
+  },
+  "29031": {
+   "name": "Cape Girardeau",
+   "region": "Southeast"
+  },
+  "29033": {
+   "name": "Carroll",
+   "region": "North Central"
+  },
+  "29035": {
+   "name": "Carter",
+   "region": "South Central"
+  },
+  "29037": {
+   "name": "Cass",
+   "region": "West"
+  },
+  "29039": {
+   "name": "Cedar",
+   "region": "West"
+  },
+  "29041": {
+   "name": "Chariton",
+   "region": "North Central"
+  },
+  "29043": {
+   "name": "Christian",
+   "region": "Southwest"
+  },
+  "29045": {
+   "name": "Clark",
+   "region": "Northeast"
+  },
+  "29047": {
+   "name": "Clay",
+   "region": "West Urban (Kansas City)"
+  },
+  "29049": {
+   "name": "Clinton",
+   "region": "Northwest"
+  },
+  "29051": {
+   "name": "Cole",
+   "region": "Central"
+  },
+  "29053": {
+   "name": "Cooper",
+   "region": "Central"
+  },
+  "29055": {
+   "name": "Crawford",
+   "region": "East"
+  },
+  "29057": {
+   "name": "Dade",
+   "region": "Southwest"
+  },
+  "29059": {
+   "name": "Dallas",
+   "region": "Central"
+  },
+  "29061": {
+   "name": "Daviess",
+   "region": "Northwest"
+  },
+  "29063": {
+   "name": "DeKalb",
+   "region": "Northwest"
+  },
+  "29065": {
+   "name": "Dent",
+   "region": "South Central"
+  },
+  "29067": {
+   "name": "Douglas",
+   "region": "South Central"
+  },
+  "29069": {
+   "name": "Dunklin",
+   "region": "Southeast"
+  },
+  "29071": {
+   "name": "Franklin",
+   "region": "East"
+  },
+  "29073": {
+   "name": "Gasconade",
+   "region": "East"
+  },
+  "29075": {
+   "name": "Gentry",
+   "region": "Northwest"
+  },
+  "29077": {
+   "name": "Greene",
+   "region": "Southwest"
+  },
+  "29079": {
+   "name": "Grundy",
+   "region": "North Central"
+  },
+  "29081": {
+   "name": "Harrison",
+   "region": "Northwest"
+  },
+  "29083": {
+   "name": "Henry",
+   "region": "West"
+  },
+  "29085": {
+   "name": "Hickory",
+   "region": "Central"
+  },
+  "29087": {
+   "name": "Holt",
+   "region": "Northwest"
+  },
+  "29089": {
+   "name": "Howard",
+   "region": "Central"
+  },
+  "29091": {
+   "name": "Howell",
+   "region": "South Central"
+  },
+  "29093": {
+   "name": "Iron",
+   "region": "South Central"
+  },
+  "29095": {
+   "name": "Jackson",
+   "region": "West Urban (Kansas City)"
+  },
+  "29097": {
+   "name": "Jasper",
+   "region": "Southwest"
+  },
+  "29099": {
+   "name": "Jefferson",
+   "region": "East"
+  },
+  "29101": {
+   "name": "Johnson",
+   "region": "West"
+  },
+  "29103": {
+   "name": "Knox",
+   "region": "Northeast"
+  },
+  "29105": {
+   "name": "Laclede",
+   "region": "Central"
+  },
+  "29107": {
+   "name": "Lafayette",
+   "region": "West"
+  },
+  "29109": {
+   "name": "Lawrence",
+   "region": "Southwest"
+  },
+  "29111": {
+   "name": "Lewis",
+   "region": "Northeast"
+  },
+  "29113": {
+   "name": "Lincoln",
+   "region": "East"
+  },
+  "29115": {
+   "name": "Linn",
+   "region": "North Central"
+  },
+  "29117": {
+   "name": "Livingston",
+   "region": "North Central"
+  },
+  "29119": {
+   "name": "McDonald",
+   "region": "Southwest"
+  },
+  "29121": {
+   "name": "Macon",
+   "region": "North Central"
+  },
+  "29123": {
+   "name": "Madison",
+   "region": "South Central"
+  },
+  "29125": {
+   "name": "Maries",
+   "region": "Central"
+  },
+  "29127": {
+   "name": "Marion",
+   "region": "Northeast"
+  },
+  "29129": {
+   "name": "Mercer",
+   "region": "North Central"
+  },
+  "29131": {
+   "name": "Miller",
+   "region": "Central"
+  },
+  "29133": {
+   "name": "Mississippi",
+   "region": "Southeast"
+  },
+  "29135": {
+   "name": "Moniteau",
+   "region": "Central"
+  },
+  "29137": {
+   "name": "Monroe",
+   "region": "Northeast"
+  },
+  "29139": {
+   "name": "Montgomery",
+   "region": "East"
+  },
+  "29141": {
+   "name": "Morgan",
+   "region": "Central"
+  },
+  "29143": {
+   "name": "New Madrid",
+   "region": "Southeast"
+  },
+  "29145": {
+   "name": "Newton",
+   "region": "Southwest"
+  },
+  "29147": {
+   "name": "Nodaway",
+   "region": "Northwest"
+  },
+  "29149": {
+   "name": "Oregon",
+   "region": "South Central"
+  },
+  "29151": {
+   "name": "Osage",
+   "region": "Central"
+  },
+  "29153": {
+   "name": "Ozark",
+   "region": "South Central"
+  },
+  "29155": {
+   "name": "Pemiscot",
+   "region": "Southeast"
+  },
+  "29157": {
+   "name": "Perry",
+   "region": "East"
+  },
+  "29159": {
+   "name": "Pettis",
+   "region": "Central"
+  },
+  "29161": {
+   "name": "Phelps",
+   "region": "Central"
+  },
+  "29163": {
+   "name": "Pike",
+   "region": "Northeast"
+  },
+  "29165": {
+   "name": "Platte",
+   "region": "West Urban (Kansas City)"
+  },
+  "29167": {
+   "name": "Polk",
+   "region": "Central"
+  },
+  "29169": {
+   "name": "Pulaski",
+   "region": "Central"
+  },
+  "29171": {
+   "name": "Putnam",
+   "region": "North Central"
+  },
+  "29173": {
+   "name": "Ralls",
+   "region": "Northeast"
+  },
+  "29175": {
+   "name": "Randolph",
+   "region": "North Central"
+  },
+  "29177": {
+   "name": "Ray",
+   "region": "Northwest"
+  },
+  "29179": {
+   "name": "Reynolds",
+   "region": "South Central"
+  },
+  "29181": {
+   "name": "Ripley",
+   "region": "South Central"
+  },
+  "29183": {
+   "name": "St. Charles",
+   "region": "East Urban (St. Louis)"
+  },
+  "29185": {
+   "name": "St. Clair",
+   "region": "West"
+  },
+  "29186": {
+   "name": "Ste. Genevieve",
+   "region": "East"
+  },
+  "29187": {
+   "name": "St. Francois",
+   "region": "East"
+  },
+  "29189": {
+   "name": "St. Louis",
+   "region": "East Urban (St. Louis)"
+  },
+  "29195": {
+   "name": "Saline",
+   "region": "Central"
+  },
+  "29197": {
+   "name": "Schuyler",
+   "region": "North Central"
+  },
+  "29199": {
+   "name": "Scotland",
+   "region": "Northeast"
+  },
+  "29201": {
+   "name": "Scott",
+   "region": "Southeast"
+  },
+  "29203": {
+   "name": "Shannon",
+   "region": "South Central"
+  },
+  "29205": {
+   "name": "Shelby",
+   "region": "Northeast"
+  },
+  "29207": {
+   "name": "Stoddard",
+   "region": "Southeast"
+  },
+  "29209": {
+   "name": "Stone",
+   "region": "Southwest"
+  },
+  "29211": {
+   "name": "Sullivan",
+   "region": "North Central"
+  },
+  "29213": {
+   "name": "Taney",
+   "region": "South Central"
+  },
+  "29215": {
+   "name": "Texas",
+   "region": "South Central"
+  },
+  "29217": {
+   "name": "Vernon",
+   "region": "West"
+  },
+  "29219": {
+   "name": "Warren",
+   "region": "East"
+  },
+  "29221": {
+   "name": "Washington",
+   "region": "East"
+  },
+  "29223": {
+   "name": "Wayne",
+   "region": "South Central"
+  },
+  "29225": {
+   "name": "Webster",
+   "region": "South Central"
+  },
+  "29227": {
+   "name": "Worth",
+   "region": "Northwest"
+  },
+  "29229": {
+   "name": "Wright",
+   "region": "South Central"
+  }
+ },
+ "evidence": "opinion survey, region averages of reporting counties",
+ "not_mapped": {
+  "29510": {
+   "name": "St. Louis",
+   "why": "St. Louis city is not named in the report's region list"
+  }
+ },
+ "notes": {
+  "good": "“Good” land is defined as land with yields more than 10% above the county average",
+  "kc": "the 2025 survey collected no data for the West Urban region (Kansas City)",
+  "nonreporting": "regional estimates may or may not reflect land values in nonreporting counties",
+  "poor": "“poor” land is defined as land with yields more than 10% below the county average",
+  "rule": "Average farmland values were not reported in Table 1 if there were fewer than five observations in the category."
+ },
+ "regions": {
+  "Central": {
+   "asd": "50",
+   "counties": [
+    "29015",
+    "29019",
+    "29027",
+    "29029",
+    "29051",
+    "29053",
+    "29059",
+    "29085",
+    "29089",
+    "29105",
+    "29125",
+    "29131",
+    "29135",
+    "29141",
+    "29151",
+    "29159",
+    "29161",
+    "29167",
+    "29169",
+    "29195"
+   ],
+   "obs": {
+    "crop_average": 53,
+    "crop_good": 55,
+    "crop_poor": 48,
+    "irrigated": 28,
+    "pasture_average": 53,
+    "pasture_good": 55,
+    "pasture_poor": 51
+   },
+   "value": {
+    "crop_average": 6404,
+    "crop_good": 8204,
+    "crop_poor": 4911,
+    "irrigated": 8438,
+    "pasture_average": 4662,
+    "pasture_good": 5188,
+    "pasture_poor": 3995
+   },
+   "withheld": {}
+  },
+  "East": {
+   "asd": "60",
+   "counties": [
+    "29055",
+    "29071",
+    "29073",
+    "29099",
+    "29113",
+    "29139",
+    "29157",
+    "29186",
+    "29187",
+    "29219",
+    "29221"
+   ],
+   "obs": {
+    "crop_average": 20,
+    "crop_good": 20,
+    "crop_poor": 21,
+    "irrigated": 7,
+    "pasture_average": 21,
+    "pasture_good": 21,
+    "pasture_poor": 22
+   },
+   "value": {
+    "crop_average": 7458,
+    "crop_good": 8492,
+    "crop_poor": 7444,
+    "irrigated": 7600,
+    "pasture_average": 5370,
+    "pasture_good": 6065,
+    "pasture_poor": 6009
+   },
+   "withheld": {}
+  },
+  "East Urban (St. Louis)": {
+   "counties": [
+    "29183",
+    "29189"
+   ],
+   "obs": {
+    "crop_average": 5,
+    "crop_good": 5,
+    "crop_poor": 5,
+    "irrigated": 1,
+    "pasture_average": 5,
+    "pasture_good": 5,
+    "pasture_poor": 5
+   },
+   "value": {
+    "crop_average": 15875,
+    "crop_good": 15625,
+    "crop_poor": 16000,
+    "pasture_average": 14938,
+    "pasture_good": 14188,
+    "pasture_poor": 16188
+   },
+   "withheld": {
+    "irrigated": "fewer than five observations"
+   }
+  },
+  "North Central": {
+   "asd": "20",
+   "counties": [
+    "29001",
+    "29033",
+    "29041",
+    "29079",
+    "29115",
+    "29117",
+    "29121",
+    "29129",
+    "29171",
+    "29175",
+    "29197",
+    "29211"
+   ],
+   "obs": {
+    "crop_average": 38,
+    "crop_good": 37,
+    "crop_poor": 36,
+    "irrigated": 13,
+    "pasture_average": 37,
+    "pasture_good": 37,
+    "pasture_poor": 38
+   },
+   "value": {
+    "crop_average": 6376,
+    "crop_good": 8226,
+    "crop_poor": 5073,
+    "irrigated": 10900,
+    "pasture_average": 4170,
+    "pasture_good": 4930,
+    "pasture_poor": 3550
+   },
+   "withheld": {}
+  },
+  "Northeast": {
+   "asd": "30",
+   "counties": [
+    "29007",
+    "29045",
+    "29103",
+    "29111",
+    "29127",
+    "29137",
+    "29163",
+    "29173",
+    "29199",
+    "29205"
+   ],
+   "obs": {
+    "crop_average": 32,
+    "crop_good": 33,
+    "crop_poor": 30,
+    "irrigated": 20,
+    "pasture_average": 30,
+    "pasture_good": 31,
+    "pasture_poor": 29
+   },
+   "value": {
+    "crop_average": 8167,
+    "crop_good": 10314,
+    "crop_poor": 6593,
+    "irrigated": 10527,
+    "pasture_average": 5626,
+    "pasture_good": 6167,
+    "pasture_poor": 4828
+   },
+   "withheld": {}
+  },
+  "Northwest": {
+   "asd": "10",
+   "counties": [
+    "29003",
+    "29005",
+    "29021",
+    "29025",
+    "29049",
+    "29061",
+    "29063",
+    "29075",
+    "29081",
+    "29087",
+    "29147",
+    "29177",
+    "29227"
+   ],
+   "obs": {
+    "crop_average": 41,
+    "crop_good": 41,
+    "crop_poor": 38,
+    "irrigated": 13,
+    "pasture_average": 39,
+    "pasture_good": 37,
+    "pasture_poor": 37
+   },
+   "value": {
+    "crop_average": 7233,
+    "crop_good": 8510,
+    "crop_poor": 5929,
+    "irrigated": 11281,
+    "pasture_average": 4869,
+    "pasture_good": 5606,
+    "pasture_poor": 4393
+   },
+   "withheld": {}
+  },
+  "South Central": {
+   "asd": "80",
+   "counties": [
+    "29017",
+    "29035",
+    "29065",
+    "29067",
+    "29091",
+    "29093",
+    "29123",
+    "29149",
+    "29153",
+    "29179",
+    "29181",
+    "29203",
+    "29213",
+    "29215",
+    "29223",
+    "29225",
+    "29229"
+   ],
+   "obs": {
+    "crop_average": 9,
+    "crop_good": 9,
+    "crop_poor": 9,
+    "irrigated": 6,
+    "pasture_average": 26,
+    "pasture_good": 23,
+    "pasture_poor": 23
+   },
+   "value": {
+    "crop_average": 5100,
+    "crop_good": 6444,
+    "crop_poor": 3889,
+    "irrigated": 6000,
+    "pasture_average": 3561,
+    "pasture_good": 4309,
+    "pasture_poor": 2833
+   },
+   "withheld": {}
+  },
+  "Southeast": {
+   "asd": "90",
+   "counties": [
+    "29023",
+    "29031",
+    "29069",
+    "29133",
+    "29143",
+    "29155",
+    "29201",
+    "29207"
+   ],
+   "obs": {
+    "crop_average": 6,
+    "crop_good": 6,
+    "crop_poor": 6,
+    "irrigated": 7,
+    "pasture_average": 5,
+    "pasture_good": 5,
+    "pasture_poor": 5
+   },
+   "value": {
+    "crop_average": 8100,
+    "crop_good": 9500,
+    "crop_poor": 6300,
+    "irrigated": 10875,
+    "pasture_average": 3313,
+    "pasture_good": 3938,
+    "pasture_poor": 2463
+   },
+   "withheld": {}
+  },
+  "Southwest": {
+   "asd": "70",
+   "counties": [
+    "29009",
+    "29011",
+    "29043",
+    "29057",
+    "29077",
+    "29097",
+    "29109",
+    "29119",
+    "29145",
+    "29209"
+   ],
+   "obs": {
+    "crop_average": 13,
+    "crop_good": 13,
+    "crop_poor": 13,
+    "irrigated": 12,
+    "pasture_average": 18,
+    "pasture_good": 16,
+    "pasture_poor": 16
+   },
+   "value": {
+    "crop_average": 7248,
+    "crop_good": 8357,
+    "crop_poor": 6321,
+    "irrigated": 10036,
+    "pasture_average": 6408,
+    "pasture_good": 7304,
+    "pasture_poor": 5821
+   },
+   "withheld": {}
+  },
+  "West": {
+   "asd": "40",
+   "counties": [
+    "29013",
+    "29037",
+    "29039",
+    "29083",
+    "29101",
+    "29107",
+    "29185",
+    "29217"
+   ],
+   "obs": {
+    "crop_average": 22,
+    "crop_good": 24,
+    "crop_poor": 21,
+    "irrigated": 19,
+    "pasture_average": 25,
+    "pasture_good": 23,
+    "pasture_poor": 22
+   },
+   "value": {
+    "crop_average": 6823,
+    "crop_good": 7671,
+    "crop_poor": 6107,
+    "irrigated": 8419,
+    "pasture_average": 5363,
+    "pasture_good": 5842,
+    "pasture_poor": 4793
+   },
+   "withheld": {}
+  },
+  "West Urban (Kansas City)": {
+   "counties": [
+    "29047",
+    "29095",
+    "29165"
+   ],
+   "obs": {},
+   "value": {},
+   "withheld": {
+    "all": "the 2025 survey collected no data for the West Urban region (Kansas City)"
+   }
+  }
+ },
+ "regions_from": "the USDA Agricultural Statistics Districts, with Platte, Clay, Jackson, St. Charles and St. Louis County as the urban region (the report's words)",
+ "respondents": 417,
+ "source": {
+  "authors": "Juo-Han Tsay, TaylorAnn Washburn and Ben Brown",
+  "org": "University of Missouri Extension",
+  "ref": "mu-g401",
+  "released": "July 2025",
+  "sha256": "bd2b4c3dc0d316aa89556f42aebcb07ed591c2c251a535b29a534240d44dc66d",
+  "title": "Missouri Farmland Values Opinion Survey (G401)",
+  "url": "https://extension.missouri.edu/publications/g401"
+ },
+ "state": "MO",
+ "tiers": {
+  "average": "average",
+  "good": "good",
+  "poor": "poor"
+ },
+ "unit": "region",
+ "what": {
+  "obs": "observations behind the figure",
+  "value": "average value per acre, 2025 survey",
+  "withheld": "NA in the report: Average farmland values were not reported in Table 1 if there were fewer than five observations in the category."
+ },
+ "year": 2025
+}
