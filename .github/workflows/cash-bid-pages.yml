@@ -99,8 +99,6 @@ jobs:
 
       - name: Commit if changed
         id: commit
-        # farmland-atlas.html: build_atlas_pages.py rebakes the hub's first paint (its corn basis tile and day) from the
-        # same now.json it writes here, so both go in one commit and the hub never trails the bids (atlas_now --check-hub)
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
