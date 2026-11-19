@@ -2370,6 +2370,11 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .wl-rp>aside{display:flex;flex:1 1 auto;min-height:0}
 .wl .rp-card{flex:1 1 auto;align-items:flex-start;gap:12px;margin:0;padding:0;border:0;border-radius:0;background:none}
 .wl .rp-card-i{width:88px}
+/* Nov 19: the picture's box is the thumbnail's own shape whether or not the file arrives. A picture that fails (a
+   dropped connection, a checkout without img/) drew its alt text wrapped at 88px, and the card grew
+   from 180 to 413px at 390 after the strip had settled. */
+.wl .rp-card-i{aspect-ratio:360/247;overflow:hidden}
+.wl .rp-card-i img{height:100%;object-fit:cover}
 .wl .rp-card-b{display:flex;flex-direction:column;align-self:stretch}
 .wl .rp-card-x{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 /* one title, one line, one action, like the cards beside it: the price stays on /rain-print */
