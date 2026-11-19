@@ -1,0 +1,485 @@
+{
+ "about": "CSU Extension's two Colorado regions: the range and median of crop land cash rents per acre per year reported in the 2025 survey, irrigated and dryland, by crop. A region's figure, not a county's. Rents only: CSU prints no land values.",
+ "counties": {
+  "08001": {
+   "name": "Adams",
+   "region": "Eastern"
+  },
+  "08003": {
+   "name": "Alamosa",
+   "region": "Western"
+  },
+  "08005": {
+   "name": "Arapahoe",
+   "region": "Eastern"
+  },
+  "08007": {
+   "name": "Archuleta",
+   "region": "Western"
+  },
+  "08009": {
+   "name": "Baca",
+   "region": "Eastern"
+  },
+  "08011": {
+   "name": "Bent",
+   "region": "Eastern"
+  },
+  "08013": {
+   "name": "Boulder",
+   "region": "Eastern"
+  },
+  "08014": {
+   "name": "Broomfield",
+   "region": "Eastern"
+  },
+  "08015": {
+   "name": "Chaffee",
+   "region": "Western"
+  },
+  "08017": {
+   "name": "Cheyenne",
+   "region": "Eastern"
+  },
+  "08019": {
+   "name": "Clear Creek",
+   "region": "Western"
+  },
+  "08021": {
+   "name": "Conejos",
+   "region": "Western"
+  },
+  "08023": {
+   "name": "Costilla",
+   "region": "Western"
+  },
+  "08025": {
+   "name": "Crowley",
+   "region": "Eastern"
+  },
+  "08027": {
+   "name": "Custer",
+   "region": "Western"
+  },
+  "08029": {
+   "name": "Delta",
+   "region": "Western"
+  },
+  "08031": {
+   "name": "Denver",
+   "region": "Eastern"
+  },
+  "08033": {
+   "name": "Dolores",
+   "region": "Western"
+  },
+  "08035": {
+   "name": "Douglas",
+   "region": "Eastern"
+  },
+  "08037": {
+   "name": "Eagle",
+   "region": "Western"
+  },
+  "08039": {
+   "name": "Elbert",
+   "region": "Eastern"
+  },
+  "08041": {
+   "name": "El Paso",
+   "region": "Eastern"
+  },
+  "08043": {
+   "name": "Fremont",
+   "region": "Western"
+  },
+  "08045": {
+   "name": "Garfield",
+   "region": "Western"
+  },
+  "08047": {
+   "name": "Gilpin",
+   "region": "Western"
+  },
+  "08049": {
+   "name": "Grand",
+   "region": "Western"
+  },
+  "08051": {
+   "name": "Gunnison",
+   "region": "Western"
+  },
+  "08053": {
+   "name": "Hinsdale",
+   "region": "Western"
+  },
+  "08055": {
+   "name": "Huerfano",
+   "region": "Eastern"
+  },
+  "08057": {
+   "name": "Jackson",
+   "region": "Western"
+  },
+  "08059": {
+   "name": "Jefferson",
+   "region": "Eastern"
+  },
+  "08061": {
+   "name": "Kiowa",
+   "region": "Eastern"
+  },
+  "08063": {
+   "name": "Kit Carson",
+   "region": "Eastern"
+  },
+  "08065": {
+   "name": "Lake",
+   "region": "Western"
+  },
+  "08067": {
+   "name": "La Plata",
+   "region": "Western"
+  },
+  "08069": {
+   "name": "Larimer",
+   "region": "Eastern"
+  },
+  "08071": {
+   "name": "Las Animas",
+   "region": "Eastern"
+  },
+  "08073": {
+   "name": "Lincoln",
+   "region": "Eastern"
+  },
+  "08075": {
+   "name": "Logan",
+   "region": "Eastern"
+  },
+  "08077": {
+   "name": "Mesa",
+   "region": "Western"
+  },
+  "08079": {
+   "name": "Mineral",
+   "region": "Western"
+  },
+  "08081": {
+   "name": "Moffat",
+   "region": "Western"
+  },
+  "08083": {
+   "name": "Montezuma",
+   "region": "Western"
+  },
+  "08085": {
+   "name": "Montrose",
+   "region": "Western"
+  },
+  "08087": {
+   "name": "Morgan",
+   "region": "Eastern"
+  },
+  "08089": {
+   "name": "Otero",
+   "region": "Eastern"
+  },
+  "08091": {
+   "name": "Ouray",
+   "region": "Western"
+  },
+  "08093": {
+   "name": "Park",
+   "region": "Western"
+  },
+  "08095": {
+   "name": "Phillips",
+   "region": "Eastern"
+  },
+  "08097": {
+   "name": "Pitkin",
+   "region": "Western"
+  },
+  "08099": {
+   "name": "Prowers",
+   "region": "Eastern"
+  },
+  "08101": {
+   "name": "Pueblo",
+   "region": "Eastern"
+  },
+  "08103": {
+   "name": "Rio Blanco",
+   "region": "Western"
+  },
+  "08105": {
+   "name": "Rio Grande",
+   "region": "Western"
+  },
+  "08107": {
+   "name": "Routt",
+   "region": "Western"
+  },
+  "08109": {
+   "name": "Saguache",
+   "region": "Western"
+  },
+  "08111": {
+   "name": "San Juan",
+   "region": "Western"
+  },
+  "08113": {
+   "name": "San Miguel",
+   "region": "Western"
+  },
+  "08115": {
+   "name": "Sedgwick",
+   "region": "Eastern"
+  },
+  "08117": {
+   "name": "Summit",
+   "region": "Western"
+  },
+  "08119": {
+   "name": "Teller",
+   "region": "Western"
+  },
+  "08121": {
+   "name": "Washington",
+   "region": "Eastern"
+  },
+  "08123": {
+   "name": "Weld",
+   "region": "Eastern"
+  },
+  "08125": {
+   "name": "Yuma",
+   "region": "Eastern"
+  }
+ },
+ "evidence": "survey of producers, landowners, lenders, consultants and agents, region ranges and medians",
+ "not_mapped": {},
+ "notes": {
+  "few": "Some reported rates may seem unusually low or high, which is due to very few respondents and/or the operation is not widely performed.",
+  "generally": "Eastern – generally, those counties east of the Rocky Mountains and I-25",
+  "guide": "The rates reported herein are not recommended rates.",
+  "nr": "Rates reported with n/r are not performed in the state or the region, or only have data from 2023 or prior.",
+  "only": "The information in this report should be used only as a guide."
+ },
+ "regions": {
+  "Eastern": {
+   "counties": [
+    "08001",
+    "08005",
+    "08009",
+    "08011",
+    "08013",
+    "08014",
+    "08017",
+    "08025",
+    "08031",
+    "08035",
+    "08039",
+    "08041",
+    "08055",
+    "08059",
+    "08061",
+    "08063",
+    "08069",
+    "08071",
+    "08073",
+    "08075",
+    "08087",
+    "08089",
+    "08095",
+    "08099",
+    "08101",
+    "08115",
+    "08121",
+    "08123",
+    "08125"
+   ],
+   "rent": {
+    "dry": {
+     "corn": {
+      "high": 35,
+      "low": 32,
+      "median": 35
+     },
+     "feed_hay": {
+      "high": 35,
+      "low": 32,
+      "median": 35
+     },
+     "oilseed_millet": {
+      "high": 35,
+      "low": 32,
+      "median": 35
+     },
+     "small_grains": {
+      "high": 35,
+      "low": 32,
+      "median": 35
+     }
+    },
+    "irr": {
+     "alfalfa": {
+      "high": 300,
+      "low": 50,
+      "median": 137
+     },
+     "corn": {
+      "high": 300,
+      "low": 50,
+      "median": 132
+     },
+     "grass_hay": {
+      "high": 60,
+      "low": 40,
+      "median": 50
+     },
+     "potatoes": {
+      "nr": true
+     },
+     "small_grains": {
+      "high": 225,
+      "low": 80,
+      "mark": "2023_or_earlier",
+      "median": 125
+     },
+     "sugar_beets": {
+      "high": 300,
+      "low": 75,
+      "median": 218
+     },
+     "vegetables": {
+      "high": 300,
+      "low": 75,
+      "median": 175
+     }
+    }
+   }
+  },
+  "Western": {
+   "counties": [
+    "08003",
+    "08007",
+    "08015",
+    "08019",
+    "08021",
+    "08023",
+    "08027",
+    "08029",
+    "08033",
+    "08037",
+    "08043",
+    "08045",
+    "08047",
+    "08049",
+    "08051",
+    "08053",
+    "08057",
+    "08065",
+    "08067",
+    "08077",
+    "08079",
+    "08081",
+    "08083",
+    "08085",
+    "08091",
+    "08093",
+    "08097",
+    "08103",
+    "08105",
+    "08107",
+    "08109",
+    "08111",
+    "08113",
+    "08117",
+    "08119"
+   ],
+   "rent": {
+    "dry": {
+     "corn": {
+      "high": 160,
+      "low": 120,
+      "mark": "2023_or_earlier",
+      "median": 160
+     },
+     "feed_hay": {
+      "high": 35,
+      "low": 25,
+      "median": 32
+     },
+     "oilseed_millet": {
+      "nr": true
+     },
+     "small_grains": {
+      "nr": true
+     }
+    },
+    "irr": {
+     "alfalfa": {
+      "high": 300,
+      "low": 160,
+      "median": 285
+     },
+     "corn": {
+      "high": 300,
+      "low": 100,
+      "mark": "2024",
+      "median": 200
+     },
+     "grass_hay": {
+      "high": 100,
+      "low": 36,
+      "median": 60
+     },
+     "potatoes": {
+      "high": 590,
+      "low": 150,
+      "median": 350
+     },
+     "small_grains": {
+      "high": 275,
+      "low": 240,
+      "median": 250
+     },
+     "sugar_beets": {
+      "nr": true
+     },
+     "vegetables": {
+      "high": 350,
+      "low": 200,
+      "mark": "2023_or_earlier",
+      "median": 316
+     }
+    }
+   }
+  }
+ },
+ "regions_from": "the report's region map (page 2, Western yellow, Eastern green, county names printed), read by laying the county outlines over it",
+ "respondents": "more than 235",
+ "source": {
+  "authors": "Jenny A. Beiermann and Jeffrey E. Tranel",
+  "date_words": "2025 survey, released April 2026",
+  "org": "Colorado State University Extension",
+  "ref": "csu-custom-rates-2025-pdf",
+  "released": "April 2026",
+  "sha256": "45aefb6fb1b8d74a2cdeeb1f37293f9a041838cdb2d2d783453aeb01992e5b7c",
+  "title": "2025 Land Rental and Custom Rates for Colorado Farms and Ranches",
+  "url": "https://abm.extension.colostate.edu/"
+ },
+ "state": "CO",
+ "states": [
+  "CO"
+ ],
+ "unit": "region",
+ "what": {
+  "mark": "2024: a 2024 survey rate (bold in the report); 2023_or_earlier: a rate from 2023 or before (grey in the report)",
+  "nr": "n/r in the report: not performed in the state or the region, or only data from 2023 or prior",
+  "rent": "crop land cash rent per acre per year (growing season), range and median, 2025 survey"
+ },
+ "year": 2025
+}
