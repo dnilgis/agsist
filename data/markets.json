@@ -1,57 +1,19 @@
 {
-  "fetched": "2026-11-18T10:09:34Z",
+  "fetched": "2026-11-19T10:09:28Z",
   "version": 5,
-  "count": 1,
-  "total_found": 1,
+  "count": 0,
+  "total_found": 0,
   "tier_breakdown": {
-    "direct_ag": 1,
+    "direct_ag": 0,
     "trade_energy": 0,
     "macro_weather": 0
   },
   "published_tier_breakdown": {
-    "direct_ag": 1,
+    "direct_ag": 0,
     "trade_energy": 0,
     "macro_weather": 0
   },
-  "published_event_count": 1,
-  "categories": {
-    "Other": [
-      {
-        "platform": "Polymarket",
-        "ticker": "6656044",
-        "title": "Will the 30-year Treasury yield dip below 5.14% in November?",
-        "yes": 4,
-        "no": 96,
-        "volume_24h": 997.007079,
-        "close_time": "2026-12-01T04:59:00Z",
-        "time_left": "Closes in 12d",
-        "url": "https://polymarket.com/event/how-low-will-30-year-treasury-yield-get-in-november",
-        "slug": "how-low-will-30-year-treasury-yield-get-in-november",
-        "event_title": "",
-        "relevance": 100,
-        "tier": 1,
-        "category": "Other",
-        "why_it_matters": "Reflects conditions that can affect agricultural commodity prices, input costs, or farm policy."
-      }
-    ]
-  },
-  "markets": [
-    {
-      "platform": "Polymarket",
-      "ticker": "6656044",
-      "title": "Will the 30-year Treasury yield dip below 5.14% in November?",
-      "yes": 4,
-      "no": 96,
-      "volume_24h": 997.007079,
-      "close_time": "2026-12-01T04:59:00Z",
-      "time_left": "Closes in 12d",
-      "url": "https://polymarket.com/event/how-low-will-30-year-treasury-yield-get-in-november",
-      "slug": "how-low-will-30-year-treasury-yield-get-in-november",
-      "event_title": "",
-      "relevance": 100,
-      "tier": 1,
-      "category": "Other",
-      "why_it_matters": "Reflects conditions that can affect agricultural commodity prices, input costs, or farm policy."
-    }
-  ]
+  "published_event_count": 0,
+  "categories": {},
+  "markets": []
 }
