@@ -6,7 +6,7 @@ on:
     types: [completed]
   pull_request_target:
     types: [labeled]
-  # a service worker note that reached main by a hand merge: the bot sets the number on its next pass
+  # a service worker note merged by hand: the bot sets the number
   push:
     branches: [main]
     paths: ['.github/sw-next/**']
