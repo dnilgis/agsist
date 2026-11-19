@@ -97,6 +97,7 @@
     "county rain",
     "Fetch Crop Progress",
     "Dairy prices",
+    "Drought county week",
     "Bake farm-bill page",
     "farmland-atlas-pages",
     "Hail state pages \u2014 generate from monthly data",
@@ -257,6 +258,7 @@
     "Cash Bid Index",
     "cash-bid-pages",
     "county rain",
+    "Drought county week",
     "farmland-atlas-pages",
     "Fetch Grain Bids",
     "Hail state pages \u2014 generate from monthly data",
@@ -2698,9 +2700,12 @@
    "touched_by": [
     "Accuracy pass",
     "cash-bid-pages",
+    "county rain",
+    "Drought county week",
     "farmland-atlas-pages",
     "farmland-atlas",
     "Hail data refresh",
+    "Monthly county rain email",
     "tenure"
    ],
    "cadence": "1 launch monthly, on day 15 at about 1am Central",
