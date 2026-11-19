@@ -106,12 +106,31 @@ jobs:
           git add -A cash-bids data/pointers data/sponsor-slots.json sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg rain sitemap-rain.xml farmland-atlas farmland-atlas.html sitemap-atlas.xml data/land/sources.json
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           git diff --staged --shortstat
+          SAVE=$RUNNER_TEMP/cbp-save; rm -rf "$SAVE"; mkdir -p "$SAVE"
+          git diff --staged --name-only --diff-filter=d > "$SAVE/changed.txt"
+          git diff --staged --name-only --diff-filter=D > "$SAVE/removed.txt"
+          tar -cf "$SAVE/out.tar" -T "$SAVE/changed.txt"
           git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"
           for i in 1 2 3 4; do
             git rebase --abort 2>/dev/null || true
             if python3 scripts/generated_sets.py pull-rebase cash-bids rain farmland-atlas --autostash && git push -q; then
               echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0
             fi
+            echo "rebase or push failed: rebuilding the rain and Atlas pages on the newer main"
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            tar -xf "$SAVE/out.tar"
+            xargs -r rm -f < "$SAVE/removed.txt"
+            python scripts/build_county_rain.py
+            python scripts/build_atlas_pages.py
+            python scripts/build_place_pct.py
+            python scripts/generated_sets.py dependents cash-bids rain farmland-atlas --stage || true
+            git add -A data/atlas/pct
+            git add -A cash-bids data/pointers data/sponsor-slots.json sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg rain sitemap-rain.xml farmland-atlas farmland-atlas.html sitemap-atlas.xml
+            if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
+            git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"
+            if git push -q origin HEAD:main; then echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0; fi
             sleep $((20 * i))
           done
           echo "push failed after 4 attempts"; exit 1
