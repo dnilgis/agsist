@@ -74,7 +74,8 @@ function money(v,dp){ return '$'+Number(v).toLocaleString('en-US',{minimumFracti
 function dp(l){ return l.dp!=null?l.dp:l.key==='arc'||l.key==='prf'||l.key==='cost'?2:0; }
 function n0(v){ return Number(v).toLocaleString('en-US',{maximumFractionDigits:2}); }
 function show(v,l){
-  if(l.unit==='$') return money(v,dp(l));
+  // l.cents (the NASS rent map): cents when the figure has them, $44.50 as NASS prints it, never $45 (Nov 19, 2026)
+  if(l.unit==='$') return money(v,l.cents&&Math.round(v*100)%100?2:dp(l));
   if(l.unit==='ac') return n0(v)+' acres';
   if(l.unit==='d') return n0(v)+' days';
   if(l.unit==='gdd') return n0(v)+' GDD';
