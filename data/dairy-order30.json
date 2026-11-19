@@ -32,6 +32,19 @@
    "mover": 16.03,
    "mover_higher_of": true,
    "released": "2026-10-21"
+  },
+  {
+   "adv_butterfat": 1.3641,
+   "adv_class3_skim": 13.44,
+   "adv_class4_skim": 16.93,
+   "class1": 24.31,
+   "class1_bf": 1.3961,
+   "class1_diff": 3.2,
+   "class1_skim": 20.13,
+   "month_key": "2026-12",
+   "mover": 16.93,
+   "mover_higher_of": true,
+   "released": "2026-11-18"
   }
  ],
  "ppd_history": [
@@ -228,11 +241,11 @@
    "uniform": 15.91
   }
  ],
- "read": "2026-11-18",
+ "read": "2026-11-19",
  "source": "Upper Midwest Market Administrator (Federal Order 30)",
  "source_url": "https://www.fmma30.com/",
  "status": {
-  "at": "2026-11-18T16:26:20Z",
+  "at": "2026-11-19T16:29:43Z",
   "ok": true
  },
  "year_ago": {
