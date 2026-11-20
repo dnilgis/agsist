@@ -690,3 +690,35 @@
   .rce-fs.rce-p:not(.rce-off) .rce-art { aspect-ratio: 640 / 538; }
 }
 .rce-fs.rce-off { display: none; }
+
+/* One clean read (Nov 20, 2026). The answer paragraph holds its room from the first draw: the
+   min-height fits the longest real answer (the Lancaster NE field, 9 soil map units) at 360 px,
+   test/field-scout-clean.test.mjs measures it, so nothing below moves when its facts land. */
+.fs-answer{ border-bottom:1px solid var(--border); }
+.fs-answer .fs-section-body{ padding:1rem 1.2rem 1rem; }
+.fs-answer-p{ margin:0; font-size:1rem; line-height:1.55; color:var(--text); min-height:calc(1.55em * 8); }
+.fs-answer-p b{ color:var(--text); font-weight:700; }
+.fs-ans-wait{ color:var(--text-muted); font-style:italic; }
+.fs-deck-grid .fs-section[hidden], .fs-section[hidden], .fs-section-body[hidden]{ display:none!important; }
+.fs-section-body + .fs-section-body:not(:empty){ margin-top:-.4rem; }
+/* the crop history, once: one strip of year chips with the crop named */
+.fs-years{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.35rem; }
+.fs-yr{ border:1px solid var(--border); border-radius:6px; padding:.3rem .25rem; text-align:center; min-width:0; }
+.fs-yr-y{ display:block; font-family:var(--font-mono); font-size:.72rem; color:var(--text-muted); }
+.fs-yr-c{ display:block; font-size:.74rem; font-weight:600; color:var(--text); overflow-wrap:normal; hyphens:manual; line-height:1.25; }
+@media(min-width:900px){ .fs-deck-grid .fs-years{ grid-template-columns:repeat(10,minmax(0,1fr)); } }
+.fs-rainlink{ margin:.6rem 0 0; font-size:.85rem; }
+.fs-rainlink a{ color:var(--brand,var(--gold)); }
+.fs-linkbtn{ background:none; border:0; padding:0; font:inherit; color:var(--brand,var(--gold)); text-decoration:underline; cursor:pointer; }
+@media (pointer:coarse){ .fs-linkbtn{ min-height:44px; } }
+/* sources that did not answer, said once; every method note in one closed fold */
+.fs-missing{ margin:0 0 1rem; padding:.8rem 1rem; border:1px solid var(--border); border-radius:var(--card-r); background:var(--surface); font-size:.82rem; color:var(--text-dim); }
+.fs-missing-h{ margin:0 0 .3rem; font-weight:700; color:var(--text); }
+.fs-missing ul{ margin:0; padding-left:1.1rem; }
+.fs-missing li{ margin:.15rem 0; }
+.fs-method{ margin:0 0 1rem; border:1px solid var(--border); border-radius:var(--card-r); background:var(--surface); }
+.fs-method > summary{ cursor:pointer; padding:.8rem 1rem; font-weight:700; color:var(--text); }
+.fs-method-body{ padding:0 1rem .9rem; font-size:.84rem; color:var(--text-dim); line-height:1.55; }
+.fs-method-body p{ margin:.5rem 0 0; }
+/* with a field open the rail's generic disclaimer and source list are said once, in the fold */
+html.fs-has-field .fs-disc{ display:none; }

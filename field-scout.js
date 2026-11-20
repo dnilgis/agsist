@@ -143,16 +143,13 @@
       if(tracing || activePoly) return;
       // a tap on a hail marker (or any interactive vector) is that, not a field
       try{ if(e.originalEvent && e.originalEvent.target && e.originalEvent.target.closest && e.originalEvent.target.closest('.leaflet-interactive')) return; }catch(err){}
+      // Nov 20, 2026 ("tap your field" works on the first try on a phone): zoomed out, a tap is
+      // never wasted, it zooms to that spot; zoomed in, a tap is the field on every device (the
+      // phone's confirm chip took a second tap). A stray drop is one tap away from gone:
+      // "Draw a different field" heads the read.
       if(map.getZoom() < TAP_MIN_ZOOM){
-        if(Date.now()-_zoomHintAt > 4000){ _zoomHintAt=Date.now(); flashHint('Zoom in to your field, then tap it'); }
-        return;
-      }
-      // TOUCH SAFETY (learned in the field, literally): on coarse pointers a bare
-      // tap shows a GHOST boundary + confirm chip instead of committing — stray
-      // thumbs and pinch-ends were dropping fields mid-conversation with a farmer.
-      // Tapping elsewhere just moves the ghost. Desktop keeps the instant drop.
-      if(window.matchMedia && matchMedia('(pointer: coarse)').matches){
-        showGhost(e.latlng.lat, e.latlng.lng);
+        map.setView(e.latlng, 15);
+        if(Date.now()-_zoomHintAt > 4000){ _zoomHintAt=Date.now(); flashHint('Now tap your field'); }
         return;
       }
       dropFieldBox(e.latlng.lat, e.latlng.lng);
@@ -426,11 +423,29 @@
     var now=Date.now();
     arr.unshift({ id:now, name:(name||'Untitled').slice(0,40), pts:pts, acres:+polyAcres(activePoly).toFixed(1), notes:'', photos:[], editedAt:now });
     persistSavedFields(arr);
+    saveToFieldRain((name||'Untitled').slice(0,40), polyCentroid(activePoly));
     _activeFieldId = arr[0].id;        // start tracking this field for changed-since
     saveSnap(_activeFieldId, fieldSnapshot());  // baseline = current conditions
     renderSavedFields();
     renderNotesSectionInPlace();       // the "save this field first" hint becomes the real editor
     ga('field_saved', {});
+  }
+
+  // "Save this field" carries over to Field Rain (Nov 20, 2026): the field's center goes into
+  // /field-rain's own saved list (localStorage agsist-fields, this device only), by that page's
+  // rules (components/field-rain.js add: a US point to 4 decimals, a clean name of 40 characters,
+  // at most 20 fields, the same point and name kept once). Returns true when it is in the list.
+  var RAIN_KEY = 'agsist-fields', RAIN_MAX = 20;
+  function saveToFieldRain(name, c){
+    if(!c || !(isFinite(c.lat) && isFinite(c.lng) && c.lat>15 && c.lat<72 && c.lng>-180 && c.lng<-50)) return false;
+    var list=[];
+    try{ list=JSON.parse(localStorage.getItem(RAIN_KEY)||'[]'); if(!Array.isArray(list)) list=[]; }catch(e){ list=[]; }
+    var n=String(name==null?'':name).replace(/[\x00-\x1f<>]/g,'').replace(/\s+/g,' ').trim().slice(0,40)||'Field';
+    var lat=Math.round(c.lat*1e4)/1e4, lon=Math.round(c.lng*1e4)/1e4;
+    if(list.some(function(f){ return f && Math.abs(+f.lat-lat)<1e-4 && Math.abs(+f.lon-lon)<1e-4 && f.n===n; })) return true;
+    if(list.length>=RAIN_MAX) return false;
+    list.push({ id:'f'+Date.now().toString(36), n:n, lat:lat, lon:lon });
+    try{ localStorage.setItem(RAIN_KEY, JSON.stringify(list)); return true; }catch(e){ return false; }
   }
 
   // ── SCOUTING NOTES + PHOTOS (attached to a saved field, same localStorage row) ──
@@ -1100,7 +1115,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=29', FS_EXTRAS_SRC='/field-scout-extras.js?v=7';
+  var FS_READ_SRC='/field-scout-read.js?v=30', FS_EXTRAS_SRC='/field-scout-extras.js?v=7';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},
@@ -1188,7 +1203,7 @@
   function scrubTo(){ if(RM) return RM.scrubTo.apply(null, arguments); return fsLate(loadRead, 'scrubTo', arguments); }
   function toggleHail(){ if(RM) return RM.toggleHail.apply(null, arguments); return fsLate(loadRead, 'toggleHail', arguments); }
   // What's on and around this field (flood, wetlands, slope, energy, feedlots, easements): its own file
-  var FS_LAYERS_SRC='/field-scout-layers.js?v=3', _lyP=null, LY=null;
+  var FS_LAYERS_SRC='/field-scout-layers.js?v=4', _lyP=null, LY=null;
   function loadLayers(poly){
     var g=fieldGen;
     if(!_lyP) _lyP=fsScript(FS_LAYERS_SRC, '__fsLayers').then(function(f){ LY=LY||f(FSX); return LY; }, function(e){ _lyP=null; throw e; });
