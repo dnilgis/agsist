@@ -1,0 +1,1 @@
+ARC/PLC county pages: what the check is per base acre for 2025 and 2026 on each main crop card, a Your check calculator and a state payment table (arc-plc-simple.js, arc-plc-simple.css, arc-plc.js, arc-plc-math.js ?v=22)
