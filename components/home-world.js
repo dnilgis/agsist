@@ -10,9 +10,10 @@
      (data/radar-rain/index.json, data/radar-rain/<st>.bin, decoded by components/radar-rain.js, loaded on demand), with the
      3-day, 7-day and month windows as bars. No place: the county averages of 12 Corn Belt states
      (data/radar-rain/county-<st>.json): how many counties got a tenth of an inch or more in the last 24 hours.
-   - Fertilizer.  data/fertilizer-ams-history.json (USDA AMS Illinois Production Cost Report, every two weeks): anhydrous
-     ammonia's dealer average, its move since the report before, and the run of reports as a line. The same for everyone:
-     the report is for Illinois, and the card says so.
+   - Fertilizer.  The /fertilizer page's own co-op price record (data/fertilizer-coops-history.json), replayed by that
+     page's components/fert-trend.js (loaded on demand) with the page's rules: urea's middle co-op cash price (anhydrous
+     when urea is withheld), its move since the change before and since the first, and every change as a line. The same
+     for everyone: the co-ops are the ones the page reads.
    - ARC/PLC.  Saved county: its ARC/PLC page (/arc-plc/<state>/<county>), the same record its "Your check" box uses
      (data-pay, scripts/build_arc_plc.py pay_of), read for corn (else the first crop): the 2025 crop's ARC-CO and PLC per
      base acre at FSA's posted rates, the higher one big. No place, or no page: data/arc-plc.json, corn's 2026 effective
@@ -114,15 +115,15 @@
       b.n7.toLocaleString('en-US') + '.';
   }
 
-  /* Fertilizer: anhydrous from the AMS history -> {v, dates, vals, prev, first, date} or null */
-  function fert(hist, key) {
-    key = key || 'anhydrous';
-    var rows = (hist && hist.reports || []).filter(function (r) { return r && ymd(r.date) && r.avg && isFinite(+r.avg[key]); });
-    if (!rows.length) return null;
-    rows.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
-    var last = rows[rows.length - 1];
-    return { v: +last.avg[key], date: last.date, vals: rows.map(function (r) { return +r.avg[key]; }), dates: rows.map(function (r) { return r.date; }),
-      prev: rows.length > 1 ? rows[rows.length - 2] : null, first: rows[0], key: key };
+  /* Fertilizer: one product's points from the /fertilizer page's own replay of the co-op price record
+     (components/fert-trend.js series(): the middle of the co-ops' posted cash prices, each day it changed) ->
+     {v, n, date, vals, dates, prev, first} or null. Withheld points (fewer than 2 co-ops) are left out. */
+  function fertPts(pts) {
+    var p = (pts || []).filter(function (x) { return x && x.mid != null && ymd(x.date); });
+    if (!p.length) return null;
+    var last = p[p.length - 1];
+    return { v: last.mid, n: last.n, date: last.date, vals: p.map(function (x) { return x.mid; }), dates: p.map(function (x) { return x.date; }),
+      prev: p.length > 1 ? p[p.length - 2] : null, first: p[0] };
   }
   function moveWords(d, since) {
     var r = Math.round(d);
@@ -130,10 +131,10 @@
     return (r > 0 ? 'up ' : 'down ') + money(Math.abs(r)) + ' since ' + md(since);
   }
   function fertText(f) {
-    var s = 'Illinois dealers’ average';
-    if (!f.prev) return s + ', ' + md(f.date) + ' report.';
-    s += ': ' + moveWords(f.v - +f.prev.avg[f.key], f.prev.date);
-    if (f.first && f.first !== f.prev) s += ', ' + moveWords(f.v - +f.first.avg[f.key], f.first.date);
+    var s = 'Middle of ' + f.n + ' co-ops’ posted prices';
+    if (!f.prev) return s + ', ' + md(f.date) + '.';
+    s += ': ' + moveWords(f.v - f.prev.mid, f.prev.date);
+    if (f.first && f.first !== f.prev) s += ', ' + moveWords(f.v - f.first.mid, f.first.date);
     return s + '.';
   }
 
@@ -190,7 +191,7 @@
   }
 
   var api = { md: md, ctStamp: ctStamp, money: money, slug: slug, countyName: countyName, arcHref: arcHref, heading: heading, rainPoint: rainPoint,
-    rainPointText: rainPointText, beltCount: beltCount, beltText: beltText, fert: fert, fertText: fertText, arcFromPage: arcFromPage,
+    rainPointText: rainPointText, beltCount: beltCount, beltText: beltText, fertPts: fertPts, fertText: fertText, arcFromPage: arcFromPage,
     arcText: arcText, arcNational: arcNational, arcNationalText: arcNationalText, bars: bars, spark: spark, BELT: BELT };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root || !root.document) return;
@@ -237,13 +238,15 @@
   function tick(node, c) {
     if (still || !seen || !node || !(c.n > 0) || !root.requestAnimationFrame) return;
     var end = (c.pre || '') + fmt(c.n, c.dp);
+    var box = el('hw-' + c.id);
     node._hwRun = function () {
       var t0 = 0;
+      box.classList.add('hw-tick');   /* while it counts (tests wait for the class to go) */
       function step(t) {
         if (!t0) t0 = t;
         var q = Math.min(1, (t - t0) / 650), e = 1 - Math.pow(1 - q, 3);
         node.textContent = q < 1 ? (c.pre || '') + fmt(c.n * e, c.dp) : end;
-        if (q < 1) root.requestAnimationFrame(step);
+        if (q < 1) root.requestAnimationFrame(step); else box.classList.remove('hw-tick');
       }
       root.requestAnimationFrame(step);
     };
@@ -289,16 +292,33 @@
       var top = Math.max(0.5, Math.max.apply(null, b.states.map(function (s) { return s.share; })));
       fill({ id: 'rain', k: 'Corn Belt rain, last 24 hours', n: b.n, dp: 0, suf: b.n === 1 ? ' county' : ' counties', s: beltText(b),
         g: bars(b.states.map(function (s) { return { k: s.st, v: s.share / top }; }), 'Share of each state’s counties with rain'),
-        src: 'NOAA radar county averages, to ' + ctStamp(b.end), href: '/rain-radar', a: 'Rain map →' });
+        src: 'NOAA radar county averages, to ' + ctStamp(b.end), href: '/rain#radar', a: 'Rain map →' });
     });
   }
   /* --- fertilizer */
+  var trendLib = null;
+  function loadTrend() {
+    if (root.FertTrend) return Promise.resolve(root.FertTrend);
+    if (trendLib) return trendLib;
+    trendLib = new Promise(function (ok, no) {
+      var s = d.createElement('script'); s.src = '/components/fert-trend.js?v=2'; s.async = true;
+      s.onload = function () { root.FertTrend ? ok(root.FertTrend) : no(new Error('no lib')); };
+      s.onerror = function () { no(new Error('no lib')); };
+      d.head.appendChild(s);
+    });
+    return trendLib;
+  }
+  /* urea (else anhydrous): the co-op middle the /fertilizer page shows, replayed by that page's own fert-trend.js */
   function fertCard() {
-    return get('/data/fertilizer-ams-history.json').then(function (h) {
-      var f = fert(h);
+    return Promise.all([get('/data/fertilizer-coops-history.json'), loadTrend()]).then(function (a) {
+      var S = a[1].series(a[0], ctDay(new Date().toISOString())), P = (S && S.products) || {};
+      var key = 'urea', f = fertPts(P.urea);
+      if (!f) { key = 'anhydrous'; f = fertPts(P.anhydrous); }
       if (!f) throw new Error('none');
-      fill({ id: 'fert', n: f.v, dp: 0, pre: '$', suf: ' a ton', s: fertText(f), g: f.vals.length > 1 ? spark(f.vals, f.dates, 'Anhydrous by report') : '',
-        src: 'USDA AMS Illinois report, ' + md(f.date) });
+      var name = key === 'urea' ? 'urea' : 'anhydrous ammonia';
+      fill({ id: 'fert', k: 'Fertilizer, ' + name, n: f.v, dp: 0, pre: '$', suf: ' a ton', s: fertText(f),
+        g: f.vals.length > 1 ? spark(f.vals, f.dates, 'The middle co-op price of ' + name + ', each day it changed') : '',
+        src: 'Co-op posted cash prices, ' + md(f.date) });
     });
   }
   /* --- ARC/PLC */
