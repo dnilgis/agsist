@@ -20,7 +20,7 @@
 (function(){
   'use strict';
 
-  var NET_SCRIPT = '/components/bids-network.js?v=9';
+  var NET_SCRIPT = '/components/bids-network.js?v=10';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
@@ -712,8 +712,13 @@
   function shortMon(k){ var m = /^(\d{4})-(\d{2})$/.exec(k || ''); return m ? MON[+m[2] - 1] + ' \'' + m[1].slice(2) : ''; }
   function monthsApart(a, b){ var x = /^(\d{4})-(\d{2})$/.exec(a), y = /^(\d{4})-(\d{2})$/.exec(b); return (x && y) ? (+y[1] - +x[1]) * 12 + (+y[2] - +x[2]) : null; }
   function quarterCents(c){ return AG.px.move(c, { style: 'slash', cent: false }); }
+  /* Nov 20, 2026: a carry is between two plain bids of one commodity. bids-network.js
+     gives bestCash only for the same commodity; a premium row here (Plenish, white corn)
+     never carries, and without the rule loaded nothing does. */
   function boardCarry(b){
     if(b.source !== 'network' || b.bestCash == null || b.cashPrice == null) return null;
+    var BR = bidRule();
+    if(!BR || !BR.gradeOk(b, { wheatClasses: true })) return null;
     var s0 = periodStart(b.deliveryStart), e0 = periodEnd(b.deliveryStart), s1 = periodStart(b.bestPeriod);
     if(!s0 || !s1 || s1 <= e0) return null;
     /* A later period in the NEXT crop year (wheat from June, corn and
@@ -1622,7 +1627,9 @@
     elevators.forEach(function(e){
       var fr = freshness(e);
       (e.commodities[cat] || []).forEach(function(b){
-        if(notPerBushel(b) || isSpecialGrade(b) || basisOdd(b) || ppu(b.cashPrice) == null || rowExpired(b) || !BR.isCurrent(b, now)) return;
+        /* the one rule decides grade and delivery; a labelled HRS wheat row is a class here (WAVE1-A), not a grade */
+        if(basisOdd(b) || ppu(b.cashPrice) == null || rowExpired(b) ||
+           !BR.isPlainCurrent(b, now, { wheatClasses: b.category === 'wheat' && wheatClass(b) === 'HRS' })) return;
         (fr.stale ? old : fresh).push({ e: e, b: b, stale: fr.stale, fr: fr, wk: BR.windowKey(b, now) });
       });
     });

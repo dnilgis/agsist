@@ -38,7 +38,6 @@
   var RADIUS = 50, STALE_H = 36, DAY = 864e5;
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
   var BAND = { corn: [2, 12], soybeans: [6, 32] };
-  var SPECIAL = /non[- ]?gmo|nongmo|organic|plenish|\bip\b|identity[- ]?pres|high[- ]?oleic|food[- ]?grade|\bfood\b|waxy|popcorn|conventional|vistive|clear hilum|tofu|natto|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
@@ -123,8 +122,8 @@
         if (typeof p.lat !== 'number' || typeof p.lon !== 'number' || (p.currency || 'USD') !== 'USD') return;
         var n = p.now && p.now[crop];
         if (!n || typeof n.cash !== 'number' || !isFinite(n.cash) || !n.period || !p.place) return;
-        if (n.cash < BAND[crop][0] || n.cash > BAND[crop][1] || SPECIAL.test(n.commodity || '')) return;
-        if (!BR || !BR.isCurrent({ period: n.period, crop: crop }, nowMs)) return;
+        if (n.cash < BAND[crop][0] || n.cash > BAND[crop][1]) return;
+        if (!BR || !BR.isPlainCurrent({ commodity: n.commodity || crop, crop: crop, cash: n.cash, period: n.period }, nowMs)) return;
         if (!fresh(p.pricedAt, nowMs)) return;
         var d = miles(lat, lon, p.lat, p.lon);
         if (d > RADIUS) return;

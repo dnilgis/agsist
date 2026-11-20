@@ -216,8 +216,18 @@
    * answer here too. Writing `verified: true` would be claiming a check that
    * was never run.
    */
+  /* The board's best row is a carry for this row only when it is the SAME
+     commodity and not a special grade (Nov 20, 2026: ADM Jackson TN's best
+     corn is white corn, and the card read "+92c to May '27" against yellow).
+     The grade test is components/bid-filter.js when the page loads it. */
+  function bestFor(p, crop, n) {
+    var b = p.best && p.best[crop], BF = typeof window !== 'undefined' && window.AG && window.AG.bidFilter;
+    if (!b || b.cash == null || String(b.commodity || '') !== String(n.commodity || '')) return null;
+    if (BF && BF.gradeOk && !BF.gradeOk({ commodity: b.commodity, crop: crop }, { wheatClasses: true })) return null;
+    return b;
+  }
   function rowFor(p, crop, n, dist, anchor) {
-    var k = keyFor(p);
+    var k = keyFor(p), bst = bestFor(p, crop, n);
     return {
       facility: p.operator || '', branch: p.branch || null,
       city: p.city || '', town: p.town || '', state: p.state || '',
@@ -244,8 +254,8 @@
       /* r7-bids: the same board's top bid across its posted periods, and
          which period. The card uses it only when that period is LATER
          than this row's: the elevator's own carry, in its own numbers. */
-      bestCash: (p.best && p.best[crop] && p.best[crop].cash != null) ? p.best[crop].cash : null,
-      bestPeriod: (p.best && p.best[crop] && p.best[crop].period) || '',
+      bestCash: bst ? bst.cash : null,
+      bestPeriod: (bst && bst.period) || '',
       /* When this elevator's own board was last read. */
       checkedAt: p.checkedAt || p.pricedAt || null,
       /* WAVE1-A: when the board's prices last changed (the bids repo's
@@ -441,6 +451,7 @@
     zipCoord: zipCoord,
     placeLabel: placeLabel,
     miles: miles,
+    bestFor: bestFor,
     BASE: BASE
   };
 })();

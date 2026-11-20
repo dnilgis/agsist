@@ -348,13 +348,13 @@
   /* Nov 20, 2026: the one rule for a best bid (components/bid-filter.js) loads before place.js,
      so the county page's Best corn is never white corn, Plenish or a Harvest 2027 contract. */
   function start() {
-    loadScript('/components/bid-filter.js?v=2', function () { return !!(window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey); }).then(function () {
+    loadScript('/components/bid-filter.js?v=3', function () { return !!(window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey); }).then(function () {
       return loadScript('/components/place.js?v=20', function () { return !!window.AgPlace; });
     }).then(function (ok) {
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;
       if (lat == null || lng == null) fail(['corn-bid', 'soy-bid', 'lf-bid'], 'no county middle on file to measure from');
-      var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=9', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
+      var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=10', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
       basis(b.then(null, function () { return null; }));
       futures(); hay(); weather(); crops(); arc();
       b.then(week, week);

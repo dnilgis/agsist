@@ -79,10 +79,10 @@
        spot                                   window "now"
        this month (Central time)              "now"
        a month 1 or 2 months out              that month (not more than 2 out)
-       a range that ends at most 2 months out "now" if it is open, else its first month
-                                              (the same bound as a month: a licensed
-                                              feed window "Oct 1 to Jan 19" is current
-                                              when the January month alone would be)
+       a range open now ending at most 2 out  "now" (a licensed feed window "Oct 1 to
+                                              Jan 19" is current when January alone is)
+       a range not open yet                   its first month, judged as a month is (1 or
+                                              2 out), so 2027-01/2027-03 and 2027-01 agree
        this harvest's new crop while open     "now" inside Sep-Dec (corn, soybeans,
                                               sorghum) or Jun-Sep (wheat, oats);
                                               1 or 2 months before it, its first month
@@ -147,8 +147,9 @@
     if ((m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?$/.exec(p))) {
       var st = +m[1] * 12 + (+m[2] - 1), en = m[3] ? +m[3] * 12 + (+m[4] - 1) : st;
       if (en < st || +m[2] < 1 || +m[2] > 12) return null;
-      if (en < cur || en - cur > 2) return null;     /* a month, or a range's END, at most 2 months out */
-      return st <= cur ? 'now' : ym(st);
+      if (en < cur) return null;                     /* closed */
+      if (st > cur) return st - cur <= 2 ? ym(st) : null;   /* not open yet: its START, as a month is judged */
+      return en - cur <= 2 ? 'now' : null;           /* open now: its END at most 2 months out */
     }
     var s;
     if ((m = /^newcrop-(\d{4})$/.exec(p))) {
