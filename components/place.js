@@ -455,38 +455,48 @@
 
   /* Best and nearest bid per crop from a bids snapshot ({ bids: [...] } rows with cashPrice, distance, lat/lon).
      Rows marked verified:false, or with no price, never count. Distances from (lat, lng) when given. */
-  /* components/bid-filter.js is the one test for "may this row be a best bid" (no
-     organic / non-GMO / white / feed / durum / spring wheat, no meal or cwt quote,
-     price inside the crop's band). Fast Facts loads it; the county pages load
-     place.js on their own and do not yet (county-home.js is pinned by hash in
-     every atlas page), so there the rows pass as they always did. */
+  /* components/bid-filter.js is the one rule for "may this row be a best bid"
+     (isPlainCurrent: no special grade such as Plenish, IP, white corn or non-GMO,
+     no meal or cwt quote, price inside the crop's band, and a CURRENT delivery).
+     Fast Facts loads it, and since Nov 20, 2026 county-home.js loads it before
+     this file: the Atlas county page had no grade filter at all (ADM Ledbetter KY
+     white corn $5.05 could be Best corn), and Adell WI's Harvest 2027 corn was
+     the best corn on both. Without the rule there is no best, never an
+     unfiltered one. The best is the highest price in the earliest delivery
+     window any row has (windowKey: "now", then a month 1-2 out). */
   function bidFilter() {
-    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* not found: unfiltered */ }
-    return (typeof window !== 'undefined' && window.AG && window.AG.bidFilter) || null;
+    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* not found */ }
+    var w = (typeof window !== 'undefined' && window.AG && window.AG.bidFilter) || null;
+    return w && w.windowKey ? w : null;
   }
   var OUTLIER_BASIS = 0.75;   // a bid whose basis sits this far from the crop's median nearby never counts as best
-  function bestBids(snap, lat, lng, radius) {
+  function bestBids(snap, lat, lng, radius, now) {
     radius = radius || BID_MILES;
+    now = now || new Date();
     var by = {}, out = {}, BF = bidFilter();
-    if (!snap || !snap.bids) return out;
+    if (!snap || !snap.bids || !BF) return out;
     snap.bids.forEach(function (b) {
       var crop = String(b.crop || b.category || b.commodity || '').toLowerCase();
       if (/^soy/.test(crop)) crop = 'soybeans'; else if (/^corn/.test(crop)) crop = 'corn'; else if (/wheat/.test(crop)) crop = 'wheat'; else return;
       if (b.verified === false || typeof b.cashPrice !== 'number' || !isFinite(b.cashPrice) || b.cashPrice <= 0) return;
-      if (BF && !BF.canSetBest(b)) return;
+      var rb = b.crop || b.category ? b : Object.assign({}, b, { crop: crop });
+      if (!BF.isPlainCurrent(rb, now)) return;
       var d = lat != null && lng != null && b.lat != null && b.lon != null ? miles(lat, lng, b.lat, b.lon) : b.distance;
       if (d == null || d > radius) return;
       (by[crop] = by[crop] || []).push({ crop: crop, price: b.cashPrice, basis: typeof b.basis === 'number' ? b.basis : null,
         facility: b.facility || '', town: b.town || b.city || '', st: b.state || '', mi: Math.round(d),
-        delivery: b.delivery || b.period || '', start: b.deliveryStart || null, pricedAt: b.pricedAt || null });
+        delivery: b.delivery || b.period || '', start: b.deliveryStart || null, pricedAt: b.pricedAt || null,
+        wk: BF.windowKey(rb, now), period: BF.periodOf(rb) });
     });
     Object.keys(by).forEach(function (crop) {
       var rows = by[crop], bs = rows.map(function (r) { return r.basis; }).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; });
       var med = bs.length ? (bs.length % 2 ? bs[(bs.length - 1) / 2] : (bs[bs.length / 2 - 1] + bs[bs.length / 2]) / 2) : null;
       var o = out[crop] = { n: rows.length, left_out: 0, best: null, nearest: null, medianBasis: med, nBasis: bs.length };
+      function odd(r) { return bs.length >= 5 && r.basis != null && Math.abs(r.basis - med) > OUTLIER_BASIS; }
+      var mk = rows.reduce(function (m, r) { return odd(r) ? m : (!m || r.wk === 'now' || (m !== 'now' && r.wk < m) ? r.wk : m); }, '');
       rows.forEach(function (r) {
-        if (bs.length >= 5 && r.basis != null && Math.abs(r.basis - med) > OUTLIER_BASIS) { o.left_out++; return; }
-        if (!o.best || r.price > o.best.price || (r.price === o.best.price && r.mi < o.best.mi)) o.best = r;
+        if (odd(r)) { o.left_out++; return; }
+        if (r.wk === mk && (!o.best || r.price > o.best.price || (r.price === o.best.price && r.mi < o.best.mi))) o.best = r;
         if (!o.nearest || r.mi < o.nearest.mi) o.nearest = r;
       });
     });

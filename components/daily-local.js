@@ -104,8 +104,18 @@
 
   /* Pure. {corn: {best, nearest, n}, soybeans: ...}; best/nearest are
      {place, name, town, state, mi, cash, basisCents, period, pricedAt} */
+  /* Nov 20, 2026: ONE RULE (components/bid-filter.js isCurrent / windowKey, the
+     Daily's scripts/bid_rule.py). A candidate is a current delivery: a next-year
+     harvest or a month 3+ out is never the best or the nearest bid. The best is
+     the highest cash in the earliest window any candidate has. No rule loaded:
+     no candidate, never an unfiltered one. */
+  function bidRule() {
+    if (typeof window !== 'undefined' && window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey) return window.AG.bidFilter;
+    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* none */ }
+    return null;
+  }
   function pick(index, lat, lon, nowMs) {
-    var out = {};
+    var out = {}, BR = bidRule();
     var places = (index && index.places) || [];
     CROPS.forEach(function (c) {
       var crop = c[0], cands = [];
@@ -114,6 +124,7 @@
         var n = p.now && p.now[crop];
         if (!n || typeof n.cash !== 'number' || !isFinite(n.cash) || !n.period || !p.place) return;
         if (n.cash < BAND[crop][0] || n.cash > BAND[crop][1] || SPECIAL.test(n.commodity || '')) return;
+        if (!BR || !BR.isCurrent({ period: n.period, crop: crop }, nowMs)) return;
         if (!fresh(p.pricedAt, nowMs)) return;
         var d = miles(lat, lon, p.lat, p.lon);
         if (d > RADIUS) return;
@@ -121,16 +132,12 @@
         if (town && String(p.operator || '').trim().toLowerCase() === town.toLowerCase()) town = '';
         cands.push({ place: p.place, name: String(p.operator || '').trim(), town: town, state: p.state || '',
           mi: Math.round(d * 10) / 10, cash: n.cash, basisCents: typeof n.basisCents === 'number' ? n.basisCents : null,
-          period: n.period, key: periodKey(n.period, nowMs, crop), pricedAt: p.pricedAt, delivery: n.delivery || '' });
+          period: n.period, key: periodKey(n.period, nowMs, crop), wk: BR.windowKey({ period: n.period, crop: crop }, nowMs),
+          dw: BR.deliveryWords({ period: n.period, crop: crop }, nowMs), pricedAt: p.pricedAt, delivery: n.delivery || '' });
       });
       if (!cands.length) { out[crop] = { best: null, nearest: null, n: 0 }; return; }
-      var thisMonth = ctDay(nowMs).slice(0, 7);
-      var keyed = cands.filter(function (x) { return x.key && x.key >= thisMonth; });
-      var pool = cands;
-      if (keyed.length) {
-        var mk = keyed.reduce(function (m, x) { return !m || x.key < m ? x.key : m; }, '');
-        pool = keyed.filter(function (x) { return x.key === mk; });
-      }
+      var mk = cands.reduce(function (m, x) { return !m || x.wk === 'now' || (m !== 'now' && x.wk < m) ? x.wk : m; }, '');
+      var pool = cands.filter(function (x) { return x.wk === mk; });
       var best = pool.reduce(function (b, x) { return !b || x.cash > b.cash || (x.cash === b.cash && x.mi < b.mi) ? x : b; }, null);
       var nearest = cands.reduce(function (b, x) { return !b || x.mi < b.mi ? x : b; }, null);
       out[crop] = { best: best, nearest: nearest, n: cands.length };
@@ -182,7 +189,7 @@
       CROPS.forEach(function (c) {
         var k = o.picks[c[0]];
         if (!k || !k.best) { lines.push('<b>' + c[1] + '</b>: no bid posted in the last 36 hours within ' + RADIUS + ' miles.'); return; }
-        var b = k.best, s = '<b>' + c[1] + '</b> best bid ' + cash(b.cash) + ' at ' + where(b);
+        var b = k.best, s = '<b>' + c[1] + '</b> best bid ' + cash(b.cash) + (b.dw ? ' for ' + esc(b.dw) + ' delivery' : '') + ' at ' + where(b);
         var bw = basisWords(b.basisCents);
         s += (bw ? ', ' + bw : '') + chgWords(o.changes && o.changes[c[0]]) + '.';
         if (k.nearest && k.nearest.place !== b.place) s += ' Nearest: ' + where(k.nearest) + ' ' + cash(k.nearest.cash) + '.';

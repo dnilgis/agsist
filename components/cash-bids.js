@@ -1198,8 +1198,26 @@ function rankCmp(a,b){return window.cbRank?cbRank.compare(a,b):(b.rk.price-a.rk.
 /* One candidate per elevator for corn and soybeans; for wheat one per class
    the elevator posts, because HRW, SRW and a wheat that names no class are
    never ranked against each other. */
+/* ONE RULE FOR "BEST" (Nov 20, 2026; components/bid-filter.js, scripts/bid_rule.py).
+   A ranked candidate is a PLAIN bid: a special grade (Plenish, IP, white corn,
+   non-GMO ...) never ranks, not even as a fallback; a wheat class word (HRS,
+   SWW, durum) is not a grade here, because each class is ranked on its own.
+   With "Any delivery" it is also a CURRENT bid (AG.bidFilter.isCurrent): Adell
+   WI's Harvest 2027 corn was Best corn beside $3.70 to $3.80 for now. With one
+   delivery chosen, every candidate is already that delivery. */
+function bidRule(){return window.AG&&window.AG.bidFilter&&window.AG.bidFilter.windowKey?window.AG.bidFilter:null;}
+function rankGradeOk(b,comm){
+  if(!isSpecialGrade(b))return true;
+  var BR=bidRule();
+  return !!BR&&comm==='wheat'&&BR.gradeOk({commodity:b&&b.commodity,category:'wheat'},{wheatClasses:true});
+}
+function rankCurrentOk(b,now){
+  if(currentDelivery!=='all')return true;
+  var BR=bidRule();
+  return !!BR&&BR.isCurrent(b,now);
+}
 function rankCands(elevs,comm){
-  var out=[];
+  var out=[],now=new Date();
   elevs.forEach(function(elev){
     var classes=[''];
     if(comm==='wheat'){
@@ -1207,17 +1225,25 @@ function rankCands(elevs,comm){
       (elev.commodities.wheat||[]).forEach(function(b){var c=wheatCls(b);if(classes.indexOf(c)<0)classes.push(c);});
     }
     classes.forEach(function(c){
-      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&!basisUnusual(x)&&(comm!=='wheat'||wheatCls(x)===c);});
-      if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:''});
+      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&!basisUnusual(x)&&rankGradeOk(x,comm)&&rankCurrentOk(x,now)&&(comm!=='wheat'||wheatCls(x)===c);});
+      if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:'',
+        wk:currentDelivery==='all'&&bidRule()?bidRule().windowKey(b,now):''});
     });
   });
   return out;
 }
-/* {hrw:[...], srw:[...], '':[...]} -- the plain-grade rule applied inside each. */
+/* {hrw:[...], srw:[...], '':[...]} -- the plain-grade rule applied inside each,
+   and with "Any delivery" one window only: the earliest any candidate has
+   ("now" before a month 1-2 out), so a December bid never outranks spot. */
 function classGroups(cands){
   var g={};
   cands.forEach(function(x){(g[x.cls]=g[x.cls]||[]).push(x);});
-  Object.keys(g).forEach(function(k){g[k]=preferPlain(g[k],function(x){return x.bid;});if(!g[k].length)delete g[k];});
+  Object.keys(g).forEach(function(k){
+    var l=preferPlain(g[k],function(x){return x.bid;});
+    var mk=l.reduce(function(m,x){return !m||x.wk==='now'||(m!=='now'&&x.wk&&x.wk<m)?x.wk:m;},'');
+    if(mk)l=l.filter(function(x){return x.wk===mk;});
+    g[k]=l;if(!g[k].length)delete g[k];
+  });
   return g;
 }
 /* Which wheat a single-answer panel shows: the class most elevators here post;

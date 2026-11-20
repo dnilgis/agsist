@@ -165,8 +165,19 @@
     return null;
   }
   function isCurrent(b, now) { return windowKey(b, now) != null; }
+  /* A page that ranks each wheat class on its own (HRS against HRS, never
+     against SRW) passes { wheatClasses: true }: on a wheat row the class words
+     are a class, not a grade. Every other special word still is. */
+  var WHEAT_CLASS_WORDS = /spring|\bhrs\b|\bdns\b|dark northern|mgex|\bsww\b|soft white|hard white|white wheat|\bwhite\b|durum/ig;
+  function gradeOk(b, opts) {
+    if (!isSpecialGrade(b)) return true;
+    if (!(opts && opts.wheatClasses) || cropOf(b) !== 'wheat') return false;
+    return !SPECIAL_GRADE.test(name(b).replace(WHEAT_CLASS_WORDS, ' '));
+  }
   /* THE question for every "best", "top" or "highest" bid. */
-  function isPlainCurrent(b, now) { return canSetBest(b) && isCurrent(b, now); }
+  function isPlainCurrent(b, now, opts) {
+    return !!b && gradeOk(b, opts) && !notPerBushel(b) && plausible(b) && isCurrent(b, now);
+  }
   /* The best of `items` (rows, or anything `opts.row` maps to a row): plain,
      current, in the earliest window any of them has, highest cash; the first
      one wins a tie (callers sort by distance first). null when none qualifies. */
@@ -177,7 +188,7 @@
     var pool = [], first = null;
     (items || []).forEach(function (x) {
       var r = rowOf(x);
-      if (!isPlainCurrent(r, now)) return;
+      if (!isPlainCurrent(r, now, opts)) return;
       var c = cashFn(x);
       if (c == null || !isFinite(c)) return;
       var k = windowKey(r, now);
@@ -209,7 +220,8 @@
     SPECIAL_GRADE: SPECIAL_GRADE, NOT_PER_BUSHEL: NOT_PER_BUSHEL, PER_CWT: PER_CWT, PPU_BAND: PPU_BAND,
     WINDOWS: WIN, CROP_YEAR_START: CY_START,
     isSpecialGrade: isSpecialGrade, notPerBushel: notPerBushel, plausible: plausible, ppu: ppu,
-    canSetBest: canSetBest, periodOf: periodOf, windowKey: windowKey, isCurrent: isCurrent,
+    canSetBest: canSetBest, gradeOk: gradeOk, WHEAT_CLASS_WORDS: WHEAT_CLASS_WORDS,
+    periodOf: periodOf, windowKey: windowKey, isCurrent: isCurrent,
     isPlainCurrent: isPlainCurrent, pickBest: pickBest, deliveryWords: deliveryWords, nowMonth: nowMonth
   };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }

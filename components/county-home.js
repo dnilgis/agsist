@@ -345,8 +345,12 @@
   function centralDay() { try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
   function arc() { getJSON('/data/arc-plc.json').then(function (f) { fill('arc', P.factArcPlc(f, centralDay(), D.arc || '/arc-plc')); }); }
 
+  /* Nov 20, 2026: the one rule for a best bid (components/bid-filter.js) loads before place.js,
+     so the county page's Best corn is never white corn, Plenish or a Harvest 2027 contract. */
   function start() {
-    loadScript('/components/place.js?v=19', function () { return !!window.AgPlace; }).then(function (ok) {
+    loadScript('/components/bid-filter.js?v=2', function () { return !!(window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey); }).then(function () {
+      return loadScript('/components/place.js?v=20', function () { return !!window.AgPlace; });
+    }).then(function (ok) {
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;
       if (lat == null || lng == null) fail(['corn-bid', 'soy-bid', 'lf-bid'], 'no county middle on file to measure from');
