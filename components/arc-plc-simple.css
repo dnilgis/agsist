@@ -71,7 +71,7 @@
 .ap-pcf select:focus-visible,.ap-pcf input:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
 .ap-pct td{font-size:1.05rem}
 .ap-pcn{min-height:4.2em;font-size:var(--fs-sm);color:var(--text-dim);margin:.35rem 0 0}
-@media (min-width:620px){.ap-pcf{grid-template-columns:2fr 1fr 1fr}.ap-pcf label:first-child{grid-column:auto}.ap-pcn{min-height:2.8em}}
+@media (min-width:620px){.ap-chk{max-width:30rem}.ap-pcf{grid-template-columns:2fr 1fr 1fr}.ap-pcf label:first-child{grid-column:auto}.ap-pcn{min-height:2.8em}}
 /* state page: the payment table */
 .ap-pay td{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .ap-pay thead th[scope=colgroup]{text-align:center;border-bottom:1px solid var(--border)}
