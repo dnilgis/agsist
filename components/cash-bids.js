@@ -482,7 +482,7 @@ function notPerBushel(bid){return NOT_PER_BUSHEL.test(String(bid&&bid.commodity|
    actually carries (read from data/bids.json), nothing invented. If an
    elevator posts ONLY special grades for a crop it still gets a row, and the
    grade name is printed on it. */
-var SPECIAL_GRADE=/non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
+var SPECIAL_GRADE=/non[- ]?gmo|nongmo|organic|plenish|\bip\b|identity[- ]?pres|high[- ]?oleic|food[- ]?grade|\bfood\b|waxy|popcorn|conventional|vistive|clear hilum|tofu|natto|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
 function isSpecialGrade(bid){return SPECIAL_GRADE.test(String(bid&&bid.commodity||''));}
 /* ══ THE FUTURES REFERENCE ═════════════════════════════════════════════════
    Kolton Jackson asked for this first: "every row already knows which contract

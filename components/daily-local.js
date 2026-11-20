@@ -38,7 +38,7 @@
   var RADIUS = 50, STALE_H = 36, DAY = 864e5;
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
   var BAND = { corn: [2, 12], soybeans: [6, 32] };
-  var SPECIAL = /non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
+  var SPECIAL = /non[- ]?gmo|nongmo|organic|plenish|\bip\b|identity[- ]?pres|high[- ]?oleic|food[- ]?grade|\bfood\b|waxy|popcorn|conventional|vistive|clear hilum|tofu|natto|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
