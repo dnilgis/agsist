@@ -183,7 +183,7 @@
   }
   function spark(vals, dates, label) {
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), span = hi - lo || 1, n = vals.length;
-    var pts = vals.map(function (v, i) { return [n > 1 ? 6 + i * 288 / (n - 1) : 150, 26 - (v - lo) / span * 20]; });
+    var pts = vals.map(function (v, i) { return [n > 1 ? 6 + i * 288 / (n - 1) : 150, 22 - (v - lo) / span * 18]; });
     var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
     var dots = pts.map(function (p) { return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.5"></circle>'; }).join('');
     return '<svg viewBox="0 0 300 36" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '"><path d="' + d + '"></path>' + dots +
