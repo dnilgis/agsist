@@ -76,7 +76,7 @@
 .ap-pcp .btn{min-height:44px}
 
 /* the answer first (Nov 20, 2026): one line per main crop under the title, its pick beside it */
-.ap-top{margin:.4rem 0 .2rem}
+.ap-simple .ap-top{margin:.4rem 0 .2rem;padding:0}
 .ap-tl{list-style:none;margin:0;padding:0}
 .ap-tl li{padding:.55rem 0;border-top:1px solid var(--border);font-size:var(--fs-md);line-height:1.45;color:var(--text)}
 .ap-tl li:first-child{border-top:0;padding-top:.1rem}

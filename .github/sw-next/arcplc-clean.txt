@@ -1,0 +1,1 @@
+ARC/PLC county pages: each main crop's dollars and pick under the title, the crop switcher, a tap glossary and Print my estimate (arc-plc-simple.js, arc-plc-simple.css, arc-plc.js, arc-plc-math.js, arc-plc.css ?v=23)
