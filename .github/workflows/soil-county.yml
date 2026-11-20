@@ -3,6 +3,11 @@ name: Soil by county
 # County soil productivity from USDA Soil Data Access (scripts/soil_county.py).
 
 on:
+  schedule:
+    - cron: "29 10 3 * *"
+  workflow_run:
+    workflows: ["Fetch Grain Bids", "Tick 02"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       states:
@@ -13,14 +18,45 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: soil-county
-  cancel-in-progress: false
-
 jobs:
+  gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 02' || (contains(github.event.workflow_run.display_title, ' soil-county.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow soil-county.yml --max-lag 360
+          --cron "29 10 3 * *"
+
   build:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    concurrency:
+      group: soil-county
+      cancel-in-progress: false
     env:
       IN_STATES: ${{ inputs.states }}
       PYTHONUNBUFFERED: "1"
@@ -45,6 +81,10 @@ jobs:
 
       - name: Selftest
         run: python3 scripts/soil_county.py --selftest
+
+      - name: Pre-flight, one county
+        timeout-minutes: 3
+        run: python3 scripts/soil_county.py --preflight
 
       - name: Ask Soil Data Access
         timeout-minutes: 100
