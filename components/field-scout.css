@@ -697,6 +697,7 @@
 .fs-answer{ border-bottom:1px solid var(--border); }
 .fs-answer .fs-section-body{ padding:1rem 1.2rem 1rem; }
 .fs-answer-p{ margin:0; font-size:1rem; line-height:1.55; color:var(--text); min-height:calc(1.55em * 8); }
+@media(max-width:380px){ .fs-answer-p{ min-height:calc(1.55em * 10); } }
 .fs-answer-p b{ color:var(--text); font-weight:700; }
 .fs-ans-wait{ color:var(--text-muted); font-style:italic; }
 .fs-deck-grid .fs-section[hidden], .fs-section[hidden], .fs-section-body[hidden]{ display:none!important; }

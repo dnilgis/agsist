@@ -205,7 +205,7 @@ window.__fsRead = function (FSX) {
   // Hide empty sections (Nov 20, 2026): a source that did not answer, or a county USDA does not
   // publish, leaves no "not available" box. Its body is hidden, the section with it when nothing
   // else in it answered, and the reason is said once, in the line above the method fold.
-  var MISS_LABEL = { 'fs-soil':'Soil', 'fs-rot':'Crop history', 'fs-wx':'Weather now', 'fs-season':'Rain since Jan 1', 'fs-hailb':'Hail reports',
+  var MISS_LABEL = { 'fs-soil':'Soil', 'fs-rot':'Crop history', 'fs-wx':'Weather and drought', 'fs-wxnow':'Weather now', 'fs-season':'Rain since Jan 1', 'fs-hailb':'Hail reports',
     'fs-vigor':'Satellite', 'fs-bids':'Bids nearby', 'fs-rent':'Cash rent', 'fs-land':'Parcel, owner and sales', 'fs-atlas':'County record',
     'fs-market':'State basis', 'fs-hood':'Who farms around here', 'fs-cond':'State crop condition', 'fs-drought':'Drought',
     'fs-rain':'Rain since Jan 1', 'fs-gdu':'Heat units' };
@@ -219,12 +219,14 @@ window.__fsRead = function (FSX) {
       if(s && [].every.call(s.querySelectorAll('.fs-section-body'), function(b){ return b.hidden || !b.innerHTML; })) s.hidden=true;
     }
     renderMissing();
+    recomputeInsight();   // the answer drops a fact that will not come, rather than leave it reading
   }
   function renderMissing(){
     var el=document.getElementById('fs-missing'), m=FSX.FIELD&&FSX.FIELD.missing; if(!el) return;
     var keys=m?Object.keys(m):[];
     if(!keys.length){ el.hidden=true; el.innerHTML=''; return; }
-    el.innerHTML='<p class="fs-missing-h">Not shown for this field</p><ul>'+keys.map(function(k){ return '<li><strong>'+esc(MISS_LABEL[k]||k)+':</strong> '+m[k]+'</li>'; }).join('')+'</ul>';
+    function say(t){ t=String(t).replace(/^could not read: (.)/, function(a,c){ return 'could not read. '+c.toUpperCase(); }); return t.charAt(0).toUpperCase()+t.slice(1); }
+    el.innerHTML='<p class="fs-missing-h">Not shown for this field</p><ul>'+keys.map(function(k){ return '<li><strong>'+esc(MISS_LABEL[k]||k)+':</strong> '+say(m[k])+'</li>'; }).join('')+'</ul>';
     el.hidden=false;
   }
   // every method note in one closed fold at the bottom of the read; each section's own source
@@ -285,7 +287,7 @@ window.__fsRead = function (FSX) {
     // hold the soil card's room while it reads (a three-unit Iowa answer is about 540 px tall at
     // 1280 and 820 px on a phone, from 49 px reading), so the cards after it hardly move
     var box = document.getElementById('fs-soil');
-    if(box && !tries) box.style.minHeight = (window.matchMedia && matchMedia('(max-width:559px)').matches) ? '48.5rem' : '33rem';
+    if(box && !tries) box.style.minHeight = (window.matchMedia && matchMedia('(max-width:559px)').matches) ? '45rem' : '33rem';   // the Story card answered, Nov 20, 2026 (the method notes now in the fold)
     var why = null;
     soilDirect(wkt)
       .then(function(dir){
@@ -386,7 +388,7 @@ window.__fsRead = function (FSX) {
         } else if(FSX.FIELD.soil.drainageTop){
           factNote += '<div class="fs-soil-slope">Dominant drainage class: <strong>'+esc(FSX.FIELD.soil.drainageTop)+'</strong> (SSURGO).</div>';
         }
-        // the steep acres as a fact (it was advice: "consider erosion control on the steeper acres")
+        // the steep acres as a fact (Nov 20, 2026: this was an erosion-control suggestion, advice)
         var steepAc = classes.filter(function(x){ return x.slope!=null && x.slope>=6; }).reduce(function(a,x){ return a+x.ac; },0);
         if(total>0 && steepAc>0){
           FSX.FIELD.soil.steepPct = Math.round(steepAc/total*100);
@@ -478,7 +480,9 @@ window.__fsRead = function (FSX) {
     var gen = FSX.fieldGen;
     var c = polyCentroid(poly);
     var url = FS_WORKER + '/cdl?lat='+c.lat.toFixed(5)+'&lon='+c.lng.toFixed(5)+'&years=10';
-    fetchT(url, 20000).then(function(r){ return r.ok ? r.json() : null; })
+    // the worker answers 404 when the layer has no crop at the point (a real answer); any other
+    // failure is a could-not-read, never "no crop"
+    fetchT(url, 20000).then(function(r){ if(r.status===404) return r.json().catch(function(){ return null; }); if(!r.ok) throw new Error(r.status); return r.json(); })
       .then(function(d){
         if(gen !== FSX.fieldGen) return;
         if(!d || d.error || !d.rotation || !d.rotation.length){
@@ -912,7 +916,11 @@ window.__fsRead = function (FSX) {
       else { se.gNow=null; se.gNorm=null; se.gDep=null; se.gPlant=null; se.gCumMap=null; se.frost=null; }
       FSX.FIELD.season=se;
       recomputeInsight(); renderRisk();
-      setBody('fs-season', seasonHtml(se)); renderMissing();
+      setBody('fs-season', seasonHtml(se));
+      FSX.FIELD.missing=FSX.FIELD.missing||{};
+      if(se.pNow==null) FSX.FIELD.missing['fs-rain']='no county rain gauge record answered.';
+      if(se.gNow==null) FSX.FIELD.missing['fs-gdu']='could not read: the PRISM heat-unit grid (RCC-ACIS) did not answer.';
+      renderMissing();
       if(FSX.FIELD.indices) renderIndices(FSX.FIELD.indices);   // the vigor words depend on whether the season is over
       var rb=document.getElementById('fs-season'); if(rb) mountRce(rb);
     });
@@ -928,10 +936,7 @@ window.__fsRead = function (FSX) {
     // the rain chart prints the total, the normal and the percent itself: the stat box says them only when there is no chart
     if(s.pNow!=null && !spark) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div><div class="fs-stat-l">Rain since Jan 1 &nbsp;·&nbsp; '+(s.pDep!=null ? depIn(s.pDep)+(s.pct!=null?' ('+Math.round(s.pct)+'%)':'') : 'no normal for this gauge')+'</div></div>');
     if(s.gNow!=null) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+Math.round(s.gNow)+'</div><div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; '+depG(s.gDep)+'</div></div>');
-    // a half that did not answer is said once, above the method fold, not as an empty box
-    if(FSX.FIELD){ FSX.FIELD.missing=FSX.FIELD.missing||{};
-      if(s.pNow==null) FSX.FIELD.missing['fs-rain']='no county rain gauge record answered.';
-      if(s.gNow==null) FSX.FIELD.missing['fs-gdu']='could not read: the PRISM heat-unit grid (RCC-ACIS) did not answer.'; }
+    // a half that did not answer gets no box; loadSeason names it once, above the method fold
     var say=null;
     var src=[];
     if(s.pNow!=null) src.push('Rain: the '+esc(s.station)+' gauge'+(s.mi!=null?', '+Math.round(s.mi)+' mi from this field':'')+(s.borrowed?' (no gauge reports in this county; this is '+esc(s.borrowed)+'’s)':'')+', Jan 1 through '+fmtDate(s.thru)+(s.pNorm!=null ? ', against its '+esc(s.pLbl)+' (NOAA daily records via RCC-ACIS)'
@@ -1001,7 +1006,7 @@ window.__fsRead = function (FSX) {
     // a source that did not answer is said once, in the line above the method fold
     if(FSX.FIELD){
       FSX.FIELD.missing=FSX.FIELD.missing||{};
-      if(wx && wx.err) FSX.FIELD.missing['fs-wx']='could not read: the National Weather Service did not answer.'; else if(wx) delete FSX.FIELD.missing['fs-wx'];
+      if(wx && wx.err) FSX.FIELD.missing['fs-wxnow']='could not read: the National Weather Service did not answer.'; else if(wx && wx.temp!=null) delete FSX.FIELD.missing['fs-wxnow'];
       if(dr && dr.cat==null) FSX.FIELD.missing['fs-drought']='could not read: the US Drought Monitor did not answer.'; else if(dr) delete FSX.FIELD.missing['fs-drought'];
     }
     if(!html){ renderMissing(); return; }   // nothing to say yet: the section's reading line stays
@@ -2233,8 +2238,8 @@ window.__fsRead = function (FSX) {
   // acres and county; the three largest soils with NCCPI overall, corn and soybeans; the last 3
   // crops; drought and rain since Jan 1. A fact still on its way shows "reading"; one that did
   // not answer is left out here and named once in the line above the method fold. No verdict,
-  // no advice (it was "Bottom line: nothing on this field needs action...", the Act on this and
-  // Keep an eye on flags, and a stat strip that repeated the same numbers).
+  // no advice (it was a verdict line, two lists of flags and to-dos, and a stat strip that repeated
+  // the same numbers).
   function shortSoil(n){ return String(n||'').split(',')[0]; }
   function answerHtml(){
     var F=FSX.FIELD||{}, s=F.soil, r=F.rotation, d=F.drought, se=F.season, cy=F.county, M=F.missing||{};
@@ -2251,7 +2256,7 @@ window.__fsRead = function (FSX) {
       out.push('Last 3 crops: '+last.join(', '));
     } else if(r==null && !M['fs-rot']) out.push('Last 3 crops: '+W);
     var wx=[];
-    if(d && d.cat!=null) wx.push((d.cat==='None'?'No drought':/D0/.test(d.cat)?'Abnormally dry (D0)':'Drought: '+esc(d.cat))+(usdmWeek(d.wk)?' (map of '+usdmWeek(d.wk)+')':''));
+    if(d && d.cat!=null) wx.push((d.cat==='None'?'No drought':/D0/.test(d.cat)?'Abnormally dry, D0':esc(d.cat.replace(/ \((D\d)\)$/, ' drought, $1')))+(usdmWeek(d.wk)?' ('+usdmWeek(d.wk)+' map)':''));
     else if(d==null && !M['fs-drought']) wx.push('Drought: '+W);
     if(se && se.pNow!=null) wx.push((wx.length?'rain':'Rain')+' since Jan 1 '+se.pNow.toFixed(1)+' in'+(se.pct!=null?', '+Math.round(se.pct)+'% of normal':''));
     else if(se===undefined && !M['fs-season']) wx.push((wx.length?'rain':'Rain')+' since Jan 1: '+W);
