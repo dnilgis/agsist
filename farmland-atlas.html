@@ -543,7 +543,7 @@ details.fa-arith .body a{color:var(--gold)}
 .ls-t td span{display:block}.ls-t td small{color:var(--text-muted)}
 .ls-t tr:target th,.ls-t tr.ls-hit th{box-shadow:inset 3px 0 0 var(--gold,#d4a23f)}
 .ls-old{font-style:normal;font-size:.72rem;color:var(--gold,#d4a23f);white-space:nowrap}
-.ls-tap{all:unset;display:block;cursor:default}.ls-tap b{display:block;color:var(--text)}.ls-nx{display:none}
+.ls-tap{all:unset;display:block;cursor:default}.ls-tap b{display:block;color:var(--text)}
 .ls-lv{display:inline-block;font-style:normal;font-size:.7rem;font-weight:600;padding:0 .35rem;border-radius:3px;color:#0a0c0d}
 @media (max-width:640px){
   .ls-t,.ls-t tbody,.ls-t tr,.ls-t th,.ls-t td{display:block}
@@ -553,11 +553,11 @@ details.fa-arith .body a{color:var(--gold)}
   .ls-tap{box-sizing:border-box;display:flex;align-items:center;gap:.4rem;width:100%;min-height:44px;cursor:pointer;font-size:.84rem;white-space:nowrap;overflow:hidden}
   .ls-tap b{display:inline}
   .ls-tap:focus-visible{outline:2px solid var(--gold,#d4a23f)}
-  .ls-nx{display:block;margin-left:auto;font-weight:400;font-size:.74rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis}  .ls-t td{display:none;border:0;padding:.1rem 0 .4rem}
+  .ls-t td{display:none;border:0;padding:.1rem 0 .4rem}
   .ls-t tr.ls-open td{display:block}.ls-t tr.ls-open td:empty{display:none}
   .ls-t td::before{display:block;font-size:.7rem;color:var(--text-muted)}
   .ls-t td:nth-child(2)::before{content:"What we show"}.ls-t td:nth-child(3)::before{content:"Source"}
-  .ls-t td:nth-child(4)::before{content:"Survey date"}.ls-t td:nth-child(5)::before{content:"Next update"}
+  .ls-t td:nth-child(4)::before{content:"Survey date"}
 }
 </style>
 <link rel="stylesheet" href="/components/src-fold.css?v=2">
@@ -642,7 +642,7 @@ try{var L=location;if(/(^|[?&])s=/.test(L.search)||/(^|[#&])s=/.test(L.hash))doc
 <!--SEED:landsrc--><!--/SEED:landsrc-->
     <div class="ls-map" id="ls-map"></div>
     <p class="ls-leg" id="ls-leg">Shade: the closest state survey we show.<i class="ls-k-county"></i>County survey<i class="ls-k-region"></i>region survey<i class="ls-k-usda"></i>or USDA and Census figures only.</p>
-    <table class="ls-t" id="ls-t"><caption class="sr-only">Each state's land figures on the Atlas, their source, survey date and next update</caption>
+    <table class="ls-t" id="ls-t">
       <!--SEED:landsrc-head--><!--/SEED:landsrc-head-->
       <tbody id="ls-rows"><!--SEED:landsrc-rows--><!--/SEED:landsrc-rows--></tbody>
     </table>
