@@ -20,6 +20,9 @@
    - "Your check" (#your-check): crop, base acres and PLC yield in, the 2025
      and 2026 dollars out (AgArcPay, mirrors pay_figure in the build). The
      build writes the first crop at 100 base acres; nothing is stored or sent.
+     "Print my estimate" prints the page's own sheet (#estimate, print CSS):
+     what was typed and the four figures before and after the 5.7% cut.
+   - The crop switcher (.ap-tabs) shows one crop card at a time.
 
    window.AgArcFind (inRing, locate) is the math alone, for test/arc-plc.test.mjs.
    Mirrors in_ring and locate in scripts/build_arc_plc.py. */
@@ -180,7 +183,17 @@
     return '2025: the farm gets the higher one, ' + money(hi) + ', or ' + money(hi * (1 - 0.057)) + ' after the 5.7% sequestration cut. ' +
       '2026: only the program the farm is enrolled in pays.';
   }
-  w.AgArcPay = { figure: figure, money: money, note: note, rnd2: rnd2 };
+  /* "Print my estimate" (Nov 20, 2026; mirrors est_sheet in the build): the sheet's cells for crop x at b base acres and
+     PLC yield py, each figure before and after the 5.7% cut, or the crop's reason where the page prints no figure */
+  function sheet(x, b, py) {
+    var r = figure(x, b, py), wy = { a25: x.w25 || x.w25a || '', p25: x.w25 || '', a26: x.w || '', p26: x.w || '' }, out = {};
+    ['a25', 'p25', 'a26', 'p26'].forEach(function (n) {
+      out[n] = r[n] != null ? money(r[n]) : wy[n];
+      out[n + 's'] = r[n] != null ? money(r[n] * (1 - 0.057)) : wy[n];
+    });
+    return out;
+  }
+  w.AgArcPay = { figure: figure, money: money, note: note, rnd2: rnd2, sheet: sheet };
 
   if (!d || !d.querySelector) return;
 
@@ -211,6 +224,48 @@
       var note = d.querySelector('.ap-seg-note');
       if (note && note.getAttribute('data-' + lv)) note.textContent = note.getAttribute('data-' + lv);
     });
+  }
+
+  /* the five terms (Nov 20, 2026; GLOSS in the build marks each where it first shows): its note on hover, tap or focus */
+  var GLOSS = {
+    base: 'Base acres: the acres FSA assigns a farm for each crop, listed on its FSA-156EZ. ARC and PLC pay on 85% of them, whatever is planted.',
+    py: 'PLC yield: the farm' + RS + 's yield FSA pays PLC on, also on the FSA-156EZ. This page uses the county average until you type your own.',
+    seq: 'Sequestration: an across-the-board cut to federal farm payments, set each fiscal year. 5.7% is the rate reported for these payments.',
+    mya: 'Season-average price (MYA, marketing year average): USDA' + RS + 's national average of what farmers were paid for the crop over its marketing year.',
+    erp: 'Effective reference price: the price PLC is measured against, set by law each year: the statutory reference price, or 88% of recent ' +
+      'season-average prices if higher, up to 115% of the statutory price.'
+  };
+  w.AgArcGloss = GLOSS;
+  function glossary() {
+    var gs = d.querySelectorAll('.ap-g[data-g]');
+    for (var i = 0; i < gs.length; i++) {
+      var t = GLOSS[gs[i].getAttribute('data-g')];
+      if (!t || gs[i].querySelector('.ap-gt')) continue;
+      gs[i].setAttribute('tabindex', '0');
+      gs[i].insertAdjacentHTML('beforeend', '<span class="ap-gt" role="tooltip">' + t + '</span>');
+    }
+  }
+
+  /* the crop switcher (Nov 20, 2026): one card at a time; the build opens the first, so nothing moves on load.
+     A link to #corn or #crop-corn (the crop pages link that way) opens that crop's card. */
+  function tabs() {
+    var bar = d.querySelector('.ap-tabs');
+    if (!bar) return;
+    function pick(k, go) {
+      var card = d.getElementById('crop-' + k);
+      if (!card) return false;
+      var bs = bar.querySelectorAll('button[data-k]'), cs = d.querySelectorAll('.ap-crop'), i;
+      for (i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', bs[i].getAttribute('data-k') === k ? 'true' : 'false');
+      for (i = 0; i < cs.length; i++) cs[i].hidden = cs[i] !== card;
+      if (go && card.scrollIntoView) card.scrollIntoView({ block: 'nearest' });
+      return true;
+    }
+    bar.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('button[data-k]');
+      if (b) pick(b.getAttribute('data-k'), false);
+    });
+    var h = (location.hash || '').replace(/^#(crop-)?/, '');
+    if (/^[a-z_]+$/.test(h)) pick(h, true);
   }
 
   function finder() {
@@ -333,9 +388,12 @@
         for (var i = 0; f && i < localStorage.length; i++) { var k = localStorage.key(i); if (/^ap3:[fy]:/.test(k) && k.indexOf('|' + f) > 0) { want = true; break; } }
       } catch (e) {}
     }
-    if (want) run.open = true;
+    /* the full calculator sits in the fold at the bottom (Nov 20, 2026): opening it opens the fold too */
+    var fold = run.parentElement && run.parentElement.closest ? run.parentElement.closest('details') : null;
+    function open() { run.open = true; if (fold) fold.open = true; }
+    if (want) open();
     /* "Depends on your PLC yield: run it below" links to #run: open it when the link is followed */
-    d.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href="#run"]'); if (a) run.open = true; });
+    d.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href="#run"]'); if (a) open(); });
   }
 
   /* crop pages (/arc-plc/<crop>): each state's county links, filled from data/arc-plc/hub/<crop>.json when its list opens */
@@ -383,7 +441,28 @@
       q('a26').textContent = r.a26 != null ? money(r.a26) : (x.w || '');
       q('p26').textContent = r.p26 != null ? money(r.p26) : (x.w || '');
       q('note').textContent = note(r);
+      fillSheet(x, b, py);
     }
+    /* the print sheet (#estimate, est_sheet in the build) says what the calculator says, with what was typed */
+    function fillSheet(x, b, py) {
+      var sh = d.getElementById('estimate');
+      if (!sh) return;
+      var c = sheet(x, b, py), row = function (lab, y, s) {
+        return '<tr><th scope="row">' + lab + '</th><td data-es="a' + y + s + '">' + esc(c['a' + y + s]) + '</td><td data-es="p' + y + s + '">' + esc(c['p' + y + s]) + '</td></tr>';
+      };
+      sh.innerHTML = '<p class="ap-est-k">AGSIST ARC/PLC payment estimate</p><h2>' + esc(sh.getAttribute('data-c')) + '</h2>' +
+        '<p>Crop: <b data-es="n">' + esc(x.n) + '</b> &middot; Base acres: <b data-es="b">' + esc(bIn.value) + '</b> &middot; PLC yield: <b data-es="y">' + esc(yIn.value) +
+        '</b> ' + (x.u === 'lb' ? 'lb' : 'bu') + ' (as entered)</p>' +
+        '<table class="ap-chk"><thead><tr><th scope="col">Crop year</th><th scope="col">ARC-CO</th><th scope="col">PLC</th></tr></thead><tbody>' +
+        row('2025', 25, '') + row('2025 after the 5.7% cut', 25, 's') + row('2026 expected', 26, '') + row('2026 expected after a 5.7% cut', 26, 's') +
+        '</tbody></table><p>For 2025 the farm gets the higher program; for 2026 only the program it enrolls in pays. Before payment limits.</p>' +
+        '<p>Inputs: ' + esc(x.i ? x.i + '; ' : '') + '85% of base acres paid. ' + esc(sh.getAttribute('data-src')) + '. 5.7% is the sequestration rate reported for ' +
+        'these payments; it is set each fiscal year and can change.</p>' +
+        '<p><b>Estimate, not an FSA determination.</b> Your county FSA office has the official figures. ' + esc(sh.getAttribute('data-u')) + '</p>';
+    }
+    var pr = q('print');
+    if (pr) pr.addEventListener('click', function () { show(); w.print(); });
+    show();
     sel.addEventListener('change', function () {
       var x = X[sel.value];
       if (!x) return;
@@ -395,6 +474,6 @@
     yIn.addEventListener('input', show);
   }
 
-  function boot() { levels(); finder(); runOpen(); hubs(); payCalc(); }
+  function boot() { levels(); glossary(); tabs(); finder(); runOpen(); hubs(); payCalc(); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : null);
