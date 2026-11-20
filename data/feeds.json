@@ -475,6 +475,7 @@
     "COT Release Watch",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "Friday Chart spec",
     "Rebuild Call Scorecard",
     "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
@@ -514,6 +515,7 @@
    "touched_by": [
     "COT Release Watch",
     "Fetch COT Data",
+    "Friday Chart spec",
     "Rebuild Feed Manifest"
    ],
    "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
@@ -736,6 +738,7 @@
     "Fertilizer co-op posted prices",
     "fetch-fsa-arcplc",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Friday Chart spec",
     "Hail data refresh",
     "Hail state pages \u2014 generate from monthly data",
     "Harvest price tracker",
@@ -843,6 +846,7 @@
     "Daily site check",
     "Generate Daily Briefing",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Friday Chart spec",
     "Morning report"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",

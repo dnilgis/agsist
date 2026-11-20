@@ -2,6 +2,20 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-20-rain-at-your-fields",
+   "date": "2026-11-20",
+   "title": "Rain at your fields, free",
+   "line": "Save up to 20 fields on your phone: radar and PRISM rain for each, the nearest gauge and your own beside it, and a daily history in a link you keep.",
+   "link": "/field-rain"
+  },
+  {
+   "id": "2026-11-20-arc-plc-payments",
+   "date": "2026-11-20",
+   "title": "ARC/PLC: what the check is",
+   "line": "County ARC/PLC cards now show dollars per base acre: 2025 from FSA's posted rates and the 2026 estimate for each program, with a calculator for your base acres.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-19-atlas-extension-surveys",
    "date": "2026-11-19",
    "title": "Minnesota, Wisconsin and Kansas survey figures",
