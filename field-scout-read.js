@@ -212,34 +212,39 @@ window.__fsRead = function (FSX) {
     }).catch(function(e){ _soilP=null; throw e; });
     return _soilP;
   }
-  // resolves { d, s, c, direct:true } from USDA directly, or null when the direct ask failed
+  // resolves { d, s, c, countyError, direct:true } from USDA directly, { error } when USDA refused
+  // or did not answer (a non-200, an XML exception, a network or browser refusal), or null when
+  // components/soil-read.js itself did not load
   function soilDirect(wkt){
     return soilLib().then(function(S){
       return S.askField(wkt, 25000).then(function(rows){
         var s=S.summarize(rows);
         if(!s || !s.area) return { d:{ ext:true, Table:rows }, s:s, c:null, direct:true };
-        return S.askCounty(s.area, 15000).then(S.county, function(){ return null; })
-          .then(function(c){ return { d:{ ext:true, Table:rows }, s:s, c:c, direct:true }; });
-      });
-    }).catch(function(){ return null; });
+        return S.askCounty(s.area, 15000).then(function(r){ return { c:S.county(r) }; }, function(e){ return { c:null, e:e }; })
+          .then(function(k){ return { d:{ ext:true, Table:rows }, s:s, c:k.c, countyError:k.e||null, direct:true }; });
+      }, function(e){ return { error:e }; });
+    }, function(){ return null; });
   }
   function loadSoil(poly, tries){
     var gen = FSX.fieldGen;
     var wkt = wktPolygon(poly);
+    var why = null;
     soilDirect(wkt)
       .then(function(dir){
         if(gen !== FSX.fieldGen) return;
-        if(dir) return drawSoil(dir.d, dir);
-        return postJSON(FS_WORKER + '/soil', { wkt: wkt }).then(function(d){ if(gen === FSX.fieldGen) drawSoil(d, null); });
+        if(dir && !dir.error) return drawSoil(dir.d, dir, null);
+        why = dir && dir.error;
+        return postJSON(FS_WORKER + '/soil', { wkt: wkt }).then(function(d){ if(gen === FSX.fieldGen) drawSoil(d, null, why); });
       })
       .catch(function(){
         if(gen!==FSX.fieldGen) return;
         // SSURGO upstream flakes transiently (502/504): retry once before giving up.
         if(!tries){ setTimeout(function(){ if(gen===FSX.fieldGen) loadSoil(poly, 1); }, 1500); return; }
-        setErr('fs-soil','The USDA soil survey server (SSURGO) isn’t responding right now. This is a known-flaky government service, not your field. Redraw the field in a few minutes and it usually loads.');
+        if(why && window.AgSoil){ setErr('fs-soil','No soil read for this field. USDA Soil Data Access: '+esc(window.AgSoil.reason(why))+'. The Field Scout server did not answer either. Tap the field again to retry.'); return; }
+        setErr('fs-soil','No soil read for this field: the USDA soil survey (SSURGO) did not answer. Tap the field again to retry.');
       });
   }
-  function drawSoil(d, dir){
+  function drawSoil(d, dir, directErr){
         var rows = (d && d.Table) ? d.Table : null;
         if(!rows || !rows.length){ setBody('fs-soil','<div class="fs-err">No SSURGO soil survey published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>'); return; }
         var total=0; rows.forEach(function(r){ total += parseFloat(r[3])||0; });
@@ -334,7 +339,7 @@ window.__fsRead = function (FSX) {
           // survey's flags under it, and how to read it closed at the bottom
           var ss = dir ? dir.s : AS.summarize(rows);
           var legend = '<p class="fs-caveat">Class is the land capability class, 1 fewest limits to 8 most; the letter is the main limit (e wind or water erosion, w wetness, s root zone, c climate).</p>';
-          setBody('fs-soil', AS.render(ss, dir ? dir.c : null, { direct: !!dir }) + factNote + AS.howTo(ss, slopeNote + legend));
+          setBody('fs-soil', AS.render(ss, dir ? dir.c : null, { direct: !!dir, directError: directErr || null, countyError: dir ? dir.countyError : null }) + factNote + AS.howTo(ss, slopeNote + legend));
           return;
         }
         setBody('fs-soil', html + rateNote + factNote + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 fewest limits, 8 most); letter = the main limit (e wind or water erosion, w wetness, s root zone, c climate)</div>');

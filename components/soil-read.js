@@ -5,11 +5,12 @@
    Two questions, both to SDA's public REST endpoint (a form post, so the browser sends no
    preflight):
    1. the field: SSURGO map units clipped to the field outline (SDA's own GetClippedMapunits
-      macro), with acres in the field, drainage class, slope, available water, NCCPI 3.0 (all
-      crops, corn and soybean submodels) and, in Iowa, CSR2. Columns 0 to 14 are the Field Scout
-      worker's, in its order (field-scout-read.js reads them by position), 15 to 18 are added here.
+      macro), with acres in the field, drainage class, slope, available water and NCCPI 3.0.
+      Columns 0 to 14 are the Field Scout worker's, in its order (field-scout-read.js reads them by
+      position), 15 to 18 are added here. The CSR2 and corn and soybean columns are asked as NULL:
+      real SDA has no iacornsr column and the submodel names matched nothing (Nov 20, 2026).
    2. the county: every map unit of the same soil survey area with its acres in that survey area
-      and the same NCCPI and CSR2. The middle (acre-weighted median) and the share of rated acres
+      and the same NCCPI. The middle (acre-weighted median) and the share of rated acres
       below this field come from that answer only, so the field and the county are one source.
 
    Field figures: acre-weighted over the map units that carry the figure, and shown only when
@@ -35,10 +36,11 @@
       ' JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=' + mu + ' AND ci.ruledepth=0 AND ci.mrulename' +
       (like ? " LIKE '" + rule + "%'" : " = '" + rule + "'") + ' AND ci.interphr IS NOT NULL )';
   }
-  function csr2Sub(mu) {
-    return '( SELECT ROUND(SUM(CAST(c3.iacornsr AS float)*c3.comppct_r)/NULLIF(SUM(c3.comppct_r),0),1) FROM component c3' +
-      ' WHERE c3.mukey=' + mu + ' AND c3.iacornsr IS NOT NULL )';
-  }
+  // CSR2 is not a component column in Soil Data Access: real SDA refuses "iacornsr" with HTTP 400
+  // ("Invalid column name 'iacornsr'", Nov 20, 2026, every query). It is a cointerp
+  // interpretation whose rule name and scale are being confirmed against SDA itself; until then
+  // the column is asked as NULL so every other figure still loads, and the card shows no CSR2.
+  function csr2Sub() { return 'CAST(NULL AS float)'; }
   // [0] areasymbol [1] musym [2] muname [3] ac [4] nicc [5] slope_pct [6] nccpi [7] nccpi_corn
   // [8] nccpi_soy [9] drainage [10] csr2 [11] farmlndcl [12] flodfreq [13] hydric_pct [14] nirrcapscl
   // [15] aws_cm (0 to 150 cm) [16] mukey [17] saverest (survey version date) [18] areaname
@@ -51,8 +53,9 @@
       'SELECT l.areasymbol, mu.musym, mu.muname, ROUND(area.ac, 2) AS ac, ma.niccdcd AS nicc,' +
       ' ( SELECT ROUND(AVG(CAST(c.slope_r AS float)),1) FROM component c WHERE c.mukey=mu.mukey AND c.majcompflag=\'Yes\' ) AS slope_pct, ' +
       nccpiSub('mu.mukey', NCCPI_ALL) + ' AS nccpi, ' +
-      nccpiSub('mu.mukey', 'NCCPI - NCCPI Corn Submodel', true) + ' AS nccpi_corn, ' +
-      nccpiSub('mu.mukey', 'NCCPI - NCCPI Soybeans Submodel', true) + ' AS nccpi_soy,' +
+      // the corn and soybean parts: the mrulename match came back NULL on every real row (Nov 20,
+      // 2026); they are asked as NULL, keeping the column order, until a confirmed rule exists
+      'CAST(NULL AS float) AS nccpi_corn, CAST(NULL AS float) AS nccpi_soy,' +
       ' ma.drclassdcd AS drainage, ' + csr2Sub('mu.mukey') + ' AS csr2,' +
       ' mu.farmlndcl AS farmlndcl, ma.flodfreqdcd AS flodfreq, ma.hydclprs AS hydric_pct,' +
       " ( SELECT TOP 1 c4.nirrcapscl FROM component c4 WHERE c4.mukey=mu.mukey AND c4.majcompflag='Yes' ORDER BY c4.comppct_r DESC, c4.cokey ) AS nirrcapscl," +
@@ -83,13 +86,34 @@
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: 'format=JSON&query=' + encodeURIComponent(sql)
     }).then(function (r) {
-      if (!r.ok) throw new Error('sda ' + r.status);
-      return r.text();
+      var body = r.text ? r.text() : Promise.resolve('');
+      if (!r.ok) return body.then(function (txt) { throw sdaError(r.status, txt); }, function () { throw sdaError(r.status, ''); });
+      return body;
     }).then(function (txt) { clearTimeout(t); return txt || ''; }, function (e) { clearTimeout(t); throw e; });
   }
+  // SDA refuses a query with an XML ServiceExceptionReport (HTTP 400 for a bad query, sometimes
+  // 200): the reason goes on the card, never a blank or a stale answer.
+  function decodeXml(s) {
+    return String(s).replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(+n); })
+      .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  }
+  function sdaError(status, txt) {
+    var m = /<ServiceException(?:\s[^>]*)?>([\s\S]*?)<\/ServiceException>/i.exec(String(txt || ''));
+    var detail = m ? decodeXml(m[1]).split(/\r?\n/).map(function (x) { return x.trim(); }).filter(Boolean)[0] || '' : '';
+    var e = new Error('sda ' + status + (detail ? ': ' + detail : ''));
+    e.status = status; e.detail = detail.slice(0, 200); e.sda = true; e.raw = String(txt || '').slice(0, 4000);
+    return e;
+  }
   function parse(txt) {
+    if (/^\s*</.test(txt || '') || /ServiceException/.test(txt || '')) throw sdaError(200, txt);
     var d = txt && txt.trim() ? JSON.parse(txt) : {};   // SDA answers an empty body when no row matches
     return d && Array.isArray(d.Table) ? d.Table : [];
+  }
+  // a short reason for the card: "HTTP 400: Invalid query: Invalid column name 'x'." or the kind of failure
+  function reason(e) {
+    if (e && e.sda) return 'HTTP ' + e.status + (e.detail ? ': ' + e.detail : '');
+    if (e && e.name === 'AbortError') return 'no answer in time';
+    return 'no answer: the connection failed or the browser refused the reply';
   }
   function ask(sql, ms, fetchFn) { return askText(sql, ms, fetchFn).then(parse); }
   var last = { wkt: null };
@@ -158,8 +182,10 @@
     function one(label, v, mid, pairs, digits, near) {
       if (v == null || mid == null) return;
       var f = function (x) { return x.toFixed(digits); };
-      var vv = +f(v), mm = +f(mid), d = vv - mm;
-      var word = Math.abs(d) < near ? 'about level with' : d > 0 ? 'above' : 'below';
+      // compared as the printed figures, in whole hundredths, so 0.83 against 0.81 is a gap of
+      // exactly 2 (floating point made it 0.0199999 and called it level)
+      var sc = Math.pow(10, digits), d = Math.round(+f(v) * sc) - Math.round(+f(mid) * sc);
+      var word = Math.abs(d) < Math.round(near * sc) ? 'about level with' : d > 0 ? 'above' : 'below';
       var b = shareBelow(pairs, v);
       // the place is named once; a second line says "its"
       var first = !out.length;
@@ -167,7 +193,6 @@
         (b != null ? ': higher than ' + Math.round(b) + '% of ' + (first ? 'rated acres in ' + where : 'its rated acres') : first ? ' in ' + where : '') + '.');
     }
     one('NCCPI', s.nccpi, c.nccpiMid, c.nc, 2, 0.02);
-    one('CSR2', s.csr2, c.csr2Mid, c.cs, 0, 2);
     return out;
   }
 
@@ -184,7 +209,6 @@
     if (u.slope != null) m.push(u.slope + '% slope');
     if (u.awsCm != null) m.push(inches(u.awsCm) + ' water');
     if (u.nccpi != null) m.push('NCCPI ' + u.nccpi.toFixed(2));
-    if (u.csr2 != null) m.push('CSR2 ' + Math.round(u.csr2));
     if (u.nicc != null) m.push('class ' + u.nicc + (u.sub ? esc(u.sub) : ''));
     return m.join(' · ');
   }
@@ -196,16 +220,19 @@
     if (!s) return '<div class="fs-err">No SSURGO soil survey is published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>';
     var c = countyState && typeof countyState === 'object' ? countyState : null;
     var head = [];
-    if (s.nccpi != null) head.push('<strong>NCCPI ' + s.nccpi.toFixed(2) + '</strong>' +
-      (s.corn != null || s.soy != null ? ' (corn ' + (s.corn != null ? s.corn.toFixed(2) : 'not rated') + ', soybeans ' + (s.soy != null ? s.soy.toFixed(2) : 'not rated') + ')' : ''));
-    if (s.csr2 != null) head.push('<strong>CSR2 ' + s.csr2.toFixed(1) + '</strong>');
+    // NCCPI overall is the productivity number. CSR2 and the corn and soybean parts are not shown
+    // until Soil Data Access is confirmed to carry them (Nov 20, 2026 checks against real SDA).
+    if (s.nccpi != null) head.push('<strong>NCCPI ' + s.nccpi.toFixed(2) + '</strong>');
     if (s.awsCm != null) head.push(inches(s.awsCm) + ' available water in the top 5 ft');
     if (s.slope != null) head.push(Math.round(s.slope * 10) / 10 + '% average slope');
     var html = '<div class="fs-soil-top" id="fs-soil-top">' +
+      (opts.directError ? '<p class="fs-err fs-soil-why">USDA Soil Data Access did not answer this browser directly (' + esc(reason(opts.directError)) +
+        '), so this card shows the Field Scout server’s read of the same survey.</p>' : '') +
       '<p class="fs-soil-slope" style="margin-top:0">' + (head.length ? head.join(' · ') : 'The survey rates too little of this field for a field figure.') + '</p>';
     var cmp = c ? compare(s, c) : [];
     var cmpText = cmp.length ? cmp.join(' ')
       : c ? 'The county’s soil survey rates too little ground to compare.'
+      : opts.countyError ? 'The county comparison did not load (USDA Soil Data Access: ' + esc(reason(opts.countyError)) + '). Tap the field again to retry.'
       : opts.direct ? 'The county comparison did not load. Tap the field again to retry.'
       : 'The county comparison comes straight from USDA and did not load this time.';
     html += '<p class="fs-soil-slope fs-soil-cmp" id="fs-soil-cmp">' + cmpText + '</p>';
@@ -224,8 +251,8 @@
     return '<details class="fs-vigor-more fs-soil-how"><summary>How to read it</summary>' +
       '<p class="fs-soil-slope">Each row is a soil map unit from the USDA soil survey, with its share of the outline you set. ' +
       'Drainage class, slope, available water and the ratings are the survey’s representative values for that map unit, not a measurement of your exact acres.</p>' +
-      '<p class="fs-soil-slope"><strong>NCCPI</strong> (National Commodity Crop Productivity Index, version 3.0) runs 0 to 1 on one national scale: how well the soil and climate carry dryland corn, soybeans, cotton or small grains. The corn and soybean figures are its crop parts. ' +
-      '<strong>CSR2</strong> (Corn Suitability Rating 2, Iowa only, 0 to 100) is Iowa’s own row-crop productivity index in the same survey.</p>' +
+      '<p class="fs-soil-slope"><strong>NCCPI</strong> (National Commodity Crop Productivity Index, version 3.0) runs 0 to 1 on one national scale: how well the soil and climate carry dryland corn, soybeans, cotton or small grains. ' +
+      'CSR2 (Iowa’s Corn Suitability Rating 2) is not shown: USDA’s Soil Data Access service does not offer it.</p>' +
       '<p class="fs-soil-slope"><strong>Available water</strong> is how much water the top 150 cm (about 5 ft) of soil can hold for a crop, in inches.</p>' +
       '<p class="fs-soil-slope"><strong>The county line</strong> compares this field with every rated acre in the same soil survey area (usually one county). The middle is the rating with half the rated acres below it. Both come from the same Soil Data Access answer, never another source.</p>' +
       (notes || '') +
@@ -256,10 +283,15 @@
         out.countyRaw = t2; log.log('askCounty raw answer:\n' + t2);
         return out;
       });
+    }).catch(function (e) {
+      // a refused query: keep SDA's own answer (status and body) for the record
+      out.error = e.message; out.errorRaw = e.raw || '';
+      log.log('SDA refused or failed: ' + e.message + (e.raw ? '\n' + e.raw : ''));
+      return out;
     });
   }
 
-  var API = { SDA: SDA, debug: debug, parse: parse, okWkt: okWkt, okArea: okArea, fieldQuery: fieldQuery, countyQuery: countyQuery, ask: ask,
+  var API = { SDA: SDA, debug: debug, parse: parse, reason: reason, sdaError: sdaError, okWkt: okWkt, okArea: okArea, fieldQuery: fieldQuery, countyQuery: countyQuery, ask: ask,
     askField: askField, askCounty: askCounty, units: units, summarize: summarize, county: county, wmedian: wmedian,
     shareBelow: shareBelow, compare: compare, render: render, howTo: howTo, sourceLine: sourceLine, mdy: mdy };
   if (typeof module === 'object' && module.exports) module.exports = API;
