@@ -107,7 +107,7 @@
     .fr-form[data-mode="add"] #fr-cancel{display:none}
     .fr-note{font-size:.84rem}
     @media print{
-      #site-header,#site-footer,.skip,.fr-form,.fr-act,.fr-gform,.fr-row2,.fr-yr,.fr-msg,.fr-h2,.fr-h2+ul,.fr-note{display:none!important}
+      #site-header,#site-footer,.skip,.fr-form,.fr-act,.fr-gform,.fr-row2,.fr-yr,.fr-msg,.fr-h2,.fr-h2+ul,.fr-note,.rpl{display:none!important}
       html,body{background:#fff!important;color:#000!important}
       .fr-card{border-color:#999}.fr .fr-v b,.fr-n,.fr h1,.fr-mt td,.fr-dt td{color:#000!important}
       .fr-days table{display:table!important}#fr-app{min-height:0!important}
@@ -201,6 +201,7 @@ d.documentElement.style.setProperty('--frn',String(Math.max(n,1)));d.documentEle
         <li><b>Grid cells read:</b> the radar square and the PRISM square each figure comes from, and the nearest ZIP code center. A pin in the wrong place shows there. Move it with "Move".</li>
       </ul>
       <p class="fr-note">One field on a map with storm replay: <a href="/rain#radar">the rain page's radar tab</a>. A county's whole year from its gauge: <a href="/rain">rain and drought</a>.</p>
+      <script src="/components/rp-line.js?v=1" data-src="field-rain"></script>
     </article>
 </main>
   <div id="site-footer">
