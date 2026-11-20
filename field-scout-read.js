@@ -112,7 +112,10 @@ window.__fsRead = function (FSX) {
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"></div>'+
       '</div>' +
-      notesSectionHTML();
+      // Nov 20, 2026: the notes box sits after the deck, not under The Read. The Read grows when
+      // its last layer lands (often the soil survey), and on a phone and in the 1280 side column
+      // it pushed the notes box down on screen (layout shift 0.013 to 0.035, test/soil-read.test.mjs).
+      (document.getElementById('fs-deck') ? '' : notesSectionHTML());
     var D=document.getElementById('fs-deck');
     if(D){
       D.hidden=false;
@@ -133,7 +136,8 @@ window.__fsRead = function (FSX) {
           section('market',ICONS.market,'Selling It From Here','fs-market') +
           section('hood',ICONS.hood,'Who Farms Around Here','fs-hood') +
           section('cond',ICONS.cond,'How the Crop Looks Statewide','fs-cond') +
-        '</div>';
+        '</div>' +
+        notesSectionHTML();
     }
 
     var _an=R.querySelector('.acres-n'); if(_an){ _an.textContent='0.0'; setTimeout(function(){ countUp(_an, acres, 1); }, 320); }
@@ -191,8 +195,9 @@ window.__fsRead = function (FSX) {
     return '<div class="fs-section"><div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ico+'</span>'+title+'</div>'+
       '<div class="fs-section-body" id="'+bodyid+'"><div class="fs-loading"><span class="fs-spin"></span>reading</div></div></div>';
   }
-  function setBody(id, html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
-  function setErr(id, msg){ var el=document.getElementById(id); if(el) el.innerHTML='<div class="fs-err">'+msg+'</div>'; }
+  // a section's reserved height (the soil card's while it reads) ends when its answer is drawn
+  function setBody(id, html){ var el=document.getElementById(id); if(el){ el.innerHTML=html; el.style.minHeight=''; } }
+  function setErr(id, msg){ var el=document.getElementById(id); if(el){ el.innerHTML='<div class="fs-err">'+msg+'</div>'; el.style.minHeight=''; } }
 
   // ── 1. SOIL (USDA SSURGO via Soil Data Access) ──────────────────────
   // Spatial query: intersect the drawn polygon with SSURGO map units,
@@ -228,6 +233,10 @@ window.__fsRead = function (FSX) {
   function loadSoil(poly, tries){
     var gen = FSX.fieldGen;
     var wkt = wktPolygon(poly);
+    // hold the soil card's room while it reads (a three-unit Iowa answer is about 540 px tall at
+    // 1280 and 820 px on a phone, from 49 px reading), so the cards after it hardly move
+    var box = document.getElementById('fs-soil');
+    if(box && !tries) box.style.minHeight = (window.matchMedia && matchMedia('(max-width:559px)').matches) ? '48.5rem' : '33rem';
     var why = null;
     soilDirect(wkt)
       .then(function(dir){
@@ -1246,7 +1255,7 @@ window.__fsRead = function (FSX) {
     }
     if(soil && soil.slope!=null && soil.slope>=3){
       var sl=soil.slope, ev=sl<6?'Moderate':sl<12?'Elevated':'High', ec=sl<6?'#ffd400':sl<12?'#ff9326':'#d9534f';
-      rows.push(riskRow('Erosion (slope)', ev, ec, sl+'% average slope'+(soil.maxSlope>sl?' · up to '+soil.maxSlope+'%':'')+', water-erosion exposure'));
+      rows.push(riskRow('Erosion (slope)', ev, ec, sl+'% average slope'+(soil.maxSlope>sl?' · steepest map unit '+soil.maxSlope+'%':'')+' (SSURGO)'));
     }
     if(hail && !hail.err){
       // report-days in a ~40-mile circle (about 5,000 sq mi): banded per year, and worded as reports
@@ -1706,7 +1715,7 @@ window.__fsRead = function (FSX) {
   var FS_TIPS = {
     acres:{t:'Acres',b:'Total area inside the boundary you drew.'},
     soil:{t:'Soil & productivity',b:'The dominant USDA soil map units under your field, ranked by share of acreage. Soil sets what the ground can yield and how it drains.'},
-    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index, a 0\u20131 index for row-crop ground (shown \u00d7100 in the vitals strip). Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
+    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index, a 0 to 1 index for row-crop ground, shown at hundredths. Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
     ndvi:{t:'NDVI \u00b7 crop vigor',b:'How much living, green canopy the satellite sees. Runs about 0 (bare or dead) to 0.9 (dense, healthy crop). The best single at-a-glance crop-health number.'},
     ndre:{t:'NDRE \u00b7 red-edge',b:'A red-edge index tied to leaf chlorophyll. Most useful after canopy close, when NDVI flattens out. A satellite greenness reading, not a nitrogen test: low chlorophyll has many causes, and only tissue or soil tests measure nitrogen.'},
     ndmi:{t:'NDMI \u00b7 canopy moisture',b:'Water held in the crop canopy. Higher means more moisture in the leaves; a drop can flag stress before you can see it.'},
@@ -1716,7 +1725,7 @@ window.__fsRead = function (FSX) {
     bsi:{t:'BSI \u00b7 bare soil',b:'Bare Soil Index. Higher means more exposed soil: early season, after harvest, or a thin stand.'},
     rotation:{t:'Crop rotation',b:'What grew here each year on record (up to a decade), from USDA\u2019s satellite-classified Cropland Data Layer. Continuous corn raises rootworm and disease pressure.'},
     drought:{t:'Drought',b:'US Drought Monitor category for this field, None through D4 (exceptional). D2 and worse means real moisture stress.'},
-    slope:{t:'Slope',b:'Average ground slope across the field. Steeper ground carries more water-erosion exposure.'},
+    slope:{t:'Slope',b:'Average slope across the field: the soil survey’s representative slope for each map unit, weighted by acres.'},
     basis:{t:'Nearest bid',b:'The nearest elevator in our network that posts a bid for this crop, its nearest delivery month, and how far it is from the middle of this field. Futures plus or minus local basis: the number you\u2019d actually get, not the board price.'},
     rain:{t:'Rain vs normal',b:'Rain since January 1 at this county\u2019s NOAA gauge, as a share of that gauge\u2019s 1991\u20132020 normal for the same days. The gauge and its miles from your field are on the Season card.'},
     patchy:{t:'Field uniformity',b:'How evenly vigor is spread across the field. A wide spread means part of the field is lagging, a zone worth walking.'},
@@ -1761,7 +1770,8 @@ window.__fsRead = function (FSX) {
     var acres = FSX.FIELD.acres!=null ? (+FSX.FIELD.acres).toFixed(1) : null;
     var soilV = (s&&s.top&&s.top.name) ? esc(String(s.top.name).split(',')[0]) : null;
     var soilSub = s ? soilShare(s) : null;
-    var nccpiV = (s&&s.nccpi!=null) ? Math.round(s.nccpi*100) : null;
+    // NCCPI as USDA states it, 0 to 1 at hundredths (was shown x100 as "/100"; Nov 20, 2026)
+    var nccpiV = (s&&s.nccpi!=null) ? s.nccpi.toFixed(2) : null;
     var v = ix ? ((ix.latest&&ix.latest.ndvi!=null)?ix.latest.ndvi:(ix.series&&ix.series.length?ix.series[ix.series.length-1].ndvi:null)) : null;
     var vigV = (v!=null) ? (+v).toFixed(2) : null;
     var vigSub = (v!=null) ? (FSX.FIELD._vigWord || vigorWord(v)) : null;   // same word as the vigor card
@@ -1806,7 +1816,7 @@ window.__fsRead = function (FSX) {
       vCell('RAIN', rainV, rainSub, 'rain') +
       vCell('NEAREST BID', bidV, bidSub, 'basis') +
       vCell('DROUGHT', drV, (d&&d.cat==null?'no answer':(d&&d.approx?'county-wide':null)), 'drought', drCls) +
-      vCell('PRODUCTIVITY', nccpiV, (nccpiV!=null?'/100 NCCPI':null), 'nccpi') +
+      vCell('PRODUCTIVITY', nccpiV, (nccpiV!=null?'NCCPI, 0 to 1':null), 'nccpi') +
       vCell('VIGOR', vigV, vigSub, 'ndvi', vigCls) +
       vCell('SOIL', soilV, soilSub, 'soil') +
       vCell('SLOPE', slV, null, 'slope');
@@ -1822,7 +1832,7 @@ window.__fsRead = function (FSX) {
     var bidK = P.bid ? kv('Nearest bid', P.bid+(P.bidSub?' <small>'+P.bidSub.replace(/^(corn|beans) \u00b7 /,'')+'</small>':'')) : kv('Nearest bid', P.bidSub==='feed didn\u2019t answer'?'no answer':(P.bidSub?'-':null));
     el.innerHTML='<p class="fs-peek-v">'+v+'</p>'+
       (P.county?'<p class="fs-peek-co">'+esc(P.county)+'</p>':'')+
-      kv(P.lastY?P.lastY+' crop':'Last crop', P.last)+kv('Rain vs normal', P.rain!=null?P.rain:null)+bidK+kv('Productivity', P.nccpi!=null?P.nccpi+'/100':null)+
+      kv(P.lastY?P.lastY+' crop':'Last crop', P.last)+kv('Rain vs normal', P.rain!=null?P.rain:null)+bidK+kv('Productivity', P.nccpi!=null?'NCCPI '+P.nccpi:null)+
       '<a class="fs-peek-go" href="#fs-results">Read the whole field &darr;</a>';
     el.hidden=false;
     document.documentElement.classList.add('fs-has-peek');
@@ -2398,7 +2408,7 @@ window.__fsRead = function (FSX) {
         var favors=(s.nccpiCorn!=null && s.nccpiSoy!=null && Math.abs(s.nccpiCorn-s.nccpiSoy)>=0.05)
           ? ' For row crops, the index runs a touch higher for '+(s.nccpiCorn>s.nccpiSoy?'corn':'soybeans')+' on this ground.':'';
         // good news is part of the read, not something to "keep an eye on"
-        lines.push('The soil scores <strong>'+Math.round(s.nccpi*100)+'/100</strong> on USDA\u2019s national productivity index (NCCPI '+s.nccpi.toFixed(2)+'), upper tier: what limits yield here is mostly what you manage.'+favors);
+        lines.push('The soil rates <strong>NCCPI '+s.nccpi.toFixed(2)+'</strong> on USDA\u2019s national productivity index, 0 to 1.'+favors);
       } else if(s.nccpi<0.3){
         push({ sev:2, act:false, topic:'soil', tag:null,
           title:'NCCPI '+s.nccpi.toFixed(2)+' nationally: match yield goals and inputs to what this soil reliably returns',
@@ -2537,9 +2547,9 @@ window.__fsRead = function (FSX) {
 
     // ── Erosion (slope-driven) ──
     if(s && s.slope!=null && s.slope>=6){
-      push({ sev:s.slope>=12?4:3, act:s.slope>=12, topic:'erosion', tag:'erosion exposure on the steep acres',
+      push({ sev:s.slope>=12?4:3, act:s.slope>=12, topic:'erosion', tag:'steep acres',
         title:'consider erosion control (residue, contouring) on the steeper acres',
-        detail:'Slope averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':'')+', real water-erosion exposure on the steeper acres.', watch:null });
+        detail:'Slope averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (steepest map unit '+s.maxSlope+'%)':'')+' in the soil survey.', watch:null });
     }
 
     // ── Hail history → bridge to the Hail Map ──

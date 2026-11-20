@@ -7,8 +7,8 @@
    1. the field: SSURGO map units clipped to the field outline (SDA's own GetClippedMapunits
       macro), with acres in the field, drainage class, slope, available water and NCCPI 3.0.
       Columns 0 to 14 are the Field Scout worker's, in its order (field-scout-read.js reads them by
-      position), 15 to 18 are added here. CSR2 is asked as NULL: real SDA has no iacornsr column
-      and no CSR interpretation (Nov 20, 2026). The corn and soybean parts of NCCPI are asked as
+      position), 15 to 18 are added here. CSR2 (Iowa) is the map unit column mapunit.iacornsr,
+      the same in the county question. The corn and soybean parts of NCCPI are asked as
       its ruledepth-1 sub-rules (checked against real component rows on Nov 20, 2026).
    2. the county: every map unit of the same soil survey area with its acres in that survey area
       and the same NCCPI. The middle (acre-weighted median) and the share of rated acres
@@ -43,11 +43,10 @@
       ' JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=' + mu + " AND ci.mrulename = '" + NCCPI_ALL + "'" +
       " AND ci.ruledepth=1 AND ci.rulename LIKE '" + rule + "%' AND ci.interphr IS NOT NULL )";
   }
-  // CSR2 is not a component column in Soil Data Access: real SDA refuses "iacornsr" with HTTP 400
-  // ("Invalid column name 'iacornsr'", Nov 20, 2026, every query). It is a cointerp
-  // interpretation whose rule name and scale are being confirmed against SDA itself; until then
-  // the column is asked as NULL so every other figure still loads, and the card shows no CSR2.
-  function csr2Sub() { return 'CAST(NULL AS float)'; }
+  // CSR2 (Iowa) is a map unit column, mapunit.iacornsr: real SDA refused component.iacornsr with
+  // HTTP 400 and answered mapunit.iacornsr (IA169: 411277 = 96, 411278 = 36; Nov 20, 2026).
+  // NULL outside Iowa, where the survey does not fill it.
+  function csr2Sub() { return 'CAST(mu.iacornsr AS float)'; }
   // [0] areasymbol [1] musym [2] muname [3] ac [4] nicc [5] slope_pct [6] nccpi [7] nccpi_corn
   // [8] nccpi_soy [9] drainage [10] csr2 [11] farmlndcl [12] flodfreq [13] hydric_pct [14] nirrcapscl
   // [15] aws_cm (0 to 150 cm) [16] mukey [17] saverest (survey version date) [18] areaname
@@ -189,20 +188,26 @@
   function compare(s, c) {
     if (!s || !c) return [];
     var out = [], where = esc(c.name || c.area);
-    function one(label, v, mid, pairs, digits, near) {
+    function one(label, v, mid, pairs, digits, near, scope) {
       if (v == null || mid == null) return;
       var f = function (x) { return x.toFixed(digits); };
       // compared as the printed figures, in whole hundredths, so 0.83 against 0.81 is a gap of
       // exactly 2 (floating point made it 0.0199999 and called it level)
       var sc = Math.pow(10, digits), d = Math.round(+f(v) * sc) - Math.round(+f(mid) * sc);
       var word = Math.abs(d) < Math.round(near * sc) ? 'about level with' : d > 0 ? 'above' : 'below';
-      var b = shareBelow(pairs, v);
+      // one rule everywhere: the share is of rated acres whose rating is below the printed figure
+      // (Story: 0.827 prints 0.83, and 65% of IA169's rated acres sit below 0.83)
+      var b = shareBelow(pairs, +f(v));
       // the place is named once; a second line says "its"
       var first = !out.length;
-      out.push(label + ' ' + f(v) + ', ' + word + ' the county’s middle of ' + f(mid) +
+      out.push(label + ' ' + f(v) + ', ' + word + (scope ? ' the middle of ' : ' the county’s middle of ') + f(mid) + (scope || '') +
         (b != null ? ': higher than ' + Math.round(b) + '% of ' + (first ? 'rated acres in ' + where : 'its rated acres') : first ? ' in ' + where : '') + '.');
     }
     one('NCCPI', s.nccpi, c.nccpiMid, c.nc, 2, 0.02);
+    // Iowa CSR2, whole points; "level" is the same share of the scale as NCCPI's (under 2 of 100).
+    // Scoped in words: Iowa State's survey prints a cropland county CSR2 (Story: 86), and this is
+    // every mapped map unit acre, so it is never called "the county average CSR2".
+    one('CSR2', s.csr2, c.csr2Mid, c.cs, 0, 2, ' across all mapped soils in the county (USDA SSURGO)');
     return out;
   }
 
@@ -219,6 +224,7 @@
     if (u.slope != null) m.push(u.slope + '% slope');
     if (u.awsCm != null) m.push(inches(u.awsCm) + ' water');
     if (u.nccpi != null) m.push('NCCPI ' + u.nccpi.toFixed(2));
+    if (u.csr2 != null) m.push('CSR2 ' + u.csr2.toFixed(0));
     if (u.nicc != null) m.push('class ' + u.nicc + (u.sub ? esc(u.sub) : ''));
     return m.join(' · ');
   }
@@ -231,14 +237,15 @@
     var c = countyState && typeof countyState === 'object' ? countyState : null;
     var head = [];
     // NCCPI overall is the productivity number; its corn and soybean parts follow, each only when
-    // the survey rates it (confirmed against real SDA component rows, Nov 20, 2026). No CSR2:
-    // Soil Data Access does not carry it.
+    // the survey rates it (confirmed against real SDA component rows, Nov 20, 2026); then Iowa's
+    // CSR2, the map unit rating, where the survey carries it.
     if (s.nccpi != null) head.push('<strong>NCCPI ' + s.nccpi.toFixed(2) + '</strong>');
     var parts = [];
     if (s.corn != null) parts.push('corn ' + s.corn.toFixed(2));
     if (s.soy != null) parts.push('soybeans ' + s.soy.toFixed(2));
     if (parts.length) head.push(cap(parts.join(', ')));
-    if (s.awsCm != null) head.push(inches(s.awsCm) + ' available water in the top 5 ft');
+    if (s.csr2 != null) head.push('<strong>CSR2 ' + s.csr2.toFixed(0) + '</strong>');
+    if (s.awsCm != null) head.push(inches(s.awsCm) + ' available water in the top 150 cm (about 5 ft)');
     if (s.slope != null) head.push(Math.round(s.slope * 10) / 10 + '% average slope');
     var html = '<div class="fs-soil-top" id="fs-soil-top">' +
       (opts.directError ? '<p class="fs-err fs-soil-why">USDA Soil Data Access did not answer this browser directly (' + esc(reason(opts.directError)) +
@@ -268,9 +275,9 @@
       'Drainage class, slope, available water and the ratings are the survey’s representative values for that map unit, not a measurement of your exact acres.</p>' +
       '<p class="fs-soil-slope"><strong>NCCPI</strong> (National Commodity Crop Productivity Index, version 3.0) runs 0 to 1 on one national scale: how well the soil and climate carry dryland corn, soybeans, cotton or small grains. ' +
       'For each soil the overall figure is the highest of its crop parts; the corn and soybean parts are shown beside it, weighted by acres the same way. ' +
-      'CSR2 (Iowa’s Corn Suitability Rating 2) is not shown: USDA’s Soil Data Access service does not offer it.</p>' +
+      '<strong>CSR2</strong> (Iowa’s Corn Suitability Rating 2, 0 to 100) is the USDA SSURGO map unit CSR2, weighted by acres the same way, shown only where the survey carries it.</p>' +
       '<p class="fs-soil-slope"><strong>Available water</strong> is how much water the top 150 cm (about 5 ft) of soil can hold for a crop, in inches.</p>' +
-      '<p class="fs-soil-slope"><strong>The county line</strong> compares this field with every rated acre in the same soil survey area (usually one county). The middle is the rating with half the rated acres below it. Both come from the same Soil Data Access answer, never another source.</p>' +
+      '<p class="fs-soil-slope"><strong>The county line</strong> compares this field with every rated acre in the same soil survey area (usually one county). The middle is the rating where the running total of rated acres, lowest first, reaches half. The share after it counts rated acres whose rating is below this field’s figure as printed. Both come from the same Soil Data Access answer, never another source.</p>' +
       (notes || '') +
       '<p class="fs-caveat">Method: two questions go from your browser straight to USDA Soil Data Access: the soil map clipped to your outline, and the survey area’s map units with their acres. Field figures are weighted by acres and shown only when rated map units cover at least half the field. When USDA answers your browser directly, your outline goes only to USDA. When it does not, the read asks again through the AGSIST Field Scout server, which passes the outline to USDA and keeps USDA’s answer for up to a week.</p>' +
       '</details>';

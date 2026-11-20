@@ -170,7 +170,7 @@ window.__fsExtras = function (FSX) {
       var bits=[];
       if(s.csr2!=null) bits.push('CSR2 '+s.csr2.toFixed(1));
       if(soilShare(s)) bits.push(soilShare(s));
-      if(s.nccpi!=null) bits.push('soil productivity '+Math.round(s.nccpi*100)+'/100 (USDA NCCPI '+s.nccpi.toFixed(2)+')');
+      if(s.nccpi!=null) bits.push('USDA NCCPI '+s.nccpi.toFixed(2)+' (soil productivity, 0 to 1)');
       if(s.slope!=null) bits.push(s.slope+'% average slope'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':''));
       if(bits.length) soilHtml+='<p class="r-note">'+bits.join(' &middot; ')+'</p>';
     }
@@ -231,7 +231,7 @@ window.__fsExtras = function (FSX) {
     function fcell(k,v,n){ fCells+='<div class="r-st r-st-f"><div class="r-stk">'+esc(k)+'</div><div class="r-stv">'+v+'</div>'+(n?'<div class="r-stn">'+esc(n)+'</div>':'')+'</div>'; }
     fcell('Acres', d.acres.toFixed(1), null);
     if(s&&s.csr2!=null) fcell('CSR2', s.csr2.toFixed(1), 'Iowa corn suitability, of 100');
-    else if(s&&s.nccpi!=null) fcell('Soil productivity', Math.round(s.nccpi*100)+'<span class="r-stu">/100</span>', 'USDA NCCPI');
+    else if(s&&s.nccpi!=null) fcell('Soil productivity', s.nccpi.toFixed(2), 'USDA NCCPI, 0 to 1');
     if(s&&(s.farmPct!=null||s.primePct!=null)) fcell('Prime farmland', (s.farmPct!=null?s.farmPct:s.primePct)+'%', s.farmIfPct?('+'+s.farmIfPct+'% if drained'):'of the field');
     if(FSX.FIELD.thisYear&&FSX.FIELD.thisYear.code!=null) fcell((r&&r.nextYear)||'This year', FSX.FIELD.thisYear.code===1?'Corn':FSX.FIELD.thisYear.code===5?'Soybeans':'Other', FSX.FIELD.thisYear.src==='you'?'as told':'likely, from the pattern');
     if(d.indices&&d.indices.series&&d.indices.series.length){
