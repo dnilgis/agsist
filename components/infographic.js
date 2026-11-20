@@ -285,11 +285,22 @@
   function Draw(ctx, T) {
     var g = { ops: [], texts: [], boxes: [], box: -1 };
     function face(size, weight, serif) { return (serif ? Math.min(weight, 600) : weight) + ' ' + size + 'px ' + (serif ? SERIF : SANS); }
-    g.w = function (s, size, weight, serif, ls) { ctx.font = face(size, weight, serif); return ctx.measureText(String(s)).width + (ls || 0) * String(s).length; };
+    /* Nov 20: Fraunces draws the minus (and plus) as a hairline set low, so "−22,628" read as "22,628" on paper;
+       a serif number's leading sign is drawn in Inter, the rest in the serif */
+    function signed(s, serif) { return serif && s.length > 1 && /^[−+]/.test(s); }
+    function w1(s, size, weight, serif, ls) { ctx.font = face(size, weight, serif); return ctx.measureText(s).width + (ls || 0) * s.length; }
+    g.w = function (s, size, weight, serif, ls) {
+      s = String(s);
+      return signed(s, serif) ? w1(s.charAt(0), size, 800, false, ls) + w1(s.slice(1), size, weight, true, ls) : w1(s, size, weight, serif, ls);
+    };
     g.text = function (s, x, y, size, weight, fill, al, serif, ls) {
       s = String(s);
       var w = g.w(s, size, weight, serif, ls), x0 = al === 'right' ? x - w : al === 'center' ? x - w / 2 : x;
-      g.ops.push({ t: 'text', s: s, x: x0, y: y, size: size, weight: serif ? Math.min(weight, 600) : weight, fill: fill, serif: !!serif, ls: ls || 0, font: face(size, weight, serif) });
+      if (signed(s, serif)) {
+        var sw = w1(s.charAt(0), size, 800, false, ls);
+        g.ops.push({ t: 'text', s: s.charAt(0), x: x0, y: y, size: size, weight: 800, fill: fill, serif: false, ls: ls || 0, font: face(size, 800, false) });
+        g.ops.push({ t: 'text', s: s.slice(1), x: x0 + sw, y: y, size: size, weight: Math.min(weight, 600), fill: fill, serif: true, ls: ls || 0, font: face(size, weight, true) });
+      } else g.ops.push({ t: 'text', s: s, x: x0, y: y, size: size, weight: serif ? Math.min(weight, 600) : weight, fill: fill, serif: !!serif, ls: ls || 0, font: face(size, weight, serif) });
       g.texts.push({ s: s, x0: x0, x1: x0 + w, top: y - size * 0.72, bot: y + size * 0.2, size: size, box: g.box });
       return w;
     };
@@ -744,7 +755,10 @@
   }
   function f1(n) { return Math.round(n * 10) / 10; }
   function opsSvg(r, label) {
-    var e = SK().esc, out = ['<svg xmlns="http://www.w3.org/2000/svg" class="igp-svg" viewBox="0 0 ' + r.W + ' ' + r.H + '" role="img" aria-label="' + e(label) + '">',
+    /* font-variant-numeric normal: the words are placed by the canvas measure (proportional figures); the page's
+       tabular figures (infographic.css) widened every number in the SVG and ate the space after it (Nov 20:
+       "Sep 15and", "Nov 10.This") */
+    var e = SK().esc, out = ['<svg xmlns="http://www.w3.org/2000/svg" style="font-variant-numeric:normal;font-feature-settings:normal" class="igp-svg" viewBox="0 0 ' + r.W + ' ' + r.H + '" role="img" aria-label="' + e(label) + '">',
       '<rect width="' + r.W + '" height="' + r.H + '" fill="' + r.bg + '"/>'];
     function paint(q) { return (q.fill ? ' fill="' + q.fill + '"' : ' fill="none"') + (q.stroke ? ' stroke="' + q.stroke + '" stroke-width="' + q.lw + '"' : '') + (q.alpha != null && q.alpha < 1 ? ' opacity="' + q.alpha + '"' : ''); }
     r.ops.forEach(function (q) {
