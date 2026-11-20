@@ -1,1 +1,0 @@
-Rain Print through Christmas where people already are: the town's own line on town pages and /field-rain (rp-line.js?v=1), the Fast Facts buy link names the price (here.js?v=54), links carry a source tag
