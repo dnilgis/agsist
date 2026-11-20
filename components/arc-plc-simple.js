@@ -17,6 +17,9 @@
      The location is never sent anywhere.
    - "Run every number for your farm" opens when the link asks for the
      calculator, or when this device has numbers saved for this county.
+   - "Your check" (#your-check): crop, base acres and PLC yield in, the 2025
+     and 2026 dollars out (AgArcPay, mirrors pay_figure in the build). The
+     build writes the first crop at 100 base acres; nothing is stored or sent.
 
    window.AgArcFind (inRing, locate) is the math alone, for test/arc-plc.test.mjs.
    Mirrors in_ring and locate in scripts/build_arc_plc.py. */
