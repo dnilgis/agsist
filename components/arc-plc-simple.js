@@ -17,6 +17,9 @@
      The location is never sent anywhere.
    - "Run every number for your farm" opens when the link asks for the
      calculator, or when this device has numbers saved for this county.
+   - "Your check" (#your-check): crop, base acres and PLC yield in, the 2025
+     and 2026 dollars out (AgArcPay, mirrors pay_figure in the build). The
+     build writes the first crop at 100 base acres; nothing is stored or sent.
 
    window.AgArcFind (inRing, locate) is the math alone, for test/arc-plc.test.mjs.
    Mirrors in_ring and locate in scripts/build_arc_plc.py. */
@@ -154,6 +157,30 @@
       ly: seg.getAttribute('data-ly'), oy: seg.getAttribute('data-oy') };
   }
   w.AgArcCard = { level: level, unpack: unpackLv };
+
+  /* ---------------------------------------------------------- "Your check" (Nov 20, 2026; mirrors pay_figure, calc_note
+     and chk_money in scripts/build_arc_plc.py, same order of operations, so both round alike). x: one crop of the
+     section's data-pay; b: base acres; py: PLC yield. Nothing is stored or sent. */
+  function rnd2(v) {   /* the build's rnd(v, 2): round to 9 places, then half up to the cent */
+    var t = Math.round(v * 1e9) / 1e9;
+    return Math.floor(t * 100 + 0.5 + 1e-7) / 100;
+  }
+  function figure(x, b, py) {
+    function f(v) { return v == null ? null : rnd2(v); }
+    return { a25: x.r25a != null ? f(x.r25a * 0.85 * b) : null, p25: x.r25 != null ? f(x.r25 * py * 0.85 * b) : null,
+      a26: x.a26u != null ? f(x.a26u * b) : null, p26: x.f26 != null ? f(x.f26 * py * b) : null };
+  }
+  function money(v) {
+    var c = Math.round(rnd2(v) * 100), s = String(Math.floor(c / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return '$' + s + '.' + ('0' + (c % 100)).slice(-2);
+  }
+  function note(r) {
+    if (r.p25 == null) return '2025: no figure for this crop here. 2026: only the program the farm is enrolled in pays.';
+    var hi = Math.max(r.p25, r.a25 != null ? r.a25 : 0);
+    return '2025: the farm gets the higher one, ' + money(hi) + ', or ' + money(hi * (1 - 0.057)) + ' after the 5.7% sequestration cut. ' +
+      '2026: only the program the farm is enrolled in pays.';
+  }
+  w.AgArcPay = { figure: figure, money: money, note: note, rnd2: rnd2 };
 
   if (!d || !d.querySelector) return;
 
@@ -335,6 +362,39 @@
     });
   }
 
-  function boot() { levels(); finder(); runOpen(); hubs(); }
+  /* "Your check": crop, base acres and PLC yield in, the four dollar figures out (AgArcPay above). The build writes the
+     first crop at 100 base acres into the HTML, so the box keeps its size when this runs. */
+  function payCalc() {
+    var box = d.getElementById('your-check');
+    if (!box) return;
+    var X;
+    try { X = JSON.parse(box.getAttribute('data-pay') || '{}'); } catch (e) { return; }
+    function q(n) { return box.querySelector('[data-pc="' + n + '"]'); }
+    var sel = q('k'), bIn = q('b'), yIn = q('y');
+    function num(el) { var v = parseFloat(String(el.value).replace(/,/g, '')); return isFinite(v) && v >= 0 ? v : null; }
+    function show() {
+      var x = X[sel.value];
+      if (!x) return;
+      var b = num(bIn), py = num(yIn);
+      if (b == null || py == null) { q('note').textContent = 'Type base acres and a PLC yield, as numbers.'; return; }
+      var r = figure(x, b, py);
+      q('a25').textContent = r.a25 != null ? money(r.a25) : (x.w25 || x.w25a || '');
+      q('p25').textContent = r.p25 != null ? money(r.p25) : (x.w25 || '');
+      q('a26').textContent = r.a26 != null ? money(r.a26) : (x.w || '');
+      q('p26').textContent = r.p26 != null ? money(r.p26) : (x.w || '');
+      q('note').textContent = note(r);
+    }
+    sel.addEventListener('change', function () {
+      var x = X[sel.value];
+      if (!x) return;
+      yIn.value = x.py;
+      q('u').textContent = x.u === 'lb' ? 'lb' : 'bu';
+      show();
+    });
+    bIn.addEventListener('input', show);
+    yIn.addEventListener('input', show);
+  }
+
+  function boot() { levels(); finder(); runOpen(); hubs(); payCalc(); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : null);
