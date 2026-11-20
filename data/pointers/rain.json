@@ -5,10 +5,6 @@
    "to": "/rain/alabama",
    "since": "2026-11-17"
   },
-  "rain/alabama/walker-county.html": {
-   "to": "/rain/alabama",
-   "since": "2026-10-14"
-  },
   "rain/arkansas/arkansas-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-11-15"
@@ -160,10 +156,6 @@
   "rain/north-carolina/stanly-county.html": {
    "to": "/rain/north-carolina",
    "since": "2026-11-12"
-  },
-  "rain/north-dakota/divide-county.html": {
-   "to": "/rain/north-dakota",
-   "since": "2026-11-14"
   },
   "rain/north-dakota/grant-county.html": {
    "to": "/rain/north-dakota",
