@@ -17,7 +17,7 @@
   <meta property="og:image:alt" content="Rain on a map of farm country, from NOAA radar and rain gauges.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agsist.com/img/og/rain.jpg?v=364cb9f2">
-  <meta name="description" content="Rain at each of your fields, free and with no sign-up: last 24 hours, 7 days, month and since Jan 1, from NOAA radar (MRMS) and PRISM, the nearest gauge beside it, both update times, and a daily history with a CSV.">
+  <meta name="description" content="Rain at each of your fields, free and with no sign-up: last 24 hours, 7 days, month and since Jan 1, from NOAA radar (MRMS) and PRISM, the nearest gauge beside it, both update times, and a daily history kept in a link.">
   <meta name="author" content="AGSIST">
   <meta name="robots" content="index, follow">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
@@ -106,8 +106,25 @@
     #fr-map[hidden]{display:none}
     .fr-form[data-mode="add"] #fr-cancel{display:none}
     .fr-note{font-size:.84rem}
+    @media print{
+      #site-header,#site-footer,.skip,.fr-form,.fr-act,.fr-gform,.fr-row2,.fr-yr,.fr-msg,.fr-h2,.fr-h2+ul,.fr-note{display:none!important}
+      html,body{background:#fff!important;color:#000!important}
+      .fr-card{border-color:#999}.fr .fr-v b,.fr-n,.fr h1,.fr-mt td,.fr-dt td{color:#000!important}
+      .fr-days table{display:table!important}#fr-app{min-height:0!important}
+    }
+    /* below 400 px (375, 360, 320) a cell's days, the big line and the notes take a line or two more: hold them
+       (measured with a long gauge name, Nov 20); last in the sheet so it wins over the rules above */
+    @media(max-width:399px){
+      /* measured at 390 px (Nov 20): a card is 46.8rem plus 6.97rem a row with these holds */
+      #fr-app{min-height:calc(var(--frn,1) * 47rem + var(--frr,4) * 7rem + (var(--frn,1) - 1) * .8rem)}
+      .fr-none #fr-app{min-height:5.5rem}
+      .fr-r:not(.fr-hd) .fr-v{min-height:calc(1.35rem + 4 * .9rem)}
+      .fr-big{min-height:4.3rem}
+      .fr-where{min-height:3.45rem}
+      .fr-gauge{min-height:8.4rem}.fr-mine{min-height:6rem}.fr-fresh{min-height:4.8rem}.fr-cells{min-height:4.8rem}
+    }
   </style>
-  <script>/* hold the cards' room before first paint: the saved fields on this device, plus a field link not among them (components/field-rain.js) */(function(d){var n=0,a=[],h=location.hash.indexOf('f=')>=0?location.hash:location.search,m=/(?:^|[#?&])f=-?[\d.]+,-?[\d.]+/.test(h);try{a=JSON.parse(localStorage.getItem('agsist-fields')||'[]');if(!Array.isArray(a))a=[];}catch(e){a=[];}n=m?1:Math.min(a.length,20);if(m)d.documentElement.classList.add('fr-link');
+  <script>/* hold the cards' room before first paint: the saved fields on this device, plus a field link not among them (components/field-rain.js) */(function(d){var n=0,a=[],h=location.hash,m=/(?:^|[#?&])f=-?[\d.]+,-?[\d.]+/.test(h);try{a=JSON.parse(localStorage.getItem('agsist-fields')||'[]');if(!Array.isArray(a))a=[];}catch(e){a=[];}n=m?1:Math.min(a.length,20);if(m)d.documentElement.classList.add('fr-link');
 /* rows per card: 4, or 5 with a planting date on or before today */var t=new Date(),td=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2),r=0,k,p,pm=h.match(/[#?&]p=(\d{4}-\d\d-\d\d)/);
 if(m)r=pm&&pm[1]<=td?5:4;else for(k=0;k<n;k++){p=a[k]&&a[k].p;r+=typeof p==='string'&&p<=td?5:4;}
 d.documentElement.style.setProperty('--frn',String(Math.max(n,1)));d.documentElement.style.setProperty('--frr',String(Math.max(r,4)));if(!n)d.documentElement.classList.add('fr-none');})(document);</script>
@@ -145,8 +162,8 @@ d.documentElement.style.setProperty('--frn',String(Math.max(n,1)));d.documentEle
       <p class="fr-msg" id="fr-msg" role="status"></p>
       <section id="fr-hist" class="fr-off" aria-labelledby="fr-htitle">
         <h2 id="fr-htitle">Every day of rain, PRISM estimate</h2>
-        <p class="fr-note">This link is the field's record: the coordinates, name and planting date are in it, and it opens the same history on any phone or computer, with no account. Bookmark it or text it to yourself.</p>
-        <p class="fr-row2"><button type="button" class="fr-btn go" data-h="csv">Download CSV</button> <button type="button" class="fr-btn" data-h="copy">Copy this field's link</button></p>
+        <p class="fr-note">This link is the field's record. It holds the coordinates, name and planting date. It opens the same history on any phone or computer, with no account. Bookmark it or text it to yourself.</p>
+        <p class="fr-row2"><button type="button" class="fr-btn go" data-h="print">Print this history</button> <button type="button" class="fr-btn" data-h="copy">Copy this field's link</button></p>
         <div class="fr-hbody"><p class="fr-note">Reading PRISM for this field.</p></div>
       </section>
       <form class="fr-form" id="fr-form" data-mode="add" autocomplete="off">
@@ -154,7 +171,7 @@ d.documentElement.style.setProperty('--frn',String(Math.max(n,1)));d.documentEle
           <legend id="fr-legend">Add a field</legend>
           <label for="fr-name">Name (what you call it)</label>
           <input id="fr-name" maxlength="40" placeholder="North 80">
-          <label for="fr-where">Where: a ZIP, or a point pasted from a map</label>
+          <label for="fr-where">Where: a ZIP code, or a point pasted from a map</label>
           <input id="fr-where" inputmode="decimal" placeholder="42.0308, -93.6319 or 50010" required>
           <label for="fr-plant">Planting date (optional; adds rain since planting)</label>
           <input id="fr-plant" type="date">
@@ -167,15 +184,21 @@ d.documentElement.style.setProperty('--frn',String(Math.max(n,1)));d.documentEle
           <div id="fr-map" hidden></div>
         </fieldset>
       </form>
-      <p class="fr-note">Saved on this device only, up to 20 fields, free. Your points stay here: this page fetches a whole state's radar file and ZIP table from our site, never a point; only PRISM (through RCC-ACIS) is asked for the one point, to read its rain there.</p>
+      <p class="fr-note">Saved on this device only, up to 20 fields, free. What leaves this device:</p>
+      <ul class="fr-note">
+        <li>Our site sees which state radar files and ZIP code tables the page fetches. That is the field's state, plus its neighbors near a state line, never the point.</li>
+        <li>PRISM (through RCC-ACIS) is asked for the point itself, to read its rain there.</li>
+        <li>"Pick on a map" loads USGS map tiles around the spot you look at.</li>
+        <li>A field's link keeps its place after the # sign, which browsers never send to a server.</li>
+      </ul>
       <h2 class="fr-h2">What each number is</h2>
       <ul class="fr-note">
         <li><b>Radar estimate (NOAA MRMS):</b> NOAA's multi-sensor rain estimate, Pass 2, the run corrected with rain gauges, posted about an hour after each hour ends. We read it four times a day into one file per state, in squares about 2.8 by 2 miles. Last 24 hours, last 7 days and month to date come from it. "Rain through" is the newest radar hour; "data received" is when our job read it.</li>
         <li><b>PRISM estimate:</b> Oregon State's daily rain grid, 4 km squares, built from gauge reports and radar; it posts a day or two late. Since Jan 1, since planting and every last-year figure come from it, read by your browser through RCC-ACIS when this page opens. Each PRISM day ends at 12:00 UTC (6 am Central in winter).</li>
-        <li><b>P, preliminary:</b> PRISM reissues a month's days once late gauge reports arrive, so any total that holds a day from this month or last month may still change. The link always shows PRISM's latest.</li>
-        <li><b>Nearest gauge:</b> a county gauge within 30 miles (NOAA co-op or CoCoRaHS volunteer), its own reported days, and the radar at that gauge for the same days, so you can see how the radar does near you.</li>
-        <li><b>Your gauge:</b> type in what your own gauge held on a morning ("My gauge"), and the page sets it beside PRISM's estimate for the same day, with the difference in inches. A morning reading covers about the 24 hours before it, close to PRISM's day. Your readings stay on this device and go into the field's CSV, so they are your record.</li>
-        <li><b>Grid cells read:</b> the radar square and the PRISM square each figure comes from, and the nearest ZIP center, so a pin in the wrong place shows. Move it with "Move".</li>
+        <li><b>P, preliminary:</b> PRISM reissues a month's days once late gauge reports arrive. A total that holds a day from this month or last month may still change. The link always shows PRISM's latest.</li>
+        <li><b>Nearest gauge:</b> a county gauge within 30 miles, in any state (NOAA co-op or CoCoRaHS volunteer). It shows the gauge's own reported days and the radar at that gauge for the same days. That tells you how the radar does near you.</li>
+        <li><b>Your gauge:</b> what your own gauge held on a morning ("My gauge"). The page sets it beside PRISM's estimate for the same day, with the difference in inches. A morning reading covers about the 24 hours before it, close to PRISM's day. Your readings stay on this device. They show in the field's daily table, so printing it keeps them.</li>
+        <li><b>Grid cells read:</b> the radar square and the PRISM square each figure comes from, and the nearest ZIP code center. A pin in the wrong place shows there. Move it with "Move".</li>
       </ul>
       <p class="fr-note">One field on a map with storm replay: <a href="/rain#radar">the rain page's radar tab</a>. A county's whole year from its gauge: <a href="/rain">rain and drought</a>.</p>
     </article>

@@ -93,10 +93,10 @@
   }
 
   /* ---------- the link ---------- */
-  /* '#f=42.0300,-93.6200&n=North%2080&p=2026-05-01' (or the same as a query) -> field, or null */
-  function parseLink(hash, search) {
+  /* '#f=42.0300,-93.6200&n=North%2080&p=2026-05-01' -> field, or null */
+  /* only the #hash is read: a ?query would reach the server's logs with the field's place in it */
+  function parseLink(hash) {
     var raw = String(hash || '').replace(/^#/, '');
-    if (!/(^|&)f=/.test(raw)) raw = String(search || '').replace(/^\?/, '');
     var q = {};
     raw.split('&').forEach(function (kv) {
       var i = kv.indexOf('=');
@@ -204,10 +204,49 @@
     });
     return best;
   }
+  var FAR_ZIP_MI = 10;
   function townLine(t) {
     if (!t) return 'nearest town not found';
     var mi = t.mi < 1 ? 'under a mile' : (Math.round(t.mi * 10) / 10) + ' mi';
-    return 'nearest ZIP center: ' + t.town + ', ' + t.st + ' ' + t.zip + ' (' + mi + ' away), ' + t.county + ' County';
+    return 'nearest ZIP center: ' + t.town + ', ' + t.st + ' ' + t.zip + ' (' + mi + ' away), ' + t.county + ' County' +
+      (t.mi > FAR_ZIP_MI ? '. That is far: check the pin is on your field' : '');
+  }
+
+  /* ---------- the nearest gauge, across state lines ---------- */
+  /* Each state file carries its own state's gauges. A gauge within reach of the pin sits inside its state's outline, so
+     the pin is within that state's index box (the box plus a pad) plus the reach: these are every file that can hold it.
+     A field near a line reads two or three files (the radar figures still come from one). */
+  function gaugeStates(idx, lat, lon, mi) {
+    var st = (idx && idx.states) || {}, dLat = mi / 69.05, dLon = mi / (69.17 * Math.max(0.2, Math.cos(lat * Math.PI / 180)));
+    return Object.keys(st).filter(function (k) { var b = st[k]; return lon > b[0] - dLon && lon < b[2] + dLon && lat > b[1] - dLat && lat < b[3] + dLat; }).sort();
+  }
+  function nearestAcross(headers, lat, lon, maxMi) {
+    var best = null, seen = {};
+    headers.forEach(function (h) {
+      ((h && h.gauges) || []).forEach(function (g) {
+        if (!g || !g.ll || seen[g.sid]) return;
+        seen[g.sid] = 1;
+        var m = miles(lat, lon, g.ll[1], g.ll[0]);
+        if (m <= maxMi && (!best || m < best.mi)) best = { g: g, mi: m };
+      });
+    });
+    return best;
+  }
+  /* gauge against radar over its last n reported days; null unless those n dates run day after day with both readings */
+  function gaugeWeek(g, n) {
+    if (!g || !g.dates || g.dates.length < n) return null;
+    var k = g.dates.length, gs = 0, rs = 0;
+    for (var i = k - n; i < k; i++) {
+      if (g.gauge[i] == null || g.radar[i] == null) return null;
+      if (i > k - n && addDays(g.dates[i - 1], 1) !== g.dates[i]) return null;
+      gs += g.gauge[i]; rs += g.radar[i];
+    }
+    return { from: g.dates[k - n], to: g.dates[k - 1], days: n, gauge: gs, radar: rs };
+  }
+  /* the radar is old once STALE_H hours have passed since its newest hour (four runs a day: a run or two missed) */
+  function oldLine(dataEnd, nowMs) {
+    var age = (nowMs - Date.parse(dataEnd)) / 3600e3;
+    return age >= STALE_H ? 'Old: ' + Math.round(age) + ' hours since the newest radar hour; rain since then is not counted.' : '';
   }
 
   /* ---------- PRISM sums ---------- */
@@ -252,35 +291,47 @@
   function rows(f, ctx) {
     var out = [], today = ctx.today, map = ctx.prism, L = map ? lastDay(map, today) : null;
     var E = ctx.radar && ctx.radar.header ? centralDate(ctx.radar.header.data_end) : null;
-    function lastYear(a, b) { return map ? sum(map, yearBack(a), yearBack(b), today) : { v: null, failed: true, src: 'prism' }; }
-    function radarRow(key, label, id, a) {
+    /* last year's window: it ends on this year's end date a year back and holds the same number of days, except a
+       window that starts on a fixed date (the 1st, Jan 1, planting) when Feb 29 is in one year only: that is said */
+    function lastYear(a, b, fixedStart, days) {
+      if (!map) return { v: null, failed: true, src: 'prism' };
+      var lb = yearBack(b), la = fixedStart ? yearBack(a) : addDays(lb, -(days - 1));
+      var s = sum(map, la, lb, today);
+      if (s && fixedStart && s.days !== days) s.note = s.days < days ? 'one day fewer: no Feb 29' : 'one day more: Feb 29';
+      return s;
+    }
+    function nDays(a, b) { return Math.round((day(b) - day(a)) / 864e5) + 1; }
+    function radarRow(key, label, id, a, fixedStart) {
       var now = ctx.radar ? radarWin(ctx.radar, id, f.lat, f.lon, ctx.lookup) : null;
-      var ly = E ? lastYear(a(E), E) : null;
+      var ly = E ? lastYear(a(E), E, fixedStart, nDays(a(E), E)) : null;
       out.push({ key: key, label: label, now: now || { v: null, src: 'mrms', missing: true }, last: ly });
     }
-    radarRow('24h', 'Last 24 hours', '24h', function (e) { return e; });
-    radarRow('7d', 'Last 7 days', '7d', function (e) { return addDays(e, -6); });
-    radarRow('mtd', 'Month to date', 'month', function (e) { return e.slice(0, 8) + '01'; });
+    radarRow('24h', 'Last 24 hours', '24h', function (e) { return e; }, false);
+    radarRow('7d', 'Last 7 days', '7d', function (e) { return addDays(e, -6); }, false);
+    radarRow('mtd', 'Month to date', 'month', function (e) { return e.slice(0, 8) + '01'; }, true);
     var y0 = today.slice(0, 4) + '-01-01';
-    out.push({ key: 'ytd', label: 'Since Jan 1', now: L && L >= y0 ? sum(map, y0, L, today) : (map ? { v: null, src: 'prism', none: true } : { v: null, failed: true, src: 'prism' }),
-               last: L && L >= y0 ? lastYear(y0, L) : null });
+    function prismRow(key, label, a) {
+      out.push({ key: key, label: label, now: L && L >= a ? sum(map, a, L, today) : (map ? { v: null, src: 'prism', none: true } : { v: null, failed: true, src: 'prism' }),
+                 last: L && L >= a ? lastYear(a, L, true, nDays(a, L)) : null });
+    }
+    prismRow('ytd', 'Since Jan 1', y0);
     if (okDate(f.p) && f.p <= today) {
-      out.push({ key: 'season', label: 'Since planting (' + dShort(f.p) + ')', now: L && L >= f.p ? sum(map, f.p, L, today) : (map ? { v: null, src: 'prism', none: true } : { v: null, failed: true, src: 'prism' }),
-                 last: L && L >= f.p ? lastYear(f.p, L) : null });
+      // a planting date from an earlier year is not this season: it is said, never summed over many months
+      if (f.p < y0) out.push({ key: 'season', label: 'Since planting (' + dLong(f.p) + ')', now: { v: null, src: 'prism', stale: f.p.slice(0, 4) }, last: null });
+      else prismRow('season', 'Since planting (' + dLong(f.p) + ')', f.p);
     }
     return out;
   }
-  /* a radar window said with the hour it runs to, so it is plain whether last night's storm is in it:
-     "24 hours to Nov 19, 12 PM CST", "Nov 13 to Nov 19, 12 PM CST" (first whole day, Central dates as the radar's month) */
+  /* a radar window said with the hours it runs from and to, so it is plain whether last night's storm is in it:
+     "24 hours to Nov 19, 12 PM CST", "Nov 12, 12 PM to Nov 19, 12 PM CST"; the month from midnight Central,
+     "Nov 1 to Nov 19, 12 PM CST" */
   function radarSpan(c) {
     var to = when(c.end).replace(/^\w+, /, '');
     if (c.hours === 24 || (Date.parse(c.end) - Date.parse(c.start)) === 864e5) return '24 hours to ' + to;
-    var a = centralDate(c.start), b = centralDate(c.end);
-    if (!a || !b) return '';
-    // the month window starts at midnight Central (05:00 or 06:00 UTC), already its first day; a window that starts
-    // later in a day (the 7 days from noon) is said from the next day, its first whole day
-    if (!/T0[56]:00:00Z$/.test(c.start) && addDays(a, 1) <= b) a = addDays(a, 1);
-    return dShort(a) + ' to ' + to;
+    var a = centralDate(c.start);
+    if (!a) return '';
+    if (/T0[56]:00:00Z$/.test(c.start)) return dShort(a) + ' to ' + to;
+    return when(c.start).replace(/^\w+, /, '').replace(/ \S+$/, '') + ' to ' + to;
   }
   /* one cell, said: {v: the figure, t: the source label, dt: its days, pre: preliminary} */
   function cellText(c) {
@@ -288,7 +339,8 @@
     if (c.failed) return { v: 'no answer', t: SRC.prism, dt: 'RCC-ACIS did not answer' };
     if (c.missing) return { v: 'no file', t: SRC.mrms, dt: 'the radar file did not load' };
     if (c.none) return { v: 'not yet', t: SRC.prism, dt: 'no day posted yet' };
-    var dt = c.src === 'mrms' ? radarSpan(c) : span(c.a, c.b);
+    if (c.stale) return { v: 'update it', t: 'planting date from ' + c.stale, dt: 'set this season\'s date with Move' };
+    var dt = c.src === 'mrms' ? radarSpan(c) : span(c.a, c.b) + (c.note ? ' (' + c.note + ')' : '');
     if (c.v == null) {
       if (c.src === 'mrms') return { v: 'radar gap', t: SRC.mrms, dt: dt };
       return { v: c.miss + (c.miss === 1 ? ' day' : ' days') + ' missing', t: SRC.prism, dt: dt };
@@ -302,7 +354,7 @@
       '<small class="fr-src">' + esc(c.t) + '</small><small>' + esc(c.dt) + '</small></div>';
   }
 
-  /* ---------- history: the daily rows, the table and the CSV come from this one list ---------- */
+  /* ---------- history: the daily rows of the table ---------- */
   /* ---------- the reader's own gauge (this device only): {"<lat>,<lon>": {"YYYY-MM-DD": inches}} ---------- */
   var GKEY = 'agsist-field-gauge';
   function gaugeKey(f) { return (+f.lat).toFixed(4) + ',' + (+f.lon).toFixed(4); }
@@ -352,15 +404,6 @@
   function dailyRows(map, today, gauge) {
     var seen = {}, ds = Object.keys(map || {}).concat(Object.keys(gauge || {})).filter(function (d) { if (seen[d] || d > today) return false; seen[d] = 1; return true; }).sort();
     return ds.map(function (d) { var v = map && map[d] != null ? map[d] : null; return { date: d, v: v, pre: v != null && prelimDay(d, today), g: gauge && gauge[d] != null ? gauge[d] : null }; });
-  }
-  function csv(f, map, today, readAt, gauge) {
-    var lines = ['# Rain at ' + cleanName(f.n) + ' (' + (+f.lat).toFixed(4) + ', ' + (+f.lon).toFixed(4) + '), PRISM daily precipitation estimate, 4 km cell centered ' +
-      prismCell(f.lat, f.lon).lat + ', ' + prismCell(f.lat, f.lon).lon + '. Read through RCC-ACIS ' + (readAt || '') + '. Blank = PRISM has not posted that day. my_gauge_in = your own reading for that morning, kept on your device.',
-      'date,rain_in,source,status,my_gauge_in'];
-    dailyRows(map, today, gauge).forEach(function (r) {
-      lines.push(r.date + ',' + (r.v == null ? '' : inch(r.v)) + ',PRISM estimate,' + (r.v == null ? 'missing' : r.pre ? 'preliminary' : 'settled') + ',' + (r.g == null ? '' : inch(r.g)));
-    });
-    return lines.join('\n') + '\n';
   }
   /* month totals of one year; the month PRISM is still posting runs to its newest day and says so (to: that day) */
   function monthTotals(map, year, today) {
@@ -425,6 +468,12 @@
         return radarFile(st);
       });
     }
+    /* every state file that can hold a gauge within reach of the pin (see gaugeStates); a file that fails is left out */
+    function gaugeHeaders(f) {
+      return index().then(function (idx) {
+        return Promise.all(gaugeStates(idx, f.lat, f.lon, GAUGE_MI).map(function (st) { return radarFile(st).then(function (x) { return x.header; }, function () { return null; }); }));
+      }).catch(function () { return []; });
+    }
     function prismFor(f) {
       var k = f.lat.toFixed(4) + ',' + f.lon.toFixed(4);
       if (!S.prism[k]) {
@@ -456,7 +505,7 @@
         '<p class="fr-gauge">&nbsp;</p><p class="fr-mine">&nbsp;</p>' +
         '<p class="fr-fresh fr-fm">&nbsp;</p><p class="fr-fresh fr-fp">&nbsp;</p>' +
         '<p class="fr-cells">&nbsp;</p>' +
-        '<p class="fr-act">' + (linked ? '' : '<a class="fr-hl" href="' + esc(linkFor(f)) + '">History and CSV</a>') +
+        '<p class="fr-act">' + (linked ? '' : '<a class="fr-hl" href="' + esc(linkFor(f)) + '">Daily history</a>') +
         (linked ? '<button type="button" data-act="save">Save this field</button>' : '') + '<button type="button" data-act="gauge" aria-expanded="false">My gauge</button>' +
         (linked ? '' : '<button type="button" data-act="move">Move</button><button type="button" data-act="rename">Rename</button><button type="button" data-act="remove">Remove</button>') + '</p>' +
         '<form class="fr-gform" hidden><label>Morning you read it <input type="date" name="d" value="' + today() + '" max="' + today() + '" required></label>' +
@@ -466,9 +515,9 @@
     }
     function fill(el, f) {
       var t = today();
-      Promise.all([radarFor(f).then(function (x) { return x; }, function (e) { return { err: e }; }), prismFor(f), townFor(f)]).then(function (r) {
+      Promise.all([radarFor(f).then(function (x) { return x; }, function (e) { return { err: e }; }), prismFor(f), townFor(f), gaugeHeaders(f)]).then(function (r) {
         if (!el.isConnected) return;
-        var rad = r[0] && !r[0].err ? r[0] : null, pr = r[1], town = r[2];
+        var rad = r[0] && !r[0].err ? r[0] : null, pr = r[1], town = r[2], gh = r[3].filter(Boolean);
         var rs = rows(f, { radar: rad, prism: pr.failed ? null : pr.map, today: t, lookup: R.lookup });
         el.querySelector('.fr-town').textContent = townLine(town);
         var big = el.querySelector('.fr-big'), w7 = rs[1].now;
@@ -481,22 +530,22 @@
           tr.innerHTML = '<div class="fr-pl" role="rowheader">' + esc(row.label) + '</div>' + cellHtml(cellText(row.now)) + cellHtml(row.last ? cellText(row.last) : null);
         });
         /* the nearest gauge beside the radar */
-        var gEl = el.querySelector('.fr-gauge'), near = rad ? R.nearestGauge(rad.header, f.lat, f.lon, GAUGE_MI) : null;
+        var gEl = el.querySelector('.fr-gauge'), near = nearestAcross(gh, f.lat, f.lon, GAUGE_MI);
         if (near) {
-          var g = near.g, wk = R.gaugeWeek(g, 7), mi = near.mi < 1 ? 'under a mile' : Math.round(near.mi) + ' mi';
+          var g = near.g, wk = gaugeWeek(g, 7), mi = near.mi < 1 ? 'under a mile' : Math.round(near.mi) + ' mi';
           var k2 = g.dates.length - 1, lastG = g.gauge[k2];
           var s = 'Nearest gauge: ' + esc(g.name) + ' (' + (NET[g.net] || 'gauge') + ', ' + esc(g.county) + ', ' + mi + ' away). ';
           if (wk) s += 'Its 7 reported days ' + dd(wk.from, wk.to) + ' (each to the morning reading): <b>' + inch(wk.gauge / 100) + ' in</b>; radar at that gauge, same days: ' + inch(wk.radar / 100) + ' in.';
           else if (lastG != null) s += 'Newest report: <b>' + inch(lastG / 100) + ' in</b> for the day ending the morning of ' + dShort(g.dates[k2]) + '.';
           else s += 'No clean recent report to show.';
           gEl.innerHTML = s;
-        } else gEl.textContent = rad ? 'No county gauge we track within ' + GAUGE_MI + ' miles.' : 'Gauge readings come with the radar file.';
+        } else gEl.textContent = gh.length ? 'No county gauge we track within ' + GAUGE_MI + ' miles.' : 'Gauge readings come with the radar file, which did not load.';
         /* both times for each source */
         var fm = el.querySelector('.fr-fm'), fp = el.querySelector('.fr-fp');
         if (rad) {
-          var h = rad.header, age = (Date.now() - Date.parse(h.data_end)) / 3600e3;
+          var h = rad.header, old = oldLine(h.data_end, Date.now());
           fm.innerHTML = '<b>Radar (NOAA MRMS, Pass 2):</b> rain through ' + esc(when(h.data_end)) + '; data received ' + (h.made ? esc(when(h.made)) : 'time not stamped in this file') + '.' +
-            (age >= STALE_H ? ' <strong class="fr-old">Old: ' + Math.round(age) + ' hours since the newest radar hour; rain since then is not counted.</strong>' : '');
+            (old ? ' <strong class="fr-old">' + esc(old) + '</strong>' : '');
         } else fm.innerHTML = '<b>Radar (NOAA MRMS):</b> ' + (r[0].err && r[0].err.outside ? 'no coverage here.' : 'our radar file did not load at ' + esc(when(new Date().toISOString())) + '.');
         if (pr.failed) fp.innerHTML = '<b>PRISM:</b> not answering (RCC-ACIS, tried ' + esc(when(pr.at)) + '); the radar rows still show.';
         else {
@@ -532,7 +581,7 @@
       else list.forEach(function (f, i) { var el = $('fr-c' + i); if (el) fill(el, f); });
     }
 
-    /* the history panel (link mode): chart, month totals, every day, the CSV */
+    /* the history panel (link mode): chart, month totals, every day (printable; no data file, Nov 13, 2026) */
     function history(f, pr) {
       var box = $('fr-hist'), t = today();
       if (!S.year) S.year = +t.slice(0, 4);
@@ -549,7 +598,6 @@
         rowsD.map(function (r) { return '<tr><td>' + r.date + '</td><td>' + (r.v == null ? '' : inch(r.v)) + '</td><td>' + (r.v == null ? 'missing' : r.pre ? 'preliminary' : 'settled') + '</td><td>' + (r.g == null ? '' : inch(r.g)) + '</td></tr>'; }).join('') +
         '</tbody></table></details>';
       box.querySelector('.fr-hbody').innerHTML = h;
-      S.csv = { f: f, text: csv(f, map, t, when(pr.at), S.gauge[gaugeKey(f)]) };
     }
 
     function save(list) { S.list = list; lsSet(list); draw(); }
@@ -622,7 +670,7 @@
     }
 
     S.list = readList(lsGet());
-    S.link = parseLink(w.location.hash, w.location.search);
+    S.link = parseLink(w.location.hash);
     draw();
 
     $('fr-form').addEventListener('submit', submit);
@@ -671,7 +719,7 @@
         gSave(putReading(S.gauge, gaugeKey(f), gf.querySelector('[name="d"]').value, String(gf.querySelector('[name="v"]').value).trim(), today()));
         refreshMine(c, f);
         gf.querySelector('[name="v"]').value = '';
-        msg('Reading kept on this device. It is in this field\'s CSV too.');
+        msg('Reading kept on this device. It is in this field\'s daily table too.');
       } catch (er) { msg(er.message, true); }
     });
     var hist = $('fr-hist');
@@ -680,10 +728,10 @@
       if (y && S.open) { S.year = +y.getAttribute('data-yr'); prismFor(S.open.f).then(function (pr) { history(S.open.f, pr); }); return; }
       var a = e.target.closest ? e.target.closest('[data-h]') : null;
       if (!a || !S.open) return;
-      if (a.getAttribute('data-h') === 'csv' && S.csv) {
-        var blob = new Blob([S.csv.text], { type: 'text/csv' }), u = URL.createObjectURL(blob), x = d.createElement('a');
-        x.href = u; x.download = 'rain-' + (cleanName(S.csv.f.n).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'field') + '.csv';
-        d.body.appendChild(x); x.click(); setTimeout(function () { URL.revokeObjectURL(u); x.remove(); }, 500);
+      if (a.getAttribute('data-h') === 'print') {
+        // the every-day table prints open; reading and printing a page is allowed, a data file is not (Nov 13, 2026)
+        var fold = hist.querySelector('.fr-days'); if (fold) fold.open = true;
+        w.print();
       }
       if (a.getAttribute('data-h') === 'copy') {
         var link = linkFor(S.open.f, w.location.origin);
@@ -692,11 +740,11 @@
         else w.prompt('Copy this link', link);
       }
     });
-    w.addEventListener('hashchange', function () { S.link = parseLink(w.location.hash, w.location.search); S.year = null; draw(); });
+    w.addEventListener('hashchange', function () { S.link = parseLink(w.location.hash); S.year = null; draw(); });
   }
 
   return { MAX: MAX, KEY: KEY, SRC: SRC, ZSH: ZSH, parseLink: parseLink, linkFor: linkFor, readList: readList, add: add, edit: edit, remove: remove,
            parsePlace: parsePlace, mrmsCell: mrmsCell, prismCell: prismCell, statesAt: statesAt, shardsFor: shardsFor, nearestTown: nearestTown,
-           townLine: townLine, dayMap: dayMap, lastDay: lastDay, prelimDay: prelimDay, sum: sum, rows: rows, cellText: cellText, cellHtml: cellHtml, radarSpan: radarSpan,
-           dailyRows: dailyRows, csv: csv, GKEY: GKEY, gaugeKey: gaugeKey, readGauge: readGauge, putReading: putReading, moveReadings: moveReadings, mine: mine, mineLine: mineLine, monthTotals: monthTotals, chart: chart, yearBack: yearBack, centralDate: centralDate, when: when, boot: boot };
+           townLine: townLine, dayMap: dayMap, lastDay: lastDay, prelimDay: prelimDay, sum: sum, rows: rows, cellText: cellText, gaugeStates: gaugeStates, nearestAcross: nearestAcross, gaugeWeek: gaugeWeek, oldLine: oldLine, cellHtml: cellHtml, radarSpan: radarSpan,
+           dailyRows: dailyRows, GKEY: GKEY, gaugeKey: gaugeKey, readGauge: readGauge, putReading: putReading, moveReadings: moveReadings, mine: mine, mineLine: mineLine, monthTotals: monthTotals, chart: chart, yearBack: yearBack, centralDate: centralDate, when: when, boot: boot };
 });
