@@ -133,7 +133,7 @@
         cands.push({ place: p.place, name: String(p.operator || '').trim(), town: town, state: p.state || '',
           mi: Math.round(d * 10) / 10, cash: n.cash, basisCents: typeof n.basisCents === 'number' ? n.basisCents : null,
           period: n.period, key: periodKey(n.period, nowMs, crop), wk: BR.windowKey({ period: n.period, crop: crop }, nowMs),
-          dw: BR.deliveryWords({ period: n.period, crop: crop }, nowMs), pricedAt: p.pricedAt, delivery: n.delivery || '' });
+          dw: BR.deliveryWords({ period: n.period, crop: crop }, nowMs), pricedAt: p.pricedAt, delivery: n.delivery || '', commodity: n.commodity || '' });
       });
       if (!cands.length) { out[crop] = { best: null, nearest: null, n: 0 }; return; }
       var mk = cands.reduce(function (m, x) { return !m || x.wk === 'now' || (m !== 'now' && x.wk < m) ? x.wk : m; }, '');
@@ -153,7 +153,9 @@
     var t = Date.parse(row.pricedAt || '');
     if (!Array.isArray(hist) || isNaN(t)) return null;
     var on = ctDay(t), prev = null;
-    for (var i = 0; i < hist.length; i++) if (hist[i] && hist[i][0] < on && typeof hist[i][1] === 'number') prev = hist[i];
+    /* an entry of another commodity (bids-prev's 4th field, Nov 20, 2026) is never the day before */
+    var tag = String(row.commodity || '').toLowerCase().split(/\s+/).filter(Boolean).join(' ');
+    for (var i = 0; i < hist.length; i++) if (hist[i] && hist[i][0] < on && typeof hist[i][1] === 'number' && (hist[i].length < 4 || row.commodity == null || hist[i][3] === tag)) prev = hist[i];
     if (!prev) return null;
     return { cents: Math.round((row.cash - prev[1]) * 1e6) / 1e4, since: dayName(prev[0]) };
   }

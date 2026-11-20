@@ -11,7 +11,7 @@
 
    The page says which crop it is before loading this file:
      <script>window.AGSIST_FUTURES='corn'</script>
-     <script src="/components/futures.js?v=38"></script>
+     <script src="/components/futures.js?v=39"></script>
    Prices print through components/util.js (AG.px), which loads in the head. */
 (function(){
 'use strict';
