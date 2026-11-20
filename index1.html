@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=4">
 <!-- index1:own css -->
-<link rel="stylesheet" href="/css/home-front.css?v=1">
+<link rel="stylesheet" href="/css/home-front.css?v=1"><link rel="preconnect" href="https://dnilgis.github.io" crossorigin>
 <!-- no first paint until the first screen (the answer and its two numbers) is parsed whole -->
 <link rel="expect" href="#fp-end" blocking="render">
 <!-- /index1:own css -->
@@ -194,29 +194,31 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <p class="fp-live" id="fp-live"><span class="fp-dot" aria-hidden="true"></span><span id="fp-upd">Reading this morning&rsquo;s files</span></p>
       <button type="button" class="fp-set" id="fp-set" aria-expanded="false" aria-controls="fp-zip">Set your place</button>
     </div>
-    <h1 class="fp-h" id="fp-h"><span class="fp-where" id="fp-where">Farm country this morning</span> <span class="fp-day" id="fp-day"></span></h1>
+    <h1 class="fp-h" id="fp-h"><span class="fp-where" id="fp-where">Farm country</span> <span class="fp-day" id="fp-day"></span></h1>
     <form class="fp-zip" id="fp-zip" hidden novalidate>
       <label class="fp-zip-l" for="fp-zip-in">Your ZIP code</label>
       <input type="text" id="fp-zip-in" name="zip" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go" placeholder="50010">
       <button type="submit" class="fp-zip-go">Show my place</button>
       <span class="fp-zip-msg" id="fp-zip-msg" role="status" aria-live="polite"></span>
     </form>
-    <script>try{(function(){var p=window.AgSavedPlace&&AgSavedPlace.read(),h=document.getElementById('fp-hero');var d={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',month:'short',day:'numeric'}).formatToParts(new Date()).forEach(function(x){d[x.type]=x.value;});document.getElementById('fp-day').textContent='· '+d.weekday+' '+d.month+' '+d.day;if(p&&p.zip){h.classList.add('fp-saved');var w=p.town?p.town+(p.state?', '+p.state:''):p.zip;document.getElementById('fp-where').textContent='Near '+w;document.getElementById('fp-set').textContent='Change place';}})();}catch(e){}</script>
+    <script>try{(function(){var p=window.AgSavedPlace&&AgSavedPlace.read(),h=document.getElementById('fp-hero');var d={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',month:'short',day:'numeric'}).formatToParts(new Date()).forEach(function(x){d[x.type]=x.value;});document.getElementById('fp-day').textContent='· '+d.weekday+' '+d.month+' '+d.day;if(p&&p.zip&&p.town&&p.lat!=null){h.classList.add('fp-saved');document.getElementById('fp-where').textContent='Near '+p.town+(p.state?', '+p.state:'');document.getElementById('fp-set').textContent='Change place';}var e=document.getElementById('fp-h'),f=parseFloat(getComputedStyle(e).fontSize);while(e.scrollWidth>e.clientWidth+1&&f>18){f-=1;e.style.fontSize=f+'px';}})();}catch(e){}</script>
     <div class="fp-big">
-      <a class="fp-tile" id="fp-t1" href="/cash-bids" data-track="front">
+      <a class="fp-tile" id="fp-t1" href="/basis" data-track="front">
         <span class="fp-k" id="fp-t1-k">Iowa corn basis</span>
-        <span class="fp-v" id="fp-t1-v"><span class="fp-sk" aria-hidden="true"></span></span>
-        <span class="fp-m" id="fp-t1-m"></span>
+        <span class="fp-vrow"><span class="fp-v" id="fp-t1-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-m" id="fp-t1-m"></span></span>
         <span class="fp-w" id="fp-t1-w"></span>
+        <span class="fp-w" id="fp-t1-w2"></span>
+        <span class="fp-age" id="fp-t1-age"></span>
       </a>
       <a class="fp-tile" id="fp-t2" href="/rain" data-track="front">
-        <span class="fp-k" id="fp-t2-k">Rain, last 24 hours</span>
-        <span class="fp-v" id="fp-t2-v"><span class="fp-sk" aria-hidden="true"></span></span>
-        <span class="fp-m" id="fp-t2-m"></span>
+        <span class="fp-k" id="fp-t2-k">Corn Belt rain, 24 hours</span>
+        <span class="fp-vrow"><span class="fp-v" id="fp-t2-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-m" id="fp-t2-m"></span></span>
         <span class="fp-w" id="fp-t2-w"></span>
+        <span class="fp-w" id="fp-t2-w2"></span>
+        <span class="fp-age" id="fp-t2-age"></span>
       </a>
     </div>
-    <script>try{(function(){if(!document.getElementById('fp-hero').classList.contains('fp-saved'))return;document.getElementById('fp-t1-k').textContent='Best corn bid';document.getElementById('fp-t2-k').textContent='Best soybean bid';document.getElementById('fp-t2').setAttribute('href','/cash-bids');})();}catch(e){}</script>
+    <script>try{(function(){if(!document.getElementById('fp-hero').classList.contains('fp-saved'))return;document.getElementById('fp-t1-k').textContent='Best corn bid, 50 mi';document.getElementById('fp-t2-k').textContent='Best soybean bid, 50 mi';document.getElementById('fp-t1').setAttribute('href','/cash-bids');document.getElementById('fp-t2').setAttribute('href','/cash-bids');})();}catch(e){}</script>
     <p class="fp-line" id="fp-line"></p>
   </section>
   <span id="fp-end" hidden></span>
@@ -224,19 +226,17 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 
   <section class="fp-world" id="fp-world" aria-labelledby="fp-wh">
     <h2 class="fp-wh" id="fp-wh">Around farm country</h2>
-    <div class="fp-cards" id="fp-cards">
-    <div class="fp-grid">
+    <div class="fp-grid" id="fp-cards">
       <a class="fp-card" id="fp-c-bids" href="/cash-bids" data-track="front"><span class="fp-ck" id="fp-c-bids-k">Bids</span><span class="fp-cv" id="fp-c-bids-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-bids-s"></span><span class="fp-cg" id="fp-c-bids-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-bids-src"></span><span class="fp-ca" id="fp-c-bids-a">Cash bids &rarr;</span></span></a>
       <a class="fp-card" id="fp-c-rain" href="/rain" data-track="front"><span class="fp-ck" id="fp-c-rain-k">Rain</span><span class="fp-cv" id="fp-c-rain-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-rain-s"></span><span class="fp-cg" id="fp-c-rain-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-rain-src"></span><span class="fp-ca" id="fp-c-rain-a">Rain map &rarr;</span></span></a>
-      <a class="fp-card" id="fp-c-mkt" href="/corn-futures-prices" data-track="front"><span class="fp-ck" id="fp-c-mkt-k">Markets</span><span class="fp-cv" id="fp-c-mkt-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-mkt-s"></span><span class="fp-cg" id="fp-c-mkt-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-mkt-src"></span><span class="fp-ca" id="fp-c-mkt-a">Futures &rarr;</span></span></a>
+      <a class="fp-card fp-card--mkt" id="fp-c-mkt" href="/corn-futures-prices" data-track="front"><span class="fp-ck" id="fp-c-mkt-k">Markets</span><span class="fp-cv" id="fp-c-mkt-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-mkt-s"></span><span class="fp-cg" id="fp-c-mkt-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-mkt-src"></span><span class="fp-ca" id="fp-c-mkt-a">Futures &rarr;</span></span></a>
       <a class="fp-card fp-card--pic" id="fp-c-fc" href="/infographic/" data-track="front" hidden><span class="fp-ck" id="fp-c-fc-k">Friday Chart</span><img class="fp-pic" id="fp-c-fc-img" width="1200" height="630" alt="" decoding="async" loading="lazy"><span class="fp-cs" id="fp-c-fc-s"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-fc-src"></span><span class="fp-ca">This week&rsquo;s chart &rarr;</span></span></a>
     </div>
     <div class="fp-grid fp-grid--2">
-      <a class="fp-card" id="fp-c-land" href="/land-sales/" data-track="front"><span class="fp-ck" id="fp-c-land-k">Land sales</span><span class="fp-cv" id="fp-c-land-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-land-s"></span><span class="fp-cg" id="fp-c-land-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-land-src"></span><span class="fp-ca" id="fp-c-land-a">Farm sales &rarr;</span></span></a>
-      <a class="fp-card" id="fp-c-fert" href="/fertilizer" data-track="front"><span class="fp-ck" id="fp-c-fert-k">Fertilizer</span><span class="fp-cv" id="fp-c-fert-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-fert-s"></span><span class="fp-cg" id="fp-c-fert-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-fert-src"></span><span class="fp-ca" id="fp-c-fert-a">Fertilizer prices &rarr;</span></span></a>
-      <a class="fp-card" id="fp-c-arc" href="/arc-plc" data-track="front"><span class="fp-ck" id="fp-c-arc-k">ARC/PLC</span><span class="fp-cv" id="fp-c-arc-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-arc-s"></span><span class="fp-cg" id="fp-c-arc-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-arc-src"></span><span class="fp-ca" id="fp-c-arc-a">County check &rarr;</span></span></a>
-      <a class="fp-card" id="fp-c-cot" href="/cot" data-track="front"><span class="fp-ck" id="fp-c-cot-k">Funds</span><span class="fp-cv" id="fp-c-cot-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-cot-s"></span><span class="fp-cg" id="fp-c-cot-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-cot-src"></span><span class="fp-ca" id="fp-c-cot-a">Fund positions &rarr;</span></span></a>
-    </div>
+      <a class="fp-card fp-card--c" id="fp-c-land" href="/land-sales/" data-track="front"><span class="fp-ck" id="fp-c-land-k">Latest top sale</span><span class="fp-cv" id="fp-c-land-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-land-s"></span><span class="fp-csrc" id="fp-c-land-src"></span></a>
+      <a class="fp-card fp-card--c" id="fp-c-fert" href="/fertilizer" data-track="front"><span class="fp-ck" id="fp-c-fert-k">Anhydrous</span><span class="fp-cv" id="fp-c-fert-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-fert-s"></span><span class="fp-csrc" id="fp-c-fert-src"></span></a>
+      <a class="fp-card fp-card--c" id="fp-c-arc" href="/arc-plc" data-track="front"><span class="fp-ck" id="fp-c-arc-k">ARC/PLC</span><span class="fp-cv" id="fp-c-arc-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-arc-s"></span><span class="fp-csrc" id="fp-c-arc-src"></span></a>
+      <a class="fp-card fp-card--c" id="fp-c-cot" href="/cot" data-track="front"><span class="fp-ck" id="fp-c-cot-k">Funds</span><span class="fp-cv" id="fp-c-cot-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-cot-s"></span><span class="fp-csrc" id="fp-c-cot-src"></span></a>
     </div>
   </section>
 
@@ -247,7 +247,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
     <div class="fp-dask" data-signup-ask="Get the Daily and your top local bid by email every morning" data-source="home-front" data-variant="page" data-stack></div>
   </section>
-  <script src="/components/signup-ask.js?v=23"></script>
+  <script src="/components/signup-ask.js?v=23" defer></script>
 <!-- /index1:own main -->
 
 <!-- WHATSNEW:link (scripts/build_whats_new.py from data/whats-new.json; do not edit by hand) --><p class="wn-link" style="font-size:.84rem;color:var(--text-dim);margin:1.2rem 0 0"><a href="/changelog">What&rsquo;s new</a> &middot; latest: <a href="/cash-lease">Cash lease: your county&#x27;s rent, soil tier and a flex lease calculator</a>, Nov 20</p><!-- /WHATSNEW:link -->
