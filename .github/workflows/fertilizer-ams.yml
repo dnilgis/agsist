@@ -98,7 +98,6 @@ jobs:
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         env:
           MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
-        # fail soft: an error here never costs this run's fertilizer-ams.json and production-costs.json
         run: python scripts/fetch_fert_reports.py || echo "::warning title=Fertilizer reports::state report files not refreshed (the step failed); the last good files stay"
 
       - name: Commit if changed (race-tolerant)
@@ -118,8 +117,6 @@ jobs:
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             mkdir -p data && cp -r /tmp/fams/data/. data/
-            # the page and the state pages are baked from the files committed with them (one commit, one job)
-            # fail soft: a bake error leaves the pages as they were and still commits the data files
             python scripts/fetch_fert_reports.py --bake || echo "::warning title=Fertilizer pages::the bake failed; the pages stay as they were"
             for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
             for f in $BAKED; do [ -e "$f" ] && git add -A "$f" || true; done
