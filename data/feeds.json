@@ -2828,7 +2828,9 @@
     "hail-map.html",
     "list-your-elevator.html"
    ],
-   "written_by": [],
+   "written_by": [
+    "Fertilizer USDA AMS series"
+   ],
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
@@ -2837,6 +2839,7 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
+    "Fertilizer USDA AMS series",
     "Harvest price tracker",
     "lrp",
     "Build Price Stats (5-year percentile)",
@@ -2846,13 +2849,17 @@
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "maintained by hand, not on a schedule",
+   "cadence": "3 launches on a fixed schedule at about 10am, 3pm, 8pm Central",
    "curated": true,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "23 20 * * 5",
+    "23 1 * * 6",
+    "23 15 * * 1"
+   ],
+   "max_gap_hours": 101.0,
    "quiet": null,
    "why_quiet": null
   },
