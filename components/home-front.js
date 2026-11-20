@@ -586,7 +586,7 @@
         card('rain', { k: placeK('Rain', p), v: w[3] == null ? '0.00' : (w[3] / 100).toFixed(2), u: 'in since ' + (ms ? md(ms) : 'the 1st'), n: w[3] != null ? w[3] / 100 : null, f: function (v) { return v.toFixed(2); },
           s: '<b>' + (w[0] / 100).toFixed(2) + ' in</b> in the 24 h to ' + esc(when(x.end)) + ', <b>' + (w[2] == null ? 'no reading' : (w[2] / 100).toFixed(2) + ' in') + '</b> over 7 days.',
           g: bars([{ k: '24 h', v: (w[0] || 0) / top }, { k: '3 days', v: (w[1] || 0) / top }, { k: '7 days', v: (w[2] || 0) / top }, { k: ms ? MON[+ms.slice(5, 7) - 1] : 'Month', v: (w[3] || 0) / top, me: true }], 'Rain at this place by window', 140),
-          src: 'NOAA radar with gauges, to ' + when(x.end), href: '/field-rain' });
+          src: 'NOAA radar, to ' + when(x.end), href: '/field-rain' });
       }).catch(function () { cardFail('rain', 'Could not read the radar file just now.'); });
     }
     return belt().then(function (fs) {
@@ -598,7 +598,7 @@
       card('rain', { k: 'Rain · <b>12 Corn Belt states</b>', v: comma(b.n), u: b.n === 1 ? 'county' : 'counties', n: b.n, f: comma,
         s: 'had 0.10 in or more in the 7 days to ' + esc(when(b.end)) + ', of ' + comma(b.of) + '. Bars: each state’s share.',
         g: bars(b.states.map(function (s) { return { k: s.st, v: s.share / top }; }), 'Share of each state’s counties with 0.10 in in 7 days', 140),
-        src: 'NOAA radar with gauges, to ' + when(b.end), href: '/rain#radar' });
+        src: 'NOAA radar, to ' + when(b.end), href: '/rain#radar' });
     }).catch(function () { cardFail('rain', 'Could not read the radar file just now.'); });
   }
   function mktCard() {
@@ -616,7 +616,7 @@
       card('mkt', { k: esc(c.name.replace(' corn', '')) + ' corn · <b>CBOT</b>', v: px(p), n: p, f: function (x) { return '$' + x.toFixed(2); },
         s: chg + (rank ? rank + '.' : '') + (s ? ' ' + esc(s.name) + ' <b>' + px(s.px / 100) + '</b>.' : ''),
         g: last.length > 10 ? spark(last, { H: 96, label: 'Corn futures, weekly closes for a year and the price now', labels: [startDay ? MON[+startDay.slice(5, 7) - 1] + ' ’' + startDay.slice(2, 4) : '', md(c.day)] }) : '',
-        src: 'CBOT, ' + F.stamp.replace(/^Read /, 'read ').replace(/, delayed$/, ' delayed'), href: '/corn-futures-prices' });
+        src: 'CBOT, ' + F.stamp.replace(/^Read /, 'read ').replace(/ CT\b/, '').replace(/,? delayed$/, ''), href: '/corn-futures-prices' });
     }).catch(function () { cardFail('mkt', 'Could not read the price file just now.'); });
   }
   function fcCard() {
