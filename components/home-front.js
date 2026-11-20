@@ -249,6 +249,21 @@
     var m = /([A-Za-z]+) (\d{1,2}), (\d{4})/.exec(t), i = m ? MONTHS.indexOf(m[1].toLowerCase()) : -1;
     return i < 0 ? '' : m[3] + '-' + (i < 9 ? '0' : '') + (i + 1) + '-' + (+m[2] < 10 ? '0' : '') + (+m[2]);
   }
+  /* a dry week at a place: the 24 h, 3 day and 7 day windows all zero -> the words the file supports (it carries windows,
+     not days, so the last rain is said as "none since" the 7-day window's start), else '' */
+  function dryWords(r) {
+    var w = r && r.w;
+    if (!w || w[0] !== 0 || w[1] !== 0 || w[2] !== 0 || !r.weekStart) return '';
+    return 'No rain since <b>' + md(ctIso(r.weekStart)) + '</b>, the 7 days to ' + esc(when(r.end)) + '.';
+  }
+  /* the Daily band's line: a row-crop story for this page (the headline, else the first section that is not livestock), or '' */
+  var STOCK = /\b(hogs?|cattle|cows?|pork|beef|milk|dairy|lambs?|feeders?|livestock|cutout|broilers?|eggs?)\b/i;
+  function dailyLine(j) {
+    if (!j) return '';
+    if (j.headline && !STOCK.test(j.headline)) return String(j.headline);
+    var s = (j.sections || []).filter(function (x) { return x && x.title && !STOCK.test(x.title); })[0];
+    return s ? String(s.title) : '';
+  }
   /* fertilizer: the USDA state report for a state (data/fert-prices/index.json nearest), Iowa's for no place */
   function fertReportId(I, st) {
     if (!st) return '2863';
@@ -357,7 +372,7 @@
   var api = { ct: ct, ctIso: ctIso, when: when, md: md, dayName: dayName, fnv: fnv, miles: miles, placeName: placeName, futMonth: futMonth,
     basisWords: basisWords, currentDelivery: currentDelivery, plain: plain, freshFrom: freshFrom, prevTrading: prevTrading, nearBids: nearBids,
     moveSince: moveSince, moveText: moveText, postedWords: postedWords, stateBasis: stateBasis, beltRain: beltRain, rainLine: rainLine,
-    futItems: futItems, rankWords: rankWords, dailyIso: dailyIso, fertReportId: fertReportId, fertCopy: fertCopy, fundCopy: fundCopy,
+    futItems: futItems, rankWords: rankWords, dailyIso: dailyIso, dryWords: dryWords, dailyLine: dailyLine, fertReportId: fertReportId, fertCopy: fertCopy, fundCopy: fundCopy,
     landCopy: landCopy, spark: spark, bars: bars, ranges: ranges, bidsMap: bidsMap, setW: setW, BELT: BELT, RADIUS: RADIUS, cents: cents };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root || !root.document) return;
@@ -450,7 +465,7 @@
         return root.fetch('/data/radar-rain/' + st.toLowerCase() + '.bin').then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(R.parse).then(function (f) {
           var w = ['24h', '3d', '7d', 'month'].map(function (k) { return R.lookup(f.header, f.grids[k], p.lat, p.lon); });
           if (w[0] == null) throw new Error('no data');
-          return { w: w, end: idx.data_end, monthStart: idx.windows && idx.windows.month && idx.windows.month.start };
+          return { w: w, end: idx.data_end, monthStart: idx.windows && idx.windows.month && idx.windows.month.start, weekStart: idx.windows && idx.windows['7d'] && idx.windows['7d'].start };
         });
       });
     });
@@ -583,9 +598,10 @@
       return rainAt(p).then(function (x) {
         var w = x.w, top = Math.max.apply(null, w.map(function (v) { return v || 0; })) || 1, ms = x.monthStart ? ctIso(x.monthStart) : '';
         gw('rain');
+        var dry = dryWords(x);
         card('rain', { k: placeK('Rain', p), v: w[3] == null ? '0.00' : (w[3] / 100).toFixed(2), u: 'in since ' + (ms ? md(ms) : 'the 1st'), n: w[3] != null ? w[3] / 100 : null, f: function (v) { return v.toFixed(2); },
-          s: '<b>' + (w[0] / 100).toFixed(2) + ' in</b> in the 24 h to ' + esc(when(x.end)) + ', <b>' + (w[2] == null ? 'no reading' : (w[2] / 100).toFixed(2) + ' in') + '</b> over 7 days.',
-          g: bars([{ k: '24 h', v: (w[0] || 0) / top }, { k: '3 days', v: (w[1] || 0) / top }, { k: '7 days', v: (w[2] || 0) / top }, { k: ms ? MON[+ms.slice(5, 7) - 1] : 'Month', v: (w[3] || 0) / top, me: true }], 'Rain at this place by window', 140),
+          s: dry ? dry : '<b>' + (w[0] / 100).toFixed(2) + ' in</b> in the 24 h to ' + esc(when(x.end)) + ', <b>' + (w[2] == null ? 'no reading' : (w[2] / 100).toFixed(2) + ' in') + '</b> over 7 days.',
+          g: dry ? bars([{ k: (ms ? md(ms) : 'The 1st') + ' to ' + md(ctIso(x.end)) + ': ' + (w[3] / 100).toFixed(2) + ' in, none in the last 7 days', v: w[3] > 0 ? 1 : 0, me: true }], 'Rain this month; none in the last 7 days', 140) : bars([{ k: '24 h', v: (w[0] || 0) / top }, { k: '3 days', v: (w[1] || 0) / top }, { k: '7 days', v: (w[2] || 0) / top }, { k: ms ? MON[+ms.slice(5, 7) - 1] : 'Month', v: (w[3] || 0) / top, me: true }], 'Rain at this place by window', 140),
           src: 'NOAA radar, to ' + when(x.end), href: '/field-rain' });
       }).catch(function () { cardFail('rain', 'Could not read the radar file just now.'); });
     }
@@ -682,9 +698,9 @@
   function daily() {
     get('/data/daily.json').then(function (j) {
       var iso = dailyIso(j && j.date);
-      if (!j || !j.headline || !iso) return;
+      if (!j || !iso) return;
       $('fp-dk').textContent = 'The AGSIST Daily · ' + dayName(iso) + ' ' + md(iso);
-      $('fp-dt').textContent = j.headline;
+      $('fp-dt').textContent = dailyLine(j) || 'This morning’s markets, your top local bid';
     }).catch(function () {});
   }
 
