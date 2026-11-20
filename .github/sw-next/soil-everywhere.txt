@@ -1,0 +1,1 @@
+Soil everywhere: county soil on the Farmland Atlas, your field's NCCPI against your county on the cash lease page, Soil of your field on Fast Facts (soil-read.js?v=3, lease-plus.js?v=4, field-scout.js?v=44, field-scout-read.js?v=31, place.js?v=20, here.js?v=55)
