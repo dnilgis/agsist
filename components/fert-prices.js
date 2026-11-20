@@ -9,10 +9,11 @@
   'use strict';
   var MIN = 4;
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function short(d) { return MON[+d.slice(5, 7) - 1] + ' ' + (+d.slice(8, 10)); }
   function long(d) { return short(d) + ', ' + d.slice(0, 4); }
-  function money(v) { return '$' + Math.round(v).toLocaleString('en-US'); }
+  /* to the cent, as USDA prints it and as the table above shows it (scripts/fetch_fert_reports.py money) */
+  function money(v) { return '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function cents(v) { return Math.round(v * 100) / 100; }
 
   /* the points for one product: [[day, low, high, avg]] -> [{d, v, lo, hi}] */
   function points(rows) {
@@ -23,8 +24,9 @@
 
   /* the headline from the points shown: first and last point of the same line */
   function head(region, label, pts) {
-    var a = pts[0], b = pts[pts.length - 1], by = Math.round(b.v - a.v);
-    return label + ' in ' + region + ': ' + money(b.v) + ' a ton on ' + short(b.d) + ', ' + (by ? (by > 0 ? 'up ' : 'down ') + money(Math.abs(by)) : 'the same as') + ' from ' + money(a.v) + ' on ' + long(a.d) + '.';
+    // "the same as" only when the move is zero to the cent: the table's own test (change_text)
+    var a = pts[0], b = pts[pts.length - 1], by = cents(b.v - a.v);
+    return label + ' in ' + region + ': ' + money(b.v) + ' a ton on ' + short(b.d) + ', ' + (by ? (by > 0 ? 'up ' : 'down ') + money(by) : 'the same as') + ' from ' + money(a.v) + ' on ' + long(a.d) + '.';
   }
 
   function config(doc, p, pts) {
@@ -64,17 +66,24 @@
     });
   }
 
+  /* the file did not come (or is not this report's): every held box says so, never stays blank */
+  function failed(box) {
+    [].forEach.call(box.querySelectorAll('.fp-chart[data-k]:not([data-drawn]) .fp-plot'), function (plot) {
+      plot.innerHTML = '<p class="fp-few">The chart did not load.</p>';
+    });
+  }
+
   var loaded = {};
   function show(id) {
-    var box = root.document.querySelector('.fp-charts[data-rep="' + id + '"]');
+    var box = id && root.document.querySelector('.fp-charts[data-rep="' + id + '"]');
     if (!box || loaded[id] || !box.querySelector('.fp-plot')) return;
     loaded[id] = 1;
     root.fetch('/data/fert-prices/' + id + '.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (doc) { if (doc && doc.id === id) draw(box, doc); })
-      .catch(function () { loaded[id] = 0; });
+      .then(function (doc) { if (doc && doc.id === id) draw(box, doc); else failed(box); })
+      .catch(function () { failed(box); });
   }
 
-  var api = { points: points, head: head, config: config, MIN: MIN };
+  var api = { points: points, head: head, config: config, failed: failed, MIN: MIN };
   root.AgFertPrices = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 

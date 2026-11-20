@@ -15,7 +15,12 @@
   <meta property="og:title"        content="Fertilizer prices by state, from USDA's dealer surveys">
   <meta property="og:description"  content="Anhydrous, urea, UAN, DAP, MAP and potash prices per ton from USDA's own state fertilizer reports, free: this report's average and range, the change since the last report and a year ago.">
   <meta property="og:url"          content="https://agsist.com/fertilizer-prices">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://agsist.com/img/og/fertilizer-prices.jpg?v=8fb7be3e">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Fertilizer prices by state. Dealer prices per ton from USDA&#x27;s own state reports, with each report&#x27;s date.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/fertilizer-prices.jpg?v=8fb7be3e">
   <meta name="twitter:title"       content="Fertilizer prices by state, from USDA's dealer surveys">
   <meta name="twitter:description" content="Anhydrous, urea, UAN, DAP, MAP and potash prices per ton from USDA's own state fertilizer reports, free: this report's average and range, the change since the last report and a year ago.">
 
@@ -125,6 +130,17 @@
         if (id && document.getElementById('fp-' + id)) {
           show(id);
           why.textContent = N.own.indexOf(st) >= 0 ? 'Showing USDA’s report for your state.' : 'No USDA report covers your state. Showing the nearest: ' + nameOf(id) + '.';
+        } else if (st && (N.far || []).indexOf(st) >= 0) {
+          /* every report is far from this state: none is called the nearest and none is picked */
+          var names = [].map.call(sel.options, function (o) { return o.textContent; });
+          var blank = document.createElement('option');
+          blank.value = ''; blank.textContent = 'Pick a report'; blank.disabled = true;
+          sel.insertBefore(blank, sel.firstChild);
+          show('');
+          /* no table under the picker: hold the room it would take, so the footer the site script swaps in later
+             lands below the first screen and nothing on it moves */
+          var top = document.querySelector('.fp-top'); if (top) top.style.minHeight = '70vh';
+          why.textContent = 'No USDA fertilizer report covers your state. USDA reports on ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '.';
         } else {
           why.textContent = 'Pick the USDA report nearest you.';
         }
@@ -139,7 +155,7 @@
         <p><b>What the table shows.</b> Each report surveys fertilizer dealers. For each product it prints a low, a high and one price for the whole survey, per ton, with the freight term. The table shows the newest report on file as USDA printed it. A report date is the day USDA published it. These are asking prices, not quotes. Call your dealer before you buy.</p>
         <p><b>Changes.</b> A change compares two reports from the same USDA survey, for the same product, priced the same way. The last report is the one just before. A year ago is the report published closest to 52 weeks earlier. No change is shown when that report left the product out, priced it another way, or is not on file. The cell says which. If USDA&rsquo;s own printed change does not match the two reports, neither is shown.</p>
         <p><b>Left out.</b> A price USDA did not print, a zero, a price outside its own low and high, or far outside the normal band for that product. Also a product listed twice in one report, and a jump too big to be real. Farm diesel and propane from the same reports are on Fast Facts.</p>
-        <p><b>Your state.</b> The page shows the report for a state it already knows: a place you saved on AGSIST, or a state you picked. Where USDA has no report for that state, it shows the nearest report. Nothing about you is sent to make that choice.</p>
+        <p><b>Your state.</b> The page shows the report for a state it already knows: a place you saved on AGSIST, or a state you picked. Where USDA has no report for that state, it shows the nearest report. When every report is far away (more than about 450 miles, center to center), it picks none. Nothing about you is sent to make that choice.</p>
         <p><b>Charts.</b> Up to a year of each report, one line per product.</p>
       </details>
     </article>
@@ -162,6 +178,6 @@
 </div>
   <script src="/components/loader.js?v=22" defer></script>
   <script src="/components/ag-chart.js?v=5" defer></script>
-  <script src="/components/fert-prices.js?v=1" defer></script>
+  <script src="/components/fert-prices.js?v=2" defer></script>
 </body>
 </html>
