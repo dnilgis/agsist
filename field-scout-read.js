@@ -120,7 +120,8 @@ window.__fsRead = function (FSX) {
       '<div class="fs-section fs-insight-section" id="fs-insight-wrap" style="height:'+readRoom()+';overflow:hidden;position:relative">'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"><p class="fs-verdict fs-verdict-wait" aria-live="polite"><span>Bottom line</span><b>Reading this field&hellip;</b></p></div>'+
-        '<button type="button" class="fs-save-btn" id="fs-insight-more" hidden style="position:absolute;left:1.2rem;bottom:.7rem;z-index:2">Show the whole read</button>'+
+        // shown and hidden by style.display: .fs-save-btn sets display, which beats [hidden]
+        '<button type="button" class="fs-save-btn" id="fs-insight-more" style="display:none;position:absolute;left:1.2rem;bottom:.7rem;z-index:2;background:var(--surface)">Show the whole read</button>'+
       '</div>' +
       // Nov 20, 2026: the notes box sits after the deck, not under The Read. The Read grows when
       // its last layer lands (often the soil survey), and on a phone and in the 1280 side column
@@ -154,7 +155,7 @@ window.__fsRead = function (FSX) {
     // fire all sources independently — fail soft; each calls recomputeInsight()
     var sb=document.getElementById('fs-save'); if(sb) sb.addEventListener('click', saveCurrentField);
     var rm=document.getElementById('fs-insight-more');
-    if(rm) rm.addEventListener('click', function(){ var w=document.getElementById('fs-insight-wrap'); if(w){ w.style.height='auto'; w.style.overflow=''; } rm.hidden=true; });
+    if(rm) rm.addEventListener('click', function(){ var w=document.getElementById('fs-insight-wrap'); if(w){ w.style.height='auto'; w.style.overflow=''; } rm.style.display='none'; });
     var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', shareField);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
     var gjb=document.getElementById('fs-export-geojson'); if(gjb) gjb.addEventListener('click', exportGeoJSON);
@@ -2681,7 +2682,7 @@ window.__fsRead = function (FSX) {
     // the fixed box: offer the rest of the read only when it does not fit (the button sits over
     // the box's own bottom edge, so showing it moves nothing)
     var rmb=document.getElementById('fs-insight-more');
-    if(wrap && rmb && wrap.style.height!=='auto') rmb.hidden = !(wrap.scrollHeight > wrap.clientHeight + 1);
+    if(wrap && rmb && wrap.style.height!=='auto') rmb.style.display = wrap.scrollHeight > wrap.clientHeight + 1 ? '' : 'none';
     setMapHeadline(lead && !held ? (lead.title.charAt(0).toUpperCase()+lead.title.slice(1)+'.') : null);
     renderPeek();
     if(!held) scheduleSettle();
