@@ -305,28 +305,28 @@ window.__fsRead = function (FSX) {
         if(!hasAc){ html += '<div class="fs-caveat">SSURGO returned the soil map units for this field but not per-unit acreage, so area shares aren\u2019t shown. Soils are listed by map unit.</div>'; }
         var rateNote = '', factNote = '', slopeNote = '';
         if(FSX.FIELD.soil.csr2!=null){
-          rateNote +='<div class="fs-soil-slope"><strong>CSR2 '+FSX.FIELD.soil.csr2.toFixed(1)+'</strong>: Iowa\u2019s Corn Suitability Rating (0\u2013100), weighted by acres. It is the number Iowa land sales, rents and loans are quoted against.</div>';
+          rateNote += '<div class="fs-soil-slope"><strong>CSR2 '+FSX.FIELD.soil.csr2.toFixed(1)+'</strong>: Iowa Corn Suitability Rating 2 (0 to 100), weighted by acres.</div>';
         }
         if(FSX.FIELD.soil.nccpi!=null){
-          var nc=Math.round(FSX.FIELD.soil.nccpi*100)/100, tier = nc>=0.65?'high':nc>=0.5?'good':nc>=0.35?'moderate':nc>=0.2?'modest':'low';
-          rateNote += '<div class="fs-soil-slope"><strong>Soil productivity '+Math.round(nc*100)+'/100</strong> (USDA NCCPI '+nc.toFixed(2)+', '+tier+'): how well this soil and climate carry dryland row crops, on one national scale'+
+          var nc=Math.round(FSX.FIELD.soil.nccpi*100)/100;
+          rateNote += '<div class="fs-soil-slope"><strong>NCCPI '+nc.toFixed(2)+'</strong>: USDA National Commodity Crop Productivity Index, 0 to 1 on one national scale'+
             (FSX.FIELD.soil.nccpiCorn!=null?'. Corn '+FSX.FIELD.soil.nccpiCorn.toFixed(2)+(FSX.FIELD.soil.nccpiSoy!=null?' · soy '+FSX.FIELD.soil.nccpiSoy.toFixed(2):''):'')+'.</div>';
         }
         if(FSX.FIELD.soil.farmPct!=null){
           factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.farmPct+'% prime farmland</strong>'+(FSX.FIELD.soil.farmIfPct?' and '+FSX.FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+': USDA\u2019s farmland classification for each soil map unit.</div>';
         }
         if(FSX.FIELD.soil.floodPct){
-          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency</strong> (rare or more often). Check the FEMA map before a loan or a lease.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency of rare or more often</strong> (SSURGO flooding frequency class).</div>';
         }
         if(FSX.FIELD.soil.poorDrainPct!=null && FSX.FIELD.soil.poorDrainPct>=25){
-          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.poorDrainPct+'% of the acreage maps as poorly drained</strong>: the survey\u2019s way of saying the low ground holds water. Late planting and drown-out corners here are the soil, not the operator; tile is the structural fix conversation.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.poorDrainPct+'% of the acreage maps as poorly or very poorly drained</strong> (SSURGO drainage class).</div>';
         } else if(FSX.FIELD.soil.drainageTop){
-          factNote += '<div class="fs-soil-slope">Dominant drainage:<strong>'+esc(FSX.FIELD.soil.drainageTop)+'</strong></div>';
+          factNote += '<div class="fs-soil-slope">Dominant drainage class: <strong>'+esc(FSX.FIELD.soil.drainageTop)+'</strong> (SSURGO).</div>';
         }
         if(FSX.FIELD.soil.slope!=null){
-          var sl=FSX.FIELD.soil.slope, er = sl<3?'little water-erosion exposure':sl<6?'some water-erosion exposure':sl<12?'real water-erosion exposure':'severe water-erosion exposure';
-          slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FSX.FIELD.soil.maxSlope!=null&&FSX.FIELD.soil.maxSlope>sl?' (up to '+FSX.FIELD.soil.maxSlope+'%)':'')+': '+er+'</div>'+
-            '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres; flat bottomland beside a hill can read steeper than it farms.</div>';
+          var sl=FSX.FIELD.soil.slope;
+          slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FSX.FIELD.soil.maxSlope!=null&&FSX.FIELD.soil.maxSlope>sl?' (steepest map unit '+FSX.FIELD.soil.maxSlope+'%)':'')+': the representative slope of each map unit\u2019s major components, weighted by acres.</div>'+
+            '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres.</div>';
         }
         var AS = window.AgSoil;
         if(AS){

@@ -73,7 +73,7 @@
 
   // One SDA call. Resolves to the rows ([] when SDA has none), rejects on a network, CORS or
   // server failure or after ms. A form post: no preflight, no cookies.
-  function ask(sql, ms, fetchFn) {
+  function askText(sql, ms, fetchFn) {
     var f = fetchFn || (typeof fetch === 'function' ? fetch.bind(root) : null);
     if (!f) return Promise.reject(new Error('no fetch'));
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
@@ -85,13 +85,15 @@
     }).then(function (r) {
       if (!r.ok) throw new Error('sda ' + r.status);
       return r.text();
-    }).then(function (txt) {
-      clearTimeout(t);
-      var d = txt && txt.trim() ? JSON.parse(txt) : {};   // SDA answers an empty body when no row matches
-      return d && Array.isArray(d.Table) ? d.Table : [];
-    }, function (e) { clearTimeout(t); throw e; });
+    }).then(function (txt) { clearTimeout(t); return txt || ''; }, function (e) { clearTimeout(t); throw e; });
   }
-  function askField(wkt, ms, f) { return ask(fieldQuery(wkt), ms, f); }
+  function parse(txt) {
+    var d = txt && txt.trim() ? JSON.parse(txt) : {};   // SDA answers an empty body when no row matches
+    return d && Array.isArray(d.Table) ? d.Table : [];
+  }
+  function ask(sql, ms, fetchFn) { return askText(sql, ms, fetchFn).then(parse); }
+  var last = { wkt: null };
+  function askField(wkt, ms, f) { last.wkt = wkt; return ask(fieldQuery(wkt), ms, f); }
   function askCounty(area, ms, f) { return ask(countyQuery(area), ms, f); }
 
   // ── the field ─────────────────────────────────────────────────────────────
@@ -223,15 +225,41 @@
       '<p class="fs-soil-slope">Each row is a soil map unit from the USDA soil survey, with its share of the outline you set. ' +
       'Drainage class, slope, available water and the ratings are the survey’s representative values for that map unit, not a measurement of your exact acres.</p>' +
       '<p class="fs-soil-slope"><strong>NCCPI</strong> (National Commodity Crop Productivity Index, version 3.0) runs 0 to 1 on one national scale: how well the soil and climate carry dryland corn, soybeans, cotton or small grains. The corn and soybean figures are its crop parts. ' +
-      '<strong>CSR2</strong> (Iowa only, 0 to 100) is the rating Iowa land sales, rents and loans are quoted against.</p>' +
+      '<strong>CSR2</strong> (Corn Suitability Rating 2, Iowa only, 0 to 100) is Iowa’s own row-crop productivity index in the same survey.</p>' +
       '<p class="fs-soil-slope"><strong>Available water</strong> is how much water the top 150 cm (about 5 ft) of soil can hold for a crop, in inches.</p>' +
       '<p class="fs-soil-slope"><strong>The county line</strong> compares this field with every rated acre in the same soil survey area (usually one county). The middle is the rating with half the rated acres below it. Both come from the same Soil Data Access answer, never another source.</p>' +
       (notes || '') +
-      '<p class="fs-caveat">Method: two questions go from your browser straight to USDA Soil Data Access: the soil map clipped to your outline, and the survey area’s map units with their acres. Field figures are weighted by acres and shown only when rated map units cover at least half the field. Your outline goes only to USDA, nothing is stored, and AGSIST sees none of it.</p>' +
+      '<p class="fs-caveat">Method: two questions go from your browser straight to USDA Soil Data Access: the soil map clipped to your outline, and the survey area’s map units with their acres. Field figures are weighted by acres and shown only when rated map units cover at least half the field. When USDA answers your browser directly, your outline goes only to USDA. When it does not, the read asks again through the AGSIST Field Scout server, which passes the outline to USDA and keeps USDA’s answer for up to a week.</p>' +
       '</details>';
   }
 
-  var API = { SDA: SDA, okWkt: okWkt, okArea: okArea, fieldQuery: fieldQuery, countyQuery: countyQuery, ask: ask,
+  // ── checking real fields (developer console, never called by the page) ──
+  // On /field-scout after a field is read (the page loads this file then):
+  //   AgSoil.debug()                 the field on screen
+  //   AgSoil.debug('POLYGON((...))') any outline, lon lat pairs, ring closed
+  // Prints the two exact SQL strings the card sends and SDA's raw answers, and resolves
+  // { wkt, fieldQuery, fieldRaw, area, countyQuery, countyRaw } (copy(r.fieldRaw) puts a raw
+  // answer on the clipboard for a fixture). It runs in the reader's own browser only.
+  function debug(wkt, fetchFn) {
+    wkt = wkt || last.wkt;
+    var out = { wkt: wkt, fieldQuery: fieldQuery(wkt) }, log = typeof console !== 'undefined' ? console : { log: function () {} };
+    log.log('SDA endpoint: ' + SDA + ' (POST, form fields format=JSON and query)');
+    log.log('askField query:\n' + out.fieldQuery);
+    return askText(out.fieldQuery, 60000, fetchFn).then(function (txt) {
+      out.fieldRaw = txt; log.log('askField raw answer:\n' + txt);
+      var s = summarize(parse(txt));
+      out.area = s && s.area;
+      if (!out.area) return out;
+      out.countyQuery = countyQuery(out.area);
+      log.log('askCounty query:\n' + out.countyQuery);
+      return askText(out.countyQuery, 60000, fetchFn).then(function (t2) {
+        out.countyRaw = t2; log.log('askCounty raw answer:\n' + t2);
+        return out;
+      });
+    });
+  }
+
+  var API = { SDA: SDA, debug: debug, parse: parse, okWkt: okWkt, okArea: okArea, fieldQuery: fieldQuery, countyQuery: countyQuery, ask: ask,
     askField: askField, askCounty: askCounty, units: units, summarize: summarize, county: county, wmedian: wmedian,
     shareBelow: shareBelow, compare: compare, render: render, howTo: howTo, sourceLine: sourceLine, mdy: mdy };
   if (typeof module === 'object' && module.exports) module.exports = API;
