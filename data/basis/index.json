@@ -40,12 +40,12 @@
    "kb":0.3
   },
   "IL":{
-   "rows":10147,
+   "rows":10150,
    "facilities":249,
-   "kb":461.8
+   "kb":461.9
   },
   "IN":{
-   "rows":1169,
+   "rows":1170,
    "facilities":83,
    "kb":53.2
   },
@@ -85,12 +85,12 @@
    "kb":5.5
   },
   "ND":{
-   "rows":7996,
+   "rows":8000,
    "facilities":68,
-   "kb":334.6
+   "kb":334.8
   },
   "NE":{
-   "rows":9862,
+   "rows":9863,
    "facilities":255,
    "kb":448.2
   },
@@ -100,14 +100,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4564,
+   "rows":4566,
    "facilities":91,
    "kb":195.5
   },
   "OK":{
-   "rows":3257,
+   "rows":3258,
    "facilities":81,
-   "kb":137.0
+   "kb":137.1
   },
   "OR":{
    "rows":11,
