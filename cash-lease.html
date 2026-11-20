@@ -326,7 +326,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
         <label data-how="pi" hidden>Field P/I (Bulletin 811)<input id="lp-pi" inputmode="decimal" autocomplete="off" placeholder="from your soil map"></label>
       </div>
       <div id="lp-soil-out" aria-live="polite"><p class="lp-msg">Pick a county above first.</p></div>
-      <p class="cl-src">Only where the survey itself ties its tiers to a number: the typical corn yield of each quality third (Iowa), ISPFMRA&rsquo;s P/I class ranges (Illinois), and the corn yields Purdue&rsquo;s and Ohio State&rsquo;s respondents gave for each land class (Indiana, western Ohio). Anywhere else we do not place a field. We print Iowa State&rsquo;s rent per CSR2 point as it prints it and never turn a CSR2 into a rent. What you type here is not kept.</p>
+      <p class="cl-src">We place a field only where the survey ties its tiers to a number. In Iowa that is the corn yield of each quality third. In Illinois it is ISPFMRA&rsquo;s productivity index ranges. In Indiana and western Ohio it is the corn yield respondents gave for each land class. Anywhere else we do not place a field. We print Iowa State&rsquo;s rent per CSR2 point as it prints it and never turn a CSR2 into a rent. What you type here is not kept.</p>
     </div>
   </section>
 
@@ -349,18 +349,18 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
       <button class="cl-btn cl-btn--ghost" id="lp-f-proj" type="button" hidden></button>
       <div id="lp-f-out" aria-live="polite"><p class="lp-msg">Enter your lease terms, a yield and a price to see the rent at nine outcomes.</p></div>
       <details class="lp-how"><summary>How the rent is figured, and where the forms come from</summary>
-        <p>Gross is your yield times the price, per acre. <b>Base plus bonus:</b> rent is the base, plus your bonus percent of the gross above the trigger when gross is above it. <b>Share of gross:</b> rent is your percent of the gross. The floor and cap are our option, for a lease that sets them; the rent is held between them. The middle cell is your yield and price; the others move yield 15% and price 20% either way.</p>
-        <p>The two forms are the ones the regional reports in the Illinois Society of Professional Farm Managers and Rural Appraisers&rsquo; 2026 Illinois Farmland Values and Lease Trends (March 2026) describe: a base cash rent with a bonus tied to revenue, and rent figured as a percentage of the crop&rsquo;s gross proceeds. AGSIST does not suggest a base, a percent or a trigger; those are yours to agree.</p>
-        <p>The projected price is the one RMA sets for crop insurance from the average of the harvest futures contract&rsquo;s settles in its February price discovery window (the same figure as on the <a href="/harvest-price-tracker">harvest price tracker</a>). The button names the crop year it comes from; a lease for a later year uses that year&rsquo;s price once RMA sets it.</p>
+        <p>Gross is your yield times the price, per acre. <b>Base plus bonus:</b> rent is the base, plus your bonus percent of the gross above the trigger when gross is above it. <b>Share of gross:</b> rent is your percent of the gross. The floor and cap are our option, for a lease that sets them; the rent is held between them. The center cell is your yield and price; the others move yield 15% and price 20% either way.</p>
+        <p>The two forms come from the regional reports in the 2026 Illinois Farmland Values and Lease Trends (March 2026). That report is by the Illinois Society of Professional Farm Managers and Rural Appraisers. The forms are a base cash rent with a bonus tied to revenue, and rent as a percentage of the crop&rsquo;s gross proceeds. AGSIST does not suggest a base, a percent or a trigger; those are yours to agree.</p>
+        <p>The projected price is the one RMA sets for crop insurance in its February price discovery window. It is the same figure as on the <a href="/harvest-price-tracker">harvest price tracker</a>. The button names the crop year it comes from; a lease for a later year uses that year&rsquo;s price once RMA sets it.</p>
       </details>
     </div>
   </section>
 
-  <div class="cl-hero cl-hero-2">
+  <header class="cl-hero cl-hero-2">
     <p class="cl-sub page-lede"><!--BAKE:rent-answer-->Before you sign, check the rent: the USDA NASS 2026 Cash Rents Survey has rates for 2,359 counties in 45 states (read Oct 6, 2026), on the <a href="/rent/">county cash rent pages</a>.<!--/BAKE--> Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree, and a terrible way to remember. Below: <strong>every lease type explained</strong>, and a <strong>fillable, printable two-page cash lease</strong> that says what it means. It takes about five minutes, and you both sign it.</p>
     <p class="cl-jump"><a href="#lease-form">Fill in the lease</a> &middot; <a href="#notice">Notice to end a lease, and the date to serve it by</a></p>
     <p class="cl-by">State notice rules rechecked Oct 15, 2026; Iowa, Kansas and Ohio read against the statute text saved Oct 16, 2026</p>
-  </div>
+  </header>
 
   <section class="cl-panel cl-check-panel no-print" aria-labelledby="cl-check-t">
     <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-check-t">Before you sign: the terms to settle in writing</span></div>
@@ -370,7 +370,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
         <li><b>Term and renewal:</b> start and end dates, and whether it rolls over. In Iowa and Kansas a farm tenancy ended by notice ends March 1, by law.</li>
         <li><b>Notice to end it:</b> your state&rsquo;s deadline where the law sets one (below), or a number of days you both write in.</li>
         <li><b>Rent and when it is paid:</b> the rate, the payment dates and split, late interest.</li>
-        <li><b>For a flex lease:</b> the base, the bonus formula, which yield (scale tickets, yield monitor, insurance records), which price (a named elevator, a futures contract on a named date, or RMA&rsquo;s harvest price), and the date the bonus is paid.</li>
+        <li><b>For a flex lease:</b> the base, the bonus formula and the date the bonus is paid. Name the yield source: scale tickets, yield monitor or insurance records. Name the price: an elevator, a futures contract on a date, or RMA&rsquo;s harvest price.</li>
         <li><b>Program payments and insurance:</b> who gets ARC, PLC and other payments; who insures crops and liability.</li>
         <li><b>Fertility and practices:</b> lime and phosphorus and potash built up or drawn down, manure, tillage, cover crops, conservation plan.</li>
         <li><b>Improvements:</b> tile, fence, waterways and who pays and owns them, and what happens to them if the lease ends early.</li>
