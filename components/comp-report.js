@@ -230,7 +230,7 @@
   CR.soilText = function (s) {
     if (!s) return null;
     var b = [];
-    if (s.np != null) b.push(Math.round(s.np * 100) + '/100 NCCPI');
+    if (s.np != null) b.push('NCCPI ' + s.np.toFixed(2));
     if (s.cs != null) b.push('CSR2 ' + s.cs.toFixed(1));
     return b.length ? b.join(', ') : null;
   };
@@ -560,7 +560,7 @@
         var t = CR.soilText(s);
         set('cr-soil', (t ? '<p><b class="cr-big">' + esc(t) + '</b></p>' : '') + '<table class="cr-q"><thead><tr><th>Soil</th><th class="n">Acres</th><th class="n">Class</th></tr></thead><tbody>' +
           s.top.map(function (x) { return '<tr><td>' + esc(x.name) + '</td><td class="n">' + (x.ac > 0 ? x.ac.toFixed(1) : '') + '</td><td class="n">' + (x.nicc || '') + '</td></tr>'; }).join('') + '</tbody></table>' +
-          note('Weighted by acres in the outline. NCCPI is USDA’s National Commodity Crop Productivity Index (0 to 100); class is land capability, 1 best to 8. USDA NRCS soil survey (SSURGO).'));
+          note('Weighted by acres in the outline. NCCPI is USDA’s National Commodity Crop Productivity Index (0 to 1); class is land capability, 1 best to 8. USDA NRCS soil survey (SSURGO).'));
       }).catch(function () { set('cr-soil', note('The soil survey did not answer. Reload in a minute.')); });
     }
     function loadCDL() {

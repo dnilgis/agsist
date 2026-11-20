@@ -36,7 +36,7 @@
  */
 
 // Build stamp — bump on every paste so /health proves which code is live.
-const BUILD = 'fs-2026-11-13a';
+const BUILD = 'fs-2026-11-20a';
 
 const CDSE_TOKEN_URL = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token';
 const SH_PROCESS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/process';
@@ -426,7 +426,8 @@ async function proxySoil(request, cors) {
   // v3 namespace: columns [10..14] appended (csr2, farmlndcl, flodfreq, hydric_pct,
   // nirrcapscl) plus the top-level `ext` flag — v2 entries lack both.
   // v4 namespace: corn/soy submodel names fixed (v3 entries carry NULL for both).
-  const sk = new Request('https://fs-cache/soil/v4/' + (await sha1(wkt)));
+  // v5 namespace (Nov 20, 2026): the extended query no longer asks for iacornsr, so it answers.
+  const sk = new Request('https://fs-cache/soil/v5/' + (await sha1(wkt)));
   const sCache = caches.default;
   const sHit = await sCache.match(sk);
   if (sHit) return withCors(sHit, cors);
@@ -498,16 +499,16 @@ function sdaPost(query, tries) {
 // Builds the SDA soil query. `extended` appends columns [10..14]; the first ten
 // columns and their order are identical either way (field-scout.js parses by index).
 function soilQuery(wktSql, extended) {
-  // `like` = true matches a prefix. The corn and soybean submodels are published as
-  // "NCCPI - NCCPI Corn Submodel (I)" / "... Soybeans Submodel (I)" (soilDB's rule list);
-  // this code asked for "(II)" and got NULL every time. A prefix match takes either.
+  // the overall NCCPI is the ruledepth-0 rule; nccpiPart below reads its crop sub-rules
   const nccpiSub = (mrule, like) =>
     " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.ruledepth=0 AND ci.mrulename" + (like ? " LIKE '" + mrule + "%'" : "='" + mrule + "'") + " AND ci.interphr IS NOT NULL )";
+  const nccpiPart = (rule) =>
+    " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.mrulename='NCCPI - National Commodity Crop Productivity Index (Ver 3.0)' AND ci.ruledepth=1 AND ci.rulename LIKE '" + rule + "%' AND ci.interphr IS NOT NULL )";
   const extCols = !extended ? '' :
-    // [10] Iowa CSR2: component-weighted mean over components that carry a rating
-    // (NULL outside Iowa, where iacornsr is not populated).
-    ", ( SELECT ROUND(SUM(CAST(c3.iacornsr AS float)*c3.comppct_r)/NULLIF(SUM(c3.comppct_r),0),1) FROM component c3" +
-    "   WHERE c3.mukey=mu.mukey AND c3.iacornsr IS NOT NULL ) AS csr2" +
+    // [10] Iowa CSR2: the map unit column mapunit.iacornsr (NULL outside Iowa). This query asked
+    // for component.iacornsr, which real Soil Data Access refused with HTTP 400 ("Invalid column
+    // name 'iacornsr'", checked Nov 20, 2026), so every read fell back to the ten base columns.
+    ", CAST(mu.iacornsr AS float) AS csr2" +
     ", mu.farmlndcl AS farmlndcl" +          // [11]
     ", ma.flodfreqdcd AS flodfreq" +         // [12]
     ", ma.hydclprs AS hydric_pct" +          // [13]
@@ -523,8 +524,11 @@ function soilQuery(wktSql, extended) {
     " ( SELECT ROUND(AVG(CAST(c.slope_r AS float)),1) FROM component c" +
     "   WHERE c.mukey=mu.mukey AND c.majcompflag='Yes' ) AS slope_pct," +
     nccpiSub('NCCPI - National Commodity Crop Productivity Index (Ver 3.0)') + " AS nccpi," +
-    nccpiSub('NCCPI - NCCPI Corn Submodel', true) + " AS nccpi_corn," +
-    nccpiSub('NCCPI - NCCPI Soybeans Submodel', true) + " AS nccpi_soy," +
+    // the corn and soybean parts are ruledepth-1 sub-rules of the NCCPI rule, matched on rulename
+    // ("NCCPI - NCCPI Corn Submodel (I)" in IA169; the suffix may differ), the same as the page's
+    // own query in components/soil-read.js (checked against real SDA component rows, Nov 20, 2026)
+    nccpiPart('NCCPI - NCCPI Corn Submodel') + " AS nccpi_corn," +
+    nccpiPart('NCCPI - NCCPI Soybeans Submodel') + " AS nccpi_soy," +
     " ma.drclassdcd AS drainage" +
     extCols +
     " FROM ( SELECT id AS mukey," +

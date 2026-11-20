@@ -97,6 +97,11 @@ window.__fsRead = function (FSX) {
   }
 
   // ── Orchestrator ────────────────────────────────────────────────────
+  // the answered height of The Read on the Story example, phone (under 560 px) and wider
+  // (712 px at 390 and 722 px at 1280 with its heading on the PR checks' full data, Nov 20, 2026;
+  // a longer read shows "Show the whole read", a shorter one leaves space)
+  var READ_ROOM = { phone:'43rem', wide:'42rem' };
+  function readRoom(){ return (window.matchMedia && matchMedia('(max-width:559px)').matches) ? READ_ROOM.phone : READ_ROOM.wide; }
   function runAll(poly){
     var c=polyCentroid(poly), acres=polyAcres(poly);
     runFieldScan(poly);
@@ -108,11 +113,20 @@ window.__fsRead = function (FSX) {
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
-      '<div class="fs-section fs-insight-section" id="fs-insight-wrap" hidden>'+
+      // Nov 20, 2026: The Read shows from the moment the field opens, in a box of fixed height
+      // (READ_ROOM, an answered read on the Story example), so it never jumps from 0 px and never
+      // pushes the deck as its layers land: its answered height varied from 570 to 786 px between
+      // runs. The bottom line comes first; a longer read opens in full on "Show the whole read".
+      '<div class="fs-section fs-insight-section" id="fs-insight-wrap" style="height:'+readRoom()+';overflow:hidden;position:relative">'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
-        '<div class="fs-section-body" id="fs-insight"></div>'+
+        '<div class="fs-section-body" id="fs-insight"><p class="fs-verdict fs-verdict-wait" aria-live="polite"><span>Bottom line</span><b>Reading this field&hellip;</b></p></div>'+
+        // shown and hidden by style.display: .fs-save-btn sets display, which beats [hidden]
+        '<button type="button" class="fs-save-btn" id="fs-insight-more" style="display:none;position:absolute;left:1.2rem;bottom:.7rem;z-index:2;background:var(--surface)">Show the whole read</button>'+
       '</div>' +
-      notesSectionHTML();
+      // Nov 20, 2026: the notes box sits after the deck, not under The Read. The Read grows when
+      // its last layer lands (often the soil survey), and on a phone and in the 1280 side column
+      // it pushed the notes box down on screen (layout shift 0.013 to 0.035, test/soil-read.test.mjs).
+      (document.getElementById('fs-deck') ? '' : notesSectionHTML());
     var D=document.getElementById('fs-deck');
     if(D){
       D.hidden=false;
@@ -133,12 +147,15 @@ window.__fsRead = function (FSX) {
           section('market',ICONS.market,'Selling It From Here','fs-market') +
           section('hood',ICONS.hood,'Who Farms Around Here','fs-hood') +
           section('cond',ICONS.cond,'How the Crop Looks Statewide','fs-cond') +
-        '</div>';
+        '</div>' +
+        notesSectionHTML();
     }
 
     var _an=R.querySelector('.acres-n'); if(_an){ _an.textContent='0.0'; setTimeout(function(){ countUp(_an, acres, 1); }, 320); }
     // fire all sources independently — fail soft; each calls recomputeInsight()
     var sb=document.getElementById('fs-save'); if(sb) sb.addEventListener('click', saveCurrentField);
+    var rm=document.getElementById('fs-insight-more');
+    if(rm) rm.addEventListener('click', function(){ var w=document.getElementById('fs-insight-wrap'); if(w){ w.style.height='auto'; w.style.overflow=''; } rm.style.display='none'; });
     var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', shareField);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
     var gjb=document.getElementById('fs-export-geojson'); if(gjb) gjb.addEventListener('click', exportGeoJSON);
@@ -191,18 +208,65 @@ window.__fsRead = function (FSX) {
     return '<div class="fs-section"><div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ico+'</span>'+title+'</div>'+
       '<div class="fs-section-body" id="'+bodyid+'"><div class="fs-loading"><span class="fs-spin"></span>reading</div></div></div>';
   }
-  function setBody(id, html){ var el=document.getElementById(id); if(el) el.innerHTML=html; }
-  function setErr(id, msg){ var el=document.getElementById(id); if(el) el.innerHTML='<div class="fs-err">'+msg+'</div>'; }
+  // a section's reserved height (the soil card's while it reads) ends when its answer is drawn
+  function setBody(id, html){ var el=document.getElementById(id); if(el){ el.innerHTML=html; el.style.minHeight=''; } }
+  function setErr(id, msg){ var el=document.getElementById(id); if(el){ el.innerHTML='<div class="fs-err">'+msg+'</div>'; el.style.minHeight=''; } }
 
   // ── 1. SOIL (USDA SSURGO via Soil Data Access) ──────────────────────
   // Spatial query: intersect the drawn polygon with SSURGO map units,
   // aggregate area by soil series, pull the national productivity index.
+  // Nov 20, 2026 (soil of your field, free): the browser asks USDA Soil Data Access itself
+  // (components/soil-read.js), so the outline goes to USDA only, and the same answer gives the
+  // county comparison. Only when that direct ask fails (USDA down, or the browser refuses the
+  // cross-site answer) does the read fall back to the Field Scout worker's /soil route.
+  var SOIL_JS='/components/soil-read.js?v=1', _soilP=null;
+  function soilLib(){
+    if(window.AgSoil) return Promise.resolve(window.AgSoil);
+    if(!_soilP) _soilP=new Promise(function(ok, no){
+      var s=document.createElement('script'); s.src=SOIL_JS;
+      s.onload=function(){ window.AgSoil ? ok(window.AgSoil) : no(new Error('soil')); };
+      s.onerror=function(){ if(s.parentNode) s.parentNode.removeChild(s); no(new Error('soil')); };
+      document.head.appendChild(s);
+    }).catch(function(e){ _soilP=null; throw e; });
+    return _soilP;
+  }
+  // resolves { d, s, c, countyError, direct:true } from USDA directly, { error } when USDA refused
+  // or did not answer (a non-200, an XML exception, a network or browser refusal), or null when
+  // components/soil-read.js itself did not load
+  function soilDirect(wkt){
+    return soilLib().then(function(S){
+      return S.askField(wkt, 25000).then(function(rows){
+        var s=S.summarize(rows);
+        if(!s || !s.area) return { d:{ ext:true, Table:rows }, s:s, c:null, direct:true };
+        return S.askCounty(s.area, 15000).then(function(r){ return { c:S.county(r) }; }, function(e){ return { c:null, e:e }; })
+          .then(function(k){ return { d:{ ext:true, Table:rows }, s:s, c:k.c, countyError:k.e||null, direct:true }; });
+      }, function(e){ return { error:e }; });
+    }, function(){ return null; });
+  }
   function loadSoil(poly, tries){
     var gen = FSX.fieldGen;
     var wkt = wktPolygon(poly);
-    postJSON(FS_WORKER + '/soil', { wkt: wkt })
-      .then(function(d){
+    // hold the soil card's room while it reads (a three-unit Iowa answer is about 540 px tall at
+    // 1280 and 820 px on a phone, from 49 px reading), so the cards after it hardly move
+    var box = document.getElementById('fs-soil');
+    if(box && !tries) box.style.minHeight = (window.matchMedia && matchMedia('(max-width:559px)').matches) ? '48.5rem' : '33rem';
+    var why = null;
+    soilDirect(wkt)
+      .then(function(dir){
         if(gen !== FSX.fieldGen) return;
+        if(dir && !dir.error) return drawSoil(dir.d, dir, null);
+        why = dir && dir.error;
+        return postJSON(FS_WORKER + '/soil', { wkt: wkt }).then(function(d){ if(gen === FSX.fieldGen) drawSoil(d, null, why); });
+      })
+      .catch(function(){
+        if(gen!==FSX.fieldGen) return;
+        // SSURGO upstream flakes transiently (502/504): retry once before giving up.
+        if(!tries){ setTimeout(function(){ if(gen===FSX.fieldGen) loadSoil(poly, 1); }, 1500); return; }
+        if(why && window.AgSoil){ setErr('fs-soil','No soil read for this field. USDA Soil Data Access: '+esc(window.AgSoil.reason(why))+'. The Field Scout server did not answer either. Tap the field again to retry.'); return; }
+        setErr('fs-soil','No soil read for this field: the USDA soil survey (SSURGO) did not answer. Tap the field again to retry.');
+      });
+  }
+  function drawSoil(d, dir, directErr){
         var rows = (d && d.Table) ? d.Table : null;
         if(!rows || !rows.length){ setBody('fs-soil','<div class="fs-err">No SSURGO soil survey published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>'); return; }
         var total=0; rows.forEach(function(r){ total += parseFloat(r[3])||0; });
@@ -266,39 +330,41 @@ window.__fsRead = function (FSX) {
             (pct!=null?'<div class="fs-soil-pct">'+pct+'%</div>':'')+'</div>';
         }).join('');
         if(!hasAc){ html += '<div class="fs-caveat">SSURGO returned the soil map units for this field but not per-unit acreage, so area shares aren\u2019t shown. Soils are listed by map unit.</div>'; }
-        var slopeNote = '';
+        var rateNote = '', factNote = '', slopeNote = '';
         if(FSX.FIELD.soil.csr2!=null){
-          slopeNote += '<div class="fs-soil-slope"><strong>CSR2 '+FSX.FIELD.soil.csr2.toFixed(1)+'</strong>: Iowa\u2019s Corn Suitability Rating (0\u2013100), weighted by acres. It is the number Iowa land sales, rents and loans are quoted against.</div>';
+          rateNote += '<div class="fs-soil-slope"><strong>CSR2 '+FSX.FIELD.soil.csr2.toFixed(1)+'</strong>: Iowa Corn Suitability Rating 2 (0 to 100), weighted by acres.</div>';
         }
         if(FSX.FIELD.soil.nccpi!=null){
-          var nc=Math.round(FSX.FIELD.soil.nccpi*100)/100, tier = nc>=0.65?'high':nc>=0.5?'good':nc>=0.35?'moderate':nc>=0.2?'modest':'low';
-          slopeNote += '<div class="fs-soil-slope"><strong>Soil productivity '+Math.round(nc*100)+'/100</strong> (USDA NCCPI '+nc.toFixed(2)+', '+tier+'): how well this soil and climate carry dryland row crops, on one national scale'+
+          var nc=Math.round(FSX.FIELD.soil.nccpi*100)/100;
+          rateNote += '<div class="fs-soil-slope"><strong>NCCPI '+nc.toFixed(2)+'</strong>: USDA National Commodity Crop Productivity Index, 0 to 1 on one national scale'+
             (FSX.FIELD.soil.nccpiCorn!=null?'. Corn '+FSX.FIELD.soil.nccpiCorn.toFixed(2)+(FSX.FIELD.soil.nccpiSoy!=null?' · soy '+FSX.FIELD.soil.nccpiSoy.toFixed(2):''):'')+'.</div>';
         }
         if(FSX.FIELD.soil.farmPct!=null){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.farmPct+'% prime farmland</strong>'+(FSX.FIELD.soil.farmIfPct?' and '+FSX.FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+': USDA\u2019s farmland classification for each soil map unit.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.farmPct+'% prime farmland</strong>'+(FSX.FIELD.soil.farmIfPct?' and '+FSX.FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+': USDA\u2019s farmland classification for each soil map unit.</div>';
         }
         if(FSX.FIELD.soil.floodPct){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency</strong> (rare or more often). Check the FEMA map before a loan or a lease.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency of rare or more often</strong> (SSURGO flooding frequency class).</div>';
         }
         if(FSX.FIELD.soil.poorDrainPct!=null && FSX.FIELD.soil.poorDrainPct>=25){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.poorDrainPct+'% of the acreage maps as poorly drained</strong>: the survey\u2019s way of saying the low ground holds water. Late planting and drown-out corners here are the soil, not the operator; tile is the structural fix conversation.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.poorDrainPct+'% of the acreage maps as poorly or very poorly drained</strong> (SSURGO drainage class).</div>';
         } else if(FSX.FIELD.soil.drainageTop){
-          slopeNote += '<div class="fs-soil-slope">Dominant drainage: <strong>'+esc(FSX.FIELD.soil.drainageTop)+'</strong></div>';
+          factNote += '<div class="fs-soil-slope">Dominant drainage class: <strong>'+esc(FSX.FIELD.soil.drainageTop)+'</strong> (SSURGO).</div>';
         }
         if(FSX.FIELD.soil.slope!=null){
-          var sl=FSX.FIELD.soil.slope, er = sl<3?'little water-erosion exposure':sl<6?'some water-erosion exposure':sl<12?'real water-erosion exposure':'severe water-erosion exposure';
-          slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FSX.FIELD.soil.maxSlope!=null&&FSX.FIELD.soil.maxSlope>sl?' (up to '+FSX.FIELD.soil.maxSlope+'%)':'')+': '+er+'</div>'+
-            '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres; flat bottomland beside a hill can read steeper than it farms.</div>';
+          var sl=FSX.FIELD.soil.slope;
+          slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FSX.FIELD.soil.maxSlope!=null&&FSX.FIELD.soil.maxSlope>sl?' (steepest map unit '+FSX.FIELD.soil.maxSlope+'%)':'')+': the representative slope of each map unit\u2019s major components, weighted by acres.</div>'+
+            '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres.</div>';
         }
-        setBody('fs-soil', html + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 fewest limits, 8 most); letter = the main limit (e wind or water erosion, w wetness, s root zone, c climate)</div>');
-      })
-      .catch(function(){
-        if(gen!==FSX.fieldGen) return;
-        // SSURGO upstream flakes transiently (502/504) — retry once before giving up.
-        if(!tries){ setTimeout(function(){ if(gen===FSX.fieldGen) loadSoil(poly, 1); }, 1500); return; }
-        setErr('fs-soil','The USDA soil survey server (SSURGO) isn\u2019t responding right now. This is a known-flaky government service, not your field. Redraw the field in a few minutes and it usually loads.');
-      });
+        var AS = window.AgSoil;
+        if(AS){
+          // the answer first (field figures, the county line, the map units, the source), the
+          // survey's flags under it, and how to read it closed at the bottom
+          var ss = dir ? dir.s : AS.summarize(rows);
+          var legend = '<p class="fs-caveat">Class is the land capability class, 1 fewest limits to 8 most; the letter is the main limit (e wind or water erosion, w wetness, s root zone, c climate).</p>';
+          setBody('fs-soil', AS.render(ss, dir ? dir.c : null, { direct: !!dir, directError: directErr || null, countyError: dir ? dir.countyError : null }) + factNote + AS.howTo(ss, slopeNote + legend));
+          return;
+        }
+        setBody('fs-soil', html + rateNote + factNote + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 fewest limits, 8 most); letter = the main limit (e wind or water erosion, w wetness, s root zone, c climate)</div>');
   }
   // NRCS capability wording (not "prime": prime farmland is a separate legal class)
   // ── This year's crop. CDL maps a season the February after; the page used to assume
@@ -1202,7 +1268,7 @@ window.__fsRead = function (FSX) {
     }
     if(soil && soil.slope!=null && soil.slope>=3){
       var sl=soil.slope, ev=sl<6?'Moderate':sl<12?'Elevated':'High', ec=sl<6?'#ffd400':sl<12?'#ff9326':'#d9534f';
-      rows.push(riskRow('Erosion (slope)', ev, ec, sl+'% average slope'+(soil.maxSlope>sl?' · up to '+soil.maxSlope+'%':'')+', water-erosion exposure'));
+      rows.push(riskRow('Erosion (slope)', ev, ec, sl+'% average slope'+(soil.maxSlope>sl?' · steepest map unit '+soil.maxSlope+'%':'')+' (SSURGO)'));
     }
     if(hail && !hail.err){
       // report-days in a ~40-mile circle (about 5,000 sq mi): banded per year, and worded as reports
@@ -1662,7 +1728,7 @@ window.__fsRead = function (FSX) {
   var FS_TIPS = {
     acres:{t:'Acres',b:'Total area inside the boundary you drew.'},
     soil:{t:'Soil & productivity',b:'The dominant USDA soil map units under your field, ranked by share of acreage. Soil sets what the ground can yield and how it drains.'},
-    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index, a 0\u20131 index for row-crop ground (shown \u00d7100 in the vitals strip). Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
+    nccpi:{t:'NCCPI',b:'USDA\u2019s National Commodity Crop Productivity Index, a 0 to 1 index for row-crop ground, shown at hundredths. Higher is more productive soil. It\u2019s weighted toward Corn Belt soils, so strong regional ground can still score mid-scale.'},
     ndvi:{t:'NDVI \u00b7 crop vigor',b:'How much living, green canopy the satellite sees. Runs about 0 (bare or dead) to 0.9 (dense, healthy crop). The best single at-a-glance crop-health number.'},
     ndre:{t:'NDRE \u00b7 red-edge',b:'A red-edge index tied to leaf chlorophyll. Most useful after canopy close, when NDVI flattens out. A satellite greenness reading, not a nitrogen test: low chlorophyll has many causes, and only tissue or soil tests measure nitrogen.'},
     ndmi:{t:'NDMI \u00b7 canopy moisture',b:'Water held in the crop canopy. Higher means more moisture in the leaves; a drop can flag stress before you can see it.'},
@@ -1672,7 +1738,7 @@ window.__fsRead = function (FSX) {
     bsi:{t:'BSI \u00b7 bare soil',b:'Bare Soil Index. Higher means more exposed soil: early season, after harvest, or a thin stand.'},
     rotation:{t:'Crop rotation',b:'What grew here each year on record (up to a decade), from USDA\u2019s satellite-classified Cropland Data Layer. Continuous corn raises rootworm and disease pressure.'},
     drought:{t:'Drought',b:'US Drought Monitor category for this field, None through D4 (exceptional). D2 and worse means real moisture stress.'},
-    slope:{t:'Slope',b:'Average ground slope across the field. Steeper ground carries more water-erosion exposure.'},
+    slope:{t:'Slope',b:'Average slope across the field: the soil survey’s representative slope for each map unit, weighted by acres.'},
     basis:{t:'Nearest bid',b:'The nearest elevator in our network that posts a bid for this crop, its nearest delivery month, and how far it is from the middle of this field. Futures plus or minus local basis: the number you\u2019d actually get, not the board price.'},
     rain:{t:'Rain vs normal',b:'Rain since January 1 at this county\u2019s NOAA gauge, as a share of that gauge\u2019s 1991\u20132020 normal for the same days. The gauge and its miles from your field are on the Season card.'},
     patchy:{t:'Field uniformity',b:'How evenly vigor is spread across the field. A wide spread means part of the field is lagging, a zone worth walking.'},
@@ -1707,8 +1773,11 @@ window.__fsRead = function (FSX) {
   function vCell(label, value, sub, tip, cls){
     return '<div class="fs-vital'+(cls?' '+cls:'')+'">'+
       '<div class="fs-vital-l">'+label+(tip?tipQ(tip):'')+'</div>'+
-      '<div class="fs-vital-v">'+(value==null||value===''?'<span class="fs-vital-wait">\u00b7\u00b7\u00b7</span>':value)+'</div>'+
-      (sub?'<div class="fs-vital-s">'+sub+'</div>':'')+
+      // every cell holds two value lines and its sub line from the first draw, so the strip (and the
+      // deck under it) keeps its height as the layers land (Nov 20, 2026: the soil answer added
+      // PRODUCTIVITY's sub line and a two-line soil name, and moved the deck)
+      '<div class="fs-vital-v" style="min-height:2.4em">'+(value==null||value===''?'<span class="fs-vital-wait">\u00b7\u00b7\u00b7</span>':value)+'</div>'+
+      '<div class="fs-vital-s">'+(sub||'\u00a0')+'</div>'+
     '</div>';
   }
   function renderVitals(){
@@ -1717,7 +1786,8 @@ window.__fsRead = function (FSX) {
     var acres = FSX.FIELD.acres!=null ? (+FSX.FIELD.acres).toFixed(1) : null;
     var soilV = (s&&s.top&&s.top.name) ? esc(String(s.top.name).split(',')[0]) : null;
     var soilSub = s ? soilShare(s) : null;
-    var nccpiV = (s&&s.nccpi!=null) ? Math.round(s.nccpi*100) : null;
+    // NCCPI as USDA states it, 0 to 1 at hundredths (was shown x100 as "/100"; Nov 20, 2026)
+    var nccpiV = (s&&s.nccpi!=null) ? s.nccpi.toFixed(2) : null;
     var v = ix ? ((ix.latest&&ix.latest.ndvi!=null)?ix.latest.ndvi:(ix.series&&ix.series.length?ix.series[ix.series.length-1].ndvi:null)) : null;
     var vigV = (v!=null) ? (+v).toFixed(2) : null;
     var vigSub = (v!=null) ? (FSX.FIELD._vigWord || vigorWord(v)) : null;   // same word as the vigor card
@@ -1762,7 +1832,7 @@ window.__fsRead = function (FSX) {
       vCell('RAIN', rainV, rainSub, 'rain') +
       vCell('NEAREST BID', bidV, bidSub, 'basis') +
       vCell('DROUGHT', drV, (d&&d.cat==null?'no answer':(d&&d.approx?'county-wide':null)), 'drought', drCls) +
-      vCell('PRODUCTIVITY', nccpiV, (nccpiV!=null?'/100 NCCPI':null), 'nccpi') +
+      vCell('PRODUCTIVITY', nccpiV, (nccpiV!=null?'NCCPI, 0 to 1':null), 'nccpi') +
       vCell('VIGOR', vigV, vigSub, 'ndvi', vigCls) +
       vCell('SOIL', soilV, soilSub, 'soil') +
       vCell('SLOPE', slV, null, 'slope');
@@ -1778,7 +1848,7 @@ window.__fsRead = function (FSX) {
     var bidK = P.bid ? kv('Nearest bid', P.bid+(P.bidSub?' <small>'+P.bidSub.replace(/^(corn|beans) \u00b7 /,'')+'</small>':'')) : kv('Nearest bid', P.bidSub==='feed didn\u2019t answer'?'no answer':(P.bidSub?'-':null));
     el.innerHTML='<p class="fs-peek-v">'+v+'</p>'+
       (P.county?'<p class="fs-peek-co">'+esc(P.county)+'</p>':'')+
-      kv(P.lastY?P.lastY+' crop':'Last crop', P.last)+kv('Rain vs normal', P.rain!=null?P.rain:null)+bidK+kv('Productivity', P.nccpi!=null?P.nccpi+'/100':null)+
+      kv(P.lastY?P.lastY+' crop':'Last crop', P.last)+kv('Rain vs normal', P.rain!=null?P.rain:null)+bidK+kv('Productivity', P.nccpi!=null?'NCCPI '+P.nccpi:null)+
       '<a class="fs-peek-go" href="#fs-results">Read the whole field &darr;</a>';
     el.hidden=false;
     document.documentElement.classList.add('fs-has-peek');
@@ -2354,7 +2424,7 @@ window.__fsRead = function (FSX) {
         var favors=(s.nccpiCorn!=null && s.nccpiSoy!=null && Math.abs(s.nccpiCorn-s.nccpiSoy)>=0.05)
           ? ' For row crops, the index runs a touch higher for '+(s.nccpiCorn>s.nccpiSoy?'corn':'soybeans')+' on this ground.':'';
         // good news is part of the read, not something to "keep an eye on"
-        lines.push('The soil scores <strong>'+Math.round(s.nccpi*100)+'/100</strong> on USDA\u2019s national productivity index (NCCPI '+s.nccpi.toFixed(2)+'), upper tier: what limits yield here is mostly what you manage.'+favors);
+        lines.push('The soil rates <strong>NCCPI '+s.nccpi.toFixed(2)+'</strong> on USDA\u2019s national productivity index, 0 to 1.'+favors);
       } else if(s.nccpi<0.3){
         push({ sev:2, act:false, topic:'soil', tag:null,
           title:'NCCPI '+s.nccpi.toFixed(2)+' nationally: match yield goals and inputs to what this soil reliably returns',
@@ -2493,9 +2563,9 @@ window.__fsRead = function (FSX) {
 
     // ── Erosion (slope-driven) ──
     if(s && s.slope!=null && s.slope>=6){
-      push({ sev:s.slope>=12?4:3, act:s.slope>=12, topic:'erosion', tag:'erosion exposure on the steep acres',
+      push({ sev:s.slope>=12?4:3, act:s.slope>=12, topic:'erosion', tag:'steep acres',
         title:'consider erosion control (residue, contouring) on the steeper acres',
-        detail:'Slope averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':'')+', real water-erosion exposure on the steeper acres.', watch:null });
+        detail:'Slope averages <strong>'+s.slope+'%</strong>'+(s.maxSlope>s.slope?' (steepest map unit '+s.maxSlope+'%)':'')+' in the soil survey.', watch:null });
     }
 
     // ── Hail history → bridge to the Hail Map ──
@@ -2609,6 +2679,10 @@ window.__fsRead = function (FSX) {
       html += '<div class="fs-insight-flags">'+ block(acts,'Act on this','act') + block(mons,'Keep an eye on','mon') +'</div>';
     }
     setBody('fs-insight', html);
+    // the fixed box: offer the rest of the read only when it does not fit (the button sits over
+    // the box's own bottom edge, so showing it moves nothing)
+    var rmb=document.getElementById('fs-insight-more');
+    if(wrap && rmb && wrap.style.height!=='auto') rmb.style.display = wrap.scrollHeight > wrap.clientHeight + 1 ? '' : 'none';
     setMapHeadline(lead && !held ? (lead.title.charAt(0).toUpperCase()+lead.title.slice(1)+'.') : null);
     renderPeek();
     if(!held) scheduleSettle();
