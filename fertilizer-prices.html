@@ -56,14 +56,16 @@
     .fp-c.dn{color:var(--green,#4caf50)}
     .fp-na{font-weight:400;font-size:.78rem;color:var(--text-muted);white-space:normal}
     .fp-src{font-size:.8rem;line-height:1.45;color:var(--text-dim);margin:.5rem 0 1rem}
-    .fp-charts h3{font-size:1rem;margin:1.2rem 0 .2rem;color:var(--text)}
-    .fp-chart{min-height:430px;margin:0 0 .8rem}
+    .fp-charts h3{font-size:1rem;line-height:1.3;margin:1.2rem 0 .2rem;color:var(--text)}
+    .fp-chart{margin:0 0 .8rem}
+    .fp-ch-h{min-height:2.6em}
+    .fp-plot{min-height:330px}
     .fp-chart .fp-few{font-size:.85rem;color:var(--text-dim);margin:.3rem 0 0}
     .fp-also{font-size:.9rem;color:var(--text-dim);margin:1.4rem 0 0}
     .fp-terms{margin:1.6rem 0 0;font-size:.82rem;line-height:1.6;color:var(--text-dim);border-top:1px solid var(--border);padding-top:.4rem}
     .fp-terms summary{cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center;font-weight:700}
     .fp-terms p{margin:.5rem 0}
-    @media(max-width:560px){.fp-t{font-size:.84rem}.fp-t th,.fp-t td{padding:.45rem .3rem}.fp-v b{font-size:1.02rem}.fp-chart{min-height:380px}}
+    @media(max-width:560px){.fp-t{font-size:.84rem}.fp-t th,.fp-t td{padding:.45rem .3rem}.fp-v b{font-size:1.02rem}.fp-plot{min-height:290px}}
   </style>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/fertilizer-prices#page", "name": "Fertilizer prices by state: USDA dealer survey, $ per ton", "url": "https://agsist.com/fertilizer-prices", "description": "Anhydrous, urea, UAN, DAP, MAP and potash prices per ton from USDA's own state fertilizer reports: the average and range, the change since the last report and a year ago.", "author": {"@id":"https://agsist.com/#organization"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "inLanguage": "en-US"}, {"@type": "Dataset", "@id": "https://agsist.com/fertilizer-prices#data", "name": "Fertilizer dealer prices by state, USDA AMS production cost reports", "description": "Dealer asking prices per ton for fertilizer, low, high and average, from the USDA AMS Iowa, Illinois, Oklahoma, North Carolina, Inter-Mountain West and Pacific Northwest production cost reports, with a year of each report's history.", "url": "https://agsist.com/fertilizer-prices", "creator": {"@type": "Organization", "name": "USDA Agricultural Marketing Service"}, "license": "https://agsist.com/terms"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Fertilizer prices", "item": "https://agsist.com/fertilizer"}, {"@type": "ListItem", "position": 3, "name": "USDA state reports", "item": "https://agsist.com/fertilizer-prices"}]}]}</script>
 </head>
@@ -97,11 +99,13 @@
 
       <div class="fp-top"><!--BAKE:fp-pick--><p class="fp-wait">USDA&rsquo;s state reports have not been read yet.</p><!--/BAKE--></div>
       <!--BAKE:fp-panels--><!--/BAKE-->
+      <!--BAKE:fp-near--><!--/BAKE-->
       <script>/* picks the report for the reader's state before first paint: the state the page already knows (saved place,
          picked state or ?state=), else the default report stays. Nothing is sent anywhere. */
       (function () {
-        var N = <!--BAKE:fp-near-->{}<!--/BAKE-->, sel = document.getElementById('fp-sel'), why = document.getElementById('fp-why');
-        if (!sel || !N.near) return;
+        var N = {}, sel = document.getElementById('fp-sel'), why = document.getElementById('fp-why');
+        try { N = JSON.parse(document.getElementById('fp-near').textContent); } catch (e) { return; }
+        if (!sel || !why || !N.near) return;
         function known() {
           var c = [], m = /[?&]state=([A-Za-z]{2})\b/.exec(location.search || '');
           if (m) c.push(m[1]);
@@ -122,7 +126,7 @@
           show(id);
           why.textContent = N.own.indexOf(st) >= 0 ? 'Showing USDA’s report for your state.' : 'No USDA report covers your state. Showing the nearest: ' + nameOf(id) + '.';
         } else {
-          why.textContent = 'USDA reports on six regions. Pick the one nearest you.';
+          why.textContent = 'Pick the USDA report nearest you.';
         }
         sel.addEventListener('change', function () { show(sel.value); why.textContent = 'Showing ' + nameOf(sel.value) + '.'; });
       })();

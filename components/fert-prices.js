@@ -2,7 +2,8 @@
  * The table above each chart is baked into the page from data/fert-prices/<report>.json (scripts/fetch_fert_reports.py);
  * this draws one chart per product for the report shown, from the same file's "series": that report's own rows for
  * that product, listed the same way (name, unit, freight), so a line never joins two reports or two products.
- * A product with fewer than MIN reports on file gets a line saying so instead of a chart.
+ * The figures are in the page from the start, each in a held box (a product with fewer than MIN reports on file
+ * carries a line saying so instead), so drawing a chart moves nothing below it.
  * Tests: test/fert-reports.test.mjs. */
 (function (root) {
   'use strict';
@@ -48,28 +49,25 @@
     };
   }
 
+  /* the page holds a figure per product (scripts/fetch_fert_reports.py figures()); a held box gets its chart */
   function draw(box, doc) {
     var K = root.AgChart;
-    box.innerHTML = (doc.products || []).map(function (p, i) {
-      return '<figure class="fp-chart" data-k="' + esc(p.key) + '"><h3 id="fp-ch-' + esc(doc.id) + '-' + i + '"></h3><div class="fp-plot"></div></figure>';
-    }).join('');
-    (doc.products || []).forEach(function (p, i) {
-      var fig = box.children[i], pts = points((doc.series || {})[p.key]), h = fig.querySelector('h3');
-      if (pts.length < MIN || !K) {
-        h.textContent = p.label + ' in ' + doc.region;
-        fig.querySelector('.fp-plot').innerHTML = '<p class="fp-few">' + (K ? 'A chart shows once ' + MIN + ' reports with this product are on file (' + pts.length + ' so far).' : 'The chart did not load.') + '</p>';
-        return;
-      }
+    (doc.products || []).forEach(function (p) {
+      var fig = box.querySelector('.fp-chart[data-k="' + p.key + '"]'), pts = points((doc.series || {})[p.key]);
+      if (!fig || fig.getAttribute('data-drawn')) return;
+      var plot = fig.querySelector('.fp-plot');
+      fig.setAttribute('data-drawn', '1');
+      if (!K || pts.length < MIN) { plot.innerHTML = '<p class="fp-few">The chart did not load.</p>'; return; }
       var cfg = config(doc, p, pts);
-      cfg.headEl = h;
-      K.mount(fig.querySelector('.fp-plot'), cfg);
+      cfg.headEl = fig.querySelector('h3');
+      K.mount(plot, cfg);
     });
   }
 
   var loaded = {};
   function show(id) {
     var box = root.document.querySelector('.fp-charts[data-rep="' + id + '"]');
-    if (!box || loaded[id]) return;
+    if (!box || loaded[id] || !box.querySelector('.fp-plot')) return;
     loaded[id] = 1;
     root.fetch('/data/fert-prices/' + id + '.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
       .then(function (doc) { if (doc && doc.id === id) draw(box, doc); })
