@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <script>/* lp-saved: before first paint, a reader with a lease pick or a saved place gets the county card's reserved height (components/lease-plus.js fills it from those); a first visit renders the card at its natural height */try{var _l=JSON.parse(localStorage.getItem('agsist-lease-plus')||'null'),_p=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'),_z=/^\d{5}$/;if((_l&&/^[A-Z]{2}$/.test(_l.st||''))||(_p&&(/^[A-Z]{2}$/.test(_p.state||'')||_z.test(String(_p.zip||''))))||_z.test(localStorage.getItem('agsist_zip')||'')||_z.test(localStorage.getItem('agsist_user_zip')||''))document.documentElement.classList.add('lp-saved');}catch(e){}</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <!-- static-nav:fonts -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -242,9 +243,11 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
 .lp-pick select{font:inherit;font-size:16px;color:var(--text);background:transparent;border:1px solid var(--border-2);border-radius:var(--r-md);padding:8px 10px;min-height:44px}
 .lp-pick select option{color:#000}
 /* reserved: the tallest county read fits (measured Nov 20, 2026 over every county of the survey states: 657 px at 390,
-   473 px at 1280; test/cash-lease-plus.test.mjs holds it) */
-.lp-out{min-height:42rem;margin-top:12px}
-@media(min-width:700px){.lp-out{min-height:30.5rem}}
+   473 px at 1280; test/cash-lease-plus.test.mjs holds it), only when the head script found a saved pick or place
+   (html.lp-saved); a first visit has nothing to fill in, so the card keeps its natural height */
+.lp-out{margin-top:12px}
+html.lp-saved .lp-out{min-height:42rem}
+@media(min-width:700px){html.lp-saved .lp-out{min-height:30.5rem}}
 .lp-where{font-family:var(--font-display);font-size:1.15rem;margin:0 0 4px;color:var(--text)}
 .lp-big{line-height:1.05}.lp-v{font-family:var(--font-display);font-size:2.6rem;font-weight:800;color:var(--text)}.lp-u{font-size:.95rem;color:var(--text-muted)}
 .lp-k{margin:2px 0 6px;font-size:.92rem;color:var(--text-dim)}
