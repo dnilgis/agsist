@@ -140,9 +140,18 @@
 
   /* the bids within RADIUS miles, per crop: {best, nearest, n, lo, hi, rows: [{cash, d, lat, lon, name}]}, from one set:
      a current-delivery, plain-commodity bid in dollars from a board posted in the current or previous session */
+  /* Nov 20, 2026: the one rule for a best bid (components/bid-filter.js isPlainCurrent) has the last word too;
+     this page's own current-delivery and plain tests are stricter and stay. No rule loaded: no bids, never
+     unfiltered ones. */
+  function bidRule() {
+    var w = typeof window !== 'undefined' && window.AG && window.AG.bidFilter;
+    if (w && w.isPlainCurrent) return w;
+    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* none */ }
+    return null;
+  }
   function nearBids(idx, lat, lon, now) {
-    var out = { corn: null, soybeans: null, generated: idx && idx.generated || '' };
-    if (!idx || !Array.isArray(idx.places) || !num(lat) || !num(lon)) return out;
+    var out = { corn: null, soybeans: null, generated: idx && idx.generated || '' }, BR = bidRule();
+    if (!idx || !Array.isArray(idx.places) || !num(lat) || !num(lon) || !BR) return out;
     var t = now == null ? Date.now() : now, from = freshFrom(t);
     idx.places.forEach(function (p) {
       if (!p || !num(p.lat) || !num(p.lon) || (p.currency || 'USD') !== 'USD' || !p.now) return;
@@ -153,8 +162,9 @@
       ['corn', 'soybeans'].forEach(function (c) {
         var n = p.now[c];
         if (!n || !num(n.cash) || n.cash <= 0 || !currentDelivery(n.period, t) || !plain(c, n.commodity)) return;
+        if (!BR.isPlainCurrent({ commodity: n.commodity || c, crop: c, cash: n.cash, period: n.period }, t)) return;
         var row = { cash: n.cash, basis: num(n.basisCents) ? n.basisCents : num(n.basis) ? n.basis * 100 : null, mon: futMonth(n.delivery), d: d,
-          lat: p.lat, lon: p.lon, name: placeName(p), op: String(p.operator || ''), posted: posted, st: p.state,
+          lat: p.lat, lon: p.lon, name: placeName(p), op: String(p.operator || ''), posted: posted, st: p.state, com: String(n.commodity || ''),
           key: p.place && n.period ? fnv(p.place + '|' + c + '|' + n.period) : '' };
         var o = out[c] || (out[c] = { best: null, nearest: null, n: 0, lo: Infinity, hi: -Infinity, rows: [] });
         o.n++; o.rows.push(row);
@@ -171,8 +181,9 @@
   function moveSince(prev, row) {
     var hist = prev && prev.rows && row && row.key ? prev.rows[row.key] : null, on = row && row.posted ? ctIso(row.posted) : '';
     if (!Array.isArray(hist) || !on) return null;
-    var p = null;
-    hist.forEach(function (h) { if (h && h[0] < on && num(h[1])) p = h; });
+    /* an entry of another commodity (bids-prev's 4th field, Nov 20, 2026) is never the day before */
+    var p = null, tag = String(row.com || '').toLowerCase().split(/\s+/).filter(Boolean).join(' ');
+    hist.forEach(function (h) { if (h && h[0] < on && num(h[1]) && (h.length < 4 || row.com == null || h[3] === tag)) p = h; });
     if (!p) return null;
     return { c: Math.round((row.cash - p[1]) * 400) / 4, since: p[0], gap: p[0] < prevTrading(on) };
   }

@@ -24,7 +24,7 @@
   var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=67620d60';
-  var CL_JS = '/components/change-lines.js?v=5';
+  var CL_JS = '/components/change-lines.js?v=6';
   var CM_JS = '/components/changemap.js?v=4';
   var S = { top: null, cmWant: null, seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};

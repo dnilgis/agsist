@@ -312,18 +312,24 @@
     });
   }
   /* The same places scripts/send_zip_alert.py counts, highest cash first. */
+  /* Nov 20, 2026: only a plain current bid counts, as in the sender (components/bid-filter.js
+     isPlainCurrent, scripts/bid_rule.py): Plenish soybeans or a Harvest 2027 contract is never
+     "Highest now". Without the rule loaded, no row is shown as highest. */
   function zipRows(net, coord, crop, radius){
     var out = [], month = ctMonth(), now = Date.now();
-    if(!net || !coord) return out;
+    var BR = window.AG && window.AG.bidFilter && window.AG.bidFilter.isPlainCurrent ? window.AG.bidFilter : null;
+    if(!net || !coord || !BR) return out;
     net.data.places.forEach(function(p){
       if(!p || String(p.via || '').toLowerCase() === 'barchart' || (p.currency || 'USD') !== 'USD' || p.mappable === false) return;
       if(typeof p.lat !== 'number' || typeof p.lon !== 'number' || (p.lat === 0 && p.lon === 0)) return;
       var n = p.now && p.now[crop]; if(!n || typeof n.cash !== 'number') return;
       var cash = ppu(n.cash); if(!(cash >= BAND[crop][0] && cash <= BAND[crop][1])) return;
       var end = String(n.period || '').split('/').pop(); if(/^\d{4}-\d{2}/.test(end) && end.slice(0, 7) < month) return;
+      var nb = { commodity:n.commodity || crop, crop:crop, cash:n.cash, period:n.period };
+      if(!BR.isPlainCurrent(nb, now)) return;
       var t = Date.parse(p.pricedAt); if(isNaN(t) || now - t > MAX_AGE_H * 3600e3) return;
       var d = miles(coord, [p.lat, p.lon]); if(d > radius) return;
-      out.push({ name:p.operator, town:p.town || p.city || '', st:p.state, cash:Math.round(cash * 100), mi:d });
+      out.push({ name:p.operator, town:p.town || p.city || '', st:p.state, cash:Math.round(cash * 100), mi:d, dw:BR.deliveryWords(nb, now) });
     });
     out.sort(function(a, b){ return b.cash - a.cash || a.mi - b.mi; });
     return out;
@@ -386,7 +392,7 @@
       if(!rows.length){ nowEl.textContent = 'No board AGSIST reads direct posts ' + cSel.value + ' within ' + rSel.value + ' mi right now. The alert waits until one does.'; price.placeholder = ''; return; }
       var t = rows[0];
       price.placeholder = (t.cash / 100).toFixed(2);
-      var s = 'Highest now: ' + cash$(t.cash) + ' at ' + t.name + ', ' + t.town + ' (' + Math.round(t.mi) + ' mi). ' + rows.length + ' board' + (rows.length === 1 ? '' : 's') + ' in range.';
+      var s = 'Highest now: ' + cash$(t.cash) + (t.dw ? ' for ' + t.dw + ' delivery' : '') + ' at ' + t.name + ', ' + t.town + ' (' + Math.round(t.mi) + ' mi). ' + rows.length + ' board' + (rows.length === 1 ? '' : 's') + ' in range.';
       if(v >= 1 && Math.round(v * 100) <= t.cash) s += ' That price is already paid: you will get one email soon after you confirm.';
       nowEl.textContent = s;
     }
