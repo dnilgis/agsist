@@ -417,6 +417,24 @@
   "classes": "Productivity indexes based on Bulletin 811 are used in developing these profiles.",
   "limited": "Limited numbers of sales in some years & special features may affect value"
  },
+ "pi": {
+  "average": {
+   "high": 116,
+   "low": 100
+  },
+  "excellent": {
+   "high": 147,
+   "low": 133
+  },
+  "fair": {
+   "below": 100
+  },
+  "good": {
+   "high": 132,
+   "low": 117
+  }
+ },
+ "pi_what": "Productivity Indexes (P/I) Ranges as printed: each class is a tract with a significant amount of soils in that range (Farm Property Classifications & Definitions)",
  "regions": {
   "Central": {
    "classes": {
