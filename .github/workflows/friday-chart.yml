@@ -1,17 +1,10 @@
+# Friday Chart: proposes the week's spec as a pull request for review (never publishes).
 name: Friday Chart spec
 
-# The week's Friday Chart (Infographic of the Week), proposed for review (Nov 20, 2026). Fridays after cot.yml's
-# last Friday fetch (21:17 UTC, so the week's COT report is in), scripts/build_infographic.py picks the week's kind
-# by its rotation rule (a kind whose data is fresh and not printed yet, the one printed longest ago first) and writes
-# data/infographics/<date>.json. Only that spec is committed, on its own branch, with a pull request for the owner's
-# review: nothing is published here. Once the pull request merges, infographic-pages.yml builds the page, the link
-# card and infographic/latest.json (the home page block). No fresh kind: the log says so and nothing is written.
-# By hand: Run workflow, with a kind (harvest-gap, funds-corn) to override the rotation and a day (yyyy-mm-dd).
-
 on:
-  schedule:
-    - cron: '23 22 * * 5'
-    - cron: '53 23 * * 5'
+  workflow_run:
+    workflows: ["Fetch COT Data"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       kind:
@@ -33,19 +26,33 @@ concurrency:
 
 jobs:
   spec:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
+      - name: Only after the Friday COT fetch
+        id: when
+        env:
+          EVENT: ${{ github.event_name }}
+          CREATED: ${{ github.event.workflow_run.created_at }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then echo "go=1" >> "$GITHUB_OUTPUT"; exit 0; fi
+          dow=$(date -u -d "$CREATED" +%u); hr=$(date -u -d "$CREATED" +%H)
+          if [ "$dow" = "5" ] && [ "$hr" -ge 21 ]; then echo "go=1" >> "$GITHUB_OUTPUT"; else echo "not the Friday fetch after the release ($CREATED)"; fi
       - uses: actions/checkout@v4
+        if: steps.when.outputs.go == '1'
       - name: Engine checkout
+        if: steps.when.outputs.go == '1'
         uses: ./.github/actions/engine
         with:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
       - uses: actions/setup-python@v5
+        if: steps.when.outputs.go == '1'
         with:
           python-version: "3.12"
       - name: Build the week's spec and propose it
+        if: steps.when.outputs.go == '1'
         env:
           KIND: ${{ github.event.inputs.kind || 'week' }}
           DAY_IN: ${{ github.event.inputs.day }}
