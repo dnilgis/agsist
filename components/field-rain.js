@@ -523,7 +523,8 @@
       $('fr-count').innerHTML = lk ? (list.length ? '<a href="/field-rain">All ' + list.length + ' of your saved fields</a>' : '') :
         (list.length ? list.length + ' of ' + MAX + ' fields saved on this device' : '');
       S.open = lk ? { f: hit >= 0 ? list[hit] : lk } : null;
-      $('fr-hist').hidden = !lk;
+      $('fr-hist').classList.toggle('fr-off', !lk);
+      d.documentElement.classList.toggle('fr-link', !!lk);
       if (lk) $('fr-htitle').textContent = S.open.f.n + ': every day of rain, PRISM estimate';
       if (lk) fill($('fr-c' + (hit >= 0 ? hit : 'L')), S.open.f);
       else list.forEach(function (f, i) { var el = $('fr-c' + i); if (el) fill(el, f); });
@@ -534,7 +535,7 @@
       var box = $('fr-hist'), t = today();
       if (!S.year) S.year = +t.slice(0, 4);
       if (pr.failed) { box.querySelector('.fr-hbody').innerHTML = '<p class="fr-err">PRISM did not answer just now, so the daily history cannot be drawn. Reload in a minute; the link keeps the field.</p>'; return; }
-      var map = pr.map, y = S.year, rowsD = dailyRows(map, t).filter(function (r) { return +r.date.slice(0, 4) === y; });
+      var map = pr.map, y = S.year, rowsD = dailyRows(map, t, S.gauge[gaugeKey(f)]).filter(function (r) { return +r.date.slice(0, 4) === y; });
       var mt = monthTotals(map, y, t);
       var h = '<div class="fr-yr" role="group" aria-label="Year">' + [+t.slice(0, 4), +t.slice(0, 4) - 1].map(function (yy) {
         return '<button type="button" data-yr="' + yy + '" aria-pressed="' + (yy === y) + '">' + yy + '</button>'; }).join('') + '</div>' +
