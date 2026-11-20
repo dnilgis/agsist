@@ -142,6 +142,7 @@
       o.tiers = [['excellent', 'Excellent productivity'], ['good', 'Good productivity'], ['average', 'Average productivity'], ['fair', 'Fair productivity']]
         .filter(function (t) { return C[t[0]] && C[t[0]].rent; })
         .map(function (t) { var r = C[t[0]].rent; return {k: t[0], label: t[1], v: isNum(r.value) ? r.value : null, printed: r.printed, pi: pi[t[0]]}; });
+      o.extra = {pi: pi};
       var g2 = C.good && C.good.rent;
       if (g2) o.main = {label: 'Typical cash rent, good productivity land', v: isNum(g2.value) ? g2.value : null, printed: g2.printed};
       o.notes.push('ISPFMRA prints no count of leases behind each figure.');
@@ -157,10 +158,12 @@
     },
     SD: function (S, fips) {
       var g = region(S, fips); if (!g) return null;
-      var R = g.R, cl = isNum(g.r.cluster) && R.clusters ? R.clusters[g.r.cluster] : null, rt = (cl || R).rent || {}, c = rt.crop || {};
-      var o = base(S, 'SDSU', cl ? 'county group' : S.unit, cl ? cl.name + ' (' + g.r.region + ' region)' : rwhere(S, g.r.region, R));
+      /* the region's figure first, as the rent page and the Atlas print it; the county group's (where SDSU prints one) below */
+      var R = g.R, cl = isNum(g.r.cluster) && R.clusters ? R.clusters[g.r.cluster] : null, c = (R.rent || {}).crop || {}, k = cl ? ((cl.rent || {}).crop || {}) : {};
+      var o = base(S, 'SDSU', S.unit, rwhere(S, g.r.region, R));
       o.main = {label: 'Cash rent, non-irrigated cropland, average', v: c.average};
       o.tiers = [{k: 'high', label: 'High productivity', v: c.high}, {k: 'low', label: 'Low productivity', v: c.low}];
+      if (cl && isNum(k.average)) o.tiers.push({k: 'group', label: 'County group ' + cl.name + ', average', v: k.average});
       if (R.limited) o.notes.push('SDSU: data for this region are limited; interpret with caution.');
       return o;
     },
@@ -178,6 +181,8 @@
       var o = base(S, 'Colorado State', S.unit, rwhere(S, g.r.region, g.R)), rt = g.R.rent || {}, d = (rt.dry || {}).corn || {}, i = (rt.irr || {}).corn || {};
       o.main = isNum(i.median) ? {label: 'Cash rent, irrigated corn ground, median', v: i.median} : null;
       if (isNum(i.low) && isNum(i.high)) o.tiers.push({k: 'irange', label: 'Irrigated corn, range reported', printed: money(i.low) + ' to ' + money(i.high)});
+      var al = (rt.irr || {}).alfalfa || {};
+      if (isNum(al.median)) o.tiers.push({k: 'alfalfa', label: 'Irrigated alfalfa, median', v: al.median});
       if (isNum(d.median)) o.tiers.push({k: 'dry', label: 'Dryland corn, median', v: d.median});
       o.notes.push('CSU: the rates reported are not recommended rates.');
       return o;
@@ -235,12 +240,13 @@
       }
     }
     if (st === 'IL' && isNum(inp.pi)) {
-      var pis = {}; P.tiers.forEach(function (x) { pis[x.k] = x.pi; });
-      var k = piClass(pis, inp.pi), tt = P.tiers.filter(function (x) { return x.k === k; })[0];
-      if (k && tt) {
-        var rg = tt.pi.below ? 'below ' + tt.pi.below : tt.pi.low + ' to ' + tt.pi.high;
-        out.push({k: 'pi', tier: k, v: tt.v, text: 'A P/I of ' + inp.pi + ' falls in ISPFMRA’s ' + tt.label.toLowerCase() + ' class (' + rg + (inp.pi > 147 ? '; above the top of the printed scale' : '') +
-          '). Its typical cash rent in the ' + P.where.replace(/ \(.*$/, '') + ': ' + (tt.printed && !isNum(tt.v) ? tt.printed : money(tt.v)) + '. ISPFMRA classes a tract by a significant amount of its soils, not by an average.'});
+      var pis = (P.extra && P.extra.pi) || {}, k = piClass(pis, inp.pi), tt = P.tiers.filter(function (x) { return x.k === k; })[0];
+      if (k) {
+        var rg = pis[k].below ? 'below ' + pis[k].below : pis[k].low + ' to ' + pis[k].high, lbl = k + ' productivity';
+        var top = pis.excellent && inp.pi > pis.excellent.high ? '; above the top of the printed scale' : '';
+        out.push({k: 'pi', tier: k, v: tt ? tt.v : null, text: 'A P/I of ' + inp.pi + ' falls in ISPFMRA’s ' + lbl + ' class (' + rg + top + '). ' +
+          (tt ? 'Its typical cash rent in the ' + P.where.replace(/ \(.*$/, '') + ': ' + (isNum(tt.v) ? money(tt.v) : tt.printed) + '.' : 'ISPFMRA prints no rent for that class in the ' + P.where.replace(/ \(.*$/, '') + '.') +
+          ' ISPFMRA classes a tract by a significant amount of its soils, not by an average.'});
       }
     }
     return out;
