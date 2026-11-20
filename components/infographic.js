@@ -203,7 +203,7 @@
     dark: { bg: '#0b0d0f', panel: '#14181b', line: '#262c30', ink: '#f1efe8', dim: '#a9aea9', gold: '#d4a43b', b2: '#e0683f', b1: '#9a4f37',
       a2: '#57b3a0', a1: '#2f6f64', even: '#6d7378', none: '#1a1f22', nonel: '#4a5156', tileink: '#0b0d0f', tilesoft: '#f1efe8',
       ringbg: '#262c30', tick: '#f1efe8', corn: '#d4a43b', serif: false },
-    paper: { bg: '#f3ecdc', panel: '#fbf6ea', line: '#d9ccb0', ink: '#1f1b14', dim: '#5e5546', gold: '#9a6c12', b2: '#b9472a', b1: '#e3a088',
+    paper: { bg: '#f3ecdc', panel: '#fbf6ea', line: '#d9ccb0', ink: '#1f1b14', dim: '#5e5546', gold: '#8a6514', b2: '#b9472a', b1: '#e3a088',
       a2: '#2d6e62', a1: '#93c2b5', even: '#7d7667', none: '#e8dfcb', nonel: '#b8ab90', tileink: '#fbf6ea', tilesoft: '#1f1b14',
       ringbg: '#e3d8c0', tick: '#1f1b14', corn: '#b98a22', serif: true }
   };
@@ -501,99 +501,108 @@
     });
     return bottom;
   };
+  /* funds-corn (Nov 20, after two outside reviews): one gold line, its two ends and the zero line labeled in words,
+     the zero line brighter than the grid; under it the release line and the same weeks in futures (our own settles).
+     L.F: the type sizes (the phone poster: data 30 px, captions 24 px on the 1080 canvas) */
   PANEL.line = function (g, T, P, x, y, w, L) {
-    y = g.lines(String(P.hint).replace('Each tile is a state.', 'Each state is colored by its gap.'), x, y + 14, 18, 500, T.dim, 24, w) - 6;
-    var pts = P.points, ys = pts.map(function (q) { return q.y; }), lo = Math.min.apply(null, ys.concat([0])), hi = Math.max.apply(null, ys.concat([0]));
+    var F = L.F, pts = P.points, ys = pts.map(function (q) { return q.y; }), lo = Math.min.apply(null, ys.concat([0])), hi = Math.max.apply(null, ys.concat([0]));
     var span = hi - lo || 1, stepv = Math.pow(10, Math.floor(Math.log(span / 3) / Math.LN10)), k;
     [1, 2, 2.5, 5, 10].some(function (m) { k = m * stepv; return span / k <= 5; });
     lo = Math.floor(lo / k) * k; hi = Math.ceil(hi / k) * k;
     var lw = 0, ticks = [];
-    for (var v = lo; v <= hi + k / 2; v += k) { ticks.push(v); lw = Math.max(lw, g.w(num(v), 15, 600)); }
-    var h = L.W > 1100 ? 300 : 340, px0 = x + lw + 14, pw = w - lw - 14 - 90, top = y + 16, bot = top + h - 40;
-    function px(i) { return px0 + 20 + (pw - 40) * (pts.length === 1 ? 0.5 : i / (pts.length - 1)); }
+    for (var v = lo; v <= hi + k / 2; v += k) { ticks.push(v); lw = Math.max(lw, g.w(num(v), F.cap, 600)); }
+    var h = F.chart, px0 = x + lw + 12, pw = w - lw - 12, top = y + F.data + 18, bot = top + h;
+    function px(i) { return px0 + 16 + (pw - 32) * (pts.length === 1 ? 0.5 : i / (pts.length - 1)); }
     function py(v) { return bot - (bot - top) * (v - lo) / (hi - lo || 1); }
     ticks.forEach(function (v) {
-      g.line(px0, py(v), px0 + pw, py(v), T.line, v === 0 ? 3 : 1.5, 'butt', v === 0 ? [8, 6] : null);
-      g.text(num(v), px0 - 10, py(v) + 5, 15, 600, T.dim, 'right');
+      if (v !== 0) g.line(px0, py(v), px0 + pw, py(v), T.line, 1.5, 'butt');
+      g.text(num(v), px0 - 10, py(v) + F.cap * 0.35, F.cap, 600, T.dim, 'right');
     });
-    g.poly(pts.map(function (q, i) { return [px(i), py(q.y)]; }), T.gold, 6);
-    var stepx = pts.length > 1 ? (pw - 40) / (pts.length - 1) : 1e9;
+    /* the zero line: brighter than the grid, labeled */
+    g.line(px0, py(0), px0 + pw, py(0), T.ink, 3, 'butt');
+    g.poly(pts.map(function (q, i) { return [px(i), py(q.y)]; }), T.gold, F.data > 24 ? 7 : 5);
+    var stepx = pts.length > 1 ? (pw - 32) / (pts.length - 1) : 1e9, every = Math.max(1, Math.ceil(g.w('Sep 22', F.cap, 600) * 1.3 / stepx));
     pts.forEach(function (q, i) {
-      g.circle(px(i), py(q.y), 8, T.gold);
-      if (stepx >= 64 || i === 0 || i === pts.length - 1) g.text(q.label, px(i), bot + 28, 15, 600, T.dim, 'center');
+      g.circle(px(i), py(q.y), F.data > 24 ? 9 : 7, T.gold);
+      var lastI = pts.length - 1;
+      if (i === 0 || i === lastI || (i % every === 0 && lastI - i >= every)) g.text(q.label, px(i), bot + F.cap + 10, F.cap, 600, T.dim, i === 0 ? 'left' : i === lastI ? 'right' : 'center');
     });
-    var f = pts[0], l = pts[pts.length - 1];
-    g.text(num(f.y), px(0) + 14, py(f.y) - 14, 20, 800, T.ink, 'left');
-    g.text(num(l.y), px(pts.length - 1) + 16, py(l.y) + 7, 20, 800, T.ink, 'left');
-    return bot + 36;
-  };
-  PANEL.split = function (g, T, P, x, y, w) {
-    var mx = 1;
-    P.weeks.forEach(function (wk) { mx = Math.max(mx, wk.long, wk.short); });
-    var lab = Math.max(g.w('Longs', 16, 600), g.w('Shorts', 16, 600)) + 12, vw = 0;
-    P.weeks.forEach(function (wk) { vw = Math.max(vw, g.w(fmt(wk.long), 17, 800), g.w(fmt(wk.short), 17, 800)); });
-    vw += 10;
-    P.weeks.forEach(function (wk) {
-      g.text(wk.label, x, y + 20, 18, 700, T.ink);
-      y += 30;
-      [['Longs', wk.long, T.a2], ['Shorts', wk.short, T.b2]].forEach(function (b) {
-        g.text(b[0], x, y + 17, 16, 600, T.dim);
-        var bw = w - lab - vw;
-        g.rect(x + lab, y + 3, bw, 16, 8, T.ringbg);
-        g.rect(x + lab, y + 3, Math.max(16, bw * b[1] / mx), 16, 8, b[2]);
-        g.text(fmt(b[1]), x + w, y + 18, 17, 800, T.ink, 'right');
-        y += 28;
-      });
-      y += 8;
-    });
-    var ch = P.change, s = 'This week: longs ' + sgn(ch.long) + ', shorts ' + sgn(ch.short) + (ch.label ? ' (' + ch.label + ').' : '.');
-    return g.lines(s, x, y + 14, 16, 500, T.dim, 21, w) - 10;
-  };
-  PANEL.changes = function (g, T, P, x, y, w) {
-    var mx = 1, lab = 0, vw = 0;
-    P.rows.forEach(function (r) { mx = Math.max(mx, Math.abs(r.chg)); lab = Math.max(lab, g.w(r.label, 17, 600)); vw = Math.max(vw, g.w(sgn(r.chg), 17, 800)); });
-    lab += 12; vw += 12;
-    var neg = P.rows.some(function (r) { return r.chg < 0; }), pos = P.rows.some(function (r) { return r.chg > 0; });
-    var bx = x + lab, bw = w - lab - vw, zero = neg && pos ? bx + bw / 2 : neg ? bx + bw : bx, half = neg && pos ? bw / 2 : bw;
-    P.rows.forEach(function (r) {
-      g.text(r.label, x, y + 21, 17, 600, T.ink);
-      var len = Math.max(4, half * Math.abs(r.chg) / mx);
-      g.rect(r.chg < 0 ? zero - len : zero, y + 8, len, 16, 4, r.chg < 0 ? T.b2 : T.a2);
-      g.text(sgn(r.chg), x + w, y + 21, 17, 800, T.ink, 'right');
-      y += 30;
-    });
-    g.line(zero, y - 30 * P.rows.length + 2, zero, y - 2, T.dim, 2);
-    if (P.of > P.rows.length) y = g.lines('The last ' + P.rows.length + ' of ' + P.of + ' weeks.', x, y + 16, 15, 500, T.dim, 20, w) - 14;
-    return y + 2;
-  };
-  PANEL.rank = function (g, T, P, x, y, w) {
-    var big = Math.round(P.pctl) + '%', n = 72;
-    g.text(big, x, y + Math.round(n * 0.78), n, 900, T.gold, 'left', T.serif);
-    y += Math.round(n * 0.9) + 8;
-    y = g.lines(P.line, x, y + 20, 20, 600, T.ink, 26, w);
-    y = g.lines(P.sub, x, y - 2, 16, 500, T.dim, 21, w) + 12;
-    var gx = x + 8, gw = w - 16;
-    g.rect(gx, y + 22, gw, 14, 7, T.ringbg);
-    g.rect(gx, y + 22, Math.max(14, gw * P.pctl / 100), 14, 7, T.gold, 0.55);
-    if (P.pctl_prev != null) {
-      var qx = gx + gw * P.pctl_prev / 100;
-      g.circle(qx, y + 29, 9, T.panel, 1, T.dim, 3);
-      g.text('Last week', Math.min(Math.max(qx, gx + 40), gx + gw - 40), y + 60, 14, 600, T.dim, 'center');
+    var f = pts[0], l = pts[pts.length - 1], fx = px(0), lx = px(pts.length - 1);
+    /* the ends in words: the start above its point; the end beside its point on the side the line came from
+       (below it when the line fell into it, above when it rose), so no word sits on the line or the zero line */
+    g.text(P.start, Math.max(x, fx - 6), py(f.y) - 16, F.data, 800, T.ink, 'left');
+    var into = pts.length > 1 ? l.y - pts[pts.length - 2].y : 0;
+    g.text(P.end, lx - 4, into < 0 ? py(l.y) + F.data + 4 : py(l.y) - 16, F.data, 800, T.ink, 'right');
+    /* "Longs = shorts" on the zero line, at the side away from the line's ends */
+    var zl = P.zero, zw = g.w(zl, F.cap, 700), zx = px0 + 8, zy = py(0) - 10;
+    if (f.y < 0) zx = px0 + pw - zw - 8;
+    g.rect(zx - 6, zy - F.cap, zw + 12, F.cap + 6, 4, T.panel);
+    g.text(zl, zx, zy, F.cap, 700, T.ink, 'left');
+    y = bot + F.cap + 24;
+    /* the release line (positions day, release day and why it was late) is this panel's source, at its foot */
+    if (P.release) y = g.lines(P.release, x, y + F.cap, F.cap, 500, T.dim, Math.round(F.cap * 1.3), w) - Math.round(F.cap * 1.3);
+    if (P.futures) {
+      g.line(x, y + 16, x + w, y + 16, T.line, 1.5);
+      y = g.lines(P.futures.text, x, y + 16 + F.cap + 12, F.cap, 600, T.ink, Math.round(F.cap * 1.3), w) - Math.round(F.cap * 1.3);
+      y = g.lines('Source: ' + P.futures.source + '.', x, y + F.cap + 6, F.cap, 500, T.dim, Math.round(F.cap * 1.3), w) - Math.round(F.cap * 1.3);
     }
-    var px = gx + gw * P.pctl / 100;
-    g.circle(px, y + 29, 11, T.ink);
-    g.text('This week', Math.min(Math.max(px, gx + 40), gx + gw - 40), y + 12, 14, 700, T.ink, 'center');
-    g.text('Lowest', gx, y + (P.pctl_prev != null ? 82 : 60), 13, 600, T.dim);
-    g.text('Highest', gx + gw, y + (P.pctl_prev != null ? 82 : 60), 13, 600, T.dim, 'right');
-    return y + (P.pctl_prev != null ? 88 : 66);
+    return y + 8;
   };
-  var PANEL_ICON = { map: 'map', crops: 'combine', means: 'info', line: 'chart' };
+  /* longs (green) and shorts (orange), each with its word; the last week's sentence first, then the run */
+  PANEL.split = function (g, T, P, x, y, w, L) {
+    var F = L.F, lh = Math.round(F.body * 1.3);
+    y = g.lines(P.lead, x, y + F.body, F.body, 600, T.ink, lh, w) - lh;
+    if (P.run) y = g.lines(P.run, x, y + 8 + F.body, F.body, 500, T.dim, lh, w) - lh;
+    y += 14;
+    var mx = 1, wl = 0;
+    P.weeks.forEach(function (wk) { mx = Math.max(mx, wk.long, wk.short); wl = Math.max(wl, g.w(wk.label, F.cap, 800)); });
+    var lab = wl + 16 + Math.max(g.w('Longs', F.cap, 700), g.w('Shorts', F.cap, 700)) + 14, vw = 0;
+    P.weeks.forEach(function (wk) { vw = Math.max(vw, g.w(fmt(wk.long), F.data, 800), g.w(fmt(wk.short), F.data, 800)); });
+    vw += 14;
+    var bh = Math.round(F.data * 0.6), bw = w - lab - vw;
+    /* one row per side: the week, then Longs or Shorts in its color, the bar, the number */
+    P.weeks.forEach(function (wk, wi) {
+      if (wi) { g.line(x, y + 2, x + w, y + 2, T.line, 1.5); y += 8; }
+      g.text(wk.label, x, y + F.data * 0.8, F.cap, 800, T.ink);
+      [['Longs', wk.long, T.a2], ['Shorts', wk.short, T.b2]].forEach(function (b) {
+        g.text(b[0], x + wl + 16, y + F.data * 0.8, F.cap, 700, b[2]);
+        g.rect(x + lab, y + F.data * 0.8 - bh + 2, bw, bh, bh / 2, T.ringbg);
+        g.rect(x + lab, y + F.data * 0.8 - bh + 2, Math.max(bh, bw * b[1] / mx), bh, bh / 2, b[2]);
+        g.text(fmt(b[1]), x + w, y + F.data * 0.8 + 2, F.data, 800, T.ink, 'right');
+        y += F.data + 10;
+      });
+    });
+    return y;
+  };
+  /* where the net sits since 2010: one sentence, a bar with this week's mark, both ends named */
+  PANEL.rank = function (g, T, P, x, y, w, L) {
+    var F = L.F, lh = Math.round(F.body * 1.3);
+    y = g.lines(P.line, x, y + F.body, F.body, 600, T.ink, lh, w) - lh;
+    y = g.lines(P.sub, x, y + 6 + F.cap, F.cap, 500, T.dim, Math.round(F.cap * 1.3), w) - Math.round(F.cap * 1.3);
+    if (L.F.data > 24) return y + 4;   /* the phone poster: the sentence alone (one column, no room for the bar) */
+    var gx = x + 8, gw = w - 16, gy = y + F.cap + 26;
+    var pxm = gx + gw * P.pctl / 100;
+    g.text('This week', Math.min(Math.max(pxm, gx + 60), gx + gw - 60), gy - 6, F.cap, 700, T.ink, 'center');
+    g.rect(gx, gy + 6, gw, 14, 7, T.ringbg);
+    g.rect(gx, gy + 6, Math.max(14, gw * P.pctl / 100), 14, 7, T.gold, 0.6);
+    g.circle(pxm, gy + 13, 12, T.ink);
+    g.text(P.ends[0], gx, gy + 34 + F.cap, F.cap, 600, T.dim);
+    g.text(P.ends[1], gx + gw, gy + 34 + F.cap, F.cap, 600, T.dim, 'right');
+    return gy + 34 + F.cap + 4;
+  };
+  PANEL.read = function (g, T, P, x, y, w, L) {
+    var F = L.F, lh = Math.round(F.body * 1.3);
+    P.lines.forEach(function (s) { y = g.lines(s, x, y + F.body, F.body, 500, T.ink, lh, w) - lh + 6; });
+    if (P.small) y = g.lines(P.small, x, y + 6 + F.cap, F.cap, 500, T.dim, Math.round(F.cap * 1.3), w) - Math.round(F.cap * 1.3);
+    return y + 4;
+  };
+  var PANEL_ICON = { map: 'map', crops: 'combine', means: 'info', line: 'chart', read: 'info' };
 
   function posterRows(spec, layout) {
     var have = {};
     spec.poster.panels.forEach(function (p) { have[p.id] = p; });
     var want = spec.kind === 'funds-corn'
-      ? (layout === 'print' ? [['line'], ['split', 'changes', 'rank'], ['means']] : [['line'], ['split', 'changes'], ['rank'], ['means']])
+      ? (layout === 'print' ? [['line'], ['split'], ['rank', 'read']] : [['line'], ['split'], ['rank'], ['read']])
       : (layout === 'print' ? [['map'], ['count', 'crops', 'lists'], ['means']] : [['map'], ['count', 'crops'], ['lists'], ['means']]);
     return want.map(function (r) { return r.filter(function (id) { return have[id]; }).map(function (id) { return have[id]; }); })
       .filter(function (r) { return r.length; });
@@ -604,6 +613,10 @@
     o = o || {};
     var T = THEMES[theme] || THEMES.dark, L = LAYOUTS[layout] || LAYOUTS.phone, K = SK(), PO = spec.poster, W = L.W, X = L.pad, IW = W - 2 * L.pad;
     var g = Draw(ctx, T), gap = L.gap + (o.extra || 0), step = 1, hook = PO.panels.filter(function (p) { return p.id === 'hook'; })[0];
+    /* type sizes: the funds phone poster is one column with data labels of 30 px and captions of 24 px on the 1080
+       canvas (Nov 20 outside review); the print sheet and the harvest poster keep their sizes */
+    var big = spec.kind === 'funds-corn' && layout === 'phone';
+    L = Object.assign({}, L, { F: big ? { data: 30, cap: 24, body: 26, chart: 270, src: 24, foot: 24 } : { data: 22, cap: 16, body: 20, chart: 300, src: 15, foot: 14 } });
     /* 1. the head: kicker, the headline, the lede, the big number row, its source */
     g.open('head', X, L.pad, IW);
     var y = L.pad;
@@ -615,7 +628,7 @@
     g.rect(X + IW - dw - 20, y + 2, dw + 20, 28, 6, null, 1, T.gold, 2);
     g.text(dt, X + IW - dw - 10, y + 21, 14, 700, T.gold, 'left', false, 1.7);
     y += 32 + 16;
-    var ts = L.title, hl = PO.headline;
+    var ts = big ? 84 : L.title, hl = PO.headline;
     y = g.rich([{ s: hl.lead }, { s: hl.em, fill: T.gold }, { s: hl.tail }], X, y + Math.round(ts * 0.8), IW, ts, Math.round(ts * 0.96), { weight: 900, fill: T.ink }, T.serif);
     y = g.rich(PO.lede, X, y - Math.round(ts * 0.96) + Math.round(ts * 0.2) + 10 + 28, IW, 28, 37, { weight: 500, fill: T.dim }) - 37 + 10;
     if (hook) {
@@ -663,16 +676,17 @@
         if (icon) ICON[icon](g, ix + iw - iconW, iy + (icon === 'combine' ? -2 : 2), iconW, T.gold, T.panel);
         var by = iy + Math.max(38, tl.length * 34) + 12;
         ends.push(PANEL[P.id](g, T, P, ix, by, iw, L));
-        srcs.push(g.wrap(P.source, 15, 500, iw));
+        srcs.push(g.wrap(P.source, L.F.src, 500, iw));
       });
       var h = 0;
-      row.forEach(function (P, i) { h = Math.max(h, ends[i] - y + 10 + srcs[i].length * 19.5 + 16); });
+      var sl = Math.round(L.F.src * 1.3);
+      row.forEach(function (P, i) { h = Math.max(h, ends[i] - y + 10 + srcs[i].length * sl + 16); });
       row.forEach(function (P, i) {
         var px = X + i * (pw + L.hgap), bi = g.boxes.length - n + i;
         g.box = bi;
         g.boxes[bi].h = h;
         g.ops[marks[i]] = { t: 'rect', x: px, y: y, w: pw, h: h, r: 18, fill: T.panel, alpha: 1, stroke: T.line, lw: 1 };
-        srcs[i].forEach(function (l, k) { g.text(l, px + 26, y + h - 16 - (srcs[i].length - 1 - k) * 19.5 - 4, 15, 500, T.dim); });
+        srcs[i].forEach(function (l, k) { g.text(l, px + 26, y + h - 16 - (srcs[i].length - 1 - k) * sl - 4, L.F.src, 500, T.dim); });
       });
       y += h;
     });
@@ -686,10 +700,18 @@
     g.text('.com', X + aw, fy + 46, 40, 900, T.gold, 'left', T.serif);
     var mx = X + Math.max(220, aw + g.w('.com', 40, 900, T.serif) + 26), mw = X + IW - (qs ? qs + 22 : 0) - mx;
     var lab = ('Friday Chart · Infographic of the Week · ' + K.mdy(spec.date)).toUpperCase();
-    var ls = g.fit(lab, 16, 12, 700, mw, false, 1);
-    g.text(lab, mx, fy + 24, ls, 700, T.dim, 'left', false, 1);
-    var ey = g.lines(PO.data_line, mx, fy + 46, 14, 500, T.dim, 19, mw);
-    ey = g.lines('Scan the code or visit ' + shown(spec) + ' for the live page.', mx, ey + 2, 14, 600, T.dim, 19, mw);
+    var fl = Math.round(L.F.foot * 1.35), ey;
+    if (big) {
+      /* the phone poster: the series name wrapped at 20 px, then the full citation and the live page at 24 px */
+      ey = g.lines(lab, mx, fy + 20, 20, 700, T.dim, 26, mw) + 8;
+      ey = g.lines(PO.data_line, mx, ey, L.F.foot, 500, T.dim, fl, mw);
+      ey = g.lines('Live page: ' + shown(spec), mx, ey + 2, L.F.foot, 600, T.dim, fl, mw);
+    } else {
+      var ls = g.fit(lab, 16, 12, 700, mw, false, 1);
+      g.text(lab, mx, fy + 24, ls, 700, T.dim, 'left', false, 1);
+      ey = g.lines(PO.data_line, mx, fy + 46, L.F.foot, 500, T.dim, fl, mw);
+      ey = g.lines('Scan the code or visit ' + shown(spec) + ' for the live page.', mx, ey + 2, L.F.foot, 600, T.dim, fl, mw);
+    }
     var fb = Math.max(fy + qs, ey - 10, fy + 56);
     g.boxes[g.box].h = fb - y;
     var H = L.H || Math.max(L.minH || 0, Math.ceil(fb + L.pad));
