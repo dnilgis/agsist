@@ -8,7 +8,10 @@
   "high": "typical rent, high quality third",
   "medium": "typical rent, medium quality third",
   "low": "typical rent, low quality third",
-  "n": "responses for the county"
+  "n": "responses for the county",
+  "csr2": "average row crop CSR2 index: the average CSR2 of the highest rated soils in the county, up to 110% of its corn and soybean acres (NRCS Web Soil Survey), as Iowa State prints it",
+  "per_csr2": "rent per CSR2 index point: the overall average divided by the county's average row crop CSR2, as Iowa State prints it",
+  "corn": "typical corn yield, bushels an acre, of the high, middle and low third productivity farms in the county (USDA NASS special tabulation, 2018-2022), as Iowa State prints it"
  },
  "responses": 1450,
  "min_responses": 5,
@@ -25,66 +28,111 @@
  "districts": {
   "1": {
    "n": 216,
+   "csr2": 85,
    "overall": 290,
    "high": 331,
    "medium": 291,
-   "low": 249
+   "low": 249,
+   "corn_high": 215,
+   "corn_medium": 191,
+   "corn_low": 168,
+   "per_csr2": 3.41
   },
   "2": {
    "n": 199,
+   "csr2": 79,
    "overall": 272,
    "high": 313,
    "medium": 274,
-   "low": 229
+   "low": 229,
+   "corn_high": 216,
+   "corn_medium": 196,
+   "corn_low": 171,
+   "per_csr2": 3.44
   },
   "3": {
    "n": 108,
+   "csr2": 79,
    "overall": 291,
    "high": 342,
    "medium": 291,
-   "low": 239
+   "low": 239,
+   "corn_high": 223,
+   "corn_medium": 202,
+   "corn_low": 176,
+   "per_csr2": 3.7
   },
   "4": {
    "n": 188,
+   "csr2": 78,
    "overall": 292,
    "high": 338,
    "medium": 292,
-   "low": 248
+   "low": 248,
+   "corn_high": 218,
+   "corn_medium": 193,
+   "corn_low": 168,
+   "per_csr2": 3.78
   },
   "5": {
    "n": 261,
+   "csr2": 84,
    "overall": 287,
    "high": 330,
    "medium": 284,
-   "low": 248
+   "low": 248,
+   "corn_high": 222,
+   "corn_medium": 198,
+   "corn_low": 172,
+   "per_csr2": 3.44
   },
   "6": {
    "n": 138,
+   "csr2": 81,
    "overall": 274,
    "high": 324,
    "medium": 274,
-   "low": 223
+   "low": 223,
+   "corn_high": 217,
+   "corn_medium": 192,
+   "corn_low": 166,
+   "per_csr2": 3.39
   },
   "7": {
    "n": 129,
+   "csr2": 80,
    "overall": 250,
    "high": 290,
    "medium": 252,
-   "low": 208
+   "low": 208,
+   "corn_high": 207,
+   "corn_medium": 187,
+   "corn_low": 150,
+   "per_csr2": 3.13
   },
   "8": {
    "n": 103,
+   "csr2": 78,
    "overall": 215,
    "high": 257,
    "medium": 211,
-   "low": 176
+   "low": 176,
+   "corn_high": 182,
+   "corn_medium": 157,
+   "corn_low": 127,
+   "per_csr2": 2.74
   },
   "9": {
    "n": 108,
+   "csr2": 78,
    "overall": 255,
    "high": 300,
    "medium": 253,
-   "low": 212
+   "low": 212,
+   "corn_high": 196,
+   "corn_medium": 170,
+   "corn_low": 144,
+   "per_csr2": 3.24
   }
  },
  "counties": {
@@ -95,7 +143,14 @@
    "overall": 225,
    "high": 262,
    "medium": 225,
-   "low": 188
+   "low": 188,
+   "csr2": 79,
+   "per_csr2": 2.85,
+   "corn": {
+    "high": 182,
+    "medium": 166,
+    "low": 138
+   }
   },
   "19003": {
    "name": "Adams",
@@ -104,7 +159,14 @@
    "overall": 246,
    "high": 297,
    "medium": 251,
-   "low": 191
+   "low": 191,
+   "csr2": 79,
+   "per_csr2": 3.11,
+   "corn": {
+    "high": 188,
+    "medium": 171,
+    "low": 158
+   }
   },
   "19005": {
    "name": "Allamakee",
@@ -116,7 +178,14 @@
    "overall": 274,
    "high": 314,
    "medium": 279,
-   "low": 229
+   "low": 229,
+   "csr2": 76,
+   "per_csr2": 3.61,
+   "corn": {
+    "high": 213,
+    "medium": 192,
+    "low": 171
+   }
   },
   "19007": {
    "name": "Appanoose",
@@ -125,7 +194,14 @@
    "overall": 219,
    "high": 272,
    "medium": 205,
-   "low": 181
+   "low": 181,
+   "csr2": 74,
+   "per_csr2": 2.96,
+   "corn": {
+    "high": 174,
+    "medium": 140,
+    "low": 119
+   }
   },
   "19009": {
    "name": "Audubon",
@@ -134,7 +210,14 @@
    "overall": 288,
    "high": 333,
    "medium": 291,
-   "low": 241
+   "low": 241,
+   "csr2": 77,
+   "per_csr2": 3.74,
+   "corn": {
+    "high": 215,
+    "medium": 191,
+    "low": 173
+   }
   },
   "19011": {
    "name": "Benton",
@@ -143,7 +226,14 @@
    "overall": 292,
    "high": 334,
    "medium": 297,
-   "low": 245
+   "low": 245,
+   "csr2": 86,
+   "per_csr2": 3.4,
+   "corn": {
+    "high": 218,
+    "medium": 189,
+    "low": 163
+   }
   },
   "19013": {
    "name": "Black Hawk",
@@ -152,7 +242,14 @@
    "overall": 301,
    "high": 356,
    "medium": 299,
-   "low": 248
+   "low": 248,
+   "csr2": 86,
+   "per_csr2": 3.5,
+   "corn": {
+    "high": 226,
+    "medium": 192,
+    "low": 169
+   }
   },
   "19015": {
    "name": "Boone",
@@ -161,7 +258,14 @@
    "overall": 285,
    "high": 328,
    "medium": 277,
-   "low": 249
+   "low": 249,
+   "csr2": 85,
+   "per_csr2": 3.35,
+   "corn": {
+    "high": 211,
+    "medium": 193,
+    "low": 169
+   }
   },
   "19017": {
    "name": "Bremer",
@@ -170,7 +274,14 @@
    "overall": 305,
    "high": 356,
    "medium": 311,
-   "low": 250
+   "low": 250,
+   "csr2": 84,
+   "per_csr2": 3.63,
+   "corn": {
+    "high": 235,
+    "medium": 215,
+    "low": 183
+   }
   },
   "19019": {
    "name": "Buchanan",
@@ -179,7 +290,14 @@
    "overall": 274,
    "high": 318,
    "medium": 270,
-   "low": 232
+   "low": 232,
+   "csr2": 83,
+   "per_csr2": 3.3,
+   "corn": {
+    "high": 224,
+    "medium": 205,
+    "low": 169
+   }
   },
   "19021": {
    "name": "Buena Vista",
@@ -188,7 +306,14 @@
    "overall": 292,
    "high": 331,
    "medium": 301,
-   "low": 244
+   "low": 244,
+   "csr2": 86,
+   "per_csr2": 3.4,
+   "corn": {
+    "high": 216,
+    "medium": 194,
+    "low": 173
+   }
   },
   "19023": {
    "name": "Butler",
@@ -197,7 +322,14 @@
    "overall": 297,
    "high": 347,
    "medium": 295,
-   "low": 249
+   "low": 249,
+   "csr2": 80,
+   "per_csr2": 3.71,
+   "corn": {
+    "high": 223,
+    "medium": 187,
+    "low": 165
+   }
   },
   "19025": {
    "name": "Calhoun",
@@ -206,7 +338,14 @@
    "overall": 276,
    "high": 308,
    "medium": 279,
-   "low": 240
+   "low": 240,
+   "csr2": 84,
+   "per_csr2": 3.29,
+   "corn": {
+    "high": 210,
+    "medium": 195,
+    "low": 178
+   }
   },
   "19027": {
    "name": "Carroll",
@@ -215,7 +354,14 @@
    "overall": 293,
    "high": 352,
    "medium": 288,
-   "low": 240
+   "low": 240,
+   "csr2": 80,
+   "per_csr2": 3.66,
+   "corn": {
+    "high": 216,
+    "medium": 195,
+    "low": 174
+   }
   },
   "19029": {
    "name": "Cass",
@@ -224,7 +370,14 @@
    "overall": 255,
    "high": 296,
    "medium": 257,
-   "low": 212
+   "low": 212,
+   "csr2": 79,
+   "per_csr2": 3.23,
+   "corn": {
+    "high": 215,
+    "medium": 188,
+    "low": 140
+   }
   },
   "19031": {
    "name": "Cedar",
@@ -233,7 +386,14 @@
    "overall": 274,
    "high": 316,
    "medium": 270,
-   "low": 236
+   "low": 236,
+   "csr2": 86,
+   "per_csr2": 3.19,
+   "corn": {
+    "high": 226,
+    "medium": 203,
+    "low": 183
+   }
   },
   "19033": {
    "name": "Cerro Gordo",
@@ -242,7 +402,14 @@
    "overall": 265,
    "high": 298,
    "medium": 271,
-   "low": 225
+   "low": 225,
+   "csr2": 79,
+   "per_csr2": 3.35,
+   "corn": {
+    "high": 214,
+    "medium": 191,
+    "low": 173
+   }
   },
   "19035": {
    "name": "Cherokee",
@@ -251,7 +418,14 @@
    "overall": 306,
    "high": 351,
    "medium": 308,
-   "low": 258
+   "low": 258,
+   "csr2": 90,
+   "per_csr2": 3.4,
+   "corn": {
+    "high": 226,
+    "medium": 204,
+    "low": 179
+   }
   },
   "19037": {
    "name": "Chickasaw",
@@ -260,7 +434,14 @@
    "overall": 310,
    "high": 350,
    "medium": 314,
-   "low": 265
+   "low": 265,
+   "csr2": 83,
+   "per_csr2": 3.73,
+   "corn": {
+    "high": 219,
+    "medium": 197,
+    "low": 180
+   }
   },
   "19039": {
    "name": "Clarke",
@@ -269,7 +450,14 @@
    "overall": 207,
    "high": 246,
    "medium": 210,
-   "low": 165
+   "low": 165,
+   "csr2": 77,
+   "per_csr2": 2.69,
+   "corn": {
+    "high": 190,
+    "medium": 150,
+    "low": 126
+   }
   },
   "19041": {
    "name": "Clay",
@@ -278,7 +466,14 @@
    "overall": 273,
    "high": 302,
    "medium": 268,
-   "low": 251
+   "low": 251,
+   "csr2": 86,
+   "per_csr2": 3.17,
+   "corn": {
+    "high": 210,
+    "medium": 181,
+    "low": 154
+   }
   },
   "19043": {
    "name": "Clayton",
@@ -287,7 +482,14 @@
    "overall": 269,
    "high": 309,
    "medium": 270,
-   "low": 227
+   "low": 227,
+   "csr2": 68,
+   "per_csr2": 3.96,
+   "corn": {
+    "high": 219,
+    "medium": 193,
+    "low": 160
+   }
   },
   "19045": {
    "name": "Clinton",
@@ -296,7 +498,14 @@
    "overall": 282,
    "high": 325,
    "medium": 278,
-   "low": 245
+   "low": 245,
+   "csr2": 74,
+   "per_csr2": 3.81,
+   "corn": {
+    "high": 220,
+    "medium": 196,
+    "low": 177
+   }
   },
   "19047": {
    "name": "Crawford",
@@ -305,7 +514,14 @@
    "overall": 304,
    "high": 343,
    "medium": 308,
-   "low": 261
+   "low": 261,
+   "csr2": 73,
+   "per_csr2": 4.16,
+   "corn": {
+    "high": 233,
+    "medium": 208,
+    "low": 194
+   }
   },
   "19049": {
    "name": "Dallas",
@@ -314,7 +530,14 @@
    "overall": 290,
    "high": 330,
    "medium": 283,
-   "low": 257
+   "low": 257,
+   "csr2": 88,
+   "per_csr2": 3.3,
+   "corn": {
+    "high": 205,
+    "medium": 179,
+    "low": 146
+   }
   },
   "19051": {
    "name": "Davis",
@@ -323,7 +546,14 @@
    "overall": 200,
    "high": 241,
    "medium": 196,
-   "low": 163
+   "low": 163,
+   "csr2": 70,
+   "per_csr2": 2.86,
+   "corn": {
+    "high": 155,
+    "medium": 128,
+    "low": 100
+   }
   },
   "19053": {
    "name": "Decatur",
@@ -335,7 +565,14 @@
    "overall": 201,
    "high": 235,
    "medium": 200,
-   "low": 169
+   "low": 169,
+   "csr2": 75,
+   "per_csr2": 2.68,
+   "corn": {
+    "high": 192,
+    "medium": 170,
+    "low": 134
+   }
   },
   "19055": {
    "name": "Delaware",
@@ -344,7 +581,14 @@
    "overall": 325,
    "high": 377,
    "medium": 328,
-   "low": 269
+   "low": 269,
+   "csr2": 77,
+   "per_csr2": 4.22,
+   "corn": {
+    "high": 226,
+    "medium": 215,
+    "low": 190
+   }
   },
   "19057": {
    "name": "Des Moines",
@@ -353,7 +597,14 @@
    "overall": 272,
    "high": 336,
    "medium": 264,
-   "low": 215
+   "low": 215,
+   "csr2": 84,
+   "per_csr2": 3.24,
+   "corn": {
+    "high": 211,
+    "medium": 187,
+    "low": 173
+   }
   },
   "19059": {
    "name": "Dickinson",
@@ -362,7 +613,14 @@
    "overall": 257,
    "high": 294,
    "medium": 265,
-   "low": 211
+   "low": 211,
+   "csr2": 87,
+   "per_csr2": 2.95,
+   "corn": {
+    "high": 194,
+    "medium": 179,
+    "low": 156
+   }
   },
   "19061": {
    "name": "Dubuque",
@@ -371,7 +629,14 @@
    "overall": 321,
    "high": 413,
    "medium": 308,
-   "low": 242
+   "low": 242,
+   "csr2": 69,
+   "per_csr2": 4.65,
+   "corn": {
+    "high": 239,
+    "medium": 213,
+    "low": 183
+   }
   },
   "19063": {
    "name": "Emmet",
@@ -380,7 +645,14 @@
    "overall": 248,
    "high": 284,
    "medium": 244,
-   "low": 215
+   "low": 215,
+   "csr2": 81,
+   "per_csr2": 3.06,
+   "corn": {
+    "high": 202,
+    "medium": 184,
+    "low": 167
+   }
   },
   "19065": {
    "name": "Fayette",
@@ -389,7 +661,14 @@
    "overall": 253,
    "high": 303,
    "medium": 258,
-   "low": 198
+   "low": 198,
+   "csr2": 81,
+   "per_csr2": 3.12,
+   "corn": {
+    "high": 216,
+    "medium": 199,
+    "low": 180
+   }
   },
   "19067": {
    "name": "Floyd",
@@ -398,7 +677,14 @@
    "overall": 235,
    "high": 256,
    "medium": 236,
-   "low": 212
+   "low": 212,
+   "csr2": 83,
+   "per_csr2": 2.83,
+   "corn": {
+    "high": 213,
+    "medium": 193,
+    "low": 164
+   }
   },
   "19069": {
    "name": "Franklin",
@@ -407,7 +693,14 @@
    "overall": 288,
    "high": 329,
    "medium": 292,
-   "low": 243
+   "low": 243,
+   "csr2": 81,
+   "per_csr2": 3.56,
+   "corn": {
+    "high": 226,
+    "medium": 208,
+    "low": 178
+   }
   },
   "19071": {
    "name": "Fremont",
@@ -416,7 +709,14 @@
    "overall": 246,
    "high": 282,
    "medium": 248,
-   "low": 207
+   "low": 207,
+   "csr2": 81,
+   "per_csr2": 3.04,
+   "corn": {
+    "high": 232,
+    "medium": 200,
+    "low": 163
+   }
   },
   "19073": {
    "name": "Greene",
@@ -425,7 +725,14 @@
    "overall": 275,
    "high": 317,
    "medium": 275,
-   "low": 234
+   "low": 234,
+   "csr2": 82,
+   "per_csr2": 3.35,
+   "corn": {
+    "high": 217,
+    "medium": 180,
+    "low": 138
+   }
   },
   "19075": {
    "name": "Grundy",
@@ -434,7 +741,14 @@
    "overall": 300,
    "high": 340,
    "medium": 297,
-   "low": 264
+   "low": 264,
+   "csr2": 88,
+   "per_csr2": 3.41,
+   "corn": {
+    "high": 235,
+    "medium": 214,
+    "low": 191
+   }
   },
   "19077": {
    "name": "Guthrie",
@@ -443,7 +757,14 @@
    "overall": 255,
    "high": 298,
    "medium": 254,
-   "low": 213
+   "low": 213,
+   "csr2": 83,
+   "per_csr2": 3.07,
+   "corn": {
+    "high": 211,
+    "medium": 168,
+    "low": 140
+   }
   },
   "19079": {
    "name": "Hamilton",
@@ -452,7 +773,14 @@
    "overall": 282,
    "high": 311,
    "medium": 284,
-   "low": 250
+   "low": 250,
+   "csr2": 80,
+   "per_csr2": 3.53,
+   "corn": {
+    "high": 218,
+    "medium": 195,
+    "low": 179
+   }
   },
   "19081": {
    "name": "Hancock",
@@ -461,7 +789,14 @@
    "overall": 267,
    "high": 313,
    "medium": 268,
-   "low": 219
+   "low": 219,
+   "csr2": 76,
+   "per_csr2": 3.51,
+   "corn": {
+    "high": 211,
+    "medium": 195,
+    "low": 173
+   }
   },
   "19083": {
    "name": "Hardin",
@@ -470,7 +805,14 @@
    "overall": 288,
    "high": 336,
    "medium": 278,
-   "low": 249
+   "low": 249,
+   "csr2": 84,
+   "per_csr2": 3.43,
+   "corn": {
+    "high": 222,
+    "medium": 203,
+    "low": 176
+   }
   },
   "19085": {
    "name": "Harrison",
@@ -479,7 +821,14 @@
    "overall": 284,
    "high": 329,
    "medium": 282,
-   "low": 242
+   "low": 242,
+   "csr2": 73,
+   "per_csr2": 3.89,
+   "corn": {
+    "high": 191,
+    "medium": 170,
+    "low": 157
+   }
   },
   "19087": {
    "name": "Henry",
@@ -488,7 +837,14 @@
    "overall": 283,
    "high": 331,
    "medium": 280,
-   "low": 239
+   "low": 239,
+   "csr2": 81,
+   "per_csr2": 3.49,
+   "corn": {
+    "high": 206,
+    "medium": 176,
+    "low": 148
+   }
   },
   "19089": {
    "name": "Howard",
@@ -497,7 +853,14 @@
    "overall": 276,
    "high": 323,
    "medium": 277,
-   "low": 228
+   "low": 228,
+   "csr2": 83,
+   "per_csr2": 3.33,
+   "corn": {
+    "high": 213,
+    "medium": 196,
+    "low": 171
+   }
   },
   "19091": {
    "name": "Humboldt",
@@ -506,7 +869,14 @@
    "overall": 274,
    "high": 318,
    "medium": 273,
-   "low": 231
+   "low": 231,
+   "csr2": 81,
+   "per_csr2": 3.38,
+   "corn": {
+    "high": 219,
+    "medium": 201,
+    "low": 175
+   }
   },
   "19093": {
    "name": "Ida",
@@ -515,7 +885,14 @@
    "overall": 317,
    "high": 357,
    "medium": 325,
-   "low": 268
+   "low": 268,
+   "csr2": 81,
+   "per_csr2": 3.91,
+   "corn": {
+    "high": 236,
+    "medium": 210,
+    "low": 192
+   }
   },
   "19095": {
    "name": "Iowa",
@@ -524,7 +901,14 @@
    "overall": 279,
    "high": 327,
    "medium": 282,
-   "low": 228
+   "low": 228,
+   "csr2": 79,
+   "per_csr2": 3.53,
+   "corn": {
+    "high": 208,
+    "medium": 183,
+    "low": 161
+   }
   },
   "19097": {
    "name": "Jackson",
@@ -533,7 +917,14 @@
    "overall": 258,
    "high": 346,
    "medium": 237,
-   "low": 190
+   "low": 190,
+   "csr2": 67,
+   "per_csr2": 3.85,
+   "corn": {
+    "high": 214,
+    "medium": 188,
+    "low": 169
+   }
   },
   "19099": {
    "name": "Jasper",
@@ -542,7 +933,14 @@
    "overall": 282,
    "high": 322,
    "medium": 278,
-   "low": 246
+   "low": 246,
+   "csr2": 80,
+   "per_csr2": 3.53,
+   "corn": {
+    "high": 239,
+    "medium": 204,
+    "low": 183
+   }
   },
   "19101": {
    "name": "Jefferson",
@@ -551,7 +949,14 @@
    "overall": 255,
    "high": 292,
    "medium": 259,
-   "low": 214
+   "low": 214,
+   "csr2": 79,
+   "per_csr2": 3.23,
+   "corn": {
+    "high": 187,
+    "medium": 164,
+    "low": 129
+   }
   },
   "19103": {
    "name": "Johnson",
@@ -560,7 +965,14 @@
    "overall": 273,
    "high": 336,
    "medium": 286,
-   "low": 199
+   "low": 199,
+   "csr2": 85,
+   "per_csr2": 3.21,
+   "corn": {
+    "high": 196,
+    "medium": 175,
+    "low": 140
+   }
   },
   "19105": {
    "name": "Jones",
@@ -569,7 +981,14 @@
    "overall": 268,
    "high": 305,
    "medium": 269,
-   "low": 229
+   "low": 229,
+   "csr2": 77,
+   "per_csr2": 3.48,
+   "corn": {
+    "high": 219,
+    "medium": 189,
+    "low": 165
+   }
   },
   "19107": {
    "name": "Keokuk",
@@ -578,7 +997,14 @@
    "overall": 244,
    "high": 298,
    "medium": 230,
-   "low": 205
+   "low": 205,
+   "csr2": 80,
+   "per_csr2": 3.05,
+   "corn": {
+    "high": 201,
+    "medium": 182,
+    "low": 155
+   }
   },
   "19109": {
    "name": "Kossuth",
@@ -587,7 +1013,14 @@
    "overall": 280,
    "high": 330,
    "medium": 282,
-   "low": 229
+   "low": 229,
+   "csr2": 79,
+   "per_csr2": 3.54,
+   "corn": {
+    "high": 203,
+    "medium": 194,
+    "low": 155
+   }
   },
   "19111": {
    "name": "Lee",
@@ -596,7 +1029,14 @@
    "overall": 286,
    "high": 309,
    "medium": 284,
-   "low": 266
+   "low": 266,
+   "csr2": 75,
+   "per_csr2": 3.81,
+   "corn": {
+    "high": 211,
+    "medium": 174,
+    "low": 149
+   }
   },
   "19113": {
    "name": "Linn",
@@ -605,7 +1045,14 @@
    "overall": 279,
    "high": 322,
    "medium": 272,
-   "low": 245
+   "low": 245,
+   "csr2": 87,
+   "per_csr2": 3.21,
+   "corn": {
+    "high": 225,
+    "medium": 193,
+    "low": 160
+   }
   },
   "19115": {
    "name": "Louisa",
@@ -614,7 +1061,14 @@
    "overall": 259,
    "high": 297,
    "medium": 262,
-   "low": 217
+   "low": 217,
+   "csr2": 80,
+   "per_csr2": 3.24,
+   "corn": {
+    "high": 214,
+    "medium": 189,
+    "low": 155
+   }
   },
   "19117": {
    "name": "Lucas",
@@ -623,7 +1077,14 @@
    "overall": 187,
    "high": 225,
    "medium": 185,
-   "low": 151
+   "low": 151,
+   "csr2": 73,
+   "per_csr2": 2.56,
+   "corn": {
+    "high": 164,
+    "medium": 152,
+    "low": 110
+   }
   },
   "19119": {
    "name": "Lyon",
@@ -632,7 +1093,14 @@
    "overall": 331,
    "high": 397,
    "medium": 327,
-   "low": 269
+   "low": 269,
+   "csr2": 80,
+   "per_csr2": 4.14,
+   "corn": {
+    "high": 221,
+    "medium": 194,
+    "low": 178
+   }
   },
   "19121": {
    "name": "Madison",
@@ -641,7 +1109,14 @@
    "overall": 220,
    "high": 254,
    "medium": 218,
-   "low": 188
+   "low": 188,
+   "csr2": 86,
+   "per_csr2": 2.56,
+   "corn": {
+    "high": 198,
+    "medium": 174,
+    "low": 152
+   }
   },
   "19123": {
    "name": "Mahaska",
@@ -653,7 +1128,14 @@
    "overall": 243,
    "high": 295,
    "medium": 247,
-   "low": 187
+   "low": 187,
+   "csr2": 81,
+   "per_csr2": 3.0,
+   "corn": {
+    "high": 193,
+    "medium": 175,
+    "low": 153
+   }
   },
   "19125": {
    "name": "Marion",
@@ -662,7 +1144,14 @@
    "overall": 235,
    "high": 278,
    "medium": 233,
-   "low": 193
+   "low": 193,
+   "csr2": 80,
+   "per_csr2": 2.94,
+   "corn": {
+    "high": 205,
+    "medium": 170,
+    "low": 143
+   }
   },
   "19127": {
    "name": "Marshall",
@@ -671,7 +1160,14 @@
    "overall": 289,
    "high": 330,
    "medium": 291,
-   "low": 246
+   "low": 246,
+   "csr2": 82,
+   "per_csr2": 3.52,
+   "corn": {
+    "high": 250,
+    "medium": 225,
+    "low": 186
+   }
   },
   "19129": {
    "name": "Mills",
@@ -680,7 +1176,14 @@
    "overall": 269,
    "high": 303,
    "medium": 270,
-   "low": 235
+   "low": 235,
+   "csr2": 82,
+   "per_csr2": 3.28,
+   "corn": {
+    "high": 216,
+    "medium": 201,
+    "low": 170
+   }
   },
   "19131": {
    "name": "Mitchell",
@@ -689,7 +1192,14 @@
    "overall": 273,
    "high": 326,
    "medium": 277,
-   "low": 216
+   "low": 216,
+   "csr2": 83,
+   "per_csr2": 3.29,
+   "corn": {
+    "high": 224,
+    "medium": 199,
+    "low": 172
+   }
   },
   "19133": {
    "name": "Monona",
@@ -698,7 +1208,14 @@
    "overall": 319,
    "high": 378,
    "medium": 311,
-   "low": 268
+   "low": 268,
+   "csr2": 71,
+   "per_csr2": 4.49,
+   "corn": {
+    "high": 218,
+    "medium": 192,
+    "low": 152
+   }
   },
   "19135": {
    "name": "Monroe",
@@ -707,7 +1224,14 @@
    "overall": 233,
    "high": 288,
    "medium": 228,
-   "low": 185
+   "low": 185,
+   "csr2": 82,
+   "per_csr2": 2.84,
+   "corn": {
+    "high": 166,
+    "medium": 138,
+    "low": 93
+   }
   },
   "19137": {
    "name": "Montgomery",
@@ -716,7 +1240,14 @@
    "overall": 260,
    "high": 304,
    "medium": 261,
-   "low": 216
+   "low": 216,
+   "csr2": 79,
+   "per_csr2": 3.29,
+   "corn": {
+    "high": 215,
+    "medium": 198,
+    "low": 170
+   }
   },
   "19139": {
    "name": "Muscatine",
@@ -725,7 +1256,14 @@
    "overall": 261,
    "high": 313,
    "medium": 272,
-   "low": 198
+   "low": 198,
+   "csr2": 83,
+   "per_csr2": 3.14,
+   "corn": {
+    "high": 220,
+    "medium": 201,
+    "low": 168
+   }
   },
   "19141": {
    "name": "O'Brien",
@@ -734,7 +1272,14 @@
    "overall": 308,
    "high": 337,
    "medium": 313,
-   "low": 274
+   "low": 274,
+   "csr2": 94,
+   "per_csr2": 3.28,
+   "corn": {
+    "high": 225,
+    "medium": 203,
+    "low": 182
+   }
   },
   "19143": {
    "name": "Osceola",
@@ -743,7 +1288,14 @@
    "overall": 281,
    "high": 319,
    "medium": 290,
-   "low": 235
+   "low": 235,
+   "csr2": 86,
+   "per_csr2": 3.27,
+   "corn": {
+    "high": 208,
+    "medium": 191,
+    "low": 166
+   }
   },
   "19145": {
    "name": "Page",
@@ -752,7 +1304,14 @@
    "overall": 242,
    "high": 286,
    "medium": 241,
-   "low": 198
+   "low": 198,
+   "csr2": 80,
+   "per_csr2": 3.03,
+   "corn": {
+    "high": 212,
+    "medium": 186,
+    "low": 150
+   }
   },
   "19147": {
    "name": "Palo Alto",
@@ -761,7 +1320,14 @@
    "overall": 280,
    "high": 326,
    "medium": 276,
-   "low": 238
+   "low": 238,
+   "csr2": 82,
+   "per_csr2": 3.41,
+   "corn": {
+    "high": 201,
+    "medium": 177,
+    "low": 141
+   }
   },
   "19149": {
    "name": "Plymouth",
@@ -770,7 +1336,14 @@
    "overall": 292,
    "high": 331,
    "medium": 290,
-   "low": 255
+   "low": 255,
+   "csr2": 82,
+   "per_csr2": 3.56,
+   "corn": {
+    "high": 219,
+    "medium": 187,
+    "low": 166
+   }
   },
   "19151": {
    "name": "Pocahontas",
@@ -779,7 +1352,14 @@
    "overall": 284,
    "high": 325,
    "medium": 281,
-   "low": 247
+   "low": 247,
+   "csr2": 82,
+   "per_csr2": 3.46,
+   "corn": {
+    "high": 219,
+    "medium": 191,
+    "low": 172
+   }
   },
   "19153": {
    "name": "Polk",
@@ -788,7 +1368,14 @@
    "overall": 267,
    "high": 320,
    "medium": 261,
-   "low": 219
+   "low": 219,
+   "csr2": 89,
+   "per_csr2": 3.0,
+   "corn": {
+    "high": 215,
+    "medium": 194,
+    "low": 164
+   }
   },
   "19155": {
    "name": "Pottawattamie",
@@ -797,7 +1384,14 @@
    "overall": 282,
    "high": 325,
    "medium": 279,
-   "low": 242
+   "low": 242,
+   "csr2": 79,
+   "per_csr2": 3.57,
+   "corn": {
+    "high": 223,
+    "medium": 200,
+    "low": 134
+   }
   },
   "19157": {
    "name": "Poweshiek",
@@ -806,7 +1400,14 @@
    "overall": 291,
    "high": 329,
    "medium": 294,
-   "low": 251
+   "low": 251,
+   "csr2": 79,
+   "per_csr2": 3.68,
+   "corn": {
+    "high": 213,
+    "medium": 183,
+    "low": 166
+   }
   },
   "19159": {
    "name": "Ringgold",
@@ -818,7 +1419,14 @@
    "overall": 201,
    "high": 235,
    "medium": 200,
-   "low": 169
+   "low": 169,
+   "csr2": 75,
+   "per_csr2": 2.68,
+   "corn": {
+    "high": 192,
+    "medium": 170,
+    "low": 134
+   }
   },
   "19161": {
    "name": "Sac",
@@ -827,7 +1435,14 @@
    "overall": 291,
    "high": 334,
    "medium": 290,
-   "low": 248
+   "low": 248,
+   "csr2": 86,
+   "per_csr2": 3.38,
+   "corn": {
+    "high": 224,
+    "medium": 204,
+    "low": 172
+   }
   },
   "19163": {
    "name": "Scott",
@@ -836,7 +1451,14 @@
    "overall": 271,
    "high": 319,
    "medium": 280,
-   "low": 214
+   "low": 214,
+   "csr2": 89,
+   "per_csr2": 3.04,
+   "corn": {
+    "high": 223,
+    "medium": 201,
+    "low": 174
+   }
   },
   "19165": {
    "name": "Shelby",
@@ -845,7 +1467,14 @@
    "overall": 293,
    "high": 337,
    "medium": 291,
-   "low": 250
+   "low": 250,
+   "csr2": 72,
+   "per_csr2": 4.07,
+   "corn": {
+    "high": 215,
+    "medium": 194,
+    "low": 167
+   }
   },
   "19167": {
    "name": "Sioux",
@@ -854,7 +1483,14 @@
    "overall": 332,
    "high": 371,
    "medium": 334,
-   "low": 292
+   "low": 292,
+   "csr2": 88,
+   "per_csr2": 3.77,
+   "corn": {
+    "high": 237,
+    "medium": 206,
+    "low": 184
+   }
   },
   "19169": {
    "name": "Story",
@@ -863,7 +1499,14 @@
    "overall": 281,
    "high": 317,
    "medium": 282,
-   "low": 245
+   "low": 245,
+   "csr2": 86,
+   "per_csr2": 3.27,
+   "corn": {
+    "high": 214,
+    "medium": 187,
+    "low": 161
+   }
   },
   "19171": {
    "name": "Tama",
@@ -872,7 +1515,14 @@
    "overall": 313,
    "high": 376,
    "medium": 308,
-   "low": 255
+   "low": 255,
+   "csr2": 85,
+   "per_csr2": 3.68,
+   "corn": {
+    "high": 228,
+    "medium": 196,
+    "low": 163
+   }
   },
   "19173": {
    "name": "Taylor",
@@ -881,7 +1531,14 @@
    "overall": 227,
    "high": 258,
    "medium": 238,
-   "low": 184
+   "low": 184,
+   "csr2": 81,
+   "per_csr2": 2.8,
+   "corn": {
+    "high": 184,
+    "medium": 170,
+    "low": 129
+   }
   },
   "19175": {
    "name": "Union",
@@ -890,7 +1547,14 @@
    "overall": 231,
    "high": 284,
    "medium": 224,
-   "low": 186
+   "low": 186,
+   "csr2": 85,
+   "per_csr2": 2.72,
+   "corn": {
+    "high": 176,
+    "medium": 161,
+    "low": 134
+   }
   },
   "19177": {
    "name": "Van Buren",
@@ -899,7 +1563,14 @@
    "overall": 214,
    "high": 258,
    "medium": 218,
-   "low": 168
+   "low": 168,
+   "csr2": 73,
+   "per_csr2": 2.93,
+   "corn": {
+    "high": 177,
+    "medium": 148,
+    "low": 121
+   }
   },
   "19179": {
    "name": "Wapello",
@@ -911,7 +1582,14 @@
    "overall": 243,
    "high": 295,
    "medium": 247,
-   "low": 187
+   "low": 187,
+   "csr2": 81,
+   "per_csr2": 3.0,
+   "corn": {
+    "high": 193,
+    "medium": 175,
+    "low": 153
+   }
   },
   "19181": {
    "name": "Warren",
@@ -920,7 +1598,14 @@
    "overall": 242,
    "high": 294,
    "medium": 233,
-   "low": 200
+   "low": 200,
+   "csr2": 85,
+   "per_csr2": 2.85,
+   "corn": {
+    "high": 176,
+    "medium": 156,
+    "low": 113
+   }
   },
   "19183": {
    "name": "Washington",
@@ -929,7 +1614,14 @@
    "overall": 294,
    "high": 340,
    "medium": 290,
-   "low": 251
+   "low": 251,
+   "csr2": 82,
+   "per_csr2": 3.59,
+   "corn": {
+    "high": 204,
+    "medium": 173,
+    "low": 154
+   }
   },
   "19185": {
    "name": "Wayne",
@@ -938,7 +1630,14 @@
    "overall": 173,
    "high": 197,
    "medium": 177,
-   "low": 145
+   "low": 145,
+   "csr2": 66,
+   "per_csr2": 2.62,
+   "corn": {
+    "high": 180,
+    "medium": 161,
+    "low": 141
+   }
   },
   "19187": {
    "name": "Webster",
@@ -947,7 +1646,14 @@
    "overall": 282,
    "high": 316,
    "medium": 282,
-   "low": 247
+   "low": 247,
+   "csr2": 78,
+   "per_csr2": 3.62,
+   "corn": {
+    "high": 217,
+    "medium": 198,
+    "low": 179
+   }
   },
   "19189": {
    "name": "Winnebago",
@@ -956,7 +1662,14 @@
    "overall": 289,
    "high": 330,
    "medium": 285,
-   "low": 252
+   "low": 252,
+   "csr2": 74,
+   "per_csr2": 3.91,
+   "corn": {
+    "high": 217,
+    "medium": 198,
+    "low": 181
+   }
   },
   "19191": {
    "name": "Winneshiek",
@@ -968,7 +1681,14 @@
    "overall": 274,
    "high": 314,
    "medium": 279,
-   "low": 229
+   "low": 229,
+   "csr2": 76,
+   "per_csr2": 3.61,
+   "corn": {
+    "high": 213,
+    "medium": 192,
+    "low": 171
+   }
   },
   "19193": {
    "name": "Woodbury",
@@ -977,7 +1697,14 @@
    "overall": 315,
    "high": 365,
    "medium": 304,
-   "low": 275
+   "low": 275,
+   "csr2": 73,
+   "per_csr2": 4.32,
+   "corn": {
+    "high": 225,
+    "medium": 203,
+    "low": 183
+   }
   },
   "19195": {
    "name": "Worth",
@@ -986,7 +1713,14 @@
    "overall": 250,
    "high": 279,
    "medium": 254,
-   "low": 216
+   "low": 216,
+   "csr2": 77,
+   "per_csr2": 3.25,
+   "corn": {
+    "high": 218,
+    "medium": 198,
+    "low": 174
+   }
   },
   "19197": {
    "name": "Wright",
@@ -995,7 +1729,14 @@
    "overall": 275,
    "high": 319,
    "medium": 278,
-   "low": 229
+   "low": 229,
+   "csr2": 79,
+   "per_csr2": 3.48,
+   "corn": {
+    "high": 211,
+    "medium": 193,
+    "low": 173
+   }
   }
  }
 }
