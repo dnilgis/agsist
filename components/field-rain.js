@@ -362,15 +362,17 @@
     });
     return lines.join('\n') + '\n';
   }
+  /* month totals of one year; the month PRISM is still posting runs to its newest day and says so (to: that day) */
   function monthTotals(map, year, today) {
-    var out = [];
+    var out = [], L = lastDay(map, today);
     for (var m = 1; m <= 12; m++) {
       var a = year + '-' + pad(m) + '-01';
       if (a > today) break;
-      var b = addDays((m === 12 ? (year + 1) + '-01-01' : year + '-' + pad(m + 1) + '-01'), -1);
+      var b = addDays((m === 12 ? (year + 1) + '-01-01' : year + '-' + pad(m + 1) + '-01'), -1), to = null;
       if (b > today) b = today;
+      if (L && b > L && a <= L) { b = L; to = L; }
       var s = sum(map, a, b, today);
-      out.push({ m: M3[m - 1], a: a, b: b, v: s ? s.v : null, miss: s ? s.miss : 0, pre: s ? s.pre : false });
+      out.push({ m: M3[m - 1], a: a, b: b, to: to, v: s ? s.v : null, miss: s ? s.miss : 0, pre: s ? s.pre : false });
     }
     return out;
   }
@@ -541,7 +543,7 @@
         return '<button type="button" data-yr="' + yy + '" aria-pressed="' + (yy === y) + '">' + yy + '</button>'; }).join('') + '</div>' +
         '<div class="fr-chart">' + chart(map, y, t) + '</div>' +
         '<table class="fr-mt"><thead><tr><th scope="col">Month</th><th scope="col">Rain, PRISM estimate</th></tr></thead><tbody>' +
-        mt.map(function (m) { return '<tr><th scope="row">' + m.m + ' ' + y + '</th><td>' + (m.v == null ? m.miss + ' days missing' : inch(m.v) + ' in') + (m.pre && m.v != null ? '<sup class="fr-p">P</sup>' : '') + '</td></tr>'; }).join('') +
+        mt.map(function (m) { return '<tr><th scope="row">' + m.m + ' ' + y + (m.to ? ' (to ' + dShort(m.to) + ')' : '') + '</th><td>' + (m.v == null ? m.miss + (m.miss === 1 ? ' day' : ' days') + ' missing' : inch(m.v) + ' in') + (m.pre && m.v != null ? '<sup class="fr-p">P</sup>' : '') + '</td></tr>'; }).join('') +
         '</tbody></table>' +
         '<details class="fr-days"><summary>Every day of ' + y + ' (' + rowsD.length + ' days)</summary><table class="fr-dt"><thead><tr><th scope="col">Date</th><th scope="col">Rain (in)</th><th scope="col">Status</th><th scope="col">Your gauge (in)</th></tr></thead><tbody>' +
         rowsD.map(function (r) { return '<tr><td>' + r.date + '</td><td>' + (r.v == null ? '' : inch(r.v)) + '</td><td>' + (r.v == null ? 'missing' : r.pre ? 'preliminary' : 'settled') + '</td><td>' + (r.g == null ? '' : inch(r.g)) + '</td></tr>'; }).join('') +
