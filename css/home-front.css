@@ -25,7 +25,10 @@ html[data-theme="dark"]{--bg:#100f0c;--bg2:#13120e;--surface:#1a1813;--surface2:
 .fp-set{flex:none;min-height:44px;margin:-4px 0;padding:0 14px;border:1px solid var(--border-2);border-radius:var(--fp-r);background:transparent;color:var(--text-dim);font:600 14px/1 var(--font-body)}
 .fp-set:hover,.fp-set:focus-visible{border-color:var(--fp-acc);color:var(--text)}
 .fp-set:focus-visible,.fp-tile:focus-visible,.fp-card:focus-visible,.fp-zip-go:focus-visible,.fp-dt:focus-visible{outline:2px solid var(--fp-acc);outline-offset:2px}
-.fp-h{margin:12px 0 14px;font-family:var(--fp-num);font-size:clamp(25px,7.2vw,56px);font-weight:760;line-height:1.1;letter-spacing:-.032em;color:var(--text);white-space:nowrap}
+.fp-h{margin:12px 0 14px;font-family:var(--fp-num);font-size:clamp(25px,7.2vw,56px);font-weight:760;line-height:1.1;letter-spacing:-.032em;color:var(--text)}
+/* one line, always: the site's heading rule (text-wrap: balance) would let it wrap; the script sizes it down to fit */
+#main #fp-h{white-space:nowrap;text-wrap-mode:nowrap;margin:12px 0 14px;font-family:var(--fp-num);font-size:clamp(25px,7.2vw,56px);font-weight:760;line-height:1.2;letter-spacing:-.032em}
+@media (min-width:760px){#main #fp-h{margin:16px 0 20px}}
 .fp-day{font-weight:500;color:var(--text-muted)}
 .fp-zip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:-2px 0 14px}
 .fp-zip[hidden]{display:none}
