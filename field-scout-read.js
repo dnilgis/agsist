@@ -201,7 +201,16 @@ window.__fsRead = function (FSX) {
       ids.map(function(b, i){ return '<div class="fs-section-body" id="'+b+'">'+(i?'':'<div class="fs-loading"><span class="fs-spin"></span>reading</div>')+'</div>'; }).join('')+'</div>';
   }
   // a section's reserved height (the soil card's while it reads) ends when its answer is drawn
-  function setBody(id, html){ var el=document.getElementById(id); if(el){ el.innerHTML=html; el.style.minHeight=''; el.removeAttribute('data-empty'); el.hidden=false; showSec(el); } if(FSX.FIELD && FSX.FIELD.missing && FSX.FIELD.missing[id]){ delete FSX.FIELD.missing[id]; renderMissing(); } }
+  function setBody(id, html){ var el=document.getElementById(id); if(el){ el.innerHTML=html; el.style.minHeight=''; el.removeAttribute('data-empty'); el.hidden=false; showSec(el); if(id==='fs-soil') soilJump(el); } if(FSX.FIELD && FSX.FIELD.missing && FSX.FIELD.missing[id]){ delete FSX.FIELD.missing[id]; renderMissing(); } }
+  // "Soil of your field" (Fast Facts, fx/soil-everywhere): /field-scout?soil=1#f=<outline> opens the field and,
+  // once, brings the soil card into view when it is drawn. A scroll, never a layout change.
+  var _soilJumped=false;
+  function soilJump(el){
+    if(_soilJumped || !/[?&]soil=1(&|$)/.test(location.search||'')) return;
+    _soilJumped=true;
+    var sec=el.closest ? el.closest('.fs-section') : el;
+    try{ (sec||el).scrollIntoView({block:'start', behavior:'smooth'}); }catch(e){ (sec||el).scrollIntoView(); }
+  }
   // Hide empty sections (Nov 20, 2026): a source that did not answer, or a county USDA does not
   // publish, leaves no "not available" box. Its body is hidden, the section with it when nothing
   // else in it answered, and the reason is said once, in the line above the method fold.
@@ -257,7 +266,7 @@ window.__fsRead = function (FSX) {
   // (components/soil-read.js), so the outline goes to USDA only, and the same answer gives the
   // county comparison. Only when that direct ask fails (USDA down, or the browser refuses the
   // cross-site answer) does the read fall back to the Field Scout worker's /soil route.
-  var SOIL_JS='/components/soil-read.js?v=2', _soilP=null;
+  var SOIL_JS='/components/soil-read.js?v=3', _soilP=null;
   function soilLib(){
     if(window.AgSoil) return Promise.resolve(window.AgSoil);
     if(!_soilP) _soilP=new Promise(function(ok, no){

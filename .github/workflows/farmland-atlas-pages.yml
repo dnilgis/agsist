@@ -2,7 +2,7 @@ name: farmland-atlas-pages
 
 on:
   workflow_run:
-    workflows: ["farmland-atlas", "Land data (parcel services + transfers)", "Chapter 12 filings", "Farm credit by Fed district"]
+    workflows: ["farmland-atlas", "Land data (parcel services + transfers)", "Chapter 12 filings", "Farm credit by Fed district", "Soil by county"]
     types: [completed]
   schedule:
     - cron: "41 11 * * 3"

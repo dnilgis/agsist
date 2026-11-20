@@ -343,7 +343,9 @@
   function drawDeeper(sales) {
     var p = S.prof, w = S.where || {};
     if (!p) return;
-    var list = P.deeper({ fips: p.fips, st: p.st, slug: p.slug, flags: p.flags, lat: w.lat, lng: w.lng, zip: w.zip, point: !!w.point && !w.center, sales: !!sales });
+    /* the reader's own saved Field Scout fields (this device only) give "Soil of your field" (P.fieldSoil) */
+    var fields = null; try { fields = JSON.parse(lsGet('agsist-fs-fields') || 'null'); } catch (e) { fields = null; }
+    var list = P.deeper({ fips: p.fips, st: p.st, slug: p.slug, flags: p.flags, lat: w.lat, lng: w.lng, zip: w.zip, point: !!w.point && !w.center, sales: !!sales, fields: fields });
     $('h-links').innerHTML = list.map(function (l) { return '<a href="' + esc(l.href) + '" data-k="' + l.id + '">' + esc(l.text) + '</a>'; }).join('');
   }
   function render() {
