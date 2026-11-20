@@ -638,6 +638,8 @@
     var ts = big ? 84 : L.title, hl = PO.headline;
     y = g.rich([{ s: hl.lead }, { s: hl.em, fill: T.gold }, { s: hl.tail }], X, y + Math.round(ts * 0.8), IW, ts, Math.round(ts * 0.96), { weight: 900, fill: T.ink }, T.serif);
     y = g.rich(PO.lede, X, y - Math.round(ts * 0.96) + Math.round(ts * 0.2) + 10 + 28, IW, 28, 37, { weight: 500, fill: T.dim }) - 37 + 10;
+    /* "from a record high" in the subtitle carries its small print right under it (what the record is measured on) */
+    if (PO.record_note) { var rl = Math.round(L.F.cap * 1.3); y = g.lines(PO.record_note, X, y + 4 + L.F.cap, L.F.cap, 500, T.dim, rl, IW) - rl + 6; }
     if (hook) {
       var top = y + 18, B = hook.big, unit = B.unit === '%' ? '%' : '', bigS = num(B.value);
       var vsS = 'vs ' + num(B.vs), note = hook.note, labW = 0;
