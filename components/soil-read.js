@@ -225,8 +225,15 @@
     if (u.awsCm != null) m.push(inches(u.awsCm) + ' water');
     if (u.nccpi != null) m.push('NCCPI ' + u.nccpi.toFixed(2));
     if (u.csr2 != null) m.push('CSR2 ' + u.csr2.toFixed(0));
-    if (u.nicc != null) m.push('class ' + u.nicc + (u.sub ? esc(u.sub) : ''));
+    if (u.nicc != null) m.push(landClass(u.nicc, u.sub));
     return m.join(' · ');
+  }
+  // USDA land capability class in words: "class 2w" read as jargon (Nov 20, 2026), so the letter
+  // is spelled out: "land class 2, wetness"
+  var LIMIT = { e: 'erosion', w: 'wetness', s: 'root zone', c: 'climate' };
+  function landClass(n, sub) {
+    var w = sub && LIMIT[String(sub).toLowerCase()];
+    return 'land class ' + n + (w ? ', ' + w : '');
   }
   // The first screen of the soil card: the field's numbers, the county line, the map units, the
   // source. countyState: an object from county(), or null when it failed or was not asked.
@@ -268,9 +275,14 @@
     html += '<p class="fs-src">' + sourceLine(s, c) + '</p></div>';
     return html;
   }
-  // "How to read it", closed, at the bottom of the card.
-  function howTo(s, notes) {
-    return '<details class="fs-vigor-more fs-soil-how"><summary>How to read it</summary>' +
+  // "How to read it": closed at the bottom of the card, or (bare) the same notes for Field Scout's
+  // one method fold at the bottom of the read.
+  function howTo(s, notes, bare) {
+    var body = howToBody(notes);
+    return bare ? '<div class="fs-soil-how">' + body + '</div>' : '<details class="fs-vigor-more fs-soil-how"><summary>How to read it</summary>' + body + '</details>';
+  }
+  function howToBody(notes) {
+    return '' +
       '<p class="fs-soil-slope">Each row is a soil map unit from the USDA soil survey, with its share of the outline you set. ' +
       'Drainage class, slope, available water and the ratings are the survey’s representative values for that map unit, not a measurement of your exact acres.</p>' +
       '<p class="fs-soil-slope"><strong>NCCPI</strong> (National Commodity Crop Productivity Index, version 3.0) runs 0 to 1 on one national scale: how well the soil and climate carry dryland corn, soybeans, cotton or small grains. ' +
@@ -279,8 +291,7 @@
       '<p class="fs-soil-slope"><strong>Available water</strong> is how much water the top 150 cm (about 5 ft) of soil can hold for a crop, in inches.</p>' +
       '<p class="fs-soil-slope"><strong>The county line</strong> compares this field with every rated acre in the same soil survey area (usually one county). The middle is the rating where the running total of rated acres, lowest first, reaches half. The share after it counts rated acres whose rating is below this field’s figure as printed. Both come from the same Soil Data Access answer, never another source.</p>' +
       (notes || '') +
-      '<p class="fs-caveat">Method: two questions go from your browser straight to USDA Soil Data Access: the soil map clipped to your outline, and the survey area’s map units with their acres. Field figures are weighted by acres and shown only when rated map units cover at least half the field. When USDA answers your browser directly, your outline goes only to USDA. When it does not, the read asks again through the AGSIST Field Scout server, which passes the outline to USDA and keeps USDA’s answer for up to a week.</p>' +
-      '</details>';
+      '<p class="fs-caveat">Method: two questions go from your browser straight to USDA Soil Data Access: the soil map clipped to your outline, and the survey area’s map units with their acres. Field figures are weighted by acres and shown only when rated map units cover at least half the field. When USDA answers your browser directly, your outline goes only to USDA. When it does not, the read asks again through the AGSIST Field Scout server, which passes the outline to USDA and keeps USDA’s answer for up to a week.</p>';
   }
 
   // ── checking real fields (developer console, never called by the page) ──
