@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-20-cash-lease-county-flex",
+   "date": "2026-11-20",
+   "title": "Cash lease: your county's rent, soil tier and a flex lease calculator",
+   "line": "The lease page opens with your county's USDA and state survey rents, places your field by CSR2, P/I or yield where the survey allows, and shows flex rent at 9 outcomes.",
+   "link": "/cash-lease"
+  },
+  {
    "id": "2026-11-20-fertilizer-prices-by-state",
    "date": "2026-11-20",
    "title": "Fertilizer prices by state",
@@ -20,6 +27,13 @@
    "date": "2026-11-20",
    "title": "ARC/PLC: what the check is",
    "line": "County ARC/PLC cards now show dollars per base acre: 2025 from FSA's posted rates and the 2026 estimate for each program, with a calculator for your base acres.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-20-arc-plc-results-first",
+   "date": "2026-11-20",
+   "title": "ARC/PLC: results first",
+   "line": "County ARC/PLC pages open with each crop's dollars and pick, then your check. Tap a crop to see its card, and print your own estimate on one page.",
    "link": "/arc-plc"
   },
   {
