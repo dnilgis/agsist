@@ -233,13 +233,13 @@
     });
     return out.length ? { items: out, stamp: stamp } : null;
   }
-  /* where a price sits in the 5 years of weekly closes, at the price shown: "Lower than 7 of every 10 weekly closes since 2021" */
+  /* where a price sits in the 5 years of weekly closes, at the price shown: "Lower than 7 of every 10 weeks since 2021" */
   function rankWords(hist, px, since) {
     var h = (hist || []).filter(num);
     if (h.length < 52 || !num(px)) return '';
     var above = h.filter(function (v) { return v > px; }).length / h.length;
-    return above >= 0.5 ? 'Lower than ' + Math.round(above * 10) + ' of every 10 weekly closes since ' + since :
-      'Higher than ' + Math.round((1 - above) * 10) + ' of every 10 weekly closes since ' + since;
+    return above >= 0.5 ? 'Lower than ' + Math.round(above * 10) + ' of every 10 weeks since ' + since :
+      'Higher than ' + Math.round((1 - above) * 10) + ' of every 10 weeks since ' + since;
   }
   /* the Daily's date, written "Friday, November 20, 2026" (or ISO) -> "2026-11-20" */
   var MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
@@ -616,7 +616,7 @@
       card('mkt', { k: esc(c.name.replace(' corn', '')) + ' corn · <b>CBOT</b>', v: px(p), n: p, f: function (x) { return '$' + x.toFixed(2); },
         s: chg + (rank ? rank + '.' : '') + (s ? ' ' + esc(s.name) + ' <b>' + px(s.px / 100) + '</b>.' : ''),
         g: last.length > 10 ? spark(last, { H: 96, label: 'Corn futures, weekly closes for a year and the price now', labels: [startDay ? MON[+startDay.slice(5, 7) - 1] + ' ’' + startDay.slice(2, 4) : '', md(c.day)] }) : '',
-        src: 'Futures, ' + F.stamp, href: '/corn-futures-prices' });
+        src: 'CBOT, ' + F.stamp.replace(/^Read /, 'read ').replace(/, delayed$/, ' delayed'), href: '/corn-futures-prices' });
     }).catch(function () { cardFail('mkt', 'Could not read the price file just now.'); });
   }
   function fcCard() {
