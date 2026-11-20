@@ -10,6 +10,8 @@
         Indiana   the corn yield Purdue's respondents gave for top, average and poor land
         Ohio      the corn yield OSU's respondents gave for top, average and bottom land
       No other rent-per-point formula is used, and no other state places a field.
+      Any state: the reader's own NCCPI placed among the county's rated farmland acres (USDA SSURGO,
+      data/soil/spread/<ST>.json): a soil fact only, never a rent or a tier (fx/soil-everywhere).
    3. Flex lease: the two forms ISPFMRA's 2026 regional reports describe (a base rent plus a bonus tied to
       revenue; rent as a percentage of the crop's gross proceeds; the floor and cap are our option), with the reader's own terms,
       yield and price, and RMA's projected price as an option. No number is suggested.
@@ -38,6 +40,7 @@
     CO:'/data/land/co/regions.json', IL:'/data/land/il/regions.json'};
   ['CT','MA','NH','NY','PA','RI','VT'].forEach(function (s) { FILES[s] = '/data/land/neus/regions.json'; });
   var KEY = 'agsist-lease-plus';
+  var SOIL_JS = '/components/soil-read.js?v=3';
 
   function isNum(v) { return typeof v === 'number' && isFinite(v); }
   function money(v) { return isNum(v) ? '$' + (Math.round(v) === v ? v.toLocaleString('en-US') : v.toFixed(2)) : ''; }
@@ -260,6 +263,23 @@
      bonus: rent = base + share% x (gross - trigger) when gross is above the trigger, else base
      pct:   rent = pct% x gross, held between the floor and the cap when the lease sets them
      gross = yield x price, dollars an acre */
+  /* Your field against your county's soils (fx/soil-everywhere, Nov 20, 2026): the reader's NCCPI placed among the
+     county's rated farmland acres (data/soil/spread/<ST>.json, scripts/soil_county.py from USDA SSURGO; the share is
+     components/soil-read.js inCounty, the soil card's own rule). Just the fact: no rent and no tier word, since no
+     survey we read publishes rent tiers by NCCPI. p: the percent of rated farmland acres below the field. */
+  function ncShare(p) {
+    if (p <= 0) return 'none';
+    if (p >= 100) return 'all';
+    return p < 1 ? 'under 1%' : p > 99 ? 'over 99%' : Math.round(p) + '%';
+  }
+  function ncLine(v, p, where, built) {
+    if (!isNum(v) || !isNum(p)) return '';
+    var s = ncShare(p), f = 'NCCPI ' + v.toFixed(2);
+    var head = s === 'all' ? f + ' is higher than every rated farmland acre in ' + where
+      : s === 'none' ? f + ' is not higher than any rated farmland acre in ' + where
+      : f + ' is higher than ' + s + ' of the rated farmland acres in ' + where;
+    return head + ' (USDA SSURGO soil survey' + (built ? ', read ' + day(built) : '') + '). This places the soil only; no rent is figured from it.';
+  }
   function round2(v) { return Math.round(v * 100) / 100; }
   function flexRent(t, y, p) {
     if (!isNum(y) || !isNum(p) || y <= 0 || p <= 0) return null;
@@ -368,6 +388,7 @@
     var sBox = $('lp-soil');
     function soil() {
       if (!sBox) return;
+      ncDraw();
       var st = cur.st, P = cur.P, how = placeHow(st);
       var ins = sBox.querySelectorAll('[data-how]');
       for (var i = 0; i < ins.length; i++) ins[i].hidden = !how || ins[i].getAttribute('data-how').split(' ').indexOf(how) < 0;
@@ -386,6 +407,36 @@
         : '<p class="lp-msg">' + (how === 'pi' ? 'Enter the field’s P/I (Bulletin 811) to see its class.' : how === 'corn' ? 'Enter the field’s typical corn yield to see where it sits among the tiers.' : '') + '</p>';
     }
     ['lp-corn', 'lp-pi'].forEach(function (id) { var e = $(id); if (e) e.addEventListener('input', soil); });
+
+    /* your field's NCCPI against the county's farmland soils (ncLine); the soil reader loads only when asked */
+    var soilP = null;
+    function soilLib() {
+      if (w.AgSoil) return Promise.resolve(w.AgSoil);
+      if (!soilP) soilP = new Promise(function (ok) {
+        var s = d.createElement('script'); s.src = SOIL_JS; s.async = true;
+        s.onload = function () { ok(w.AgSoil || null); }; s.onerror = function () { soilP = null; ok(null); };
+        d.head.appendChild(s);
+      });
+      return soilP;
+    }
+    function ncDraw() {
+      var o = $('lp-nc-out'); if (!o) return;
+      var st = cur.st, fips = cur.fips, msg = function (t) { o.innerHTML = '<p class="lp-msg">' + t + '</p>'; };
+      if (!st || !fips) { msg('Pick a county above first.'); return; }
+      var v = num($('lp-nccpi'));
+      if (isNum(v) && (v < 0 || v > 1)) v = null;
+      Promise.all([get('/data/soil/spread/' + st + '.json'), soilLib()]).then(function (r) {
+        if (cur.st !== st || cur.fips !== fips) return;
+        var S = r[0], AS = r[1], sp = S && S.counties && S.counties[fips];
+        var opt = coSel.options[coSel.selectedIndex], place = cname(opt ? opt.text : '', st) + ', ' + NAMES[st], where = esc(place);
+        if (!S) return msg('The county soil figures did not load, or are not published for ' + esc(NAMES[st]) + ' yet, so there is nothing to place a field against.');
+        if (!sp) return msg('The USDA soil survey rates too little of the farmland in ' + where + ' to place a field.');
+        if (!AS) return msg('The soil reader did not load. Reload the page to try again.');
+        if (!isNum(v)) return msg('Enter your field’s NCCPI to see where it sits among the rated farmland acres in ' + where + '. The <a href="/field-scout">Field Scout</a> soil card shows it for any field you draw.');
+        o.innerHTML = '<p class="lp-pl">' + esc(ncLine(v, AS.inCounty(v, sp), place, S.built)) + '</p>';
+      });
+    }
+    var ncIn = $('lp-nccpi'); if (ncIn) ncIn.addEventListener('input', ncDraw);
 
     /* flex lease */
     var fBox = $('lp-flex'), H = null;
@@ -458,5 +509,5 @@
   }
 
   return {NAMES: NAMES, FILES: FILES, rentHref: rentHref, nass: nass, survey: survey, place: place, placeHow: placeHow, bracket: bracket, piClass: piClass,
-    flexRent: flexRent, flexGrid: flexGrid, projected: projected, money: money, boot: boot};
+    flexRent: flexRent, flexGrid: flexGrid, projected: projected, money: money, ncLine: ncLine, boot: boot};
 });

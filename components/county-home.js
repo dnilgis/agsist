@@ -349,7 +349,7 @@
      so the county page's Best corn is never white corn, Plenish or a Harvest 2027 contract. */
   function start() {
     loadScript('/components/bid-filter.js?v=3', function () { return !!(window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey); }).then(function () {
-      return loadScript('/components/place.js?v=20', function () { return !!window.AgPlace; });
+      return loadScript('/components/place.js?v=21', function () { return !!window.AgPlace; });
     }).then(function (ok) {
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;

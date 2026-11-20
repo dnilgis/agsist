@@ -46,6 +46,8 @@
     var s = stSlug(place.st), f = place.flags || '', out = [];
     var has = place.lat != null && place.lng != null && isFinite(+place.lat) && isFinite(+place.lng);
     var lat = has ? (+place.lat).toFixed(4) : '', lng = has ? (+place.lng).toFixed(4) : '';
+    var own = has ? fieldSoil(place.fields, place.lat, place.lng) : null;
+    if (own) out.push(own);
     if (has) out.push({ id: 'scout', href: '/field-scout?at=' + lat + ',' + lng + '&fips=' + place.fips, text: 'Field Scout at this spot' });
     if (has && place.sales) out.push({ id: 'comps', href: '/comp-report?lat=' + lat + '&lon=' + lng + (place.point ? '' : '&at=town') + '&fips=' + place.fips, text: 'Comparable sales report' });
     out.push(place.zip ? { id: 'bids', href: '/cash-bids?zip=' + place.zip, text: 'Cash bids near here' }
@@ -60,6 +62,30 @@
     if (f.indexOf('r') >= 0) out.push({ id: 'rain', href: '/rain/' + s + '/' + place.slug, text: 'Rain this year, county page' });
     out.push({ id: 'rent', href: '/rent/' + s, text: STATES[place.st] + ' cash rent' });
     return out;
+  }
+
+  /* "Soil of your field" (fx/soil-everywhere, Nov 20, 2026): the newest field saved in Field Scout on this device
+     (agsist-fs-fields; place.fields) whose middle is within FIELD_MILES of the place, as one link that opens that
+     field in Field Scout with its soil card brought into view (?soil=1, the #f= outline Field Scout's share link
+     uses). The outline stays in the link on this device; nothing is sent until the reader taps. null without one. */
+  var FIELD_MILES = 30;
+  function fieldSoil(fields, la0, ln0) {
+    if (!Array.isArray(fields) || la0 == null || ln0 == null || !isFinite(+la0) || !isFinite(+ln0)) return null;
+    var best = null;
+    fields.forEach(function (f) {
+      if (!f || !Array.isArray(f.pts) || f.pts.length < 3 || f.pts.length > 80) return;
+      var pts = f.pts.filter(function (p) { return p && isFinite(+p[0]) && isFinite(+p[1]) && Math.abs(+p[0]) <= 90 && Math.abs(+p[1]) <= 180; });
+      if (pts.length !== f.pts.length) return;
+      var la = 0, ln = 0;
+      pts.forEach(function (p) { la += +p[0]; ln += +p[1]; });
+      if (miles(+la0, +ln0, la / pts.length, ln / pts.length) > FIELD_MILES) return;
+      var t = +f.editedAt || +f.id || 0;
+      if (!best || t > best.t) best = { t: t, f: f, pts: pts };
+    });
+    if (!best) return null;
+    var nm = String(best.f.name || '').replace(/[\u0000-\u001f]/g, '').trim().slice(0, 40);
+    return { id: 'soil', href: '/field-scout?soil=1#f=' + best.pts.map(function (p) { return (+p[0]).toFixed(5) + ',' + (+p[1]).toFixed(5); }).join('~'),
+      text: nm && nm !== 'Untitled' ? 'Soil of your field “' + nm + '”' : 'Soil of your field' };
   }
 
   /* &print=week,long,more,rain: the parts a shared link prints. Unknown words are dropped; no
@@ -1249,7 +1275,7 @@
     basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, basisMonth: basisMonth, basisStitch: basisStitch, basisSeries: basisSeries, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },
     milesFrom: milesFrom,
     SECTIONS: SECTIONS, PRINT_PARTS: PRINT_PARTS, STATES: STATES, FIPS_ST: FIPS_ST, MIN_RANK_N: MIN_RANK_N,
-    deeper: deeper, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
+    deeper: deeper, fieldSoil: fieldSoil, FIELD_MILES: FIELD_MILES, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
     splitState: splitState, normName: normName, stateFromName: stateFromName, findCounty: findCounty,
     countyInState: countyInState, countyAt: countyAt, stateOf: stateOf, rankIn: rankIn, profile: profile,
     sentence: sentence, fmt: fmt, fmtShort: fmtShort, lossWorst: lossWorst, ordinal: ordinal, miles: miles, rainSoFar: rainSoFar,

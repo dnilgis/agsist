@@ -266,6 +266,9 @@ html.lp-saved .lp-out{min-height:48rem}
 .lp-tiers li.lp-hit{background:var(--surface2);outline:1px solid var(--gold)}
 .lp-notice{margin:12px 0 0;font-size:.86rem;line-height:1.6;color:var(--text-dim)}.lp-notice a,.lp-how a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .lp-pl{margin:8px 0;font-size:.92rem;line-height:1.6;color:var(--text-dim)}
+/* your field's NCCPI against the county's farmland (fx/soil-everywhere): its room held for the longest message */
+.lp-nc{border-top:1px solid var(--border);margin-top:12px;padding-top:10px}
+.lp-nc-out{min-height:6.6em}.lp-nc-out a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .lp-grid{width:100%;border-collapse:collapse;margin:10px 0;font-size:.86rem;table-layout:fixed}
 .lp-grid caption{text-align:left;font-size:.76rem;color:var(--text-muted);padding-bottom:6px;caption-side:top}
 .lp-grid th,.lp-grid td{border:1px solid var(--border);padding:6px 4px;text-align:center;color:var(--text-dim)}
@@ -332,7 +335,11 @@ html.lp-saved .lp-out{min-height:48rem}
         <label data-how="pi" hidden>Field P/I (Bulletin 811)<input id="lp-pi" inputmode="decimal" autocomplete="off" placeholder="from your soil map"></label>
       </div>
       <div id="lp-soil-out" aria-live="polite"><p class="lp-msg">Pick a county above first.</p></div>
-      <p class="cl-src">We place a field only where the survey ties its tiers to a number. In Iowa that is the corn yield of each quality third. In Illinois it is ISPFMRA&rsquo;s productivity index ranges. In Indiana and western Ohio it is the corn yield respondents gave for each land class. Anywhere else we do not place a field. We print Iowa State&rsquo;s rent per CSR2 point as it prints it and never turn a CSR2 into a rent. What you type here is not kept.</p>
+      <div class="lp-nc" id="lp-nc">
+        <div class="cl-ngrid lp-in"><label>Your field&rsquo;s NCCPI, 0 to 1<input id="lp-nccpi" inputmode="decimal" autocomplete="off" placeholder="from the Field Scout soil card"></label></div>
+        <div class="lp-nc-out" id="lp-nc-out" aria-live="polite"><p class="lp-msg">Pick a county above first.</p></div>
+      </div>
+      <p class="cl-src">We place a field in rent tiers only where the survey ties its tiers to a number. In Iowa that is the corn yield of each quality third. In Illinois it is ISPFMRA&rsquo;s productivity index ranges. In Indiana and western Ohio it is the corn yield respondents gave for each land class. Anywhere else we do not place a field in rent tiers. We print Iowa State&rsquo;s rent per CSR2 point as it prints it and never turn a CSR2 or an NCCPI into a rent. Your field&rsquo;s NCCPI is placed among the county&rsquo;s rated farmland acres in the USDA soil survey (SSURGO): a soil fact, not a rent. The county file updates monthly. What you type here is not kept.</p>
     </div>
   </section>
 
@@ -884,7 +891,7 @@ html.lp-saved .lp-out{min-height:48rem}
 })();
 </script>
   <script src="/components/saved-place.js?v=1" defer></script>
-  <script src="/components/lease-plus.js?v=3" defer></script>
+  <script src="/components/lease-plus.js?v=4" defer></script>
   <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>
