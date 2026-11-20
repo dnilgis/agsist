@@ -3,14 +3,15 @@
    1. Your county's rent: the USDA NASS county cash rent and, where a state survey publishes one, that
       survey's figure for the county (or its region), each with its source, year and count.
    2. Where your ground sits: only where the survey itself ties its rent tiers to a soil or yield number.
-        Iowa      Iowa State's own rent per CSR2 point for the county, and the typical corn yield of each
-                  quality third (Cash Rental Rates for Iowa 2026 Survey, C2-10)
+        Iowa      the typical corn yield of each quality third (Cash Rental Rates for Iowa 2026 Survey, C2-10);
+                  ISU's rent per CSR2 point and the county's average CSR2 are printed as ISU prints them and
+                  never multiplied by a field's CSR2 (that product would be our own rent formula)
         Illinois  ISPFMRA's Bulletin 811 P/I class ranges (2026 Illinois Farmland Values and Lease Trends)
         Indiana   the corn yield Purdue's respondents gave for top, average and poor land
         Ohio      the corn yield OSU's respondents gave for top, average and bottom land
       No other rent-per-point formula is used, and no other state places a field.
-   3. Flex lease: the two forms ISPFMRA's 2026 report names as the most common variable cash rents (a base
-      rent plus a bonus tied to gross revenue; a percentage of gross revenue), with the reader's own terms,
+   3. Flex lease: the two forms ISPFMRA's 2026 regional reports describe (a base rent plus a bonus tied to
+      revenue; rent as a percentage of the crop's gross proceeds; the floor and cap are our option), with the reader's own terms,
       yield and price, and RMA's projected price as an option. No number is suggested.
 
    One source of numbers: every figure is read from the same files the rent pages and the Atlas read
@@ -113,9 +114,9 @@
       o.kind = 'model';
       if (!isNum(d.est)) { o.withheld = 'no estimate for this county'; return o; }
       o.main = {label: 'Model estimate, non-irrigated', v: d.est};
-      if (isNum(d.low) && isNum(d.high)) o.tiers.push({k: 'low', label: 'At a low corn price (10th percentile)', v: d.low}, {k: 'high', label: 'At a high corn price (90th percentile)', v: d.high});
-      if (isNum(i.est)) o.tiers.push({k: 'irr', label: 'Model estimate, irrigated', v: i.est});
-      o.notes.push('A model of what a tenant can pay, not a survey of rents paid.');
+      if (isNum(d.low) && isNum(d.high)) o.tiers.push({k: 'low', label: 'All crops at the 10th percentile price (scenario, not a range of rents)', v: d.low}, {k: 'high', label: 'All crops at the 90th percentile price (scenario, not a range of rents)', v: d.high});
+      if (isNum(i.est)) o.tiers.push({k: 'irr', label: 'Model estimate, irrigated' + (i.anchor === 'NASS' ? ', blended toward the NASS 2026 irrigated rent' : ''), v: i.est});
+      o.notes.push('A model of what a tenant can pay, not a survey of rents paid. K-State publishes no count.');
       return o;
     },
     IN: function (S, fips) {
@@ -139,6 +140,7 @@
       var g = region(S, fips); if (!g) return null;
       var o = base(S, 'ISPFMRA', S.unit, rwhere(S, g.r.region, g.R)), C = g.R.classes || {}, pi = S.pi || {};
       o.year = S.year; o.nWhat = '';
+      o.head = 'ISPFMRA ' + S.year + ' report (' + (S.sales_year || S.year - 1) + ' sales and leases)';
       o.tiers = [['excellent', 'Excellent productivity'], ['good', 'Good productivity'], ['average', 'Average productivity'], ['fair', 'Fair productivity']]
         .filter(function (t) { return C[t[0]] && C[t[0]].rent; })
         .map(function (t) { var r = C[t[0]].rent; return {k: t[0], label: t[1], v: isNum(r.value) ? r.value : null, printed: r.printed, pi: pi[t[0]]}; });
@@ -222,12 +224,7 @@
   function place(st, P, inp) {
     if (!P || P.withheld) return null;
     var out = [];
-    if (st === 'IA' && P.extra && isNum(inp.csr2) && isNum(P.extra.per_csr2)) {
-      out.push({k: 'csr2', v: Math.round(P.extra.per_csr2 * inp.csr2),
-        text: 'Iowa State prints ' + money(P.extra.per_csr2) + ' of rent per CSR2 point for ' + P.where + ' (its overall average ' + money(P.main.v) +
-          ' divided by the county’s average row crop CSR2 of ' + P.extra.csr2 + '). At a CSR2 of ' + inp.csr2 + ', that ratio comes to ' +
-          money0(P.extra.per_csr2 * inp.csr2) + ' an acre.'});
-    }
+    /* Iowa: ISU's per point figure is printed as ISU prints it (in the county block), never multiplied by a field's CSR2 */
     if ((st === 'IA' || st === 'IN' || st === 'OH') && isNum(inp.corn)) {
       var b = bracket(P.tiers, inp.corn), who = st === 'IA' ? 'USDA NASS typical yields for each third, as Iowa State prints them' : P.who + '’s respondents’ corn yields for each class';
       if (b) {
@@ -240,6 +237,7 @@
       }
     }
     if (st === 'IL' && isNum(inp.pi)) {
+      inp = {pi: Math.floor(inp.pi)};     /* the printed ranges are whole numbers: 116.5 is in 100 to 116 */
       var pis = (P.extra && P.extra.pi) || {}, k = piClass(pis, inp.pi), tt = P.tiers.filter(function (x) { return x.k === k; })[0];
       if (k) {
         var rg = pis[k].below ? 'below ' + pis[k].below : pis[k].low + ' to ' + pis[k].high, lbl = k + ' productivity';
@@ -252,7 +250,7 @@
     return out;
   }
   function placeHow(st) {
-    return st === 'IA' ? 'csr2corn' : st === 'IL' ? 'pi' : (st === 'IN' || st === 'OH') ? 'corn' : '';
+    return st === 'IL' ? 'pi' : (st === 'IA' || st === 'IN' || st === 'OH') ? 'corn' : '';
   }
 
   /* ---- flex lease ----
@@ -265,6 +263,7 @@
     var g = y * p, r;
     if (t.mode === 'pct') {
       if (!isNum(t.pct) || t.pct <= 0 || t.pct > 100) return null;
+      if (isNum(t.floor) && isNum(t.cap) && t.floor > t.cap) return null;   /* the page says "floor is above cap" */
       r = g * t.pct / 100;
       if (isNum(t.floor) && r < t.floor) r = t.floor;
       if (isNum(t.cap) && r > t.cap) r = t.cap;
@@ -322,10 +321,10 @@
           + '<p class="lp-k">' + esc(top.label) + ', USDA NASS ' + top.y + '</p>';
         var rest = N.rows.slice(1).map(function (r) { return esc(r.label) + ' ' + money(r.v) + (r.y !== top.y ? ' (' + r.y + ')' : ''); });
         if (rest.length) h += '<p class="lp-s">' + rest.join(' &middot; ') + '</p>';
-        h += '<p class="lp-src">USDA NASS Cash Rents Survey, county estimates' + (N.read ? ', read ' + day(N.read) : '') + '. NASS prints no response count by county.</p>';
+        h += '<p class="lp-src">USDA NASS Cash Rents Survey, county estimates' + (N.read ? ', read ' + day(N.read) : '') + '. This page shows no response count for the NASS figure.</p>';
       } else h += '<p class="lp-msg">NASS shows no recent cash rent for this county.</p>';
       if (P) {
-        h += '<div class="lp-sv"><h3>' + esc(P.who) + (P.kind === 'model' ? ' model estimate ' : P.kind === 'records' ? ' farm records ' : ' survey ') + esc(P.year) + ': ' + esc(P.where) + '</h3>';
+        h += '<div class="lp-sv"><h3>' + esc(P.head || (P.who + (P.kind === 'model' ? ' model estimate ' : P.kind === 'records' ? ' farm records ' : ' survey ') + P.year)) + ': ' + esc(P.where) + '</h3>';
         if (P.withheld) h += '<p class="lp-s">No figure: ' + esc(P.withheld) + '.</p>';
         else {
           if (P.main) h += '<p class="lp-m"><b>' + (isNum(P.main.v) ? money(P.main.v) : esc(P.main.printed || '')) + '</b> ' + esc(P.main.label.charAt(0).toLowerCase() + P.main.label.slice(1)) + '</p>';
@@ -333,12 +332,14 @@
           if (tl.length) h += '<ul class="lp-tiers">' + tl.map(function (t) {
             return '<li data-k="' + esc(t.k) + '"><span>' + esc(t.label) + (isNum(t.corn) ? ' <i>' + t.corn + ' bu corn</i>' : '') + (t.pi ? ' <i>P/I ' + (t.pi.below ? 'under ' + t.pi.below : t.pi.low + ' to ' + t.pi.high) + '</i>' : '') + '</span><b>' + (isNum(t.v) ? money(t.v) : esc(t.printed)) + '</b></li>';
           }).join('') + '</ul>';
+          /* Iowa: ISU's own per point figure and the county's average CSR2, as printed; no rent is figured from them */
+          if (P.extra && isNum(P.extra.per_csr2) && isNum(P.extra.csr2)) h += '<p class="lp-s">ISU: ' + money(P.extra.per_csr2) + ' per CSR2 point, county average CSR2 ' + P.extra.csr2 + '.</p>';
         }
         var cnt = isNum(P.n) ? P.n + ' ' + P.nWhat : '';
         h += '<p class="lp-src">' + esc(P.org) + ', ' + esc(P.title) + (P.released ? ', ' + esc(P.released) : '') + (cnt ? '. ' + esc(cnt) : '') + '.' + (P.notes.length ? ' ' + esc(P.notes.join(' ')) : '') + '</p></div>';
       }
       var R = w.AgLeaseRules && w.AgLeaseRules[st];
-      if (R && R.v) h += '<p class="lp-notice"><b>' + esc(NAMES[st]) + ' notice deadline:</b> ' + esc(R.short || '') + ' (' + esc(R.s || '') + ', checked at the statute ' + esc(day(R.v)) + '). <a href="#notice">Count your date and print the notice</a>.</p>';
+      if (R && R.v) h += '<p class="lp-notice"><b>' + esc(NAMES[st]) + ' notice deadline:</b> ' + esc(R.short || '') + ' (' + esc(R.s || '') + ', read against the statute text saved ' + esc(day(R.v)) + '). <a href="#notice">Count your date and print the notice</a>.</p>';
       return h;
     }
     function show(st, fips) {
@@ -368,19 +369,18 @@
       var res = $('lp-soil-out');
       if (!st || !cur.fips) { res.innerHTML = '<p class="lp-msg">Pick a county above first.</p>'; return; }
       if (!how || !P || P.withheld) { res.innerHTML = '<p class="lp-msg">' + (P && P.withheld ? 'The survey has no figure for this county, so there is nothing to place a field against.' : 'No survey we read in ' + esc(NAMES[st]) + ' ties its rent tiers to a soil index or a yield, so we do not place a field here. The county figures above are the benchmark.') + '</p>'; return; }
-      var inp = {csr2: num($('lp-csr2')), corn: num($('lp-corn')), pi: num($('lp-pi'))};
-      if (isNum(inp.csr2) && (inp.csr2 < 5 || inp.csr2 > 100)) inp.csr2 = null;
+      /* the field's numbers are not kept between visits: a figure from a last visit would read as this field's */
+      var inp = {corn: num($('lp-corn')), pi: num($('lp-pi'))};
       if (isNum(inp.pi) && (inp.pi < 40 || inp.pi > 160)) inp.pi = null;
       if (isNum(inp.corn) && (inp.corn < 20 || inp.corn > 400)) inp.corn = null;
-      mem.csr2 = inp.csr2; mem.corn = inp.corn; mem.pi = inp.pi; store(w, mem);
       var L = place(st, P, inp) || [];
       var lis = out.querySelectorAll('.lp-tiers li');
       for (var j = 0; j < lis.length; j++) lis[j].classList.remove('lp-hit');
       L.forEach(function (x) { (x.between || (x.tier ? [x.tier] : [])).forEach(function (k) { var li = out.querySelector('.lp-tiers li[data-k="' + k + '"]'); if (li) li.classList.add('lp-hit'); }); });
       res.innerHTML = L.length ? L.map(function (x) { return '<p class="lp-pl">' + esc(x.text) + '</p>'; }).join('')
-        : '<p class="lp-msg">' + (how === 'pi' ? 'Enter the field’s P/I (Bulletin 811) to see its class.' : how === 'corn' ? 'Enter the field’s typical corn yield to see where it sits among the tiers.' : 'Enter the field’s CSR2 or its typical corn yield.') + '</p>';
+        : '<p class="lp-msg">' + (how === 'pi' ? 'Enter the field’s P/I (Bulletin 811) to see its class.' : how === 'corn' ? 'Enter the field’s typical corn yield to see where it sits among the tiers.' : '') + '</p>';
     }
-    ['lp-csr2', 'lp-corn', 'lp-pi'].forEach(function (id) { var e = $(id); if (e) { if (mem[id.slice(3)] != null) e.value = mem[id.slice(3)]; e.addEventListener('input', soil); } });
+    ['lp-corn', 'lp-pi'].forEach(function (id) { var e = $(id); if (e) e.addEventListener('input', soil); });
 
     /* flex lease */
     var fBox = $('lp-flex'), H = null;
@@ -405,6 +405,7 @@
       var res = $('lp-f-out');
       var ok = t.mode === 'pct' ? isNum(t.pct) : isNum(t.base);
       mem.flex = {mode: t.mode, crop: crop, base: t.base, share: t.share, trigger: t.trigger, pct: t.pct, floor: t.floor, cap: t.cap, y: y, p: p}; store(w, mem);
+      if (t.mode === 'pct' && isNum(t.floor) && isNum(t.cap) && t.floor > t.cap) { res.innerHTML = '<p class="lp-msg">The floor is above the cap. Lower the floor or raise the cap.</p>'; return; }
       if (!ok || !isNum(y) || !isNum(p)) { res.innerHTML = '<p class="lp-msg">Enter your lease terms, a yield and a price to see the rent at nine outcomes.</p>'; return; }
       var G = flexGrid(t, y, p), unit = 'bu';
       var h = '<table class="lp-grid"><caption>Rent per acre at three yields (rows) and three prices (columns), gross per acre below each</caption><thead><tr><th scope="col">Yield</th>'
