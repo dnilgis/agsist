@@ -197,12 +197,49 @@ window.__fsRead = function (FSX) {
   // ── 1. SOIL (USDA SSURGO via Soil Data Access) ──────────────────────
   // Spatial query: intersect the drawn polygon with SSURGO map units,
   // aggregate area by soil series, pull the national productivity index.
+  // Nov 20, 2026 (soil of your field, free): the browser asks USDA Soil Data Access itself
+  // (components/soil-read.js), so the outline goes to USDA only, and the same answer gives the
+  // county comparison. Only when that direct ask fails (USDA down, or the browser refuses the
+  // cross-site answer) does the read fall back to the Field Scout worker's /soil route.
+  var SOIL_JS='/components/soil-read.js?v=1', _soilP=null;
+  function soilLib(){
+    if(window.AgSoil) return Promise.resolve(window.AgSoil);
+    if(!_soilP) _soilP=new Promise(function(ok, no){
+      var s=document.createElement('script'); s.src=SOIL_JS;
+      s.onload=function(){ window.AgSoil ? ok(window.AgSoil) : no(new Error('soil')); };
+      s.onerror=function(){ if(s.parentNode) s.parentNode.removeChild(s); no(new Error('soil')); };
+      document.head.appendChild(s);
+    }).catch(function(e){ _soilP=null; throw e; });
+    return _soilP;
+  }
+  // resolves { d, s, c, direct:true } from USDA directly, or null when the direct ask failed
+  function soilDirect(wkt){
+    return soilLib().then(function(S){
+      return S.askField(wkt, 25000).then(function(rows){
+        var s=S.summarize(rows);
+        if(!s || !s.area) return { d:{ ext:true, Table:rows }, s:s, c:null, direct:true };
+        return S.askCounty(s.area, 15000).then(S.county, function(){ return null; })
+          .then(function(c){ return { d:{ ext:true, Table:rows }, s:s, c:c, direct:true }; });
+      });
+    }).catch(function(){ return null; });
+  }
   function loadSoil(poly, tries){
     var gen = FSX.fieldGen;
     var wkt = wktPolygon(poly);
-    postJSON(FS_WORKER + '/soil', { wkt: wkt })
-      .then(function(d){
+    soilDirect(wkt)
+      .then(function(dir){
         if(gen !== FSX.fieldGen) return;
+        if(dir) return drawSoil(dir.d, dir);
+        return postJSON(FS_WORKER + '/soil', { wkt: wkt }).then(function(d){ if(gen === FSX.fieldGen) drawSoil(d, null); });
+      })
+      .catch(function(){
+        if(gen!==FSX.fieldGen) return;
+        // SSURGO upstream flakes transiently (502/504): retry once before giving up.
+        if(!tries){ setTimeout(function(){ if(gen===FSX.fieldGen) loadSoil(poly, 1); }, 1500); return; }
+        setErr('fs-soil','The USDA soil survey server (SSURGO) isn’t responding right now. This is a known-flaky government service, not your field. Redraw the field in a few minutes and it usually loads.');
+      });
+  }
+  function drawSoil(d, dir){
         var rows = (d && d.Table) ? d.Table : null;
         if(!rows || !rows.length){ setBody('fs-soil','<div class="fs-err">No SSURGO soil survey published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>'); return; }
         var total=0; rows.forEach(function(r){ total += parseFloat(r[3])||0; });
@@ -266,39 +303,41 @@ window.__fsRead = function (FSX) {
             (pct!=null?'<div class="fs-soil-pct">'+pct+'%</div>':'')+'</div>';
         }).join('');
         if(!hasAc){ html += '<div class="fs-caveat">SSURGO returned the soil map units for this field but not per-unit acreage, so area shares aren\u2019t shown. Soils are listed by map unit.</div>'; }
-        var slopeNote = '';
+        var rateNote = '', factNote = '', slopeNote = '';
         if(FSX.FIELD.soil.csr2!=null){
-          slopeNote += '<div class="fs-soil-slope"><strong>CSR2 '+FSX.FIELD.soil.csr2.toFixed(1)+'</strong>: Iowa\u2019s Corn Suitability Rating (0\u2013100), weighted by acres. It is the number Iowa land sales, rents and loans are quoted against.</div>';
+          rateNote +='<div class="fs-soil-slope"><strong>CSR2 '+FSX.FIELD.soil.csr2.toFixed(1)+'</strong>: Iowa\u2019s Corn Suitability Rating (0\u2013100), weighted by acres. It is the number Iowa land sales, rents and loans are quoted against.</div>';
         }
         if(FSX.FIELD.soil.nccpi!=null){
           var nc=Math.round(FSX.FIELD.soil.nccpi*100)/100, tier = nc>=0.65?'high':nc>=0.5?'good':nc>=0.35?'moderate':nc>=0.2?'modest':'low';
-          slopeNote += '<div class="fs-soil-slope"><strong>Soil productivity '+Math.round(nc*100)+'/100</strong> (USDA NCCPI '+nc.toFixed(2)+', '+tier+'): how well this soil and climate carry dryland row crops, on one national scale'+
+          rateNote += '<div class="fs-soil-slope"><strong>Soil productivity '+Math.round(nc*100)+'/100</strong> (USDA NCCPI '+nc.toFixed(2)+', '+tier+'): how well this soil and climate carry dryland row crops, on one national scale'+
             (FSX.FIELD.soil.nccpiCorn!=null?'. Corn '+FSX.FIELD.soil.nccpiCorn.toFixed(2)+(FSX.FIELD.soil.nccpiSoy!=null?' · soy '+FSX.FIELD.soil.nccpiSoy.toFixed(2):''):'')+'.</div>';
         }
         if(FSX.FIELD.soil.farmPct!=null){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.farmPct+'% prime farmland</strong>'+(FSX.FIELD.soil.farmIfPct?' and '+FSX.FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+': USDA\u2019s farmland classification for each soil map unit.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.farmPct+'% prime farmland</strong>'+(FSX.FIELD.soil.farmIfPct?' and '+FSX.FIELD.soil.farmIfPct+'% prime <em>if drained</em>':'')+': USDA\u2019s farmland classification for each soil map unit.</div>';
         }
         if(FSX.FIELD.soil.floodPct){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency</strong> (rare or more often). Check the FEMA map before a loan or a lease.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.floodPct+'% of the acreage has a mapped flooding frequency</strong> (rare or more often). Check the FEMA map before a loan or a lease.</div>';
         }
         if(FSX.FIELD.soil.poorDrainPct!=null && FSX.FIELD.soil.poorDrainPct>=25){
-          slopeNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.poorDrainPct+'% of the acreage maps as poorly drained</strong>: the survey\u2019s way of saying the low ground holds water. Late planting and drown-out corners here are the soil, not the operator; tile is the structural fix conversation.</div>';
+          factNote += '<div class="fs-soil-slope"><strong>'+FSX.FIELD.soil.poorDrainPct+'% of the acreage maps as poorly drained</strong>: the survey\u2019s way of saying the low ground holds water. Late planting and drown-out corners here are the soil, not the operator; tile is the structural fix conversation.</div>';
         } else if(FSX.FIELD.soil.drainageTop){
-          slopeNote += '<div class="fs-soil-slope">Dominant drainage: <strong>'+esc(FSX.FIELD.soil.drainageTop)+'</strong></div>';
+          factNote += '<div class="fs-soil-slope">Dominant drainage:<strong>'+esc(FSX.FIELD.soil.drainageTop)+'</strong></div>';
         }
         if(FSX.FIELD.soil.slope!=null){
           var sl=FSX.FIELD.soil.slope, er = sl<3?'little water-erosion exposure':sl<6?'some water-erosion exposure':sl<12?'real water-erosion exposure':'severe water-erosion exposure';
           slopeNote += '<div class="fs-soil-slope"><strong>'+sl+'% average slope</strong>'+(FSX.FIELD.soil.maxSlope!=null&&FSX.FIELD.soil.maxSlope>sl?' (up to '+FSX.FIELD.soil.maxSlope+'%)':'')+': '+er+'</div>'+
             '<div class="fs-caveat">Slope is SSURGO\u2019s representative value for each soil map unit, not a measurement of your exact acres; flat bottomland beside a hill can read steeper than it farms.</div>';
         }
-        setBody('fs-soil', html + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 fewest limits, 8 most); letter = the main limit (e wind or water erosion, w wetness, s root zone, c climate)</div>');
-      })
-      .catch(function(){
-        if(gen!==FSX.fieldGen) return;
-        // SSURGO upstream flakes transiently (502/504) — retry once before giving up.
-        if(!tries){ setTimeout(function(){ if(gen===FSX.fieldGen) loadSoil(poly, 1); }, 1500); return; }
-        setErr('fs-soil','The USDA soil survey server (SSURGO) isn\u2019t responding right now. This is a known-flaky government service, not your field. Redraw the field in a few minutes and it usually loads.');
-      });
+        var AS = window.AgSoil;
+        if(AS){
+          // the answer first (field figures, the county line, the map units, the source), the
+          // survey's flags under it, and how to read it closed at the bottom
+          var ss = dir ? dir.s : AS.summarize(rows);
+          var legend = '<p class="fs-caveat">Class is the land capability class, 1 fewest limits to 8 most; the letter is the main limit (e wind or water erosion, w wetness, s root zone, c climate).</p>';
+          setBody('fs-soil', AS.render(ss, dir ? dir.c : null, { direct: !!dir }) + factNote + AS.howTo(ss, slopeNote + legend));
+          return;
+        }
+        setBody('fs-soil', html + rateNote + factNote + slopeNote + '<div class="fs-src" style="margin-top:.5rem">USDA SSURGO · number = land capability class (1 fewest limits, 8 most); letter = the main limit (e wind or water erosion, w wetness, s root zone, c climate)</div>');
   }
   // NRCS capability wording (not "prime": prime farmland is a separate legal class)
   // ── This year's crop. CDL maps a season the February after; the page used to assume
