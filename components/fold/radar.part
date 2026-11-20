@@ -2,6 +2,7 @@
 <article class="rr">
       <h2 class="rr-h1">How much rain fell on your field?</h2>
       <p class="rr-label">NOAA radar and gauge estimate (MRMS), not a rain gauge reading.</p>
+      <p class="rr-fields"><a href="/field-rain">Your fields</a>: save several on your phone and see the rain at each, with gauges beside it and a history you keep.</p>
       
 
       <div id="rr-answer" class="rr-answer">
