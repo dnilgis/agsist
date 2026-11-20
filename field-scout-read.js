@@ -571,8 +571,11 @@ window.__fsRead = function (FSX) {
       var kr={}; recent.forEach(function(x){ kr[landName(x.code, x.crop)]=1; });
       return 'USDA&rsquo;s crop map shows no crop here from '+years[0]+' to '+years[years.length-1]+': '+Object.keys(kr).join(', ')+'.';
     }
-    var cropYears=[], other={};
-    recent.forEach(function(x, i){ if(codes[i]!=null) cropYears.push(landName(x.code, x.crop)+' '+x.year); else other[landName(x.code, x.crop)]=1; });
+    var cropYears=[], other={}, otherYears=[];
+    recent.forEach(function(x, i){ if(codes[i]!=null) cropYears.push(landName(x.code, x.crop)+' '+x.year); else { other[landName(x.code, x.crop)]=1; otherYears.push(landName(x.code, x.crop)+' '+x.year); } });
+    // mostly crops (the real Hickman NE answer: alfalfa 2025, pasture 2024, corn and soybeans before):
+    // name the years that are not a crop, not every crop year
+    if(nCrop*2>codes.length) return 'USDA&rsquo;s crop map shows '+otherYears.join(', ')+'; a crop in the other '+nCrop+' of these '+codes.length+' years.';
     return 'USDA&rsquo;s crop map shows a crop here in '+nCrop+' of these '+codes.length+' years ('+cropYears.join(', ')+'); the other years are '+Object.keys(other).join(' or ')+'.';
   }
   function rotationHtml(recent, codes, years, full){
