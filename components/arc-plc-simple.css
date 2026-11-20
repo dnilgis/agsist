@@ -98,7 +98,8 @@
 .ap-seg-h{font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);margin:.2rem 0 .35rem!important}
 .ap-cards2 .ap-crop[hidden]{display:none}
 /* Print my estimate: once the script has written the sheet, the page prints only it, black on white */
-.ap-est{display:none}
+/* never shown on screen, so it moves nothing; its box is held all the same (test/cls-reserved.test.mjs) and fits the printed page */
+.ap-est{display:none;min-height:1in}
 @media print{
   @page{size:letter;margin:.5in}
   body:has(.ap-est:not(:empty))>:not(main),.ap-simple:has(.ap-est:not(:empty))>:not(.ap-est){display:none!important}
