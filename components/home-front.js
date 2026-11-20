@@ -175,6 +175,14 @@
     var r = (H && H.reports || []).filter(function (x) { return x && x.avg && num(x.avg[key]) && /^\d{4}-\d{2}-\d{2}$/.test(x.date || ''); });
     return r.map(function (x) { return { d: x.date, v: x.avg[key] }; });
   }
+  /* the Daily's date, written "Friday, November 20, 2026" (or ISO) -> "2026-11-20" */
+  var MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+  function dailyIso(s) {
+    var t = String(s || '');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return t;
+    var m = /([A-Za-z]+) (\d{1,2}), (\d{4})/.exec(t), i = m ? MONTHS.indexOf(m[1].toLowerCase()) : -1;
+    return i < 0 ? '' : m[3] + '-' + (i < 9 ? '0' : '') + (i + 1) + '-' + (+m[2] < 10 ? '0' : '') + (+m[2]);
+  }
   /* COT: a market's managed money net and the week's change */
   function fundLine(C, k) {
     var x = C && C[k];
@@ -192,7 +200,7 @@
     var y = function (v) { return bot - (v - lo) / span * (bot - top); };
     var pts = vals.map(function (v, i) { return [n > 1 ? 4 + i * (W - 8) / (n - 1) : W / 2, y(v)]; });
     var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join('');
-    var e = pts[n - 1], h = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + esc(opt.label || '') + '">';
+    var e = pts[n - 1], h = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(opt.label || '') + '">';
     if (opt.zero && lo < 0 && hi > 0) h += '<line class="fp-g-zero" x1="0" x2="' + W + '" y1="' + y(0).toFixed(1) + '" y2="' + y(0).toFixed(1) + '"></line>';
     h += '<path class="fp-g-area" d="' + d + 'L' + e[0].toFixed(1) + ' ' + bot + 'L' + pts[0][0].toFixed(1) + ' ' + bot + 'Z"></path>';
     h += '<path class="fp-g-line" d="' + d + '" vector-effect="non-scaling-stroke"></path>';
@@ -202,7 +210,7 @@
   }
   /* bars: [{k, v (0..1), me}] with each label under its bar */
   function bars(items, label) {
-    var n = items.length, gap = n > 6 ? 5 : 10, bw = (W - gap * (n - 1)) / n, h = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">';
+    var n = items.length, gap = n > 6 ? 5 : 10, bw = (W - gap * (n - 1)) / n, h = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(label) + '">';
     items.forEach(function (it, i) {
       var x = i * (bw + gap), bh = Math.max(2, Math.round(it.v * 34));
       h += '<rect class="fp-g-bar' + (it.me ? ' is-me' : '') + '" x="' + x.toFixed(1) + '" y="' + (36 - bh) + '" width="' + bw.toFixed(1) + '" height="' + bh + '" rx="2"></rect>' +
@@ -214,7 +222,7 @@
   function strip(vals, mark, ends, label) {
     var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), span = hi - lo || 1;
     var x = function (v) { return 8 + (v - lo) / span * (W - 16); };
-    var h = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '"><line class="fp-g-zero" x1="0" x2="' + W + '" y1="20" y2="20"></line>';
+    var h = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(label) + '"><line class="fp-g-zero" x1="0" x2="' + W + '" y1="20" y2="20"></line>';
     vals.forEach(function (v) { h += '<circle class="fp-g-pt" cx="' + x(v).toFixed(1) + '" cy="20" r="4.5"></circle>'; });
     if (num(mark)) h += '<circle class="fp-g-pt is-me" cx="' + x(mark).toFixed(1) + '" cy="20" r="6.5"></circle>';
     return h + '<text class="fp-g-t" x="2" y="48">' + esc(ends[0]) + '</text><text class="fp-g-t is-me" x="' + (W - 2) + '" y="48" text-anchor="end">' + esc(ends[1]) + '</text></svg>';
@@ -223,7 +231,7 @@
   function ranges(items, label) {
     var lo = Math.min.apply(null, items.map(function (r) { return r.lo; })), hi = Math.max.apply(null, items.map(function (r) { return r.hi; })), span = hi - lo || 1;
     var n = items.length, cw = W / n, y = function (v) { return 34 - (v - lo) / span * 30; };
-    var h = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">';
+    var h = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(label) + '">';
     items.forEach(function (r, i) {
       var cx = (i + 0.5) * cw;
       h += '<line class="fp-g-rng" x1="' + cx.toFixed(1) + '" x2="' + cx.toFixed(1) + '" y1="' + y(r.lo).toFixed(1) + '" y2="' + y(r.hi).toFixed(1) + '"></line>' +
@@ -235,7 +243,7 @@
 
   var api = { ct: ct, ctIso: ctIso, when: when, md: md, dayName: dayName, fnv: fnv, miles: miles, placeLabel: placeLabel, futMonth: futMonth,
     basisWords: basisWords, nearBids: nearBids, moveSince: moveSince, moveText: moveText, stateBasis: stateBasis, beltRain: beltRain,
-    futItems: futItems, fertSeries: fertSeries, fundLine: fundLine, spark: spark, bars: bars, strip: strip, ranges: ranges, BELT: BELT, RADIUS: RADIUS };
+    futItems: futItems, fertSeries: fertSeries, fundLine: fundLine, dailyIso: dailyIso, spark: spark, bars: bars, strip: strip, ranges: ranges, BELT: BELT, RADIUS: RADIUS };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root || !root.document) return;
   root.AgHomeFront = api;
@@ -363,7 +371,7 @@
     if (!o || !o.best) { tileFail(i, 'No elevator on our network posts a ' + (crop === 'corn' ? 'corn' : 'soybean') + ' bid within 50 mi of ' + nearName(p) + '.'); return; }
     var b = o.best, m = moveText(moveSince(c.prev && c.prev[b.st], b));
     tile(i, { v: px(b.cash), m: m.t, mc: m.c, n: b.cash, f: function (x) { return '$' + x.toFixed(2); },
-      w: '<b>' + esc(b.name) + '</b> · ' + Math.round(b.d) + ' mi<br>' + esc(basisWords(b.basis, b.mon)) + ' · posted ' + esc(when(b.posted)), href: '/cash-bids' });
+      w: '<b class="fp-w1">' + esc(b.name) + '</b><span class="fp-w1">' + Math.round(b.d) + ' mi · ' + esc(basisWords(b.basis, b.mon)) + '</span>', href: '/cash-bids' });
   }
   function line(items) { $('fp-line').innerHTML = items.filter(Boolean).map(function (s) { return '<span class="fp-li">' + s + '</span>'; }).join(''); }
   function futHtml(F) {
@@ -373,7 +381,7 @@
       return esc(x.name) + ' ' + (x.ovn ? c : '<b>' + px(x.px / 100) + '</b> ' + c);
     });
     a[0] = (F.items[0].ovn ? 'Overnight ' : '') + a[0];
-    return a.concat(F.stamp ? ['<small>' + esc(F.stamp) + '</small>'] : []);
+    return a.concat(F.stamp ? ['<small>' + esc(F.stamp.replace(/^Read /, '').replace(/ CT\b/, '')) + '</small>'] : []);
   }
   function answerSaved(p) {
     var PX = root.AgPxStamp;
@@ -392,17 +400,17 @@
     get('/data/basis-states.json').then(function (B) {
       var s = stateBasis(B, 'IA', 'corn');
       if (!s) throw new Error('none');
-      var w = s.wow == null ? { t: '', c: 'nc' } : Math.abs(s.wow) < 0.5 ? { t: 'Unchanged on the week', c: 'nc' } :
-        { t: (s.wow > 0 ? '▲ ' : '▼ ') + Math.abs(s.wow) + '¢ ' + (s.wow > 0 ? 'stronger' : 'weaker') + ' on the week', c: s.wow > 0 ? 'up' : 'dn' };
+      var w = s.wow == null ? { t: '', c: 'nc' } : Math.abs(s.wow) < 0.5 ? { t: 'Flat on the week', c: 'nc' } :
+        { t: (s.wow > 0 ? '▲ ' : '▼ ') + Math.abs(s.wow) + '¢ on the week', c: s.wow > 0 ? 'up' : 'dn' };
       tile(1, { v: esc(String(Math.abs(s.cents))) + '¢', u: (s.cents < 0 ? 'under ' : 'over ') + s.mon, m: w.t, mc: w.c, n: Math.abs(s.cents), f: function (x) { return Math.round(x) + '¢'; },
-        w: 'The middle bid of <b>' + comma(s.n) + ' Iowa elevators</b>' + (s.co ? ', ' + s.co + ' companies' : '') + '. Basis is cash minus futures.', href: '/basis' });
+        w: 'Middle of <b>' + comma(s.n) + '</b> Iowa elevators’ bids, cash minus futures.', href: '/basis' });
       stamp(s.gen);
     }).catch(function () { tileFail(1, 'Could not read the basis file just now.'); stamp(null); });
     belt().then(function (fs) {
       var b = beltRain(fs, 0);
       if (!b) throw new Error('none');
-      tile(2, { v: comma(b.n), u: b.n === 1 ? 'county' : 'counties', m: 'got a tenth of an inch or more', mc: 'nc', n: b.n, f: comma,
-        w: 'Of <b>' + comma(b.of) + '</b> in ' + b.states.length + ' Corn Belt states, the 24 hours to ' + esc(when(b.end)) + '. NOAA radar with gauges.', href: '/rain' });
+      tile(2, { v: comma(b.n), u: b.n === 1 ? 'county' : 'counties', m: 'had 0.10 in or more', mc: 'nc', n: b.n, f: comma,
+        w: 'Of <b>' + comma(b.of) + '</b> Corn Belt counties, in the 24 hours to ' + esc(when(b.end)) + '.', href: '/rain' });
     }).catch(function () { tileFail(2, 'Could not read the radar file just now.'); });
     prices().then(function (P) { line(futHtml(futItems(P, PX))); }, function () { line(futHtml(null)); });
   }
@@ -418,7 +426,6 @@
     $('fp-c-' + id + '-g').innerHTML = o.g || '';
     $('fp-c-' + id + '-src').textContent = o.src || '';
     if (o.href) box.setAttribute('href', o.href);
-    if (o.a) $('fp-c-' + id + '-a').innerHTML = esc(o.a) + ' &rarr;';
     box.classList.remove('is-off');
     if (o.n != null) tick(v.firstChild, o.n, o.f);
     draw(box);
@@ -431,6 +438,8 @@
     $('fp-c-' + id + '-s').textContent = words;
     $('fp-c-' + id + '-g').innerHTML = '';
   }
+  /* the picture box's own width, so a picture is drawn at its size and its words are never stretched */
+  function gw(id) { var g = $('fp-c-' + id + '-g'); var w = g ? Math.round(g.getBoundingClientRect().width) : 0; return w > 120 ? w : 320; }
   var placeK = function (topic, p) { return esc(topic) + (p ? ' · <b>' + esc(nearName(p)) + '</b>' : ''); };
 
   function bidsCard(p) {
@@ -439,6 +448,7 @@
         var c = b.corn;
         if (!c || !c.best) { cardFail('bids', 'No elevator on our network posts a corn bid within 50 mi of ' + nearName(p) + '.'); return; }
         var cents = Math.round((c.hi - c.lo) * 100);
+        W = gw('bids');
         card('bids', { k: placeK('Corn bids, 50 mi', p), v: comma(c.n), u: c.n === 1 ? 'elevator' : 'elevators', n: c.n, f: comma,
           s: 'Bids run <b>' + px(c.lo) + '</b> to <b>' + px(c.hi) + '</b>. ' + (cents > 0 ? 'Shopping around is worth up to ' + cents + '¢ a bushel.' : 'Every elevator posts the same.'),
           g: strip(c.cash, c.hi, [px(c.lo).replace(/<[^>]+>/g, '') + ' low', 'best ' + px(c.hi).replace(/<[^>]+>/g, '')], 'Each corn bid within 50 miles'),
@@ -450,6 +460,7 @@
       pick.forEach(function (st) { var s = stateBasis(B, st, 'soybeans'); if (s && s.lo != null && s.hi != null) rs.push({ k: st, lo: s.lo, hi: s.hi, med: s.cents, me: st === 'IA', s: s }); });
       var ia = rs.filter(function (r) { return r.me; })[0];
       if (!ia) throw new Error('none');
+      W = gw('bids');
       card('bids', { k: 'Soybean basis · <b>Corn Belt</b>', v: Math.abs(ia.med) + '¢', u: (ia.med < 0 ? 'under ' : 'over ') + ia.s.mon + ', Iowa', n: Math.abs(ia.med), f: function (x) { return Math.round(x) + '¢'; },
         s: 'The middle Iowa soybean bid, ' + comma(ia.s.n) + ' elevators. Each line is a state, low bid to high, the dot its middle.',
         g: ranges(rs, 'Soybean basis by state, low to high, with the middle'), src: 'Elevator boards, ' + md(ctIso(B.generated)), a: 'Basis by state', href: '/basis' });
@@ -460,6 +471,7 @@
       return rainAt(p).then(function (x) {
         var w = x.w, top = Math.max.apply(null, w.map(function (v) { return v || 0; })) || 1, ms = x.monthStart ? ctIso(x.monthStart) : '';
         var mo = ms ? MON[+ms.slice(5, 7) - 1] : 'Month';
+        W = gw('rain');
         card('rain', { k: placeK('Rain', p), v: (w[3] == null ? '' : (w[3] / 100).toFixed(2)), u: 'in since ' + (ms ? md(ms) : 'the 1st'), n: w[3] != null ? w[3] / 100 : null, f: function (v) { return v.toFixed(2); },
           s: '<b>' + (w[0] / 100).toFixed(2) + ' in</b> in the last 24 hours, <b>' + (w[2] == null ? 'no reading' : (w[2] / 100).toFixed(2) + ' in') + '</b> over 7 days.',
           g: bars([{ k: '24 h', v: (w[0] || 0) / top }, { k: '3 days', v: (w[1] || 0) / top }, { k: '7 days', v: (w[2] || 0) / top }, { k: mo, v: (w[3] || 0) / top, me: true }], 'Rain at this place by window'),
@@ -470,9 +482,10 @@
       var b = beltRain(fs, 1);
       if (!b) throw new Error('none');
       b.states.sort(function (x, y) { return BELT.indexOf(x.st) - BELT.indexOf(y.st); });
+      W = gw('rain');
       card('rain', { k: 'Rain · <b>12 Corn Belt states</b>', v: comma(b.n), u: b.n === 1 ? 'county' : 'counties', n: b.n, f: comma,
         s: 'got a tenth of an inch or more in the last 7 days, of <b>' + comma(b.of) + '</b>. Each bar: a state’s share.',
-        g: bars(b.states.map(function (s) { return { k: s.st, v: s.share }; }), 'Share of each state’s counties with a tenth of an inch in 7 days'),
+        g: bars(b.states.map(function (s) { return { k: s.st, v: s.share / Math.max(0.25, Math.max.apply(null, b.states.map(function (x) { return x.share; }))) }; }), 'Share of each state’s counties with a tenth of an inch in 7 days'),
         src: 'NOAA radar with gauges, to ' + when(b.end), a: 'Rain map', href: '/rain#radar' });
     }).catch(function () { cardFail('rain', 'Could not read the radar file just now.'); });
   }
@@ -484,8 +497,9 @@
       var c = F.items[0], s = F.items[1], cs = S && S.corn;
       var hist = cs && Array.isArray(cs.hist) ? cs.hist.slice(-52).filter(num) : [];
       var chg = num(c.net) ? ' <span class="' + (c.net > 0 ? 'up' : c.net < 0 ? 'dn' : 'nc') + '">' + esc(c.net === 0 ? 'unch' : mv(c.net)) + '</span>' : '';
+      W = gw('mkt');
       card('mkt', { k: esc(c.name.replace(' corn', '')) + ' corn · <b>CBOT</b>', v: px(c.px / 100), n: c.px / 100, f: function (x) { return '$' + x.toFixed(2); },
-        s: (num(cs && cs.pct) ? 'Lower than <b>' + (100 - cs.pct) + '%</b> of weekly closes in 5 years.' : 'Corn futures.') + chg + (s ? ' ' + esc(s.name) + ' <b>' + px(s.px / 100) + '</b>' : ''),
+        s: (chg ? chg.slice(1) + (c.ovn ? ' overnight. ' : ' on the day. ') : '') + (num(cs && cs.pct) ? 'Below <b>' + (100 - cs.pct) + '%</b> of weekly closes in 5 years.' : '') + (s ? ' ' + esc(s.name) + ' <b>' + px(s.px / 100) + '</b>.' : ''),
         g: hist.length > 4 ? spark(hist, { label: 'Corn futures, the last 52 weekly closes', labels: ['52 weeks ago', 'now'] }) : '',
         src: 'Futures, ' + F.stamp, a: 'Futures', href: '/corn-futures-prices' });
     }).catch(function () { cardFail('mkt', 'Could not read the price file just now.'); });
@@ -501,7 +515,7 @@
       $('fp-c-fc-img').src = c.img; $('fp-c-fc-img').alt = c.alt;
       $('fp-c-fc-k').innerHTML = 'Friday Chart · <b>' + esc(c.shown.replace(/, \d{4}$/, '')) + '</b>';
       $('fp-c-fc-s').textContent = c.title; $('fp-c-fc-src').textContent = 'AGSIST, ' + c.shown;
-      box.setAttribute('href', c.href); box.hidden = false;
+      box.setAttribute('href', c.href); box.hidden = false; even();
     }).catch(function () {});
   }
   function landCard(p) {
@@ -511,6 +525,7 @@
       if (!pk) throw new Error('none');
       var w = L.words(j, pk), r = pk.lead, name = w.k.match(/in ([A-Z][a-z]+(?: [A-Z][a-z]+)?)/), top = Math.max(r.ppa, r.med || 0) || 1;
       var where = pk.mine && !pk.covered ? 'Not in ' + pk.mine + ' yet · <b>' + esc(pk.st) + '</b>' : '<b>' + esc(name ? name[1] : pk.st) + '</b>';
+      W = gw('land');
       card('land', { k: 'Land sale · ' + where, v: money(r.ppa), u: 'an acre', n: r.ppa, f: function (x) { return money(x); },
         s: esc(w.s.split('.').slice(0, 2).join('.') + '.'),
         g: r.med ? bars([{ k: 'This sale', v: r.ppa / top, me: true }, { k: 'County middle ' + money(r.med), v: r.med / top }], 'This sale against the county middle') : '',
@@ -525,6 +540,7 @@
       var dv = first && first.d < R.report_date ? Math.round(prod.avg - first.v) : null;
       var mvw = dv == null ? '' : dv === 0 ? 'Unchanged since ' + md(first.d) + '.' : '<span class="' + (dv > 0 ? 'up' : 'dn') + '">' + (dv > 0 ? 'Up ' : 'Down ') + money(Math.abs(dv)) + '</span> since ' + md(first.d) + '.';
       var st = (/USDA AMS (\w+(?: \w+)?) Production/.exec(R.source || '') || [])[1] || 'State';
+      W = gw('fert');
       card('fert', { k: 'Anhydrous · <b>' + esc(st) + ' report</b>', v: money(prod.avg), u: 'a ton', n: prod.avg, f: function (x) { return money(x); },
         s: 'Dealers’ average, ' + esc(st) + '. ' + mvw + (urea ? ' Urea ' + money(urea.avg) + '.' : ''),
         g: s.length > 1 ? spark(s.map(function (x) { return x.v; }), { label: 'Anhydrous ammonia, the state report’s average by report', labels: [md(s[0].d), md(s[s.length - 1].d)] }) : '',
@@ -539,6 +555,7 @@
       var r = Wd.arcFromPage(html);
       if (!r) throw new Error('none');
       var top = Math.max(r.arc || 0, r.plc || 0) || 1, nm = Wd.countyName(p.state, p.countyRaw);
+      W = gw('arc');
       card('arc', { k: 'ARC/PLC · <b>' + esc(nm) + '</b>', v: money(r.v, 2), u: 'a base acre', n: r.v, f: function (x) { return money(x, 2); },
         s: '2025 ' + esc(r.crop.toLowerCase()) + ', ' + r.prog + ' pays more here, before the 5.7% cut.',
         g: bars([{ k: 'ARC-CO ' + (r.arc == null ? 'none' : money(r.arc, 2)), v: (r.arc || 0) / top, me: r.prog === 'ARC-CO' }, { k: 'PLC ' + (r.plc == null ? 'none' : money(r.plc, 2)), v: (r.plc || 0) / top, me: r.prog === 'PLC' }], 'ARC-CO and PLC per base acre'),
@@ -549,6 +566,7 @@
         var r = Wd.arcNational(j);
         if (!r) throw new Error('none');
         var top = Math.max(r.v, r.usda || 0) || 1;
+        W = gw('arc');
         card('arc', { k: 'ARC/PLC · <b>corn price floor</b>', v: money(r.v, 2), u: 'a bushel', n: r.v, f: function (x) { return money(x, 2); },
           s: 'Corn PLC pays if the 2026/27 season price ends below this.' + (r.usda != null ? ' USDA projects <b>' + money(r.usda, 2) + '</b>.' : ''),
           g: bars([{ k: 'PLC line ' + money(r.v, 2), v: r.v / top, me: true }].concat(r.usda != null ? [{ k: 'USDA ' + money(r.usda, 2), v: r.usda / top }] : []), 'Corn effective reference price and USDA projection'),
@@ -562,6 +580,7 @@
       if (!s) throw new Error('none');
       var hist = (a[1] && a[1].history && a[1].history.beans || []).slice(-52).map(function (x) { return x.net; }).filter(num);
       var ch = s.chg, rel = String(C.release_date || '');
+      W = gw('cot');
       card('cot', { k: 'Funds · <b>soybeans</b>', v: comma(Math.abs(s.net)), u: s.net >= 0 ? 'net long' : 'net short', n: Math.abs(s.net), f: comma,
         s: 'Funds ' + (ch < 0 ? '<span class="dn">sold ' + comma(-ch) + '</span>' : '<span class="up">bought ' + comma(ch) + '</span>') + ' contracts in the week.' +
           (c ? ' Corn: ' + c.side + (c.side === 'about even' ? '' : ', ' + comma(Math.abs(c.net))) + '.' : ''),
@@ -571,8 +590,9 @@
   }
   function daily() {
     get('/data/daily.json').then(function (j) {
-      if (!j || !j.headline || !/^\d{4}-\d{2}-\d{2}$/.test(j.date || '')) return;
-      $('fp-dk').textContent = 'The AGSIST Daily · ' + dayName(j.date) + ' ' + md(j.date);
+      var iso = dailyIso(j && j.date);
+      if (!j || !j.headline || !iso) return;
+      $('fp-dk').textContent = 'The AGSIST Daily · ' + dayName(iso) + ' ' + md(iso);
       $('fp-dt').textContent = j.headline;
     }).catch(function () {});
   }
@@ -601,6 +621,12 @@
 
   /* ---------------- run */
   var worldDone = false;
+  /* an odd number of cards: the last runs the full width on a wide screen (css), so no row is half empty */
+  function even() {
+    var cs = [].slice.call(d.querySelectorAll('#fp-cards .fp-card')).filter(function (c) { return !c.hidden; });
+    cs.forEach(function (c, i) { c.classList.toggle('fp-wide', cs.length % 2 === 1 && i === cs.length - 1); });
+  }
+  even();
   function world(p) {
     $('fp-wh').textContent = p ? 'Around ' + nearName(p) : 'Around farm country';
     bidsCard(p); rainCard(p); mktCard(); fcCard(); landCard(p); fertCard(); arcCard(p); cotCard();
@@ -611,7 +637,7 @@
         hero.classList.add('fp-saved');
         $('fp-where').textContent = 'Near ' + nearName(p) + (p.state && p.town ? ', ' + p.state : '');
         $('fp-set').textContent = 'Change place';
-        $('fp-t1-k').textContent = 'Corn · best bid in 50 mi'; $('fp-t2-k').textContent = 'Soybeans · best bid in 50 mi';
+        $('fp-t1-k').textContent = 'Best corn bid'; $('fp-t2-k').textContent = 'Best soybean bid';
         answerSaved(p);
       } else answerFresh();
       if (changed || worldDone) { worldDone = true; world(p && p.lat != null ? p : null); return; }

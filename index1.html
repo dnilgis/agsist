@@ -216,7 +216,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <span class="fp-w" id="fp-t2-w"></span>
       </a>
     </div>
-    <script>try{(function(){if(!document.getElementById('fp-hero').classList.contains('fp-saved'))return;document.getElementById('fp-t1-k').textContent='Corn · best bid in 50 mi';document.getElementById('fp-t2-k').textContent='Soybeans · best bid in 50 mi';document.getElementById('fp-t2').setAttribute('href','/cash-bids');})();}catch(e){}</script>
+    <script>try{(function(){if(!document.getElementById('fp-hero').classList.contains('fp-saved'))return;document.getElementById('fp-t1-k').textContent='Best corn bid';document.getElementById('fp-t2-k').textContent='Best soybean bid';document.getElementById('fp-t2').setAttribute('href','/cash-bids');})();}catch(e){}</script>
     <p class="fp-line" id="fp-line"></p>
   </section>
   <span id="fp-end" hidden></span>
@@ -224,6 +224,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 
   <section class="fp-world" id="fp-world" aria-labelledby="fp-wh">
     <h2 class="fp-wh" id="fp-wh">Around farm country</h2>
+    <div class="fp-cards" id="fp-cards">
     <div class="fp-grid">
       <a class="fp-card" id="fp-c-bids" href="/cash-bids" data-track="front"><span class="fp-ck" id="fp-c-bids-k">Bids</span><span class="fp-cv" id="fp-c-bids-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-bids-s"></span><span class="fp-cg" id="fp-c-bids-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-bids-src"></span><span class="fp-ca" id="fp-c-bids-a">Cash bids &rarr;</span></span></a>
       <a class="fp-card" id="fp-c-rain" href="/rain" data-track="front"><span class="fp-ck" id="fp-c-rain-k">Rain</span><span class="fp-cv" id="fp-c-rain-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-rain-s"></span><span class="fp-cg" id="fp-c-rain-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-rain-src"></span><span class="fp-ca" id="fp-c-rain-a">Rain map &rarr;</span></span></a>
@@ -236,6 +237,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <a class="fp-card" id="fp-c-arc" href="/arc-plc" data-track="front"><span class="fp-ck" id="fp-c-arc-k">ARC/PLC</span><span class="fp-cv" id="fp-c-arc-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-arc-s"></span><span class="fp-cg" id="fp-c-arc-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-arc-src"></span><span class="fp-ca" id="fp-c-arc-a">County check &rarr;</span></span></a>
       <a class="fp-card" id="fp-c-cot" href="/cot" data-track="front"><span class="fp-ck" id="fp-c-cot-k">Funds</span><span class="fp-cv" id="fp-c-cot-v"><span class="fp-sk" aria-hidden="true"></span></span><span class="fp-cs" id="fp-c-cot-s"></span><span class="fp-cg" id="fp-c-cot-g"></span><span class="fp-cf"><span class="fp-csrc" id="fp-c-cot-src"></span><span class="fp-ca" id="fp-c-cot-a">Fund positions &rarr;</span></span></a>
     </div>
+    </div>
   </section>
 
   <section class="fp-daily" id="fp-daily" aria-labelledby="fp-dk">
@@ -243,7 +245,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <p class="fp-dk" id="fp-dk">The AGSIST Daily</p>
       <a class="fp-dt" id="fp-dt" href="/daily" data-track="front">This morning&rsquo;s briefing</a>
     </div>
-    <div class="fp-dask" data-signup-ask="Get the Daily and your top local bid by email every morning" data-source="home-front" data-variant="page"></div>
+    <div class="fp-dask" data-signup-ask="Get the Daily and your top local bid by email every morning" data-source="home-front" data-variant="page" data-stack></div>
   </section>
   <script src="/components/signup-ask.js?v=23"></script>
 <!-- /index1:own main -->
@@ -298,6 +300,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   })();
   </script>
 <script src="/components/loader.js?v=22" defer></script>
+<script src="/components/nws.js?v=1" defer></script>
+<script src="/components/geo.js?v=41" defer></script>
 <!-- index1:own js -->
 <script src="/components/home-world.js?v=1" defer></script>
 <script src="/components/home-land.js?v=4" defer></script>
