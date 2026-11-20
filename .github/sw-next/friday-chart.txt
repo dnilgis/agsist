@@ -1,0 +1,1 @@
+Home: the Friday Chart block under the first screen, the newest weekly chart from infographic/latest.json (home-friday-chart.js?v=1); Friday Chart pages: the funds poster in plain words with the chart first (infographic.js?v=4, infographic.css?v=4)

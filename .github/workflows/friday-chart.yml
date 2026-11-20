@@ -1,0 +1,89 @@
+name: Friday Chart spec
+
+# The week's Friday Chart (Infographic of the Week), proposed for review (Nov 20, 2026). Fridays after cot.yml's
+# last Friday fetch (21:17 UTC, so the week's COT report is in), scripts/build_infographic.py picks the week's kind
+# by its rotation rule (a kind whose data is fresh and not printed yet, the one printed longest ago first) and writes
+# data/infographics/<date>.json. Only that spec is committed, on its own branch, with a pull request for the owner's
+# review: nothing is published here. Once the pull request merges, infographic-pages.yml builds the page, the link
+# card and infographic/latest.json (the home page block). No fresh kind: the log says so and nothing is written.
+# By hand: Run workflow, with a kind (harvest-gap, funds-corn) to override the rotation and a day (yyyy-mm-dd).
+
+on:
+  schedule:
+    - cron: '23 22 * * 5'
+    - cron: '53 23 * * 5'
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: "week (the rotation rule), harvest-gap or funds-corn"
+        required: false
+        default: week
+      day:
+        description: "the chart's date, yyyy-mm-dd (default: today, UTC)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: friday-chart-spec
+  cancel-in-progress: false
+
+jobs:
+  spec:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the week's spec and propose it
+        env:
+          KIND: ${{ github.event.inputs.kind || 'week' }}
+          DAY_IN: ${{ github.event.inputs.day }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          DAY="${DAY_IN:-$(date -u +%F)}"
+          case "$DAY" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "bad day: $DAY"; exit 1 ;; esac
+          case "$KIND" in week|harvest-gap|funds-corn) ;; *) echo "bad kind: $KIND"; exit 1 ;; esac
+          OUT=$(python3 scripts/build_infographic.py "$KIND" "$DAY" 2>&1) || { echo "$OUT"; exit 1; }
+          echo "$OUT"
+          if echo "$OUT" | grep -q '^skip: '; then
+            echo "### Friday Chart: no spec this week" >> "$GITHUB_STEP_SUMMARY"
+            echo "$OUT" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          SPEC="data/infographics/$DAY.json"
+          [ -f "$SPEC" ] || { echo "no spec written"; exit 1; }
+          PICKED=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["kind"])' "$SPEC")
+          TITLE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["title"])' "$SPEC")
+          BRANCH="friday-chart/$DAY-$PICKED"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "$BRANCH is already proposed; nothing new"; exit 0
+          fi
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git checkout -b "$BRANCH"
+          git add -- "data/infographics/$DAY.json"
+          git commit -m "Friday Chart $DAY: $TITLE"
+          git push origin "HEAD:refs/heads/$BRANCH"
+          {
+            echo "This week's Friday Chart spec, for review. Merging it publishes the page, the link card and the home page block (infographic-pages.yml)."
+            echo
+            echo "- Hook: $TITLE"
+            echo "- Kind: $PICKED"
+            echo "- Builder: $OUT"
+            echo
+            echo "Only data/infographics/$DAY.json is in this pull request. To see the poster before merging, build the page locally with scripts/build_infographic_pages.py."
+          } > /tmp/body.md
+          gh pr create --base main --head "$BRANCH" --title "Friday Chart $DAY: $TITLE" --body-file /tmp/body.md
+          echo "### Friday Chart: $TITLE (pull request opened for review)" >> "$GITHUB_STEP_SUMMARY"

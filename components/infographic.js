@@ -509,9 +509,13 @@
     var span = hi - lo || 1, stepv = Math.pow(10, Math.floor(Math.log(span / 3) / Math.LN10)), k;
     [1, 2, 2.5, 5, 10].some(function (m) { k = m * stepv; return span / k <= 5; });
     lo = Math.floor(lo / k) * k; hi = Math.ceil(hi / k) * k;
+    var h = F.chart, l0 = pts[pts.length - 1], into = pts.length > 1 ? l0.y - pts[pts.length - 2].y : 0;
+    /* room for the end's words on the side the line came from: one more grid step when they would not fit */
+    if (into < 0 && (l0.y - lo) / (hi - lo || 1) * h < F.data + 12) lo -= k;
+    if (into > 0 && (hi - l0.y) / (hi - lo || 1) * h < F.data + 12) hi += k;
     var lw = 0, ticks = [];
     for (var v = lo; v <= hi + k / 2; v += k) { ticks.push(v); lw = Math.max(lw, g.w(num(v), F.cap, 600)); }
-    var h = F.chart, px0 = x + lw + 12, pw = w - lw - 12, top = y + F.data + 18, bot = top + h;
+    var px0 = x + lw + 12, pw = w - lw - 12, top = y + F.data + 18, bot = top + h;
     function px(i) { return px0 + 16 + (pw - 32) * (pts.length === 1 ? 0.5 : i / (pts.length - 1)); }
     function py(v) { return bot - (bot - top) * (v - lo) / (hi - lo || 1); }
     ticks.forEach(function (v) {
@@ -521,7 +525,11 @@
     /* the zero line: brighter than the grid, labeled */
     g.line(px0, py(0), px0 + pw, py(0), T.ink, 3, 'butt');
     g.poly(pts.map(function (q, i) { return [px(i), py(q.y)]; }), T.gold, F.data > 24 ? 7 : 5);
-    var stepx = pts.length > 1 ? (pw - 32) / (pts.length - 1) : 1e9, every = Math.max(1, Math.ceil(g.w('Sep 22', F.cap, 600) * 1.3 / stepx));
+    /* date labels: the first (left-aligned) and the last (right-aligned) always; between, every so many weeks that
+       no two labels touch (the widest label and a gap between centers) */
+    var labW = 0;
+    pts.forEach(function (q) { labW = Math.max(labW, g.w(q.label, F.cap, 600)); });
+    var stepx = pts.length > 1 ? (pw - 32) / (pts.length - 1) : 1e9, every = Math.max(1, Math.ceil((labW * 1.5 + 12) / stepx));
     pts.forEach(function (q, i) {
       g.circle(px(i), py(q.y), F.data > 24 ? 9 : 7, T.gold);
       var lastI = pts.length - 1;
@@ -531,7 +539,6 @@
     /* the ends in words: the start above its point; the end beside its point on the side the line came from
        (below it when the line fell into it, above when it rose), so no word sits on the line or the zero line */
     g.text(P.start, Math.max(x, fx - 6), py(f.y) - 16, F.data, 800, T.ink, 'left');
-    var into = pts.length > 1 ? l.y - pts[pts.length - 2].y : 0;
     g.text(P.end, lx - 4, into < 0 ? py(l.y) + F.data + 4 : py(l.y) - 16, F.data, 800, T.ink, 'right');
     /* "Longs = shorts" on the zero line, at the side away from the line's ends */
     var zl = P.zero, zw = g.w(zl, F.cap, 700), zx = px0 + 8, zy = py(0) - 10;
@@ -668,7 +675,7 @@
         marks.push(g.ops.length);
         g.ops.push(null);   /* the panel's own box, filled in once the row's height is known */
         g.circle(ix + 19, iy + 19, 19, T.gold);
-        g.text(String(step++), ix + 19, iy + 26, 20, 800, T.bg, 'center');
+        g.text(String(step++), ix + 19, iy + (big ? 27 : 26), big ? 24 : 20, 800, T.bg, 'center');
         var icon = PANEL_ICON[P.id], iconW = icon === 'combine' ? 58 : icon ? 34 : 0;
         var tw = iw - 50 - (iconW ? iconW + 10 : 0), tsz = g.fit(P.title, 30, 26, 800, tw, T.serif), tl = g.wrap(P.title, tsz, 800, tw, T.serif), ty = iy + 29;
         if (tl.length > 1) ty = iy + 26;
