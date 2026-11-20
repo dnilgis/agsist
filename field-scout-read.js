@@ -98,8 +98,9 @@ window.__fsRead = function (FSX) {
 
   // ── Orchestrator ────────────────────────────────────────────────────
   // the answered height of The Read on the Story example, phone (under 560 px) and wider
-  // (567 px at 390 and 722 px at 1280 with its heading, Nov 20, 2026)
-  var READ_ROOM = { phone:'33.5rem', wide:'42rem' };
+  // (712 px at 390 and 722 px at 1280 with its heading on the PR checks' full data, Nov 20, 2026;
+  // a sparse local checkout answers shorter and keeps the extra room as space)
+  var READ_ROOM = { phone:'43rem', wide:'42rem' };
   function readRoom(){ return (window.matchMedia && matchMedia('(max-width:559px)').matches) ? READ_ROOM.phone : READ_ROOM.wide; }
   function runAll(poly){
     var c=polyCentroid(poly), acres=polyAcres(poly);
