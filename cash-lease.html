@@ -19,7 +19,7 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>Farm Cash Lease: Free Fillable &amp; Printable Form | AGSIST</title>
-  <meta name="description" content="Free fillable, printable cash farm lease with state termination deadlines, plus every lease type explained, with who carries the risk.">
+  <meta name="description" content="Free fillable, printable cash farm lease with your county's rent, a flex lease calculator and state termination deadlines, plus every lease type explained.">
   <link rel="canonical" href="https://agsist.com/cash-lease">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
@@ -238,16 +238,18 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
 
 /* ---- first screen: county rent, soil tier, flex lease (components/lease-plus.js) ---- */
 .lp-panel{margin-top:14px}
+.lp-go{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}.lp-go .cl-btn{text-decoration:none;display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box}
+.lp-all{margin:10px 0 0;font-size:.88rem}.lp-all a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .lp-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lp-pick label{display:flex;flex-direction:column;gap:4px;font-size:.72rem;color:var(--text-dim)}
 .lp-pick select{font:inherit;font-size:16px;color:var(--text);background:transparent;border:1px solid var(--border-2);border-radius:var(--r-md);padding:8px 10px;min-height:44px}
 .lp-pick select option{color:#000}
-/* reserved: the tallest county read fits (measured Nov 20, 2026 over every county of the survey states: 657 px at 390,
-   473 px at 1280; test/cash-lease-plus.test.mjs holds it), only when the head script found a saved pick or place
+/* reserved: the tallest county read fits (measured Nov 20, 2026 over every county of the survey states, with the rent page
+   link and the notice line: 762 px at 390, 558 px at 1280; test/cash-lease-plus.test.mjs holds it), only when the head script found a saved pick or place
    (html.lp-saved); a first visit has nothing to fill in, so the card keeps its natural height */
 .lp-out{margin-top:12px}
-html.lp-saved .lp-out{min-height:42rem}
-@media(min-width:700px){html.lp-saved .lp-out{min-height:30.5rem}}
+html.lp-saved .lp-out{min-height:48rem}
+@media(min-width:700px){html.lp-saved .lp-out{min-height:35rem}}
 .lp-where{font-family:var(--font-display);font-size:1.15rem;margin:0 0 4px;color:var(--text)}
 .lp-big{line-height:1.05}.lp-v{font-family:var(--font-display);font-size:2.6rem;font-weight:800;color:var(--text)}.lp-u{font-size:.95rem;color:var(--text-muted)}
 .lp-k{margin:2px 0 6px;font-size:.92rem;color:var(--text-dim)}
@@ -308,6 +310,7 @@ html.lp-saved .lp-out{min-height:42rem}
   <header class="cl-hero">
     <p class="cl-kicker page-kicker">Cash rent, flex terms and lease paperwork</p>
     <h1>A farm lease you can actually read</h1>
+    <p class="lp-go"><a class="cl-btn" href="#lease-form">Fill in the lease</a> <a class="cl-btn cl-btn--ghost" href="#lp-flex">Flex calculator</a> <a class="cl-btn cl-btn--ghost" href="#notice">Notice deadline</a></p>
   </header>
 
   <section class="cl-panel lp-panel no-print" id="lp-county" aria-labelledby="lp-t">
@@ -881,7 +884,7 @@ html.lp-saved .lp-out{min-height:42rem}
 })();
 </script>
   <script src="/components/saved-place.js?v=1" defer></script>
-  <script src="/components/lease-plus.js?v=2" defer></script>
+  <script src="/components/lease-plus.js?v=3" defer></script>
   <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

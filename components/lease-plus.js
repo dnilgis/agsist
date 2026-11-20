@@ -48,6 +48,9 @@
     if (!ys.length) return null;
     var y = Math.max.apply(null, ys); return {y: y, v: s[String(y)]};
   }
+  /* the state rent page, the one home of the county rent tables (rent/<state>.html) */
+  function rentSlug(st) { return String(NAMES[st] || '').toLowerCase().replace(/\s+/g, '-'); }
+  function rentHref(st) { return '/rent/' + rentSlug(st); }
   function cname(name, st) { return st === 'LA' ? name + ' Parish' : name + ' County'; }
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function day(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
@@ -328,7 +331,8 @@
         if (P.withheld) h += '<p class="lp-s">No figure: ' + esc(P.withheld) + '.</p>';
         else {
           if (P.main) h += '<p class="lp-m"><b>' + (isNum(P.main.v) ? money(P.main.v) : esc(P.main.printed || '')) + '</b> ' + esc(P.main.label.charAt(0).toLowerCase() + P.main.label.slice(1)) + '</p>';
-          var tl = P.tiers.filter(function (t) { return isNum(t.v) || t.printed; });
+          /* compact: the tiers show only where the soil placement below uses them; every other figure lives on /rent/<state> */
+          var tl = placeHow(st) ? P.tiers.filter(function (t) { return isNum(t.v) || t.printed; }) : [];
           if (tl.length) h += '<ul class="lp-tiers">' + tl.map(function (t) {
             return '<li data-k="' + esc(t.k) + '"><span>' + esc(t.label) + (isNum(t.corn) ? ' <i>' + t.corn + ' bu corn</i>' : '') + (t.pi ? ' <i>P/I ' + (t.pi.below ? 'under ' + t.pi.below : t.pi.low + ' to ' + t.pi.high) + '</i>' : '') + '</span><b>' + (isNum(t.v) ? money(t.v) : esc(t.printed)) + '</b></li>';
           }).join('') + '</ul>';
@@ -338,6 +342,7 @@
         var cnt = isNum(P.n) ? P.n + ' ' + P.nWhat : '';
         h += '<p class="lp-src">' + esc(P.org) + ', ' + esc(P.title) + (P.released ? ', ' + esc(P.released) : '') + (cnt ? '. ' + esc(cnt) : '') + '.' + (P.notes.length ? ' ' + esc(P.notes.join(' ')) : '') + '</p></div>';
       }
+      h += '<p class="lp-all"><a href="' + rentHref(st) + '">Every county in ' + esc(NAMES[st]) + ': /rent/' + rentSlug(st) + '</a></p>';
       var R = w.AgLeaseRules && w.AgLeaseRules[st];
       if (R && R.v) h += '<p class="lp-notice"><b>' + esc(NAMES[st]) + ' notice deadline:</b> ' + esc(R.short || '') + ' (' + esc(R.s || '') + ', read against the statute text saved ' + esc(day(R.v)) + '). <a href="#notice">Count your date and print the notice</a>.</p>';
       return h;
@@ -440,7 +445,10 @@
         if (f && coSel.querySelector('option[value="' + f + '"]')) { coSel.value = f; show(st, f); } else show(st, '');
       });
     }
-    if (mem.st) startWith(mem.st, '', mem.fips);
+    /* a rent page's link (/cash-lease?st=IA) opens on that state; the reader picks the county */
+    var qst = ''; try { qst = String(new w.URLSearchParams(w.location.search).get('st') || '').toUpperCase(); } catch (e) { qst = ''; }
+    if (NAMES[qst] && qst !== mem.st) startWith(qst, '', '');
+    else if (mem.st) startWith(mem.st, '', mem.fips);
     else {
       var p = null; try { p = w.AgSavedPlace ? w.AgSavedPlace.read() : null; } catch (e) { p = null; }
       if (p && p.state) startWith(p.state, p.county, '');
@@ -449,6 +457,6 @@
     }
   }
 
-  return {NAMES: NAMES, FILES: FILES, nass: nass, survey: survey, place: place, placeHow: placeHow, bracket: bracket, piClass: piClass,
+  return {NAMES: NAMES, FILES: FILES, rentHref: rentHref, nass: nass, survey: survey, place: place, placeHow: placeHow, bracket: bracket, piClass: piClass,
     flexRent: flexRent, flexGrid: flexGrid, projected: projected, money: money, boot: boot};
 });
