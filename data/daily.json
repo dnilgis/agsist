@@ -1,86 +1,77 @@
 {
-  "headline": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due",
-  "lead": "Corn gave back 11¼ cents Wednesday and wheat gave back 25¼, the worst day for both in weeks.",
-  "teaser": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due.",
+  "headline": "Cash hogs fell to $36.70 in the Nov. 19 report",
+  "lead": "Cash hogs fell $2.05 to $36.70 in Thursday's USDA report, the lowest in 71 reports. December futures still rose 2.1%, so the two prices are moving apart.",
+  "teaser": "Cash hogs fall $2.05 to $36.70 while December hog futures settled at $52.43.",
   "one_number": {
-    "value": "90 to 95 over Dec",
-    "unit": "Gulf corn export bid, barge CIF",
-    "context": "That is the basis USDA AMS reported for corn at Gulf export elevators on Nov. 18, against 95 to 105 over January for soybeans."
+    "value": "$68.66",
+    "unit": "pork cutout per hundredweight",
+    "context": "USDA AMS put Thursday's wholesale pork cutout at $68.66, down $0.82 from the day before, so the loss in hogs showed up in pork too."
   },
   "sections": [
     {
-      "title": "Grains edge up after drop",
-      "body": "- Dec corn is at **$4.36½** overnight, up a penny from Wednesday's settle, after two straight lower closes.\n- Jan soybeans are at $12.22¾, up 6 cents, after lower closes, and Dec wheat is at $5.78¼.",
-      "conviction_level": "low",
+      "title": "Hogs lower in cash, higher in futures",
+      "body": "- December lean hogs settled at **$52.42½**, up 2.1%, while cash hogs fell on a carcass base.\n- Packers killed about 494,000 hogs Thursday, against 487,000 a week ago.",
+      "conviction_level": "medium",
       "overnight_surprise": false
     },
     {
-      "title": "Hogs lag, cattle firm",
-      "body": "- Dec lean hogs settled Wednesday at **$51.35**, down 3.3%, while the Dec live cattle settle was $219.775, up 0.5%.\n- USDA AMS put cash hogs at $38.75 carcass base on 3,049 head, and the pork cutout at $69.48.",
+      "title": "Grains mixed overnight",
+      "body": "- December corn is at **$4.37¼** overnight, down 1¾ cents from Thursday's $4.39 settle, and January soybeans are up 4¼ cents to $12.11¾.",
       "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Thailand trade deal includes $2.6 billion in US ag purchases",
-      "body": "Thailand would also open its market to US pork, which would add a buyer for hog producers.",
+      "title": "Trump touts Asia deals, but US farm exports lag",
+      "body": "Reuters reported the new Asia trade deals have not yet lifted US farm export sales.",
       "tag": "TRADE",
-      "link": "https://farmpolicynews.illinois.edu/2026/11/thailand-trade-deal-will-include-2-6-billion-in-us-ag-purchases-pork-market-access-trump-says/",
-      "source": "farmpolicynews.illinois.edu",
-      "news_id": "N10"
+      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOX1NxamhacExiOUlPV3RKN2RGTmNzN2gySzZ1Wnl5d0xEUjdud1IyRE5aTk5sUWZRUzRDLTdjblQ0MmNWa1B3Nld0RGhRbDZqbEpfWkpFWlhwOUhPeTJqVkxvNkhReU9iaUlabjJfeVFnNFVrem14RGRVdG9EZHhxcVNFd1dhTkJBR3ljdzZmejE3TkY3bE1zZGJRTG5DRGFTS3k3SDJpRGZWWkdIcTBoYkNB?oc=5",
+      "source": "Reuters",
+      "news_id": "N17"
     },
     {
-      "title": "Screwworm cases rise sharply in Texas, New Mexico and Arizona",
-      "body": "A faster spread raises the odds of tighter cattle movement rules in the Southwest.",
-      "tag": "DISEASE",
-      "link": "https://www.beefmagazine.com/livestock-management/screwworms-on-the-rise",
-      "source": "beefmagazine.com",
-      "news_id": "N3"
+      "title": "Crude falls over 5% on oil glut worries",
+      "body": "Oilprice.com reported crude slid as supply grew and US stocks built, which can ease diesel costs.",
+      "tag": "INPUTS",
+      "link": "https://oilprice.com/Energy/Energy-General/WTI-Crude-Sinks-More-Than-5-as-Global-Oil-Glut-Fears-Grow.html",
+      "source": "oilprice.com",
+      "news_id": "N11"
     },
     {
-      "title": "Boozman says a farm bill can pass this year",
-      "body": "The Senate Ag chairman said staff on both sides can reach compromises, a sign of progress on farm programs.",
-      "tag": "POLICY",
-      "link": "https://www.thefencepost.com/news/boozman-bennet-both-call-for-farm-bill-passage-this-year/",
-      "source": "thefencepost.com",
-      "news_id": "N22"
-    },
-    {
-      "title": "Cal-Maine bird flu case hits 1.4M hens in Florida",
-      "body": "About 2.7% of the company's flock will be depopulated, which can tighten egg supplies.",
+      "title": "Cattle rebound as cutout values slide",
+      "body": "Beef Magazine said live and feeder cattle had strong weekly gains while cash trade stayed cautious.",
       "tag": "LIVESTOCK",
-      "link": "https://www.feedstuffs.com/agribusiness-news/cal-maine-bird-flu-finding-in-florida-to-impact-1-4m-laying-hens",
-      "source": "feedstuffs.com",
-      "news_id": "N1"
+      "link": "https://www.beefmagazine.com/market-news/cattle-markets-rebound-as-sentiment-shifts",
+      "source": "beefmagazine.com",
+      "news_id": "N6"
     }
   ],
   "watch_list": [
     {
-      "time": "Thursday, Nov 19, 7:30 a.m. CT",
-      "desc": "USDA weekly export sales."
+      "time": "Friday, Nov 20, 2:00 p.m. CT",
+      "desc": "USDA Cattle on Feed and Milk Production reports."
     },
     {
-      "time": "Friday, Nov 20, 2:00 p.m. CT",
-      "desc": "USDA Cattle on Feed."
+      "time": "Monday, Nov 23, 3:00 p.m. CT",
+      "desc": "USDA Crop Progress."
     }
   ],
-  "source_summary": "CME Group futures, USDA AMS, USDA calendar, AGSIST news digest",
-  "date": "Thursday, November 19, 2026",
+  "source_summary": "CME futures, USDA AMS, NOAA, news wires",
+  "date": "Friday, November 20, 2026",
   "meta": {
     "market_mood": "cautious",
     "heat_section": 0,
-    "overnight_surprises_count": 0,
-    "word_count": 243,
+    "overnight_surprises_count": 2,
+    "word_count": 202,
     "news_coverage": {
-      "ok": 18,
+      "ok": 19,
       "total": 26,
-      "items": 98,
+      "items": 107,
       "dark": [
         "nass.usda.gov",
         "agproud.com",
         "brownfieldagnews.com",
-        "usda.gov",
         "extension.iastate.edu",
         "extension.umn.edu",
         "extension.purdue.edu",
@@ -90,255 +81,245 @@
   },
   "freshness": {
     "window": 7,
-    "tries": 1,
+    "tries": 2,
     "hits": []
   },
   "locked_prices": {
-    "corn": 4.365,
-    "corn-dec": 4.365,
-    "beans": 12.2275,
-    "beans-nov": 11.7725,
-    "wheat": 5.7825,
-    "oats": 3.53,
-    "cattle": 219.77499,
-    "feeders": 337.0,
-    "hogs": 51.35,
+    "corn": 4.3725,
+    "corn-dec": 4.3725,
+    "beans": 12.1175,
+    "beans-nov": 11.67,
+    "wheat": 5.7925,
+    "oats": 3.52,
+    "cattle": 222.85001,
+    "feeders": 335.54999,
+    "hogs": 52.425,
     "milk": 17.71,
-    "meal": 334.0,
-    "soyoil": 60.35,
-    "crude": 83.72,
-    "natgas": 3.382,
-    "gold": 3709.19995,
-    "silver": 45.055,
-    "dollar": 103.632,
-    "sp500": 7401.18994,
-    "bitcoin": 63872.75
+    "meal": 337.0,
+    "soyoil": 60.03,
+    "crude": 82.57,
+    "natgas": 3.598,
+    "gold": 3568.6001,
+    "silver": 42.125,
+    "dollar": 103.765,
+    "sp500": 7175.83008,
+    "bitcoin": 61515.42188
   },
   "locked_changes": {
     "corn": {
-      "prev": 4.355,
-      "pct": 0.2296,
+      "prev": 4.39,
+      "pct": -0.3986,
       "kind": "last",
-      "at": "2026-11-19T14:31:06Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
+      "at": "2026-11-20T13:01:08Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
       "contract": "Dec '26",
-      "prev_net": -0.1125
+      "prev_net": 0.035
     },
     "corn-dec": {
-      "prev": 4.355,
-      "pct": 0.2296,
+      "prev": 4.39,
+      "pct": -0.3986,
       "kind": "last",
-      "at": "2026-11-19T14:31:02Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
-      "prev_net": -0.1125
+      "at": "2026-11-20T13:01:05Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "prev_net": 0.035
     },
     "beans": {
-      "prev": 12.1675,
-      "pct": 0.4931,
+      "prev": 12.075,
+      "pct": 0.352,
       "kind": "last",
-      "at": "2026-11-19T14:31:08Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
+      "at": "2026-11-20T13:01:09Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
       "contract": "Jan '27",
-      "prev_net": -0.0875
+      "prev_net": -0.0925
     },
     "beans-nov": {
-      "prev": 11.74,
-      "pct": 0.2768,
+      "prev": 11.69,
+      "pct": -0.1711,
       "kind": "last",
-      "at": "2026-11-19T14:31:02Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
-      "prev_net": -0.135
+      "at": "2026-11-20T13:01:06Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "prev_net": -0.05
     },
     "wheat": {
-      "prev": 5.7,
-      "pct": 1.4474,
+      "prev": 5.7825,
+      "pct": 0.1729,
       "kind": "last",
-      "at": "2026-11-19T14:31:11Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
+      "at": "2026-11-20T13:01:11Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
       "contract": "Dec '26",
-      "prev_net": -0.2525
+      "prev_net": 0.0825
     },
     "oats": {
-      "prev": 3.505,
-      "pct": 0.7133,
+      "prev": 3.555,
+      "pct": -0.9845,
       "kind": "last",
-      "at": "2026-11-19T14:31:17Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
-      "prev_net": -0.1
+      "at": "2026-11-20T13:01:15Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "prev_net": 0.05
     },
     "cattle": {
-      "prev": 218.775,
-      "pct": 0.4571,
+      "prev": 219.775,
+      "pct": 1.3992,
       "kind": "settle",
-      "date": "2026-11-18",
-      "prev_date": "2026-11-17",
+      "date": "2026-11-19",
+      "prev_date": "2026-11-18",
       "contract": "Dec '26"
     },
     "feeders": {
-      "prev": 335.575,
-      "pct": 0.4246,
+      "prev": 331.0,
+      "pct": 1.3746,
       "kind": "settle",
-      "date": "2026-11-18",
-      "prev_date": "2026-11-17",
-      "contract": "Nov '26"
+      "date": "2026-11-19",
+      "prev_date": "2026-11-18",
+      "contract": "Jan '27"
     },
     "hogs": {
-      "prev": 53.1,
-      "pct": -3.2957,
+      "prev": 51.35,
+      "pct": 2.0935,
       "kind": "settle",
-      "date": "2026-11-18",
-      "prev_date": "2026-11-17",
+      "date": "2026-11-19",
+      "prev_date": "2026-11-18",
       "contract": "Dec '26"
     },
     "milk": {
-      "prev": 17.5,
-      "pct": 1.2,
+      "prev": 17.72,
+      "pct": -0.0564,
       "kind": "last",
-      "at": "2026-11-19T14:31:20Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
+      "at": "2026-11-20T13:01:17Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
       "contract": "Nov '26",
-      "prev_net": -0.05
+      "prev_net": 0.22
     },
     "meal": {
-      "prev": 335.9,
-      "pct": -0.5656,
+      "prev": 332.3,
+      "pct": 1.4144,
       "kind": "last",
-      "at": "2026-11-19T14:31:18Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
-      "prev_net": 0.69998
+      "at": "2026-11-20T13:01:16Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "prev_net": -3.60001
     },
     "soyoil": {
-      "prev": 59.88,
-      "pct": 0.7849,
+      "prev": 60.3,
+      "pct": -0.4478,
       "kind": "last",
-      "at": "2026-11-19T14:31:19Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
-      "prev_net": -2.25
+      "at": "2026-11-20T13:01:16Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "prev_net": 0.2
     },
     "crude": {
-      "prev": 83.26,
-      "pct": 0.5525,
+      "prev": 83.21,
+      "pct": -0.7691,
       "kind": "last",
-      "at": "2026-11-19T14:31:22Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18"
+      "at": "2026-11-20T13:01:18Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19"
     },
     "natgas": {
-      "prev": 3.372,
-      "pct": 0.2966,
+      "prev": null,
+      "pct": null,
       "kind": "last",
-      "at": "2026-11-19T14:31:22Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18"
+      "at": "2026-11-20T13:01:19Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "withheld": "NG=F moved +10.10% from 3.268 (2026-11-19) to 3.598 (2026-11-20), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld"
     },
     "gold": {
-      "prev": 3741.8999,
-      "pct": -0.8739,
+      "prev": 3685.5,
+      "pct": -3.1719,
       "kind": "last",
-      "at": "2026-11-19T14:31:22Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18"
+      "at": "2026-11-20T13:01:19Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19"
     },
     "silver": {
-      "prev": 44.999,
-      "pct": 0.1244,
+      "prev": 44.318,
+      "pct": -4.9483,
       "kind": "last",
-      "at": "2026-11-19T14:31:23Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18"
+      "at": "2026-11-20T13:01:19Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19"
     },
     "dollar": {
-      "prev": 103.86,
-      "pct": -0.2195,
+      "prev": 103.9,
+      "pct": -0.1299,
       "kind": "last",
-      "at": "2026-11-19T14:31:24Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18"
+      "at": "2026-11-20T13:01:20Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19"
     },
     "sp500": {
       "prev": 7323.6299,
-      "pct": 1.059,
-      "kind": "last",
-      "at": "2026-11-19T14:31:24Z",
+      "pct": -2.0181,
+      "kind": "settle",
       "date": "2026-11-19",
       "prev_date": "2026-11-18"
     },
     "bitcoin": {
-      "prev": 62987.2656,
-      "pct": 1.4058,
+      "prev": 61901.8203,
+      "pct": -0.6242,
       "kind": "last",
-      "at": "2026-11-19T14:31:24Z",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18"
+      "at": "2026-11-20T13:01:20Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19"
     }
   },
   "board": {
-    "fetched": "2026-11-19T14:31:24Z",
-    "quote_session": "2026-11-19",
-    "prev_close_session": "2026-11-18"
+    "fetched": "2026-11-20T13:01:20Z",
+    "quote_session": "2026-11-20",
+    "prev_close_session": "2026-11-19"
   },
   "basis_wow": {
     "print": true,
     "rows": [
-      {
-        "st": "IN",
-        "name": "Indiana",
-        "crop": "soybeans",
-        "wow": 5.0,
-        "n": 46,
-        "moved": 31,
-        "companies": 17
-      },
       {
         "st": "OH",
         "name": "Ohio",
         "crop": "corn",
         "wow": 5.0,
         "n": 55,
-        "moved": 42,
-        "companies": 18
+        "moved": 34,
+        "companies": 19
       },
       {
         "st": "OH",
         "name": "Ohio",
         "crop": "soybeans",
         "wow": 5.0,
-        "n": 62,
-        "moved": 37,
+        "n": 63,
+        "moved": 38,
         "companies": 17
       }
     ],
-    "why": "entered IN:soybeans; moved OH:corn",
-    "snapshot": "2026-11-19T13:07:40Z"
+    "why": "left IN:soybeans",
+    "snapshot": "2026-11-20T11:07:55Z"
   },
   "edge": {
     "label": "Only on AGSIST",
-    "generated": "2026-11-19T14:35:39Z",
+    "generated": "2026-11-20T13:04:38Z",
     "facts": [
       {
         "id": "basis_wow",
         "kind": "basis_wow",
-        "sentence": "Basis firmed this week: Ohio soybeans +5¢ (37 of 62 bids moved), Ohio corn +5¢ (42 of 55) and Indiana soybeans +5¢ (31 of 46).",
+        "sentence": "Basis firmed this week: Ohio soybeans +5¢ (38 of 63 bids moved) and Ohio corn +5¢ (34 of 55).",
         "key": "Basis firmed this week",
         "detail": "Each state's middle change in a week, across bids matched with the same elevator's same delivery and futures month; states with 30 or more such bids from 8 or more companies.",
         "url": "/basis",
         "link_text": "Basis by state",
-        "as_of": "2026-11-19"
+        "as_of": "2026-11-20"
       }
     ]
   },
   "chart_series": {
     "corn": [
-      4.4,
       4.415,
       4.3925,
       4.49,
@@ -347,10 +328,10 @@
       4.455,
       4.4875,
       4.4675,
-      4.355
+      4.355,
+      4.39
     ],
     "soybeans": [
-      11.8825,
       11.9375,
       11.8825,
       12.28,
@@ -359,11 +340,11 @@
       12.315,
       12.29,
       12.255,
-      12.1675
+      12.1675,
+      12.075
     ]
   },
   "chart_dates": [
-    "2026-11-05",
     "2026-11-06",
     "2026-11-09",
     "2026-11-10",
@@ -372,11 +353,11 @@
     "2026-11-13",
     "2026-11-16",
     "2026-11-17",
-    "2026-11-18"
+    "2026-11-18",
+    "2026-11-19"
   ],
   "chart_series_dates": {
     "corn": [
-      "2026-11-05",
       "2026-11-06",
       "2026-11-09",
       "2026-11-10",
@@ -385,10 +366,10 @@
       "2026-11-13",
       "2026-11-16",
       "2026-11-17",
-      "2026-11-18"
+      "2026-11-18",
+      "2026-11-19"
     ],
     "soybeans": [
-      "2026-11-05",
       "2026-11-06",
       "2026-11-09",
       "2026-11-10",
@@ -397,44 +378,45 @@
       "2026-11-13",
       "2026-11-16",
       "2026-11-17",
-      "2026-11-18"
+      "2026-11-18",
+      "2026-11-19"
     ]
   },
-  "chart_window": "Nov 5 - Nov 18",
+  "chart_window": "Nov 6 - Nov 19",
   "quote_strip": {
-    "asof": "2026-11-19T14:31:24Z",
-    "session": "2026-11-19",
-    "vs_session": "2026-11-18",
+    "asof": "2026-11-20T13:01:20Z",
+    "session": "2026-11-20",
+    "vs_session": "2026-11-19",
     "quotes": [
       {
         "key": "corn-dec",
         "name": "Corn",
         "contract": "Dec '26",
-        "last": 4.365,
-        "prev": 4.355,
-        "pct": 0.2296,
+        "last": 4.3725,
+        "prev": 4.39,
+        "pct": -0.3986,
         "kind": "last",
-        "at": "2026-11-19T14:31:02Z"
+        "at": "2026-11-20T13:01:05Z"
       },
       {
         "key": "beans",
         "name": "Soybeans",
         "contract": "Jan '27",
-        "last": 12.2275,
-        "prev": 12.1675,
-        "pct": 0.4931,
+        "last": 12.1175,
+        "prev": 12.075,
+        "pct": 0.352,
         "kind": "last",
-        "at": "2026-11-19T14:31:08Z"
+        "at": "2026-11-20T13:01:09Z"
       },
       {
         "key": "wheat",
         "name": "Wheat",
         "contract": "Dec '26",
-        "last": 5.7825,
-        "prev": 5.7,
-        "pct": 1.4474,
+        "last": 5.7925,
+        "prev": 5.7825,
+        "pct": 0.1729,
         "kind": "last",
-        "at": "2026-11-19T14:31:11Z"
+        "at": "2026-11-20T13:01:11Z"
       }
     ]
   },
@@ -444,15 +426,15 @@
       "items": [
         {
           "name": "Corn",
-          "text": "−10¢ (−2.24%)"
+          "text": "−6 1/2¢ (−1.46%)"
         },
         {
           "name": "Soybeans",
-          "text": "−14 3/4¢ (−1.20%)"
+          "text": "−24¢ (−1.95%)"
         },
         {
           "name": "Wheat",
-          "text": "−23 1/4¢ (−3.92%)"
+          "text": "−15¢ (−2.53%)"
         }
       ]
     },
@@ -461,7 +443,7 @@
       "items": [
         {
           "name": "Corn",
-          "text": "−12 1/4¢ (−2.74%)"
+          "text": "−8 3/4¢ (−1.95%)"
         },
         {
           "name": "Soybeans",
@@ -482,173 +464,168 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "generated_at": "2026-11-19T14:35:39.462159+00:00",
+  "generated_at": "2026-11-20T13:04:39.136245+00:00",
   "generator_version": "5.5.0",
-  "surprise_count": 0,
-  "surprises": [],
+  "surprise_count": 2,
+  "surprises": [
+    {
+      "commodity": "Gold",
+      "key": "gold",
+      "price": "$3,569",
+      "pct_change": -3.1719,
+      "direction": "down",
+      "surprise_magnitude": 2.1
+    },
+    {
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$42.12",
+      "pct_change": -4.9483,
+      "direction": "down",
+      "surprise_magnitude": 2.0
+    }
+  ],
   "price_validation_clean": true,
   "market_closed": false,
   "market_status_reason": "open",
   "otp_week_ahead": false,
   "theme": {
-    "kind": "market_move",
-    "tier": 3,
-    "key": "corn",
-    "value": "2026-11-18:4.355",
-    "headline": "December corn fell 11¼ cents Wednesday to $4.35½",
+    "kind": "agsist_only",
+    "tier": 6,
+    "key": "hogcash",
+    "value": "36.70",
+    "headline": "Cash hogs fell to $36.70 in the Nov. 19 report",
     "lead": [
-      "December corn settled down 11¼ cents Wednesday at $4.35½, a 2.5% drop.",
-      "That is the lowest of the 35 settles on file since Oct. 1.",
-      "On 1,000 bushels that is $112.50."
+      "USDA's negotiated cash hog price was $36.70 a hundredweight in the Nov. 19 report, down $2.05 from the report before.",
+      "That is the lowest of the 71 reports on file since Aug. 12.",
+      "The price covers 2,863 head bought on the spot market in that report; most hogs sell on formulas and contracts."
     ],
-    "figure": "$4.35½",
-    "date": "2026-11-19",
-    "move_date": "2026-11-18",
+    "figure": "$36.70",
+    "date": "2026-11-20",
+    "move_date": null,
     "ledger": [
       {
-        "id": "settle:corn",
-        "value": 4.355,
-        "unit": "bushel",
-        "file": "daily-archive",
-        "key": "locked_changes.corn",
-        "as_of": "2026-11-18",
-        "sample": "35 settles",
-        "comparable": "corn Dec '26",
-        "subject": "corn",
-        "kind": "settle",
-        "change": -0.11249999999999982,
-        "pct": -2.5181869054280877
+        "id": "hogcash:base",
+        "value": 36.7,
+        "unit": "$/cwt",
+        "file": "hog-cash.json",
+        "key": "history.hogs[].base",
+        "as_of": "2026-11-19",
+        "sample": "2,863 head, negotiated",
+        "comparable": "hogcash",
+        "subject": "hogs",
+        "kind": "daily",
+        "change": -2.049999999999997,
+        "head": 2863
       },
       {
-        "id": "settle:corn:prev",
-        "value": 4.4675,
-        "unit": "bushel",
-        "file": "daily-archive",
-        "key": "locked_changes.corn",
-        "as_of": "2026-11-17",
-        "sample": "",
-        "comparable": "corn Dec '26",
+        "id": "hogcash:prev",
+        "value": 38.75,
+        "unit": "$/cwt",
+        "file": "hog-cash.json",
+        "key": "history.hogs[].base",
+        "as_of": "2026-11-18",
+        "sample": "3,049 head, negotiated",
+        "comparable": "hogcash",
         "kind": "history"
       },
       {
-        "id": "unit:1000bu",
-        "value": 1000,
-        "unit": "bushels",
-        "file": "",
-        "key": "",
-        "as_of": "2026-11-18",
-        "sample": "",
-        "comparable": "unit:1000bu",
+        "id": "window:hogcash",
+        "value": 71,
+        "unit": "reports",
+        "file": "hog-cash.json",
+        "key": "history.hogs",
+        "as_of": "2026-11-19",
+        "sample": "from 2026-08-12",
+        "comparable": "window:hogcash",
         "kind": "history"
       },
       {
-        "id": "window:corn",
-        "value": 35,
-        "unit": "settles",
-        "file": "daily-archive",
-        "key": "settle history corn",
-        "as_of": "2026-11-18",
-        "sample": "from 2026-10-01",
-        "comparable": "window:corn",
-        "kind": "history"
-      },
-      {
-        "id": "scope:corn:window",
-        "value": "2026-10-01",
+        "id": "scope:hogcash:window",
+        "value": "2026-08-12",
         "unit": "date",
-        "file": "daily-archive",
-        "key": "settle history corn",
-        "as_of": "2026-11-18",
-        "sample": "35 settles",
-        "comparable": "window:corn",
+        "file": "hog-cash.json",
+        "key": "history.hogs",
+        "as_of": "2026-11-19",
+        "sample": "71 reports",
+        "comparable": "window:hogcash",
         "scope": "window",
-        "subject": "corn",
-        "kind": "history"
-      },
-      {
-        "id": "scope:corn:move_since",
-        "value": "2026-10-09",
-        "unit": "date",
-        "file": "daily-archive",
-        "key": "settle history corn",
-        "as_of": "2026-11-18",
-        "sample": "35 settles from 2026-10-01",
-        "comparable": "corn Dec '26",
-        "scope": "move_since",
-        "subject": "corn",
+        "subject": "hogs",
         "kind": "history"
       }
     ],
     "withheld": []
   },
   "chart_of_day": {
-    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 360\" width=\"600\" height=\"360\" role=\"img\" aria-label=\"December corn settled at $4.35½ on Nov 18, down 66¾ cents from $5.02¼ 34 settles earlier. Chart: December corn settles from Oct 1 ($5.02¼) to Nov 18 ($4.35½).\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect class=\"dc-bg\" x=\"0\" y=\"0\" width=\"600\" height=\"360\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">December corn, dollars a bushel</text><line x1=\"81.4\" x2=\"486.6\" y1=\"245.0\" y2=\"245.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"71.4\" y=\"251.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$4.50</text><line x1=\"81.4\" x2=\"486.6\" y1=\"177.2\" y2=\"177.2\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"71.4\" y=\"183.2\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$4.75</text><line x1=\"81.4\" x2=\"486.6\" y1=\"109.3\" y2=\"109.3\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"71.4\" y=\"115.3\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$5.00</text><polyline points=\"81.4,103.2 93.3,115.4 105.2,116.8 117.1,87.6 129.1,103.9 141.0,108.6 152.9,164.3 164.8,155.5 176.7,156.1 188.6,161.6 200.6,169.0 212.5,179.2 224.4,198.9 236.3,212.5 248.2,209.1 260.1,216.5 272.1,228.7 284.0,231.5 295.9,248.4 307.8,240.3 319.7,241.6 331.6,251.1 343.6,249.8 355.5,265.4 367.4,260.6 379.3,272.2 391.2,268.1 403.1,274.2 415.1,247.7 427.0,250.5 438.9,265.4 450.8,257.2 462.7,248.4 474.6,253.9 486.6,284.4\" fill=\"none\" class=\"dc-s1\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect class=\"dc-hit\" x=\"73.4\" y=\"64.0\" width=\"14.0\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 1: December corn $5.02¼\"/><rect class=\"dc-hit\" x=\"87.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 2: December corn $4.97¾\"/><rect class=\"dc-hit\" x=\"99.3\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 5: December corn $4.97¼\"/><rect class=\"dc-hit\" x=\"111.2\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 6: December corn $5.08\"/><rect class=\"dc-hit\" x=\"123.1\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 7: December corn $5.02\"/><rect class=\"dc-hit\" x=\"135.0\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 8: December corn $5.00¼\"/><rect class=\"dc-hit\" x=\"146.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 9: December corn $4.79¾\"/><rect class=\"dc-hit\" x=\"158.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 12: December corn $4.83\"/><rect class=\"dc-hit\" x=\"170.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 13: December corn $4.82¾\"/><rect class=\"dc-hit\" x=\"182.7\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 14: December corn $4.80¾\"/><rect class=\"dc-hit\" x=\"194.6\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 15: December corn $4.78\"/><rect class=\"dc-hit\" x=\"206.5\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 16: December corn $4.74¼\"/><rect class=\"dc-hit\" x=\"218.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 19: December corn $4.67\"/><rect class=\"dc-hit\" x=\"230.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 20: December corn $4.62\"/><rect class=\"dc-hit\" x=\"242.3\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 21: December corn $4.63¼\"/><rect class=\"dc-hit\" x=\"254.2\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 22: December corn $4.60½\"/><rect class=\"dc-hit\" x=\"266.1\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 23: December corn $4.56\"/><rect class=\"dc-hit\" x=\"278.0\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 26: December corn $4.55\"/><rect class=\"dc-hit\" x=\"289.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 27: December corn $4.48¾\"/><rect class=\"dc-hit\" x=\"301.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 28: December corn $4.51¾\"/><rect class=\"dc-hit\" x=\"313.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 29: December corn $4.51¼\"/><rect class=\"dc-hit\" x=\"325.7\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 30: December corn $4.47¾\"/><rect class=\"dc-hit\" x=\"337.6\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 2: December corn $4.48¼\"/><rect class=\"dc-hit\" x=\"349.5\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 3: December corn $4.42½\"/><rect class=\"dc-hit\" x=\"361.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 4: December corn $4.44¼\"/><rect class=\"dc-hit\" x=\"373.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 5: December corn $4.40\"/><rect class=\"dc-hit\" x=\"385.3\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 6: December corn $4.41½\"/><rect class=\"dc-hit\" x=\"397.2\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 9: December corn $4.39¼\"/><rect class=\"dc-hit\" x=\"409.1\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 10: December corn $4.49\"/><rect class=\"dc-hit\" x=\"421.0\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 11: December corn $4.48\"/><rect class=\"dc-hit\" x=\"432.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 12: December corn $4.42½\"/><rect class=\"dc-hit\" x=\"444.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 13: December corn $4.45½\"/><rect class=\"dc-hit\" x=\"456.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 16: December corn $4.48¾\"/><rect class=\"dc-hit\" x=\"468.7\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 17: December corn $4.46¾\"/><rect class=\"dc-hit\" x=\"480.6\" y=\"64.0\" width=\"14.0\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 18: December corn $4.35½\"/><text x=\"81.4\" y=\"63.2\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$5.02¼</text><circle cx=\"486.6\" cy=\"284.4\" r=\"6\" class=\"dc-f1\"/><circle cx=\"81.4\" cy=\"103.2\" r=\"4.5\" class=\"dc-ring\" stroke-width=\"2\"/><text x=\"498.6\" y=\"291.4\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$4.35½</text><text x=\"81.4\" y=\"344.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Oct 1</text><text x=\"486.6\" y=\"344.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Nov 18</text><text x=\"284.0\" y=\"344.0\" font-size=\"22\" text-anchor=\"middle\" class=\"dc-mut\">35 settles</text></svg>",
-    "alt": "December corn settled at $4.35½ on Nov 18, down 66¾ cents from $5.02¼ 34 settles earlier. Chart: December corn settles from Oct 1 ($5.02¼) to Nov 18 ($4.35½). Source: CME settles through Nov 18.",
-    "h": 360,
-    "source": "CME settles through Nov 18",
-    "date": "2026-11-18",
-    "template": "T2",
-    "takeaway": "December corn settled at $4.35½ on Nov 18, down 66¾ cents from $5.02¼ 34 settles earlier.",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 440\" width=\"600\" height=\"440\" role=\"img\" aria-label=\"Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report.\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect class=\"dc-bg\" x=\"0\" y=\"0\" width=\"600\" height=\"440\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Hogs, dollars per hundredweight, carcass</text><line x1=\"61.2\" x2=\"434.0\" y1=\"278.0\" y2=\"278.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"284.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$30</text><line x1=\"61.2\" x2=\"434.0\" y1=\"211.0\" y2=\"211.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"217.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$40</text><line x1=\"61.2\" x2=\"434.0\" y1=\"144.0\" y2=\"144.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"150.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$50</text><line x1=\"61.2\" x2=\"434.0\" y1=\"77.0\" y2=\"77.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"83.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$60</text><polyline points=\"61.2,79.4 86.0,105.8 110.9,90.4 185.5,117.8 210.3,147.8 235.2,189.2 260.0,186.1 284.9,185.9 359.5,177.7 384.3,210.7 409.2,219.4 434.0,233.1\" fill=\"none\" class=\"dc-s1\" stroke-width=\"3\" stroke-linejoin=\"round\"/><polyline points=\"61.2,93.4 86.0,109.8 110.9,120.4 185.5,104.6 210.3,105.1 235.2,103.6 260.0,109.5 284.9,107.5 359.5,108.1 384.3,123.2 409.2,134.9 434.0,127.7\" fill=\"none\" class=\"dc-s2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect class=\"dc-hit\" x=\"53.2\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 4: cash hogs $59.64 on 4,028 head; Dec futures $57.55\"/><rect class=\"dc-hit\" x=\"73.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 5: cash hogs $55.70 on 3,218 head; Dec futures $55.10\"/><rect class=\"dc-hit\" x=\"98.4\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 6: cash hogs $58.00 on 4,529 head; Dec futures $53.53\"/><rect class=\"dc-hit\" x=\"148.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 9: cash hogs $53.91 on 11,090 head; Dec futures $55.88\"/><rect class=\"dc-hit\" x=\"197.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 10: cash hogs $49.43 on 6,147 head; Dec futures $55.80\"/><rect class=\"dc-hit\" x=\"222.7\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 11: cash hogs $43.25 on 3,605 head; Dec futures $56.03\"/><rect class=\"dc-hit\" x=\"247.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 12: cash hogs $43.72 on 3,067 head; Dec futures $55.15\"/><rect class=\"dc-hit\" x=\"272.5\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 13: cash hogs $43.75 on 5,353 head; Dec futures $55.45\"/><rect class=\"dc-hit\" x=\"322.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 16: cash hogs $44.97 on 15,123 head; Dec futures $55.35\"/><rect class=\"dc-hit\" x=\"371.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 17: cash hogs $40.04 on 4,795 head; Dec futures $53.10\"/><rect class=\"dc-hit\" x=\"396.8\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 18: cash hogs $38.75 on 3,049 head; Dec futures $51.35\"/><rect class=\"dc-hit\" x=\"421.6\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 19: cash hogs $36.70 on 2,863 head; Dec futures $52.43\"/><circle cx=\"434.0\" cy=\"233.1\" r=\"6\" class=\"dc-f1\"/><circle cx=\"434.0\" cy=\"127.7\" r=\"6\" class=\"dc-f2\"/><text x=\"448.0\" y=\"123.7\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f2\">Dec futures</text><text x=\"448.0\" y=\"152.7\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$52.43</text><text x=\"448.0\" y=\"229.1\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f1\">Cash hogs</text><text x=\"448.0\" y=\"258.1\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$36.70</text><text x=\"63.2\" y=\"65.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$59.64</text><text x=\"63.2\" y=\"147.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$57.55</text><rect x=\"53.4\" y=\"365.7\" width=\"15.5\" height=\"12.3\" class=\"dc-bar\"/><rect x=\"78.3\" y=\"368.2\" width=\"15.5\" height=\"9.8\" class=\"dc-bar\"/><rect x=\"103.1\" y=\"364.2\" width=\"15.5\" height=\"13.8\" class=\"dc-bar\"/><rect x=\"177.7\" y=\"344.3\" width=\"15.5\" height=\"33.7\" class=\"dc-bar\"/><rect x=\"202.5\" y=\"359.3\" width=\"15.5\" height=\"18.7\" class=\"dc-bar\"/><rect x=\"227.4\" y=\"367.0\" width=\"15.5\" height=\"11.0\" class=\"dc-bar\"/><rect x=\"252.3\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"277.1\" y=\"361.7\" width=\"15.5\" height=\"16.3\" class=\"dc-bar\"/><rect x=\"351.7\" y=\"332.0\" width=\"15.5\" height=\"46.0\" class=\"dc-bar\"/><rect x=\"376.6\" y=\"363.4\" width=\"15.5\" height=\"14.6\" class=\"dc-bar\"/><rect x=\"401.4\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"426.3\" y=\"369.3\" width=\"15.5\" height=\"8.7\" class=\"dc-bar\"/><text x=\"448.0\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">2,863 head</text><text x=\"61.2\" y=\"326.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Head sold, spot market</text><text x=\"371.2\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">15,123</text><text x=\"61.2\" y=\"424.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Nov 4</text><text x=\"434.0\" y=\"424.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Nov 19</text></svg>",
+    "alt": "Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report. Source: USDA AMS negotiated hog prices through Nov 19; CME settles through Nov 19.",
+    "h": 440,
+    "date": "2026-11-19",
+    "source": "USDA AMS negotiated hog prices through Nov 19; CME settles through Nov 19",
+    "template": "T7",
+    "takeaway": "Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12.",
     "w": 600,
-    "card": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 586\" width=\"600\" height=\"586\" role=\"img\" aria-label=\"December corn settled at $4.35½ on Nov 18, down 66¾ cents from $5.02¼ 34 settles earlier. Chart: December corn settles from Oct 1 ($5.02¼) to Nov 18 ($4.35½). Source: CME settles through Nov 18.\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect class=\"dc-bg\" x=\"0\" y=\"0\" width=\"600\" height=\"586\"/><rect x=\"0\" y=\"0\" width=\"600\" height=\"586\" fill=\"#fbf8f1\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-f1\">AGSIST</text><text x=\"588.0\" y=\"30.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Chart of the day, Nov 19, 2026</text><line x1=\"12\" x2=\"588\" y1=\"42\" y2=\"42\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"12.0\" y=\"72.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">December corn settled at $4.35½ on Nov 18,</text><text x=\"12.0\" y=\"104.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">down 66¾ cents from $5.02¼ 34 settles</text><text x=\"12.0\" y=\"136.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">earlier.</text><svg x=\"0\" y=\"152\" viewBox=\"0 0 600 360\" width=\"600\" height=\"360\" role=\"img\" aria-label=\"December corn settled at $4.35½ on Nov 18, down 66¾ cents from $5.02¼ 34 settles earlier. Chart: December corn settles from Oct 1 ($5.02¼) to Nov 18 ($4.35½).\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect fill=\"#fbf8f1\" x=\"0\" y=\"0\" width=\"600\" height=\"360\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">December corn, dollars a bushel</text><line x1=\"81.4\" x2=\"486.6\" y1=\"245.0\" y2=\"245.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"71.4\" y=\"251.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$4.50</text><line x1=\"81.4\" x2=\"486.6\" y1=\"177.2\" y2=\"177.2\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"71.4\" y=\"183.2\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$4.75</text><line x1=\"81.4\" x2=\"486.6\" y1=\"109.3\" y2=\"109.3\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"71.4\" y=\"115.3\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$5.00</text><polyline points=\"81.4,103.2 93.3,115.4 105.2,116.8 117.1,87.6 129.1,103.9 141.0,108.6 152.9,164.3 164.8,155.5 176.7,156.1 188.6,161.6 200.6,169.0 212.5,179.2 224.4,198.9 236.3,212.5 248.2,209.1 260.1,216.5 272.1,228.7 284.0,231.5 295.9,248.4 307.8,240.3 319.7,241.6 331.6,251.1 343.6,249.8 355.5,265.4 367.4,260.6 379.3,272.2 391.2,268.1 403.1,274.2 415.1,247.7 427.0,250.5 438.9,265.4 450.8,257.2 462.7,248.4 474.6,253.9 486.6,284.4\" fill=\"none\" class=\"dc-s1\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect class=\"dc-hit\" x=\"73.4\" y=\"64.0\" width=\"14.0\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 1: December corn $5.02¼\"/><rect class=\"dc-hit\" x=\"87.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 2: December corn $4.97¾\"/><rect class=\"dc-hit\" x=\"99.3\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 5: December corn $4.97¼\"/><rect class=\"dc-hit\" x=\"111.2\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 6: December corn $5.08\"/><rect class=\"dc-hit\" x=\"123.1\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 7: December corn $5.02\"/><rect class=\"dc-hit\" x=\"135.0\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 8: December corn $5.00¼\"/><rect class=\"dc-hit\" x=\"146.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 9: December corn $4.79¾\"/><rect class=\"dc-hit\" x=\"158.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 12: December corn $4.83\"/><rect class=\"dc-hit\" x=\"170.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 13: December corn $4.82¾\"/><rect class=\"dc-hit\" x=\"182.7\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 14: December corn $4.80¾\"/><rect class=\"dc-hit\" x=\"194.6\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 15: December corn $4.78\"/><rect class=\"dc-hit\" x=\"206.5\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 16: December corn $4.74¼\"/><rect class=\"dc-hit\" x=\"218.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 19: December corn $4.67\"/><rect class=\"dc-hit\" x=\"230.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 20: December corn $4.62\"/><rect class=\"dc-hit\" x=\"242.3\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 21: December corn $4.63¼\"/><rect class=\"dc-hit\" x=\"254.2\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 22: December corn $4.60½\"/><rect class=\"dc-hit\" x=\"266.1\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 23: December corn $4.56\"/><rect class=\"dc-hit\" x=\"278.0\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 26: December corn $4.55\"/><rect class=\"dc-hit\" x=\"289.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 27: December corn $4.48¾\"/><rect class=\"dc-hit\" x=\"301.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 28: December corn $4.51¾\"/><rect class=\"dc-hit\" x=\"313.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 29: December corn $4.51¼\"/><rect class=\"dc-hit\" x=\"325.7\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Oct 30: December corn $4.47¾\"/><rect class=\"dc-hit\" x=\"337.6\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 2: December corn $4.48¼\"/><rect class=\"dc-hit\" x=\"349.5\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 3: December corn $4.42½\"/><rect class=\"dc-hit\" x=\"361.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 4: December corn $4.44¼\"/><rect class=\"dc-hit\" x=\"373.4\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 5: December corn $4.40\"/><rect class=\"dc-hit\" x=\"385.3\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 6: December corn $4.41½\"/><rect class=\"dc-hit\" x=\"397.2\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 9: December corn $4.39¼\"/><rect class=\"dc-hit\" x=\"409.1\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 10: December corn $4.49\"/><rect class=\"dc-hit\" x=\"421.0\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 11: December corn $4.48\"/><rect class=\"dc-hit\" x=\"432.9\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 12: December corn $4.42½\"/><rect class=\"dc-hit\" x=\"444.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 13: December corn $4.45½\"/><rect class=\"dc-hit\" x=\"456.8\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 16: December corn $4.48¾\"/><rect class=\"dc-hit\" x=\"468.7\" y=\"64.0\" width=\"11.9\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 17: December corn $4.46¾\"/><rect class=\"dc-hit\" x=\"480.6\" y=\"64.0\" width=\"14.0\" height=\"244.0\" fill=\"transparent\" data-r=\"Nov 18: December corn $4.35½\"/><text x=\"81.4\" y=\"63.2\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$5.02¼</text><circle cx=\"486.6\" cy=\"284.4\" r=\"6\" class=\"dc-f1\"/><circle cx=\"81.4\" cy=\"103.2\" r=\"4.5\" class=\"dc-ring\" stroke-width=\"2\"/><text x=\"498.6\" y=\"291.4\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$4.35½</text><text x=\"81.4\" y=\"344.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Oct 1</text><text x=\"486.6\" y=\"344.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Nov 18</text><text x=\"284.0\" y=\"344.0\" font-size=\"22\" text-anchor=\"middle\" class=\"dc-mut\">35 settles</text></svg><text x=\"12.0\" y=\"540.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Source: CME settles through Nov 18.</text><text x=\"12.0\" y=\"574.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">agsist.com/daily</text></svg>",
-    "card_h": 586,
-    "image": "daily/img/chart-2026-11-19.png"
+    "card": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 662\" width=\"600\" height=\"662\" role=\"img\" aria-label=\"Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report. Source: USDA AMS negotiated hog prices through Nov 19; CME settles through Nov 19.\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect class=\"dc-bg\" x=\"0\" y=\"0\" width=\"600\" height=\"662\"/><rect x=\"0\" y=\"0\" width=\"600\" height=\"662\" fill=\"#fbf8f1\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-f1\">AGSIST</text><text x=\"588.0\" y=\"30.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Chart of the day, Nov 20, 2026</text><line x1=\"12\" x2=\"588\" y1=\"42\" y2=\"42\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"12.0\" y=\"72.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Negotiated cash hogs lost $22.94 since</text><text x=\"12.0\" y=\"104.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Nov 4; December futures lost $5.12.</text><svg x=\"0\" y=\"120\" viewBox=\"0 0 600 440\" width=\"600\" height=\"440\" role=\"img\" aria-label=\"Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report.\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect fill=\"#fbf8f1\" x=\"0\" y=\"0\" width=\"600\" height=\"440\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Hogs, dollars per hundredweight, carcass</text><line x1=\"61.2\" x2=\"434.0\" y1=\"278.0\" y2=\"278.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"284.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$30</text><line x1=\"61.2\" x2=\"434.0\" y1=\"211.0\" y2=\"211.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"217.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$40</text><line x1=\"61.2\" x2=\"434.0\" y1=\"144.0\" y2=\"144.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"150.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$50</text><line x1=\"61.2\" x2=\"434.0\" y1=\"77.0\" y2=\"77.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"83.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$60</text><polyline points=\"61.2,79.4 86.0,105.8 110.9,90.4 185.5,117.8 210.3,147.8 235.2,189.2 260.0,186.1 284.9,185.9 359.5,177.7 384.3,210.7 409.2,219.4 434.0,233.1\" fill=\"none\" class=\"dc-s1\" stroke-width=\"3\" stroke-linejoin=\"round\"/><polyline points=\"61.2,93.4 86.0,109.8 110.9,120.4 185.5,104.6 210.3,105.1 235.2,103.6 260.0,109.5 284.9,107.5 359.5,108.1 384.3,123.2 409.2,134.9 434.0,127.7\" fill=\"none\" class=\"dc-s2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect class=\"dc-hit\" x=\"53.2\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 4: cash hogs $59.64 on 4,028 head; Dec futures $57.55\"/><rect class=\"dc-hit\" x=\"73.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 5: cash hogs $55.70 on 3,218 head; Dec futures $55.10\"/><rect class=\"dc-hit\" x=\"98.4\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 6: cash hogs $58.00 on 4,529 head; Dec futures $53.53\"/><rect class=\"dc-hit\" x=\"148.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 9: cash hogs $53.91 on 11,090 head; Dec futures $55.88\"/><rect class=\"dc-hit\" x=\"197.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 10: cash hogs $49.43 on 6,147 head; Dec futures $55.80\"/><rect class=\"dc-hit\" x=\"222.7\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 11: cash hogs $43.25 on 3,605 head; Dec futures $56.03\"/><rect class=\"dc-hit\" x=\"247.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 12: cash hogs $43.72 on 3,067 head; Dec futures $55.15\"/><rect class=\"dc-hit\" x=\"272.5\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 13: cash hogs $43.75 on 5,353 head; Dec futures $55.45\"/><rect class=\"dc-hit\" x=\"322.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 16: cash hogs $44.97 on 15,123 head; Dec futures $55.35\"/><rect class=\"dc-hit\" x=\"371.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 17: cash hogs $40.04 on 4,795 head; Dec futures $53.10\"/><rect class=\"dc-hit\" x=\"396.8\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 18: cash hogs $38.75 on 3,049 head; Dec futures $51.35\"/><rect class=\"dc-hit\" x=\"421.6\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 19: cash hogs $36.70 on 2,863 head; Dec futures $52.43\"/><circle cx=\"434.0\" cy=\"233.1\" r=\"6\" class=\"dc-f1\"/><circle cx=\"434.0\" cy=\"127.7\" r=\"6\" class=\"dc-f2\"/><text x=\"448.0\" y=\"123.7\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f2\">Dec futures</text><text x=\"448.0\" y=\"152.7\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$52.43</text><text x=\"448.0\" y=\"229.1\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f1\">Cash hogs</text><text x=\"448.0\" y=\"258.1\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$36.70</text><text x=\"63.2\" y=\"65.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$59.64</text><text x=\"63.2\" y=\"147.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$57.55</text><rect x=\"53.4\" y=\"365.7\" width=\"15.5\" height=\"12.3\" class=\"dc-bar\"/><rect x=\"78.3\" y=\"368.2\" width=\"15.5\" height=\"9.8\" class=\"dc-bar\"/><rect x=\"103.1\" y=\"364.2\" width=\"15.5\" height=\"13.8\" class=\"dc-bar\"/><rect x=\"177.7\" y=\"344.3\" width=\"15.5\" height=\"33.7\" class=\"dc-bar\"/><rect x=\"202.5\" y=\"359.3\" width=\"15.5\" height=\"18.7\" class=\"dc-bar\"/><rect x=\"227.4\" y=\"367.0\" width=\"15.5\" height=\"11.0\" class=\"dc-bar\"/><rect x=\"252.3\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"277.1\" y=\"361.7\" width=\"15.5\" height=\"16.3\" class=\"dc-bar\"/><rect x=\"351.7\" y=\"332.0\" width=\"15.5\" height=\"46.0\" class=\"dc-bar\"/><rect x=\"376.6\" y=\"363.4\" width=\"15.5\" height=\"14.6\" class=\"dc-bar\"/><rect x=\"401.4\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"426.3\" y=\"369.3\" width=\"15.5\" height=\"8.7\" class=\"dc-bar\"/><text x=\"448.0\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">2,863 head</text><text x=\"61.2\" y=\"326.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Head sold, spot market</text><text x=\"371.2\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">15,123</text><text x=\"61.2\" y=\"424.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Nov 4</text><text x=\"434.0\" y=\"424.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Nov 19</text></svg><text x=\"12.0\" y=\"588.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Source: USDA AMS negotiated hog prices through</text><text x=\"12.0\" y=\"616.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Nov 19; CME settles through Nov 19.</text><text x=\"12.0\" y=\"650.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">agsist.com/daily</text></svg>",
+    "card_h": 662,
+    "image": "daily/img/chart-2026-11-20.png"
   },
+  "weather_line": {
+    "text": "Rain in the week to Nov. 18: an average of 0.12 inch across 660 county gauges in 12 farm states; the 1991-2020 average for the same week is 0.50 inch; Ohio was wettest at an average of 0.57 inch (NOAA).",
+    "as_of": "2026-11-18",
+    "sample": 660
+  },
+  "writer_headline": "Cash hogs fall to $36.70, lowest in 71 USDA reports",
+  "writer_lead": "USDA's negotiated cash hog price was $36.70 a hundredweight in Thursday's report, down $2.05 from the report before. It covers 2,863 head bought on the spot market.",
   "critic_pass": {
     "version": "2.0",
-    "ran_at": "2026-11-19T14:35:51.708231+00:00",
+    "ran_at": "2026-11-20T13:04:52.276116+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 4,
-      "rule_2_conviction_earned": 9,
-      "rule_3_lede_no_deferral": 6,
+      "rule_1_lead_so_what": 5,
+      "rule_2_conviction_earned": 6,
+      "rule_3_lede_no_deferral": 9,
       "rule_4_watch_conditional": 9,
       "rule_5_so_what_synthesizes": 9,
       "rule_6_quiet_days_quiet": 8,
       "rule_7_yc_honesty": 10,
-      "rule_8_word_budget": 8,
+      "rule_8_word_budget": 6,
       "rule_9_voice": 6,
-      "rule_10_forward_test": 3,
+      "rule_10_forward_test": 4,
       "rule_11_action_thresholded": 10,
       "rule_12_one_fact_one_home": 5,
-      "rule_13_level_coherence": 5,
-      "rule_14_one_number_coherence": 7,
+      "rule_13_level_coherence": 6,
+      "rule_14_one_number_coherence": 9,
       "rule_15_markdown_not_html": 10,
       "rule_16_macro_anchoring": 10
     },
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "lead",
-        "rule": "rule_1_lead_so_what",
+        "target": "trim: lead, sections[0].body",
+        "rule": "rule_13_level_coherence",
         "scores_before": {
-          "rule_1_lead_so_what": 4,
-          "rule_2_conviction_earned": 9,
-          "rule_3_lede_no_deferral": 6,
+          "rule_1_lead_so_what": 5,
+          "rule_2_conviction_earned": 6,
+          "rule_3_lede_no_deferral": 9,
           "rule_4_watch_conditional": 9,
           "rule_5_so_what_synthesizes": 9,
           "rule_6_quiet_days_quiet": 8,
           "rule_7_yc_honesty": 10,
-          "rule_8_word_budget": 8,
+          "rule_8_word_budget": 6,
           "rule_9_voice": 6,
-          "rule_10_forward_test": 3,
+          "rule_10_forward_test": 4,
           "rule_11_action_thresholded": 10,
           "rule_12_one_fact_one_home": 5,
-          "rule_13_level_coherence": 5,
-          "rule_14_one_number_coherence": 7,
+          "rule_13_level_coherence": 6,
+          "rule_14_one_number_coherence": 9,
           "rule_15_markdown_not_html": 10,
           "rule_16_macro_anchoring": 10
         }
-      },
-      {
-        "pass": "consistency",
-        "target": "teaser replaced by the headline (was: Corn is up a penny overnight after Wednesday's 11¼-cent drop; USDA export sales print at 7:30 a.m. CT.)",
-        "rule": "13",
-        "scores_before": {}
       }
     ],
     "consistency": [
-      "teaser replaced by the headline (was: Corn is up a penny overnight after Wednesday's 11¼-cent drop; USDA export sales print at 7:30 a.m. CT.)"
+      "teaser flagged and the headline is flagged too: left for a person",
+      "not fixed, headline: hogs fell but hogs is +2.1%"
     ],
     "dry_run": false
   }
