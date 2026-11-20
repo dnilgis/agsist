@@ -732,7 +732,8 @@
      this station unless it missed more days than a print allows (RP_MISS_BLOCK, 31), and the
      station's lat,lon so a town name Rain Print cannot find never blocks the map. The town is
      the station's plain name with its offset and airport words dropped. */
-  var RP_MISS_BLOCK = 31, AIR_W = /^(airport|international|regional|municipal|field|industrial|intl|ap|muni)$/i;
+  // RP_PRICE: data/rain-print.json print12x18, the print's price (test/rp-line.test.mjs keeps them the same)
+  var RP_MISS_BLOCK = 31, RP_PRICE = 45, AIR_W =/^(airport|international|regional|municipal|field|industrial|intl|ap|muni)$/i;
   function rpTown(name) {
     var w = String(name || '').split(',')[0].trim().split(/\s+/);
     while (w.length > 1 && AIR_W.test(w[w.length - 1])) w.pop();
@@ -746,6 +747,7 @@
     if ((fig.missing || 0) <= RP_MISS_BLOCK && fig.station && fig.station.sid) q.set('station', String(fig.station.sid).replace(/[^A-Za-z0-9 ]/g, '').trim().slice(0, 16));
     var ll = fig.station && fig.station.ll;
     if (ll && isFinite(ll[0]) && isFinite(ll[1])) q.set('ll', (+ll[1]).toFixed(4) + ',' + (+ll[0]).toFixed(4));
+    q.set('src', 'fast-facts');   // the source tag, for the counts (Nov 20, 2026; rain-print.html reports it)
     return '/rain-print?' + q.toString();
   }
   function drawFigure(fig) {
@@ -762,7 +764,7 @@
       (fig.mn ? ' data-mn="' + esc(fig.mn) + '" data-usual="' + fig.usual.toFixed(2) + '" data-norm="' + esc(fig.norm) + '"' : '') + '>' +
       '<div class="rc-print-styles" role="group" aria-label="Print style" hidden><button type="button" data-style="r1" aria-pressed="' + (phone ? 'false' : 'true') + '">Staircase</button><button type="button" data-style="r2" aria-pressed="' + (phone ? 'true' : 'false') + '">Roots</button><button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>' +
       '<div class="rc-print-art">' + (phone ? '' : chartBox) + '</div><figcaption>' + (phone ? '' : '<span class="rc-cap-chart">' + esc(cap) + '</span>') + '<span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>' +
-      '<p class="h-rp-buy"><a href="' + esc(rpHref(fig)) + '" data-placement="fast-facts">Make this one with your name &rarr;</a></p>';
+      '<p class="h-rp-buy"><a href="' + esc(rpHref(fig)) + '" data-placement="fast-facts">Make this one with your name, from $' + RP_PRICE + ' &rarr;</a></p>';
     var el = $('h-rp'), buy = document.querySelector('.h-rp-buy a');
     if (buy) buy.addEventListener('click', function () { track('rain_print_promo_click', { placement: 'fast-facts', page: location.pathname }); });
     // the chart draws at once (components/rain-chart.js is loaded with the page; loaded here if it is not)
