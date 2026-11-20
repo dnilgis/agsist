@@ -240,6 +240,8 @@
     if (still) return;
     if (!seen || !node || !(c.n > 0) || !root.requestAnimationFrame) { box.setAttribute('data-counted', ''); return; }   /* nothing to count */
     var end = (c.pre || '') + fmt(c.n, c.dp);
+    /* the figure's own width held while it counts (monospace, tabular digits), so the unit beside it never moves */
+    node.style.display = 'inline-block'; node.style.minWidth = end.length + 'ch';
     node._hwRun = function () {
       var t0 = 0;
       box.classList.add('hw-tick');   /* while it counts; data-counted once it has (tests wait for it) */
