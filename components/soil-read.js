@@ -159,8 +159,10 @@
       var vv = +f(v), mm = +f(mid), d = vv - mm;
       var word = Math.abs(d) < near ? 'about level with' : d > 0 ? 'above' : 'below';
       var b = shareBelow(pairs, v);
+      // the place is named once; a second line says "its"
+      var first = !out.length;
       out.push(label + ' ' + f(v) + ', ' + word + ' the county’s middle of ' + f(mid) +
-        (b != null ? ': higher than ' + Math.round(b) + '% of rated acres in ' + where : ' in ' + where) + '.');
+        (b != null ? ': higher than ' + Math.round(b) + '% of ' + (first ? 'rated acres in ' + where : 'its rated acres') : first ? ' in ' + where : '') + '.');
     }
     one('NCCPI', s.nccpi, c.nccpiMid, c.nc, 2, 0.02);
     one('CSR2', s.csr2, c.csr2Mid, c.cs, 0, 2);
