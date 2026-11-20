@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 19 Nov 2026 14:36:35 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Nov 2026 13:05:49 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Cash hogs fell to $36.70 in the Nov. 19 report</title>
+      <link>https://agsist.com/daily/2026-11-20</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-20</guid>
+      <pubDate>Fri, 20 Nov 2026 13:04:39 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>Cash hogs fell $2.05 to $36.70 in Thursday's USDA report, the lowest in 71 reports. December futures still rose 2.1%, so the two prices are moving apart.
+• Hogs lower in cash, higher in futures
+• Grains mixed overnight
+Read more: https://agsist.com/daily/2026-11-20</description>
+    </item>
     <item>
       <title>Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due</title>
       <link>https://agsist.com/daily/2026-11-19</link>
@@ -344,17 +355,6 @@ Read more: https://agsist.com/daily/2026-10-23</description>
 • Grains stop sliding, barely
 • Crude gains; hogs slip
 Read more: https://agsist.com/daily/2026-10-22</description>
-    </item>
-    <item>
-      <title>Corn settled lower 6 days straight, $4.62 on Oct 20; beans 7 days, $12.48¼</title>
-      <link>https://agsist.com/daily/2026-10-21</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-21</guid>
-      <pubDate>Wed, 21 Oct 2026 10:48:17 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Dec corn settled Tuesday at $4.62, its sixth lower settle in a row, and Nov soybeans settled at $12.48¼, their seventh; early Wednesday corn traded at $4.59½ and beans at $12.45. (Corrected Oct 27, see the note below.) Dec corn futures are 21¼ cents below last Wednesday's $4.80¾ settle; what that means for corn in the bin depends on your local bid and basis. (Corrected Oct 27, see the note below.) Harvest is pushing the selling, and nothing new came overnight.
-• Grains keep sliding on harvest
-• Cattle and hogs firm; crude near $100
-Read more: https://agsist.com/daily/2026-10-21</description>
     </item>
   </channel>
 </rss>

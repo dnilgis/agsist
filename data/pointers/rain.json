@@ -37,6 +37,10 @@
    "to": "/rain/georgia",
    "since": "2026-10-14"
   },
+  "rain/georgia/crisp-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-11-20"
+  },
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
@@ -136,6 +140,10 @@
   "rain/montana/wheatland-county.html": {
    "to": "/rain/montana",
    "since": "2026-11-14"
+  },
+  "rain/nebraska/colfax-county.html": {
+   "to": "/rain/nebraska",
+   "since": "2026-11-20"
   },
   "rain/nebraska/hooker-county.html": {
    "to": "/rain/nebraska",
