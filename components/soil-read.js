@@ -174,7 +174,7 @@
   }
   // A field against its county's farmland (the cash lease page): data/soil/spread/<ST>.json holds each county's
   // rated farmland acres by floored NCCPI hundredth, [[FLOOR(NCCPI * 100), acres], ...] (scripts/soil_county.py,
-  // monthly). The same rule as the county line: the share of acres whose rating is below the figure as printed,
+  // .github/workflows/soil-county.yml). The same rule as the county line: the share of acres whose rating is below the figure as printed,
   // and a rating is below 0.83 exactly when its floored hundredth is below 83. A percent (not rounded), or null.
   function inCounty(v, spread) {
     if (v == null || !isFinite(v) || !Array.isArray(spread) || !spread.length) return null;

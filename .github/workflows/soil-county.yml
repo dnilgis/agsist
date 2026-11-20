@@ -3,10 +3,9 @@ name: Soil by county
 # Every county's NCCPI and prime farmland share from the USDA soil survey (SSURGO, Soil Data Access), once a month:
 # data/soil/county-nccpi.json, data/soil/spread/<ST>.json and data/soil/manifest.json (scripts/soil_county.py).
 # A state SDA does not answer keeps its last good rows; most states failing writes nothing.
+# Run by hand for now: a monthly schedule is the owner's call (test/history-collect.test.mjs).
 
 on:
-  schedule:
-    - cron: "17 10 4 * *"
   workflow_dispatch:
     inputs:
       states:
