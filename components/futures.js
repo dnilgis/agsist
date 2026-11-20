@@ -1306,10 +1306,12 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
      Baring Elevator MO "Organic Yellow Corn" $11.50 was the highest checked bid
      in the sample for 13 of 50 grid ZIPs. With no filter script on the page
      nothing is picked at all: no number beats a wrong one. */
+  /* Nov 20, 2026: and a CURRENT delivery (BF.isPlainCurrent, the one rule): a
+     next-year harvest or a month 3+ out is never the best bid. */
   var BF=window.AG&&window.AG.bidFilter;
-  if(!BF)return null;
-  var plain=[];
-  for(var q=0;q<cropBids.length;q++){if(BF.canSetBest(cropBids[q]))plain.push(cropBids[q]);}
+  if(!BF||!BF.isPlainCurrent)return null;
+  var plain=[],bnow=new Date();
+  for(var q=0;q<cropBids.length;q++){if(BF.isPlainCurrent(cropBids[q],bnow))plain.push(cropBids[q]);}
   if(plain.length===0)return null;
   cropBids=plain;
 

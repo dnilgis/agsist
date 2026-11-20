@@ -79,7 +79,10 @@
        spot                                   window "now"
        this month (Central time)              "now"
        a month 1 or 2 months out              that month (not more than 2 out)
-       a range that ends this month or next   "now" if it is open, else its month
+       a range that ends at most 2 months out "now" if it is open, else its first month
+                                              (the same bound as a month: a licensed
+                                              feed window "Oct 1 to Jan 19" is current
+                                              when the January month alone would be)
        this harvest's new crop while open     "now" inside Sep-Dec (corn, soybeans,
                                               sorghum) or Jun-Sep (wheat, oats);
                                               1 or 2 months before it, its first month
@@ -132,6 +135,7 @@
     var one = /^(\d{4})-(\d{2})(?:-\d{2})?(?:[ t].*)?$/.exec(p);
     var e = /^(\d{4})-(\d{2})/.exec(String(b && b.deliveryEnd || '').trim());
     if (one) return one[1] + '-' + one[2] + (e && (e[1] + '-' + e[2]) !== (one[1] + '-' + one[2]) ? '/' + e[1] + '-' + e[2] : '');
+    if (!p && e) return e[1] + '-' + e[2];             /* only an end date: that month */
     return p;
   }
   /* "now", a "YYYY-MM" (a month 1-2 out), or null (not current). */
@@ -143,8 +147,7 @@
     if ((m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?$/.exec(p))) {
       var st = +m[1] * 12 + (+m[2] - 1), en = m[3] ? +m[3] * 12 + (+m[4] - 1) : st;
       if (en < st || +m[2] < 1 || +m[2] > 12) return null;
-      var lim = m[3] && en !== st ? 1 : 2;           /* a range must END this month or next */
-      if (en < cur || en - cur > lim) return null;
+      if (en < cur || en - cur > 2) return null;     /* a month, or a range's END, at most 2 months out */
       return st <= cur ? 'now' : ym(st);
     }
     var s;
