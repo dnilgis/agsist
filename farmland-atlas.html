@@ -524,6 +524,41 @@ details.fa-arith .body a{color:var(--gold)}
 .fl-box .vp-maplab,.fl-box .vp-leg{font-size:.8rem;color:var(--text-muted);margin:.4rem 0}
 .fl-box .vp-leg{display:flex;flex-wrap:wrap;gap:.3rem .9rem}.fl-box .vp-leg b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.3rem;vertical-align:-1px}
 .fl-bar-y{font-size:.55rem;white-space:nowrap}
+/* land figures by source (fx/atlas-sources): the map's box holds its shape before the shapes arrive, the readout sits
+   under it in its own room, and the table's rows are baked (SEED:landsrc-rows), so nothing moves when the script runs */
+.ls-n{font-size:.88rem;color:var(--text-dim);margin:.2rem 0 .6rem}
+.ls-map{position:relative;width:100%;max-width:560px;aspect-ratio:866.9/553.2;margin:0 0 2.4rem}
+.ls-map .usm{position:static;max-width:none}.ls-map .usm-box{position:absolute;inset:0;aspect-ratio:auto}
+.ls-map .usm-read{position:absolute;left:0;right:0;top:100%;margin:.35rem 0 0;font-size:.82rem;color:var(--text-muted);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls-leg{font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .8rem;line-height:1.7}
+.ls-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 .3rem 0 .5rem;vertical-align:-1px}
+.ls-k-county,.ls-county{background:#2e7d4f}.ls-k-region,.ls-region{background:#7fb08f}.ls-k-usda,.ls-usda{background:#c9d6cd}
+.ls-t{width:100%;border-collapse:collapse;font-size:.8rem}
+.ls-t thead th{text-align:left;padding:0;border-bottom:1px solid var(--border-2);white-space:nowrap}
+.ls-t thead button{all:unset;cursor:pointer;display:block;padding:.45rem .6rem;min-height:28px;font-size:.78rem;color:var(--text-muted)}
+.ls-t thead button:focus-visible{outline:2px solid var(--gold,#d4a23f)}
+.ls-t thead th[aria-sort] button::after{content:" \2195";opacity:.5}
+.ls-t tbody th,.ls-t td{padding:.42rem .6rem;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top;text-align:left;font-weight:400}
+.ls-t tbody th{color:var(--text);font-weight:600;white-space:nowrap}
+.ls-t td span{display:block}.ls-t td small{color:var(--text-muted)}
+.ls-t tr:target th,.ls-t tr.ls-hit th{box-shadow:inset 3px 0 0 var(--gold,#d4a23f)}
+.ls-old{font-style:normal;font-size:.72rem;color:var(--gold,#d4a23f);white-space:nowrap}
+.ls-tap{all:unset;display:block;cursor:default}.ls-tap b{display:block;color:var(--text)}
+.ls-lv{display:inline-block;font-style:normal;font-size:.7rem;font-weight:600;padding:0 .35rem;border-radius:3px;color:#0a0c0d}
+@media (max-width:640px){
+  .ls-t,.ls-t tbody,.ls-t tr,.ls-t th,.ls-t td{display:block}
+  .ls-t thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .ls-t tr{border-bottom:1px solid var(--border)}
+  .ls-t tbody th{padding:0;border:0}
+  .ls-tap{box-sizing:border-box;display:flex;align-items:center;gap:.4rem;width:100%;min-height:44px;cursor:pointer;font-size:.84rem;white-space:nowrap;overflow:hidden}
+  .ls-tap b{display:inline}
+  .ls-tap:focus-visible{outline:2px solid var(--gold,#d4a23f)}
+  .ls-t td{display:none;border:0;padding:.1rem 0 .4rem}
+  .ls-t tr.ls-open td{display:block}.ls-t tr.ls-open td:empty{display:none}
+  .ls-t td::before{display:block;font-size:.7rem;color:var(--text-muted)}
+  .ls-t td:nth-child(2)::before{content:"What we show"}.ls-t td:nth-child(3)::before{content:"Source"}
+  .ls-t td:nth-child(4)::before{content:"Survey date"}
+}
 </style>
 <link rel="stylesheet" href="/components/src-fold.css?v=2">
 <link rel="stylesheet" href="/components/atlas-now.css?v=12">
@@ -601,6 +636,50 @@ try{var L=location;if(/(^|[?&])s=/.test(L.search)||/(^|[#&])s=/.test(L.hash))doc
     </div><div class="an-side" id="an-side" aria-live="polite"></div></div>
   </section>
   <div id="fa-nodata" class="fa-notice" hidden>The Atlas map did not load. For county figures without the map, open the <a href="/farmland-atlas/states/">county directory</a>.</div>
+
+  <section class="fa-sec ls" id="fa-sources" aria-labelledby="ls-h">
+    <h2 id="ls-h">Land figures by source</h2>
+<!--SEED:landsrc--><!--/SEED:landsrc-->
+    <div class="ls-map" id="ls-map"></div>
+    <p class="ls-leg" id="ls-leg">Shade: the closest state survey we show.<i class="ls-k-county"></i>County survey<i class="ls-k-region"></i>region survey<i class="ls-k-usda"></i>or USDA and Census figures only.</p>
+    <table class="ls-t" id="ls-t">
+      <!--SEED:landsrc-head--><!--/SEED:landsrc-head-->
+      <tbody id="ls-rows"><!--SEED:landsrc-rows--><!--/SEED:landsrc-rows--></tbody>
+    </table>
+  </section>
+<script>/* land figures by source: sort the table, open a row on a phone, open the row a link names, and shade the
+   state map from the rows (the map file loads only when the section comes near the screen) */
+(function(){var t=document.getElementById('ls-t');if(!t)return;var b=document.getElementById('ls-rows');
+var FILL={county:'#2e7d4f',region:'#7fb08f',usda:'#c9d6cd'},WORD={county:'county survey',region:'region survey',usda:'USDA and Census figures only'};
+function rows(){return [].slice.call(b.querySelectorAll('tr'));}
+/* each row's button opens its row on a phone: it says so to a screen reader (set here, not in each baked row) */
+[].forEach.call(b.querySelectorAll('.ls-tap'),function(x){x.setAttribute('aria-expanded','false');});
+t.addEventListener('click',function(e){if(!e.target.closest('thead'))return;var x=e.target.closest('button[data-k]');if(!x)return;var k=+x.getAttribute('data-k'),th=x.parentNode,
+up=th.getAttribute('aria-sort')!=='ascending';[].forEach.call(t.querySelectorAll('thead th'),function(h){h.setAttribute('aria-sort','none');});th.setAttribute('aria-sort',up?'ascending':'descending');
+rows().map(function(r){var n=r.querySelector('th b').textContent,c=r.children[k],v=k===0?n:k===1?String({county:0,region:1,usda:2}[r.getAttribute('data-best')]):k===2?c.textContent:(c.getAttribute('data-v')||'');return [v,n,r];}).sort(function(p,q){var a=p[0],c=q[0],n=!isNaN(a)&&!isNaN(c)&&a!==''&&c!=='';
+var d=n?(+a)-(+c):a.localeCompare(c);return (up?d:-d)||p[1].localeCompare(q[1]);}).forEach(function(z){b.appendChild(z[2]);});});
+function open(r,on){r.classList.toggle('ls-open',on);var x=r.querySelector('.ls-tap');if(x)x.setAttribute('aria-expanded',on?'true':'false');}
+b.addEventListener('click',function(e){var x=e.target.closest('.ls-tap');if(!x)return;var r=x.closest('tr');open(r,!r.classList.contains('ls-open'));});
+function hash(){var m=/^#src-([a-z]{2})$/.exec(location.hash||''),r=m&&document.getElementById('src-'+m[1]);if(!r)return;
+rows().forEach(function(z){z.classList.remove('ls-hit');});r.classList.add('ls-hit');open(r,true);}
+/* a link to a row (#src-ia) lands once the Atlas above has finished filling in, not before: the browser's own early
+   jump left the table under the reader while the map above settled (a layout shift of 0.08 on a slow machine). The
+   row's id comes off until the section's place on the page holds still, then the row opens and scrolls into view;
+   a reader who scrolls first is left where they are. */
+(function(){var m=/^#src-([a-z]{2})$/.exec(location.hash||''),r=m&&document.getElementById('src-'+m[1]);
+if(!r){hash();return;}var id=r.id,sec=document.getElementById('fa-sources'),moved=false,last=-1,still=0,t0=Date.now();r.removeAttribute('id');
+['wheel','touchstart','keydown','pointerdown'].forEach(function(t){window.addEventListener(t,function(){moved=true;},{once:true,passive:true});});
+(function wait(){var y=sec.getBoundingClientRect().top+scrollY;still=Math.abs(y-last)<1?still+1:0;last=y;
+if(still<4&&Date.now()-t0<6000){setTimeout(wait,150);return;}r.id=id;hash();if(!moved)r.scrollIntoView({block:'center'});})();})();
+window.addEventListener('hashchange',hash);
+var host=document.getElementById('ls-map'),done=false;if(!host)return;
+function draw(){if(done)return;done=true;var m={};rows().forEach(function(r){var s=r.id.slice(4).toUpperCase(),l=r.getAttribute('data-best');if(s&&FILL[l])m[s]={fill:FILL[l],text:WORD[l],href:'#src-'+s.toLowerCase()};});
+if(!Object.keys(m).length){host.hidden=true;return;}
+function go(){if(window.AgUSMap)window.AgUSMap.mount(host,{states:m,hint:'Tap a state for its row in the table.',name:'Land figures by source, by state'});}
+if(window.AgUSMap){go();return;}var s=document.createElement('script');s.src='/components/usmap.js?v=1';s.onload=go;document.head.appendChild(s);}
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();draw();}},{rootMargin:'600px 0px'});io.observe(host);}else draw();
+})();
+</script>
 
   <section class="fa-sec" id="fa-national">
     <h2>The national picture</h2>
