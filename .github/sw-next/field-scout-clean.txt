@@ -1,0 +1,1 @@
+Field Scout: one clean read of your field, one answer on top, the crop history once as a strip of year chips, empty sections hidden, Save field carries to Field Rain (field-scout.js?v=43, field-scout-read.js?v=30, field-scout-layers.js?v=4, field-scout.css?v=9, soil-read.js?v=2)

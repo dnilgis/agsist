@@ -2246,7 +2246,11 @@ window.__fsRead = function (FSX) {
     var W='<span class="fs-ans-wait">reading</span>', out=[];
     out.push('<b>'+(F.acres!=null?(+F.acres).toFixed(1):'')+' acres</b>'+(cy&&cy.name?' in '+esc(cy.name)+' County, '+esc(cy.st||cy.abbr||''):''));
     if(s && s.classes && s.classes.length){
-      var tot=s.total||0, top=s.classes.slice().sort(function(a,b){ return b.ac-a.ac; }).slice(0,3);
+      // by soil name: two map units of one series (Burchard clay loam 6 to 11% and 11 to 17%) are one
+      // soil in the answer, their acres together, so no name shows twice
+      var tot=s.total||0, byName={}, names=[];
+      s.classes.forEach(function(x){ var k=shortSoil(x.name); if(!byName[k]){ byName[k]={ name:k, ac:0 }; names.push(byName[k]); } byName[k].ac+=x.ac; });
+      var top=names.sort(function(a,b){ return b.ac-a.ac; }).slice(0,3);
       var parts=[]; if(s.nccpiCorn!=null) parts.push('corn '+s.nccpiCorn.toFixed(2)); if(s.nccpiSoy!=null) parts.push('soybeans '+s.nccpiSoy.toFixed(2));
       out.push('Soils: '+top.map(function(x){ return esc(shortSoil(x.name))+(tot>0?' '+Math.round(x.ac/tot*100)+'%':''); }).join(', ')+
         (s.nccpi!=null?'; <b>NCCPI '+s.nccpi.toFixed(2)+'</b>'+(parts.length?' ('+parts.join(', ')+')':''):''));
@@ -2256,7 +2260,7 @@ window.__fsRead = function (FSX) {
       out.push('Last 3 crops: '+last.join(', '));
     } else if(r==null && !M['fs-rot']) out.push('Last 3 crops: '+W);
     var wx=[];
-    if(d && d.cat!=null) wx.push((d.cat==='None'?'No drought':/D0/.test(d.cat)?'Abnormally dry, D0':esc(d.cat.replace(/ \((D\d)\)$/, ' drought, $1')))+(usdmWeek(d.wk)?' ('+usdmWeek(d.wk)+' map)':''));
+    if(d && d.cat!=null) wx.push((d.cat==='None'?'No drought':/D0/.test(d.cat)?'Abnormally dry, D0':esc(d.cat.replace(/ \((D\d)\)$/, ' drought, $1')))+' ('+(d.approx?'county-wide, ':'')+(usdmWeek(d.wk)?usdmWeek(d.wk)+' map':'this week’s map')+')');
     else if(d==null && !M['fs-drought']) wx.push('Drought: '+W);
     if(se && se.pNow!=null) wx.push((wx.length?'rain':'Rain')+' since Jan 1 '+se.pNow.toFixed(1)+' in'+(se.pct!=null?', '+Math.round(se.pct)+'% of normal':''));
     else if(se===undefined && !M['fs-season']) wx.push((wx.length?'rain':'Rain')+' since Jan 1: '+W);

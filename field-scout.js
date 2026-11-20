@@ -378,7 +378,7 @@
     document.getElementById('fs-results').hidden=true;
     var _dk=document.getElementById('fs-deck'); if(_dk){ _dk.hidden=true; _dk.innerHTML=''; }
     var _pk=document.getElementById('fs-peek'); if(_pk){ _pk.hidden=true; _pk.innerHTML=''; }
-    document.documentElement.classList.remove('fs-has-peek');
+    document.documentElement.classList.remove('fs-has-peek', 'fs-field-open');
     _peek={};
     document.getElementById('fs-empty').hidden=false;
     setFieldChrome(false);
@@ -1024,6 +1024,9 @@
     try { map.fitBounds(poly.getBounds(), { padding:[40,40], maxZoom:16 }); } catch(e){}
     var cb=document.getElementById('fs-clear'); if(cb) cb.disabled=false;
     var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.add('has-field');
+    // the field's chrome goes on now, not when the read script lands: a shared link used to show the
+    // example button first and push the rail's notes down (a 0.013 shift at 1280, Nov 20, 2026)
+    document.documentElement.classList.add('fs-field-open');
     runAll(poly);
     if(src==='draw') ga('field_drawn', { acres: Math.round(polyAcres(poly)) });
   }
