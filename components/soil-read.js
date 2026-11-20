@@ -7,8 +7,9 @@
    1. the field: SSURGO map units clipped to the field outline (SDA's own GetClippedMapunits
       macro), with acres in the field, drainage class, slope, available water and NCCPI 3.0.
       Columns 0 to 14 are the Field Scout worker's, in its order (field-scout-read.js reads them by
-      position), 15 to 18 are added here. The CSR2 and corn and soybean columns are asked as NULL:
-      real SDA has no iacornsr column and the submodel names matched nothing (Nov 20, 2026).
+      position), 15 to 18 are added here. CSR2 is asked as NULL: real SDA has no iacornsr column
+      and no CSR interpretation (Nov 20, 2026). The corn and soybean parts of NCCPI are asked as
+      its ruledepth-1 sub-rules (checked against real component rows on Nov 20, 2026).
    2. the county: every map unit of the same soil survey area with its acres in that survey area
       and the same NCCPI. The middle (acre-weighted median) and the share of rated acres
       below this field come from that answer only, so the field and the county are one source.
@@ -24,6 +25,7 @@
   var NCCPI_ALL = 'NCCPI - National Commodity Crop Productivity Index (Ver 3.0)';
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function num(v) { if (v == null || v === '') return null; var n = parseFloat(v); return isFinite(n) ? n : null; }
   function str(v) { return v == null || v === '' ? null : String(v); }
   function mdy(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : null; }
@@ -35,6 +37,11 @@
     return '( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2' +
       ' JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=' + mu + ' AND ci.ruledepth=0 AND ci.mrulename' +
       (like ? " LIKE '" + rule + "%'" : " = '" + rule + "'") + ' AND ci.interphr IS NOT NULL )';
+  }
+  function nccpiPart(mu, rule) {
+    return '( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2' +
+      ' JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=' + mu + " AND ci.mrulename = '" + NCCPI_ALL + "'" +
+      " AND ci.ruledepth=1 AND ci.rulename LIKE '" + rule + "%' AND ci.interphr IS NOT NULL )";
   }
   // CSR2 is not a component column in Soil Data Access: real SDA refuses "iacornsr" with HTTP 400
   // ("Invalid column name 'iacornsr'", Nov 20, 2026, every query). It is a cointerp
@@ -53,9 +60,12 @@
       'SELECT l.areasymbol, mu.musym, mu.muname, ROUND(area.ac, 2) AS ac, ma.niccdcd AS nicc,' +
       ' ( SELECT ROUND(AVG(CAST(c.slope_r AS float)),1) FROM component c WHERE c.mukey=mu.mukey AND c.majcompflag=\'Yes\' ) AS slope_pct, ' +
       nccpiSub('mu.mukey', NCCPI_ALL) + ' AS nccpi, ' +
-      // the corn and soybean parts: the mrulename match came back NULL on every real row (Nov 20,
-      // 2026); they are asked as NULL, keeping the column order, until a confirmed rule exists
-      'CAST(NULL AS float) AS nccpi_corn, CAST(NULL AS float) AS nccpi_soy,' +
+      // the corn and soybean parts are sub-rules of the NCCPI rule (ruledepth 1, matched on
+      // rulename: "NCCPI - NCCPI Corn Submodel (I)" in IA169, the suffix may differ elsewhere),
+      // listed by real SDA for mukey 2800480 on Nov 20, 2026; asked at ruledepth 0 by mrulename
+      // they came back NULL on every row
+      nccpiPart('mu.mukey', 'NCCPI - NCCPI Corn Submodel') + ' AS nccpi_corn, ' +
+      nccpiPart('mu.mukey', 'NCCPI - NCCPI Soybeans Submodel') + ' AS nccpi_soy,' +
       ' ma.drclassdcd AS drainage, ' + csr2Sub('mu.mukey') + ' AS csr2,' +
       ' mu.farmlndcl AS farmlndcl, ma.flodfreqdcd AS flodfreq, ma.hydclprs AS hydric_pct,' +
       " ( SELECT TOP 1 c4.nirrcapscl FROM component c4 WHERE c4.mukey=mu.mukey AND c4.majcompflag='Yes' ORDER BY c4.comppct_r DESC, c4.cokey ) AS nirrcapscl," +
@@ -220,9 +230,14 @@
     if (!s) return '<div class="fs-err">No SSURGO soil survey is published for this spot. Coverage gaps exist in parts of the West and Alaska.</div>';
     var c = countyState && typeof countyState === 'object' ? countyState : null;
     var head = [];
-    // NCCPI overall is the productivity number. CSR2 and the corn and soybean parts are not shown
-    // until Soil Data Access is confirmed to carry them (Nov 20, 2026 checks against real SDA).
+    // NCCPI overall is the productivity number; its corn and soybean parts follow, each only when
+    // the survey rates it (confirmed against real SDA component rows, Nov 20, 2026). No CSR2:
+    // Soil Data Access does not carry it.
     if (s.nccpi != null) head.push('<strong>NCCPI ' + s.nccpi.toFixed(2) + '</strong>');
+    var parts = [];
+    if (s.corn != null) parts.push('corn ' + s.corn.toFixed(2));
+    if (s.soy != null) parts.push('soybeans ' + s.soy.toFixed(2));
+    if (parts.length) head.push(cap(parts.join(', ')));
     if (s.awsCm != null) head.push(inches(s.awsCm) + ' available water in the top 5 ft');
     if (s.slope != null) head.push(Math.round(s.slope * 10) / 10 + '% average slope');
     var html = '<div class="fs-soil-top" id="fs-soil-top">' +
@@ -252,6 +267,7 @@
       '<p class="fs-soil-slope">Each row is a soil map unit from the USDA soil survey, with its share of the outline you set. ' +
       'Drainage class, slope, available water and the ratings are the survey’s representative values for that map unit, not a measurement of your exact acres.</p>' +
       '<p class="fs-soil-slope"><strong>NCCPI</strong> (National Commodity Crop Productivity Index, version 3.0) runs 0 to 1 on one national scale: how well the soil and climate carry dryland corn, soybeans, cotton or small grains. ' +
+      'For each soil the overall figure is the highest of its crop parts; the corn and soybean parts are shown beside it, weighted by acres the same way. ' +
       'CSR2 (Iowa’s Corn Suitability Rating 2) is not shown: USDA’s Soil Data Access service does not offer it.</p>' +
       '<p class="fs-soil-slope"><strong>Available water</strong> is how much water the top 150 cm (about 5 ft) of soil can hold for a crop, in inches.</p>' +
       '<p class="fs-soil-slope"><strong>The county line</strong> compares this field with every rated acre in the same soil survey area (usually one county). The middle is the rating with half the rated acres below it. Both come from the same Soil Data Access answer, never another source.</p>' +
