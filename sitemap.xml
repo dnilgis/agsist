@@ -515,7 +515,7 @@
   <url><loc>https://agsist.com/cash-lease</loc><lastmod>2026-11-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/conditions</loc><lastmod>2026-11-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/crop-tour</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/farmland-atlas</loc><lastmod>2026-11-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/farmland-atlas</loc><lastmod>2026-11-20</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/daily/2026-08-11</loc><lastmod>2026-08-11</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/daily/2026-08-12</loc><lastmod>2026-08-12</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-08-13</loc><lastmod>2026-08-13</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
@@ -621,6 +621,7 @@
   <url><loc>https://agsist.com/daily/2026-10-10</loc><lastmod>2026-10-10</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-11</loc><lastmod>2026-10-11</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/rain-print</loc><lastmod>2026-11-13</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/field-rain</loc><lastmod>2026-11-20</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/rain-gauge</loc><lastmod>2026-10-23</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/gifts-for-farmers</loc><lastmod>2026-11-13</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/rain-print-business</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>

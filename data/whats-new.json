@@ -2,11 +2,25 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-20-rain-at-your-fields",
+   "date": "2026-11-20",
+   "title": "Rain at your fields, free",
+   "line": "Save up to 20 fields on your phone: radar and PRISM rain for each, the nearest gauge and your own beside it, and a daily history in a link you keep.",
+   "link": "/field-rain"
+  },
+  {
    "id": "2026-11-19-atlas-extension-surveys",
    "date": "2026-11-19",
    "title": "Minnesota, Wisconsin and Kansas survey figures",
    "line": "Minnesota rents paid, Wisconsin land sale prices and K-State's Kansas rent estimates and land values now sit beside USDA's on the Atlas and the rent pages.",
    "link": "/rent/minnesota"
+  },
+  {
+   "id": "2026-11-19-atlas-land-sources",
+   "date": "2026-11-19",
+   "title": "Every state's land figures and their sources",
+   "line": "The Farmland Atlas now maps which land figures each state gets, who publishes them and when each survey was taken.",
+   "link": "/farmland-atlas#fa-sources"
   },
   {
    "id": "2026-11-19-atlas-north-dakota-survey",
