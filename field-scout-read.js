@@ -97,6 +97,10 @@ window.__fsRead = function (FSX) {
   }
 
   // ── Orchestrator ────────────────────────────────────────────────────
+  // the answered height of The Read on the Story example, phone (under 560 px) and wider
+  // (567 px at 390 and 722 px at 1280 with its heading, Nov 20, 2026)
+  var READ_ROOM = { phone:'33.5rem', wide:'42rem' };
+  function readRoom(){ return (window.matchMedia && matchMedia('(max-width:559px)').matches) ? READ_ROOM.phone : READ_ROOM.wide; }
   function runAll(poly){
     var c=polyCentroid(poly), acres=polyAcres(poly);
     runFieldScan(poly);
@@ -108,9 +112,12 @@ window.__fsRead = function (FSX) {
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
-      '<div class="fs-section fs-insight-section" id="fs-insight-wrap" hidden>'+
+      // Nov 20, 2026: The Read shows from the moment the field opens, holding the room of an
+      // answered read (measured on the Story example: READ_ROOM below), so it never jumps from
+      // 0 px and pushes the deck when its last layer lands. The room is kept, never given back.
+      '<div class="fs-section fs-insight-section" id="fs-insight-wrap" style="min-height:'+readRoom()+'">'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
-        '<div class="fs-section-body" id="fs-insight"></div>'+
+        '<div class="fs-section-body" id="fs-insight"><p class="fs-verdict fs-verdict-wait" aria-live="polite"><span>Bottom line</span><b>Reading this field&hellip;</b></p></div>'+
       '</div>' +
       // Nov 20, 2026: the notes box sits after the deck, not under The Read. The Read grows when
       // its last layer lands (often the soil survey), and on a phone and in the 1280 side column
@@ -1760,8 +1767,11 @@ window.__fsRead = function (FSX) {
   function vCell(label, value, sub, tip, cls){
     return '<div class="fs-vital'+(cls?' '+cls:'')+'">'+
       '<div class="fs-vital-l">'+label+(tip?tipQ(tip):'')+'</div>'+
-      '<div class="fs-vital-v">'+(value==null||value===''?'<span class="fs-vital-wait">\u00b7\u00b7\u00b7</span>':value)+'</div>'+
-      (sub?'<div class="fs-vital-s">'+sub+'</div>':'')+
+      // every cell holds two value lines and its sub line from the first draw, so the strip (and the
+      // deck under it) keeps its height as the layers land (Nov 20, 2026: the soil answer added
+      // PRODUCTIVITY's sub line and a two-line soil name, and moved the deck)
+      '<div class="fs-vital-v" style="min-height:2.4em">'+(value==null||value===''?'<span class="fs-vital-wait">\u00b7\u00b7\u00b7</span>':value)+'</div>'+
+      '<div class="fs-vital-s">'+(sub||'\u00a0')+'</div>'+
     '</div>';
   }
   function renderVitals(){
