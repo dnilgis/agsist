@@ -697,8 +697,8 @@
    test/field-scout-clean.test.mjs measures it, so nothing below moves when its facts land. */
 .fs-answer{ border-bottom:1px solid var(--border); }
 .fs-answer .fs-section-body{ padding:1rem 1.2rem 1rem; }
-.fs-answer-p{ margin:0; font-size:1rem; line-height:1.55; color:var(--text); min-height:calc(1.55em * 8); }
-@media(max-width:380px){ .fs-answer-p{ min-height:calc(1.55em * 10); } }
+.fs-answer-p{ margin:0; font-size:1rem; line-height:1.55; color:var(--text); min-height:calc(1.55em * 10); }
+@media(max-width:380px){ .fs-answer-p{ min-height:calc(1.55em * 11); } }
 .fs-answer-p b{ color:var(--text); font-weight:700; }
 .fs-ans-wait{ color:var(--text-muted); font-style:italic; }
 .fs-deck-grid .fs-section[hidden], .fs-section[hidden], .fs-section-body[hidden]{ display:none!important; }
@@ -708,6 +708,7 @@
 .fs-yr{ border:1px solid var(--border); border-radius:6px; padding:.3rem .1rem; text-align:center; min-width:0; overflow:hidden; }
 .fs-yr-y{ display:block; font-family:var(--font-mono); font-size:.72rem; color:var(--text-muted); }
 .fs-yr-c{ display:block; font-size:.7rem; font-weight:600; color:var(--text); overflow-wrap:normal; word-break:keep-all; hyphens:manual; line-height:1.25; }
+.fs-yr-land .fs-yr-c{ font-weight:500; color:var(--text-dim); }   /* a year that is land cover, not a crop */
 .fs-rainlink{ margin:.6rem 0 0; font-size:.85rem; }
 .fs-rainlink a{ color:var(--brand,var(--gold)); }
 .fs-linkbtn{ background:none; border:0; padding:0; font:inherit; color:var(--brand,var(--gold)); text-decoration:underline; cursor:pointer; }

@@ -494,9 +494,9 @@ window.__fsRead = function (FSX) {
         var full = (d.history && d.history.length ? d.history : d.rotation);
         var recent = full.slice(0, 10).reverse();
         var years = recent.map(function(x){ return x.year; });
-        // only recognized row/forage crops count toward the headline & streak;
-        // CDL noise (developed/water/forest) shows as a gap and breaks any streak
-        var codes = recent.map(function(x){ return CDL_CROPS[x.code] ? x.code : null; });
+        // only planted crops count toward the answer and the rotation; land cover (developed,
+        // grassland, forest, water) is a gap that breaks any streak, shown by its own name
+        var codes = recent.map(function(x){ return isCrop(x.code) ? x.code : null; });
         var cornStreak=0, maxCornStreak=0;
         codes.forEach(function(cd){ if(cd===1){cornStreak++; maxCornStreak=Math.max(maxCornStreak,cornStreak);} else cornStreak=0; });
         var cornCount = codes.filter(function(c){return c===1;}).length;
@@ -505,19 +505,15 @@ window.__fsRead = function (FSX) {
         // corn-on-corn is THIS year's corn on last year's corn, or a streak of 3+ ending now.
         // A corn-corn-soybean rotation has a 2-year streak every cycle; flagging any 2-year
         // streak in ten years told a disciplined C-C-S farm to "break the rotation" (panel 9/20).
-        FSX.FIELD.rotation = { codes:codes, years:years, maxCornStreak:maxCornStreak, cornCount:cornCount,
+        FSX.FIELD.rotation = { codes:codes, years:years, recent:recent, full:full, maxCornStreak:maxCornStreak, cornCount:cornCount,
           beanCount:beanCount, lastCrop: codes[codes.length-1], pattern: rr.pattern, patternText: rr.text,
           predicted: rr.predicted, nextYear: rr.nextYear, streakNow: rr.streakNow, cornOnCorn: false };
         applyThisYear();
         recomputeInsight(); renderRisk();
-        // If not one year resolved to a recognized row/forage crop, this field isn't
-        // cropland in CDL (pasture, forest, developed, water). Say so plainly rather
-        // than render five empty placeholder tiles that look broken.
-        if(codes.every(function(c){ return c===null; })){
-          setErr('fs-rot','the USDA Cropland Data Layer reads this spot as pasture, forest, developed land or water in every year on record, not a crop.');
-          return;
-        }
-        setBody('fs-rot', rotationHtml(recent, codes, years));
+        // A point that is not cropland (real answers, Nov 20, 2026: the Story test square's center is
+        // developed land in Ames every year since 2008) still gets its strip, named for what USDA's
+        // crop map shows there, and no rotation words.
+        setBody('fs-rot', rotationHtml(recent, codes, years, full));
         rotationSpread(poly, gen, recent);
       })
       .catch(function(){ if(gen!==FSX.fieldGen) return; FSX.FIELD.rotation=false; setErr('fs-rot','could not read: the USDA Cropland Data Layer did not answer. Tap the field again to retry.'); recomputeInsight(); });
@@ -542,12 +538,51 @@ window.__fsRead = function (FSX) {
     if(cs>=3) return 'Corn '+cs+' years running, '+years[n-cs]+' to '+years[n-1]+'.';
     return null;
   }
-  function rotationHtml(recent, codes, years){
-    var chips=codes.map(function(code,i){
-      var info = code ? crop(code) : { l:crop(recent[i].code).l||'Not a crop', c:'#8a948f' };
-      return '<li class="fs-yr" style="background:'+hexA(info.c,.16)+';border-color:'+hexA(info.c,.55)+'"><span class="fs-yr-y">'+years[i]+'</span><span class="fs-yr-c">'+esc(info.l)+'</span></li>';
+  // A planted crop in the Cropland Data Layer's code list: 1 to 60 (field crops, hay), 66 to 80 (tree
+  // and fruit crops), 204 to 254 (vegetables and double crops). Everything else is land cover: 61
+  // fallow, 62 to 65 and 81 to 195 grassland, forest, shrubland, developed land, water, wetland.
+  function isCrop(c){ c=+c; return (c>=1&&c<=60) || (c>=66&&c<=80) || (c>=204&&c<=254); }
+  // what USDA's crop map shows, in words: a crop by its name, land cover by its kind
+  function landName(code, name){
+    var c=+code;
+    if(c>=121&&c<=124) return 'developed land';
+    if(c===176||c===62) return 'grassland or pasture';
+    if(c>=141&&c<=143||c===63) return 'forest';
+    if(c===111) return 'open water';
+    if(c===190||c===195) return 'wetland';
+    if(c===152||c===64) return 'shrubland';
+    if(c===61) return 'fallow land';
+    if(c===131||c===65) return 'barren land';
+    var k=CDL_CROPS[c]; return String(k?k.l:(name||'code '+c)).toLowerCase();
+  }
+  window.__fsLand = { isCrop:isCrop, landName:landName };
+  // the strip's words when the years are not a steady corn and soybean rotation: what USDA's crop
+  // map shows, from the record itself (full: every published year, most recent first)
+  function landWords(recent, codes, years, full){
+    var nCrop=codes.filter(function(c){ return c!=null; }).length;
+    if(nCrop===codes.length) return null;
+    var hist=(full&&full.length?full:recent.slice().reverse());
+    if(!nCrop){
+      // the unbroken run of one kind of land, back from the newest year (Story: developed land
+      // 2006 to 2025 in the real answer, then forest and grassland in the older years)
+      var kind=landName(hist[0].code, hist[0].crop), j=0;
+      while(j+1<hist.length && !isCrop(hist[j+1].code) && landName(hist[j+1].code, hist[j+1].crop)===kind) j++;
+      if(j+1>=codes.length) return 'USDA&rsquo;s crop map shows '+kind+' here every year since '+hist[j].year+', not a crop.';
+      var kr={}; recent.forEach(function(x){ kr[landName(x.code, x.crop)]=1; });
+      return 'USDA&rsquo;s crop map shows no crop here from '+years[0]+' to '+years[years.length-1]+': '+Object.keys(kr).join(', ')+'.';
+    }
+    var cropYears=[], other={};
+    recent.forEach(function(x, i){ if(codes[i]!=null) cropYears.push(landName(x.code, x.crop)+' '+x.year); else other[landName(x.code, x.crop)]=1; });
+    return 'USDA&rsquo;s crop map shows a crop here in '+nCrop+' of these '+codes.length+' years ('+cropYears.join(', ')+'); the other years are '+Object.keys(other).join(' or ')+'.';
+  }
+  function rotationHtml(recent, codes, years, full){
+    var chips=recent.map(function(x,i){
+      // a chip names land cover by its kind, short enough for the chip ("Developed", not "Developed/Low Intensity")
+      var ln=landName(x.code, x.crop), short={ 'developed land':'Developed', 'grassland or pasture':'Grass/Pasture', 'open water':'Water', 'fallow land':'Fallow', 'barren land':'Barren' }[ln];
+      var code=codes[i], info = code ? (CDL_CROPS[code] ? crop(code) : { l:x.crop||'Code '+code, c:'#8a948f' }) : { l:short||(ln.charAt(0).toUpperCase()+ln.slice(1)), c:(CDL_CROPS[x.code]||{}).c||'#9c9c9c' };
+      return '<li class="fs-yr'+(code?'':' fs-yr-land')+'" style="background:'+hexA(info.c,.16)+';border-color:'+hexA(info.c,.55)+'"><span class="fs-yr-y">'+years[i]+'</span><span class="fs-yr-c">'+esc(info.l)+'</span></li>';
     }).join('');
-    var words=rotationWords(codes, years);
+    var words=rotationWords(codes, years) || landWords(recent, codes, years, full);
     return '<ol class="fs-years" aria-label="Crop at the field center, '+years[0]+' to '+years[years.length-1]+'">'+chips+'</ol>'+
       (words?'<p class="fs-cline">'+words+'</p>':'')+
       '<div id="fs-rot-spread"></div>'+
@@ -2256,8 +2291,18 @@ window.__fsRead = function (FSX) {
         (s.nccpi!=null?'; <b>NCCPI '+s.nccpi.toFixed(2)+'</b>'+(parts.length?' ('+parts.join(', ')+')':''):''));
     } else if(s==null && !M['fs-soil']) out.push('Soils: '+W);
     if(r && r.codes && r.codes.length){
-      var last=[]; for(var i=r.codes.length-1; i>=0 && last.length<3; i--){ var cd=r.codes[i]; last.push((cd?crop(cd).l.toLowerCase():'not a crop')+' '+r.years[i]); }
-      out.push('Last 3 crops: '+last.join(', '));
+      // "Last 3 crops" only when the last 3 years are crops (Nov 20, 2026: the real answers for the
+      // test squares are developed land and pasture); otherwise what USDA's crop map shows
+      var n=r.codes.length, last3=[], allCrop=true, rec=r.recent||[];
+      for(var i=n-1; i>=0 && last3.length<3; i--){ var x=rec[i]||{ code:r.codes[i] }; if(r.codes[i]==null) allCrop=false; last3.push(landName(x.code, x.crop)+' '+r.years[i]); }
+      if(allCrop) out.push('Last 3 crops: '+last3.join(', '));
+      else if(r.codes.every(function(c){ return c==null; })){
+        var lw=landWords(rec, r.codes, r.years, r.full); out.push(lw ? lw.replace(/\.$/,'') : 'No crop on USDA&rsquo;s crop map here');
+      }
+      else {
+        var nm=last3.map(function(t){ return t.replace(/ \d{4}$/,''); });
+        out.push('Last 3 years on USDA&rsquo;s crop map: '+(nm[0]===nm[1]&&nm[1]===nm[2] ? nm[0]+', '+r.years[n-3]+' to '+r.years[n-1] : last3.join(', ')));
+      }
     } else if(r==null && !M['fs-rot']) out.push('Last 3 crops: '+W);
     var wx=[];
     if(d && d.cat!=null) wx.push((d.cat==='None'?'No drought':/D0/.test(d.cat)?'Abnormally dry, D0':esc(d.cat.replace(/ \((D\d)\)$/, ' drought, $1')))+' ('+(d.approx?'county-wide, ':'')+(usdmWeek(d.wk)?usdmWeek(d.wk)+' map':'this week’s map')+')');
