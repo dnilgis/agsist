@@ -99,7 +99,7 @@ window.__fsRead = function (FSX) {
   // ── Orchestrator ────────────────────────────────────────────────────
   // the answered height of The Read on the Story example, phone (under 560 px) and wider
   // (712 px at 390 and 722 px at 1280 with its heading on the PR checks' full data, Nov 20, 2026;
-  // a sparse local checkout answers shorter and keeps the extra room as space)
+  // a longer read shows "Show the whole read", a shorter one leaves space)
   var READ_ROOM = { phone:'43rem', wide:'42rem' };
   function readRoom(){ return (window.matchMedia && matchMedia('(max-width:559px)').matches) ? READ_ROOM.phone : READ_ROOM.wide; }
   function runAll(poly){
@@ -113,12 +113,14 @@ window.__fsRead = function (FSX) {
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
-      // Nov 20, 2026: The Read shows from the moment the field opens, holding the room of an
-      // answered read (measured on the Story example: READ_ROOM below), so it never jumps from
-      // 0 px and pushes the deck when its last layer lands. The room is kept, never given back.
-      '<div class="fs-section fs-insight-section" id="fs-insight-wrap" style="min-height:'+readRoom()+'">'+
+      // Nov 20, 2026: The Read shows from the moment the field opens, in a box of fixed height
+      // (READ_ROOM, an answered read on the Story example), so it never jumps from 0 px and never
+      // pushes the deck as its layers land: its answered height varied from 570 to 786 px between
+      // runs. The bottom line comes first; a longer read opens in full on "Show the whole read".
+      '<div class="fs-section fs-insight-section" id="fs-insight-wrap" style="height:'+readRoom()+';overflow:hidden;position:relative">'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"><p class="fs-verdict fs-verdict-wait" aria-live="polite"><span>Bottom line</span><b>Reading this field&hellip;</b></p></div>'+
+        '<button type="button" class="fs-save-btn" id="fs-insight-more" hidden style="position:absolute;left:1.2rem;bottom:.7rem;z-index:2">Show the whole read</button>'+
       '</div>' +
       // Nov 20, 2026: the notes box sits after the deck, not under The Read. The Read grows when
       // its last layer lands (often the soil survey), and on a phone and in the 1280 side column
@@ -151,6 +153,8 @@ window.__fsRead = function (FSX) {
     var _an=R.querySelector('.acres-n'); if(_an){ _an.textContent='0.0'; setTimeout(function(){ countUp(_an, acres, 1); }, 320); }
     // fire all sources independently — fail soft; each calls recomputeInsight()
     var sb=document.getElementById('fs-save'); if(sb) sb.addEventListener('click', saveCurrentField);
+    var rm=document.getElementById('fs-insight-more');
+    if(rm) rm.addEventListener('click', function(){ var w=document.getElementById('fs-insight-wrap'); if(w){ w.style.height='auto'; w.style.overflow=''; } rm.hidden=true; });
     var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', shareField);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
     var gjb=document.getElementById('fs-export-geojson'); if(gjb) gjb.addEventListener('click', exportGeoJSON);
@@ -2674,6 +2678,10 @@ window.__fsRead = function (FSX) {
       html += '<div class="fs-insight-flags">'+ block(acts,'Act on this','act') + block(mons,'Keep an eye on','mon') +'</div>';
     }
     setBody('fs-insight', html);
+    // the fixed box: offer the rest of the read only when it does not fit (the button sits over
+    // the box's own bottom edge, so showing it moves nothing)
+    var rmb=document.getElementById('fs-insight-more');
+    if(wrap && rmb && wrap.style.height!=='auto') rmb.hidden = !(wrap.scrollHeight > wrap.clientHeight + 1);
     setMapHeadline(lead && !held ? (lead.title.charAt(0).toUpperCase()+lead.title.slice(1)+'.') : null);
     renderPeek();
     if(!held) scheduleSettle();
