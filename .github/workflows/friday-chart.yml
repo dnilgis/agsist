@@ -26,7 +26,7 @@ concurrency:
 
 jobs:
   spec:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -56,10 +56,11 @@ jobs:
         env:
           KIND: ${{ github.event.inputs.kind || 'week' }}
           DAY_IN: ${{ github.event.inputs.day }}
+          CREATED: ${{ github.event.workflow_run.created_at }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          DAY="${DAY_IN:-$(date -u +%F)}"
+          if [ -n "${DAY_IN:-}" ]; then DAY="$DAY_IN"; elif [ -n "${CREATED:-}" ]; then DAY=$(date -u -d "$CREATED" +%F); else DAY=$(date -u +%F); fi
           case "$DAY" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "bad day: $DAY"; exit 1 ;; esac
           case "$KIND" in week|harvest-gap|funds-corn) ;; *) echo "bad kind: $KIND"; exit 1 ;; esac
           OUT=$(python3 scripts/build_infographic.py "$KIND" "$DAY" 2>&1) || { echo "$OUT"; exit 1; }
@@ -73,16 +74,27 @@ jobs:
           [ -f "$SPEC" ] || { echo "no spec written"; exit 1; }
           PICKED=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["kind"])' "$SPEC")
           TITLE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["title"])' "$SPEC")
+          DATA_DATE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["data_date"])' "$SPEC")
           BRANCH="friday-chart/$DAY-$PICKED"
-          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+          if [ "$(gh pr list --head "$BRANCH" --state all --json number --jq length)" != "0" ]; then
             echo "$BRANCH is already proposed; nothing new"; exit 0
           fi
-          git config user.name "AGSIST Bot"
-          git config user.email "bot@agsist.com"
-          git checkout -b "$BRANCH"
-          git add -- "data/infographics/$DAY.json"
-          git commit -m "Friday Chart $DAY: $TITLE"
-          git push origin "HEAD:refs/heads/$BRANCH"
+          for ref in $(gh pr list --state open --json headRefName --jq '.[].headRefName | select(startswith("friday-chart/"))'); do
+            d=${ref#friday-chart/}; d=${d:0:10}
+            git fetch -q --depth 1 origin "refs/heads/$ref" || continue
+            other=$(git show "FETCH_HEAD:data/infographics/$d.json" 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("data_date", ""))' || true)
+            if [ "$other" = "$DATA_DATE" ]; then echo "skip: $ref is open with the same data ($DATA_DATE)"; exit 0; fi
+          done
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "$BRANCH exists without a pull request: opening one"
+          else
+            git config user.name "AGSIST Bot"
+            git config user.email "bot@agsist.com"
+            git checkout -b "$BRANCH"
+            git add -- "data/infographics/$DAY.json"
+            git commit -m "Friday Chart $DAY: $TITLE"
+            git push origin "HEAD:refs/heads/$BRANCH"
+          fi
           {
             echo "This week's Friday Chart spec, for review. Merging it publishes the page, the link card and the home page block (infographic-pages.yml)."
             echo
