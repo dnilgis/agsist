@@ -236,17 +236,18 @@
     es.forEach(function (e) { if (e.isIntersecting) { seen.unobserve(e.target); if (e.target._hwRun) e.target._hwRun(); } });
   }, { threshold: 0.6 }) : null;
   function tick(node, c) {
-    if (still || !seen || !node || !(c.n > 0) || !root.requestAnimationFrame) return;
-    var end = (c.pre || '') + fmt(c.n, c.dp);
     var box = el('hw-' + c.id);
+    if (still) return;
+    if (!seen || !node || !(c.n > 0) || !root.requestAnimationFrame) { box.setAttribute('data-counted', ''); return; }   /* nothing to count */
+    var end = (c.pre || '') + fmt(c.n, c.dp);
     node._hwRun = function () {
       var t0 = 0;
-      box.classList.add('hw-tick');   /* while it counts (tests wait for the class to go) */
+      box.classList.add('hw-tick');   /* while it counts; data-counted once it has (tests wait for it) */
       function step(t) {
         if (!t0) t0 = t;
         var q = Math.min(1, (t - t0) / 650), e = 1 - Math.pow(1 - q, 3);
         node.textContent = q < 1 ? (c.pre || '') + fmt(c.n * e, c.dp) : end;
-        if (q < 1) root.requestAnimationFrame(step); else box.classList.remove('hw-tick');
+        if (q < 1) root.requestAnimationFrame(step); else { box.classList.remove('hw-tick'); box.setAttribute('data-counted', ''); }
       }
       root.requestAnimationFrame(step);
     };
