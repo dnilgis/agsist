@@ -1,6 +1,6 @@
 {
  "crop_year": 2026,
- "updated": "2026-11-20",
+ "updated": "2026-11-21",
  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
  "commodities": [
   {
@@ -475,8 +475,7 @@
     },
     {
      "d": "2026-11-20",
-     "s": 4.3475,
-     "p": true,
+     "s": 4.345,
      "a": 4.43
     }
    ],
@@ -691,8 +690,7 @@
     },
     {
      "d": "2026-11-20",
-     "s": 12.205,
-     "p": true,
+     "s": 12.2075,
      "a": 12.14
     }
    ],
