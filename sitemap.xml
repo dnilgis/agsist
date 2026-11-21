@@ -189,7 +189,7 @@
   <url><loc>https://agsist.com/hail-map/alaska</loc><lastmod>2026-11-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/hail-map/arizona</loc><lastmod>2026-11-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/hail-map/arkansas</loc><lastmod>2026-11-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/hail-map/california</loc><lastmod>2026-11-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://agsist.com/hail-map/california</loc><lastmod>2026-11-21</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/hail-map/colorado</loc><lastmod>2026-11-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/hail-map/connecticut</loc><lastmod>2026-11-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://agsist.com/hail-map/delaware</loc><lastmod>2026-11-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -238,8 +238,8 @@
   <url><loc>https://agsist.com/hail-map/wyoming</loc><lastmod>2026-11-19</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <!-- /HAIL-STATE-PAGES -->
   <!-- HAIL-EVENT-PAGES -->
-  <url><loc>https://agsist.com/hail/2026-11-12</loc><lastmod>2026-11-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://agsist.com/hail/2026-11-11</loc><lastmod>2026-11-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-11-12</loc><lastmod>2026-11-21</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/hail/2026-11-11</loc><lastmod>2026-11-21</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-10-22</loc><lastmod>2026-11-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-10-21</loc><lastmod>2026-11-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/hail/2026-10-13</loc><lastmod>2026-11-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
