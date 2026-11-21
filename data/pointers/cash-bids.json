@@ -37,8 +37,16 @@
    "to": "/cash-bids/company/aurora-cooperative",
    "since": "2026-11-19"
   },
+  "cash-bids/company/balk-grain-and-trucking.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/company/cedar-county-coop.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/cedar-county.html": {
-   "to": "/cash-bids/company/cedar-county-coop",
+   "to": "/cash-bids/company/",
    "since": "2026-11-19"
   },
   "cash-bids/company/cendak.html": {
@@ -121,8 +129,12 @@
    "to": "/cash-bids/company/farmward-cooperative",
    "since": "2026-11-19"
   },
+  "cash-bids/company/five-star-cooperative.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/five-star.html": {
-   "to": "/cash-bids/company/five-star-cooperative",
+   "to": "/cash-bids/company/",
    "since": "2026-11-19"
   },
   "cash-bids/company/franklin.html": {
@@ -132,6 +144,10 @@
   "cash-bids/company/frenchman-valley-farmers.html": {
    "to": "/cash-bids/company/frenchman-valley-farmers-cooperative",
    "since": "2026-11-19"
+  },
+  "cash-bids/company/frontier-cooperative.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
   },
   "cash-bids/company/frontier.html": {
    "to": "/cash-bids/company/",
@@ -149,8 +165,12 @@
    "to": "/cash-bids/company/gold-eagle-cooperative",
    "since": "2026-11-19"
   },
+  "cash-bids/company/heartland-co-op.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/heartland.html": {
-   "to": "/cash-bids/company/heartland-co-op",
+   "to": "/cash-bids/company/",
    "since": "2026-11-19"
   },
   "cash-bids/company/heritage.html": {
@@ -253,6 +273,10 @@
    "to": "/cash-bids/company/poet-grain",
    "since": "2026-11-19"
   },
+  "cash-bids/company/premier-grain.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/premier.html": {
    "to": "/cash-bids/company/",
    "since": "2026-11-19"
@@ -261,9 +285,17 @@
    "to": "/cash-bids/company/primient-grain",
    "since": "2026-11-19"
   },
+  "cash-bids/company/pro-cooperative.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/pro.html": {
-   "to": "/cash-bids/company/pro-cooperative",
+   "to": "/cash-bids/company/",
    "since": "2026-11-19"
+  },
+  "cash-bids/company/quality-roasting.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
   },
   "cash-bids/company/rcm.html": {
    "to": "/cash-bids/company/rcm-co-op",
@@ -277,12 +309,16 @@
    "to": "/cash-bids/company/river-valley-cooperative",
    "since": "2026-11-19"
   },
+  "cash-bids/company/scott-equity-exchange.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/scott-equity.html": {
-   "to": "/cash-bids/company/scott-equity-exchange",
+   "to": "/cash-bids/company/",
    "since": "2026-11-19"
   },
   "cash-bids/company/scott.html": {
-   "to": "/cash-bids/company/",
+   "to": "/cash-bids/company/scott-coop",
    "since": "2026-11-19"
   },
   "cash-bids/company/seatonville.html": {
@@ -321,6 +357,10 @@
    "to": "/cash-bids/company/two-rivers-cooperative",
    "since": "2026-11-19"
   },
+  "cash-bids/company/united-cooperative.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/united.html": {
    "to": "/cash-bids/company/",
    "since": "2026-11-19"
@@ -329,33 +369,181 @@
    "to": "/cash-bids/company/valley-united-coop",
    "since": "2026-11-19"
   },
+  "cash-bids/company/wheatfield-grain.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-21"
+  },
   "cash-bids/company/wheatfield.html": {
-   "to": "/cash-bids/company/wheatfield-grain",
+   "to": "/cash-bids/company/",
    "since": "2026-11-19"
   },
   "cash-bids/company/yoder.html": {
    "to": "/cash-bids/company/yoder-grain",
    "since": "2026-11-19"
   },
+  "cash-bids/illinois/crescent-city.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/illinois/thomson.html": {
+   "to": "/cash-bids/illinois/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/indiana/demotte.html": {
+   "to": "/cash-bids/indiana/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/indiana/fair-oaks.html": {
+   "to": "/cash-bids/indiana/",
+   "since": "2026-11-21"
+  },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
    "since": "2026-10-16"
   },
+  "cash-bids/indiana/morocco.html": {
+   "to": "/cash-bids/indiana/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/indiana/wheatfield.html": {
+   "to": "/cash-bids/indiana/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/alleman.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/ayrshire.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/booneville.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/bradgate.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/brooklyn.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/brunsville.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/cambridge.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/carlisle.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/collins.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/colo.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/conroy.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/dallas-center.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/dexter.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/doon.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/dougherty.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/earlham.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/elberon.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
   "cash-bids/iowa/emerson.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-20"
+  },
+  "cash-bids/iowa/fairfield.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/gilman.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/gilmore-city.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/graettinger.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
   },
   "cash-bids/iowa/granger.html": {
    "to": "/cash-bids/iowa/cresco",
    "since": "2026-10-20"
   },
   "cash-bids/iowa/grant.html": {
-   "to": "/cash-bids/iowa/paton",
+   "to": "/cash-bids/iowa/",
    "since": "2026-10-20"
+  },
+  "cash-bids/iowa/greene.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
   },
   "cash-bids/iowa/griswold.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-20"
+  },
+  "cash-bids/iowa/grundy-center.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/guernsey.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/hamlin.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/havelock.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/henderson.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/indianola.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/ionia.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/kellogg.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
   },
   "cash-bids/iowa/knoke.html": {
    "to": "/cash-bids/iowa/",
@@ -369,25 +557,369 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
   },
+  "cash-bids/iowa/lime-springs.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/lincoln.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/little-sioux.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/luther.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/madrid.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/manson.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/melbourne.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/minburn.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/mingo.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/missouri-valley.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/modale.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/mondamin.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/montezuma.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
   "cash-bids/iowa/morton-mills.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
+  },
+  "cash-bids/iowa/nashua.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/new-hampton.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/north-washington.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/panora.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/paton.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/plover.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/pocahontas.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/prairie-city.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/randall.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/randolph.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
   },
   "cash-bids/iowa/rands.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
   },
+  "cash-bids/iowa/redfield.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/reinbeck.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/rockwell.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
   "cash-bids/iowa/roelyn.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
+  },
+  "cash-bids/iowa/rolfe.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/ruthven.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/rutland.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/scarville.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/sheffield.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/slater.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/stanhope.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/terril.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/tipton.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/traer.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/ventura.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/victor.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/wallingford.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/waukee.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/wever.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/winterset.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/woodbine.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/woodward.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
   },
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
    "since": "2026-11-07"
   },
+  "cash-bids/kansas/home.html": {
+   "to": "/cash-bids/kansas/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/kansas/wakefield.html": {
+   "to": "/cash-bids/kansas/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/kentucky/franklin.html": {
+   "to": "/cash-bids/kentucky/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/kentucky/pembroke.html": {
+   "to": "/cash-bids/kentucky/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/michigan/paw-paw.html": {
+   "to": "/cash-bids/michigan/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/michigan/reese.html": {
+   "to": "/cash-bids/michigan/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/minnesota/sauk-centre.html": {
+   "to": "/cash-bids/minnesota/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/missouri/marshall.html": {
+   "to": "/cash-bids/missouri/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/missouri/montrose.html": {
+   "to": "/cash-bids/missouri/",
+   "since": "2026-11-21"
+  },
   "cash-bids/montana/circle.html": {
    "to": "/cash-bids/montana/",
    "since": "2026-10-13"
+  },
+  "cash-bids/nebraska/avoca.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/bellwood.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/bennet.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/brainard.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/bruno.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/burr.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/cedar-bluffs.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/ceresco.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/cook.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/duncan.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/dwight.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/eagle.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/elk-creek.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/elmwood.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/greenwood.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/long-pine.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/manley.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/mead.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/murdock.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/nebraska-city.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/north-bend.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/osceola.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/otoe.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/palmyra.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/plattsmouth.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/prague.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/schuyler.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/silver-creek.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/syracuse.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/tecumseh.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/walton.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/waverly.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/nebraska/weston.html": {
+   "to": "/cash-bids/nebraska/",
+   "since": "2026-11-21"
   },
   "cash-bids/new-york/buffalo.html": {
    "to": "/cash-bids/new-york/",
@@ -397,13 +929,113 @@
    "to": "/cash-bids/north-dakota/",
    "since": "2026-11-12"
   },
+  "cash-bids/north-dakota/milnor.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/ohio/jamestown.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/ohio/new-bavaria.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/ohio/sabina.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-11-21"
+  },
   "cash-bids/ohio/saint-marys.html": {
    "to": "/cash-bids/ohio/",
    "since": "2026-10-15"
   },
+  "cash-bids/ohio/scott.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/ohio/south-salem.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/ohio/van-wert.html": {
+   "to": "/cash-bids/ohio/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/south-dakota/britton.html": {
+   "to": "/cash-bids/south-dakota/",
+   "since": "2026-11-21"
+  },
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
    "since": "2026-10-20"
+  },
+  "cash-bids/wisconsin/belmont.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/boscobel.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/denmark.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/hillsboro.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/horicon.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/johnson-creek.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/markesan.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/melrose.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/oconto-falls.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/oshkosh.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/platteville.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/rock-springs.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/sauk-city.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/shawano.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/sparta.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/waupun.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/wisconsin/westfield.html": {
+   "to": "/cash-bids/wisconsin/",
+   "since": "2026-11-21"
   }
  }
 }
