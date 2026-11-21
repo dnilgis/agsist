@@ -417,10 +417,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/bayard.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
   "cash-bids/iowa/booneville.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -442,6 +438,10 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/carlisle.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/casey.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
@@ -617,6 +617,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
+  "cash-bids/iowa/odebolt.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
   "cash-bids/iowa/plover.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -626,14 +630,6 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/prairie-city.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
-  "cash-bids/iowa/rake.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
-  "cash-bids/iowa/ralston.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
@@ -654,10 +650,6 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/reinbeck.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
-  "cash-bids/iowa/rippey.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
@@ -694,6 +686,10 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/stanhope.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/storm-lake.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
