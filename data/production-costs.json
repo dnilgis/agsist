@@ -701,10 +701,10 @@
     "WY"
    ],
    "cadence": "monthly",
-   "week_begin": "2026-10-26",
-   "week_end": "2026-10-30",
-   "published": "2026-10-30",
-   "credit": "USDA AMS, Inter-Mountain West Production Cost Report (Monthly), Oct 30, 2026",
+   "week_begin": "2026-11-16",
+   "week_end": "2026-11-20",
+   "published": "2026-11-20",
+   "credit": "USDA AMS, Inter-Mountain West Production Cost Report (Monthly), Nov 20, 2026",
    "items": [
     {
      "key": "ams",
@@ -724,10 +724,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "Delivered",
-     "low": 5.83,
-     "high": 6.35,
-     "avg": 6.03,
-     "change": 0.28,
+     "low": 4.99,
+     "high": 5.38,
+     "avg": 5.19,
+     "change": -0.84,
      "thin": false
     },
     {
@@ -763,7 +763,7 @@
      "low": 2.14,
      "high": 2.54,
      "avg": 2.33,
-     "change": 0.03,
+     "change": 0.01,
      "thin": false
     },
     {
@@ -795,16 +795,16 @@
  },
  "daily_line": {
   "key": "diesel",
-  "date": "2026-11-13",
-  "text": "Farm diesel in USDA's dealer survey: Iowa $5.28 a gallon, Illinois $5.07, Oklahoma $5.42, North Carolina $4.89, Pacific Northwest $5.87 delivered (USDA AMS production cost reports, Nov 13)."
+  "date": "2026-11-20",
+  "text": "Farm diesel in USDA's dealer survey: Inter-Mountain West $5.19 a gallon delivered (USDA AMS production cost reports, Nov 20)."
  },
  "status": {
   "ok": true,
-  "checked": "2026-11-20T20:24:47Z",
+  "checked": "2026-11-21T01:36:33Z",
   "notes": {
    "3657": "Calcium Nitrate: 31.0-31.0 outside the sane band (100, 3000), left out; Liquid Nitrogen (32-0-0): unit 'Dollars Per Gallon' not expected, left out"
   },
   "reconcile": "Illinois 2026-11-13: PDF and MARS agree on 6 products"
  },
- "generated": "2026-11-13T20:31:55Z"
+ "generated": "2026-11-21T01:36:33Z"
 }

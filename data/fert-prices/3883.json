@@ -10,9 +10,9 @@
  ],
  "cadence": "monthly",
  "source": "USDA AMS, Inter-Mountain West Production Cost Report (Monthly)",
- "credit": "USDA AMS, Inter-Mountain West Production Cost Report (Monthly), Oct 30, 2026",
- "published": "2026-10-30",
- "week_begin": "2026-10-26",
+ "credit": "USDA AMS, Inter-Mountain West Production Cost Report (Monthly), Nov 20, 2026",
+ "published": "2026-11-20",
+ "week_begin": "2026-11-16",
  "terms": "Dealer asking prices, low, high and average, as USDA printed them.",
  "products": [
   {
@@ -26,15 +26,15 @@
    "avg": 888.75,
    "thin": false,
    "prev": {
-    "published": "2026-09-29",
+    "published": "2026-10-30",
     "avg": 888.75,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-10-31",
-    "avg": 749.29,
-    "change": 139.46
+    "published": "2025-11-25",
+    "avg": 734.17,
+    "change": 154.58
    },
    "why_year": null
   },
@@ -49,15 +49,15 @@
    "avg": 760.0,
    "thin": false,
    "prev": {
-    "published": "2026-09-29",
+    "published": "2026-10-30",
     "avg": 760.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-10-31",
-    "avg": 605.0,
-    "change": 155.0
+    "published": "2025-11-25",
+    "avg": 631.25,
+    "change": 128.75
    },
    "why_year": null
   },
@@ -72,15 +72,15 @@
    "avg": 1196.0,
    "thin": false,
    "prev": {
-    "published": "2026-09-29",
+    "published": "2026-10-30",
     "avg": 1196.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-10-31",
-    "avg": 995.29,
-    "change": 200.71
+    "published": "2025-11-25",
+    "avg": 977.83,
+    "change": 218.17
    },
    "why_year": null
   },
@@ -95,13 +95,13 @@
    "avg": 662.5,
    "thin": false,
    "prev": {
-    "published": "2026-09-29",
+    "published": "2026-10-30",
     "avg": 662.5,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-10-31",
+    "published": "2025-11-25",
     "avg": 668.57,
     "change": -6.07
    },
@@ -118,15 +118,15 @@
    "avg": 672.0,
    "thin": false,
    "prev": {
-    "published": "2026-09-29",
+    "published": "2026-10-30",
     "avg": 672.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-10-31",
-    "avg": 672.0,
-    "change": 0.0
+    "published": "2025-11-25",
+    "avg": 667.33,
+    "change": 4.67
    },
    "why_year": null
   }
@@ -204,6 +204,12 @@
     560.0,
     795.0,
     672.0
+   ],
+   [
+    "2026-11-20",
+    560.0,
+    795.0,
+    672.0
    ]
   ],
   "map": [
@@ -275,6 +281,12 @@
    ],
    [
     "2026-10-30",
+    1020.0,
+    1350.0,
+    1196.0
+   ],
+   [
+    "2026-11-20",
     1020.0,
     1350.0,
     1196.0
@@ -352,6 +364,12 @@
     550.0,
     750.0,
     662.5
+   ],
+   [
+    "2026-11-20",
+    550.0,
+    750.0,
+    662.5
    ]
   ],
   "uan32": [
@@ -426,6 +444,12 @@
     670.0,
     850.0,
     760.0
+   ],
+   [
+    "2026-11-20",
+    670.0,
+    850.0,
+    760.0
    ]
   ],
   "urea": [
@@ -497,6 +521,12 @@
    ],
    [
     "2026-10-30",
+    780.0,
+    1000.0,
+    888.75
+   ],
+   [
+    "2026-11-20",
     780.0,
     1000.0,
     888.75
@@ -1151,11 +1181,62 @@
      "change": 0.0
     }
    }
+  },
+  {
+   "published": "2026-11-20",
+   "week_begin": "2026-11-16",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 560.0,
+     "high": 795.0,
+     "avg": 672.0,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1020.0,
+     "high": 1350.0,
+     "avg": 1196.0,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 750.0,
+     "avg": 662.5,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 670.0,
+     "high": 850.0,
+     "avg": 760.0,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 780.0,
+     "high": 1000.0,
+     "avg": 888.75,
+     "change": 0.0
+    }
+   }
   }
  ],
  "status": {
   "ok": true,
-  "checked": "2026-11-20T20:24:53Z",
+  "checked": "2026-11-21T01:36:38Z",
   "notes": []
  }
 }
