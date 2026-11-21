@@ -381,10 +381,6 @@
    "to": "/cash-bids/company/yoder-grain",
    "since": "2026-11-19"
   },
-  "cash-bids/georgia/louisville.html": {
-   "to": "/cash-bids/georgia/",
-   "since": "2026-11-21"
-  },
   "cash-bids/illinois/crescent-city.html": {
    "to": "/cash-bids/illinois/",
    "since": "2026-11-21"
@@ -418,6 +414,10 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/ayrshire.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/bayard.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
@@ -569,10 +569,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/manilla.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
   "cash-bids/iowa/manson.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -590,10 +586,6 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/missouri-valley.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
-  "cash-bids/iowa/mitchellville.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
@@ -625,14 +617,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/plainfield.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
-  "cash-bids/iowa/pleasant-hill.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
   "cash-bids/iowa/plover.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -642,6 +626,14 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/prairie-city.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/rake.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/ralston.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
@@ -662,6 +654,10 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/reinbeck.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-21"
+  },
+  "cash-bids/iowa/rippey.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
