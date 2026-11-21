@@ -1,78 +1,67 @@
 {
-  "headline": "Cash hogs fell to $36.70 in the Nov. 19 report",
-  "lead": "Cash hogs fell $2.05 to $36.70 in Thursday's USDA report, the lowest in 71 reports. December futures still rose 2.1%, so the two prices are moving apart.",
-  "teaser": "Cash hogs fall $2.05 to $36.70 while December hog futures settled at $52.43.",
+  "headline": "Funds sold corn for a ninth straight week",
+  "lead": "Funds have now sold corn nine weeks running, about 448,000 contracts in all. They are still only 33,862 contracts net short, so the selling has mostly cleared out earlier buying. December corn closed the week at $4.34½.",
+  "teaser": "USDA systems hit by a breach; December corn ended the week down 11 cents at $4.34½.",
   "one_number": {
-    "value": "$68.66",
-    "unit": "pork cutout per hundredweight",
-    "context": "USDA AMS put Thursday's wholesale pork cutout at $68.66, down $0.82 from the day before, so the loss in hogs showed up in pork too."
+    "value": "9 weeks",
+    "unit": "straight weeks funds sold corn",
+    "context": "CFTC data show money managers sold 11,234 more corn contracts in the week to Nov. 17, leaving them net short 33,862."
   },
   "sections": [
     {
-      "title": "Hogs lower in cash, higher in futures",
-      "body": "- December lean hogs settled at **$52.42½**, up 2.1%, while cash hogs fell on a carcass base.\n- Packers killed about 494,000 hogs Thursday, against 487,000 a week ago.",
-      "conviction_level": "medium",
+      "title": "Corn and wheat slip, beans gain",
+      "body": "- December corn settled Friday at **$4.34½**, down 2.5% on the week, and Chicago wheat fell 3.2% to $5.74¼.\n- January soybeans rose 13¼ cents Friday to $12.20¾, still down 10¾ cents on the week.",
+      "conviction_level": "low",
       "overnight_surprise": false
     },
     {
-      "title": "Grains mixed overnight",
-      "body": "- December corn is at **$4.37¼** overnight, down 1¾ cents from Thursday's $4.39 settle, and January soybeans are up 4¼ cents to $12.11¾.",
+      "title": "Hogs fall on the week",
+      "body": "- December lean hog futures settled Friday at **$52.60**, down 5.1% on the week.\n- USDA AMS put national negotiated cash hogs at $39.02 carcass base on 4,760 head, killed Nov. 19, with the pork cutout at $67.88.",
       "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Trump touts Asia deals, but US farm exports lag",
-      "body": "Reuters reported the new Asia trade deals have not yet lifted US farm export sales.",
-      "tag": "TRADE",
-      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOX1NxamhacExiOUlPV3RKN2RGTmNzN2gySzZ1Wnl5d0xEUjdud1IyRE5aTk5sUWZRUzRDLTdjblQ0MmNWa1B3Nld0RGhRbDZqbEpfWkpFWlhwOUhPeTJqVkxvNkhReU9iaUlabjJfeVFnNFVrem14RGRVdG9EZHhxcVNFd1dhTkJBR3ljdzZmejE3TkY3bE1zZGJRTG5DRGFTS3k3SDJpRGZWWkdIcTBoYkNB?oc=5",
-      "source": "Reuters",
-      "news_id": "N17"
-    },
-    {
-      "title": "Crude falls over 5% on oil glut worries",
-      "body": "Oilprice.com reported crude slid as supply grew and US stocks built, which can ease diesel costs.",
-      "tag": "INPUTS",
-      "link": "https://oilprice.com/Energy/Energy-General/WTI-Crude-Sinks-More-Than-5-as-Global-Oil-Glut-Fears-Grow.html",
-      "source": "oilprice.com",
-      "news_id": "N11"
-    },
-    {
-      "title": "Cattle rebound as cutout values slide",
-      "body": "Beef Magazine said live and feeder cattle had strong weekly gains while cash trade stayed cautious.",
+      "title": "Cattle placements fall 7.3% as feeder supplies tighten",
+      "body": "Fewer calves entering feedlots points to tighter supplies of finished cattle later.",
       "tag": "LIVESTOCK",
-      "link": "https://www.beefmagazine.com/market-news/cattle-markets-rebound-as-sentiment-shifts",
-      "source": "beefmagazine.com",
-      "news_id": "N6"
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPbTFpWjZCdnpSYzRuMHlJbWhnMEdNZkRUdnhTWnExUGZxbzNfU1V0VVJiMGN2MmkxY2Q1UGFzZ3laZEp3Q2kzQVprTHJSZXI2VTVZbm9odWQ2R2kxTS1XdlVhRlpNbEE3ZzlUMVdnbC1SRTltZ0lQaDIxak5GeUxiNzQ5UTV1MVczRHpPbA?oc=5",
+      "source": "Drovers Magazine",
+      "news_id": "N10"
+    },
+    {
+      "title": "Judge approves $7.25 billion Roundup settlement",
+      "body": "The deal covers current and future Roundup claims, per Agri-Pulse.",
+      "tag": "TRADE",
+      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPU29KZTdrLWdocWtpdjZ6dnh5b1NoY0RodDdDNmF3ZHNHekNuY05RSlg5eTJxeE5ZOTVvTFlQLWswZ0VybjhFbF9mUHpaQkVxWEFXZzNlQjdobmp2ZmxWOGR2Q1VaR1JuLWN6NHptejk4WVliOHV2ZW84VUNvOUxPeEJDQzQtblBVN245LWlKWnJQOVpNUU9aWVd0S25pWFZ1V2g0WWtBQ1JIam9rSm1NNw?oc=5",
+      "source": "Agri-Pulse Communications, Inc.",
+      "news_id": "N27"
     }
   ],
   "watch_list": [
     {
-      "time": "Friday, Nov 20, 2:00 p.m. CT",
-      "desc": "USDA Cattle on Feed and Milk Production reports."
-    },
-    {
-      "time": "Monday, Nov 23, 3:00 p.m. CT",
+      "time": "Monday, Nov 23, 3:00 PM CT",
       "desc": "USDA Crop Progress."
     }
   ],
-  "source_summary": "CME futures, USDA AMS, NOAA, news wires",
-  "date": "Friday, November 20, 2026",
+  "source_summary": "AGSIST price table (Friday settles), CFTC, USDA AMS, Reuters and trade press",
+  "date": "Saturday, November 21, 2026",
   "meta": {
     "market_mood": "cautious",
     "heat_section": 0,
-    "overnight_surprises_count": 2,
-    "word_count": 202,
+    "overnight_surprises_count": 0,
+    "word_count": 185,
     "news_coverage": {
-      "ok": 19,
+      "ok": 18,
       "total": 26,
-      "items": 107,
+      "items": 105,
       "dark": [
         "nass.usda.gov",
         "agproud.com",
         "brownfieldagnews.com",
-        "extension.iastate.edu",
+        "dairyherd.com",
+        "porkbusiness.com",
         "extension.umn.edu",
         "extension.purdue.edu",
         "cpc.ncep.noaa.gov"
@@ -85,195 +74,177 @@
     "hits": []
   },
   "locked_prices": {
-    "corn": 4.3725,
-    "corn-dec": 4.3725,
-    "beans": 12.1175,
-    "beans-nov": 11.67,
-    "wheat": 5.7925,
-    "oats": 3.52,
-    "cattle": 222.85001,
-    "feeders": 335.54999,
-    "hogs": 52.425,
-    "milk": 17.71,
-    "meal": 337.0,
-    "soyoil": 60.03,
-    "crude": 82.57,
-    "natgas": 3.598,
-    "gold": 3568.6001,
-    "silver": 42.125,
-    "dollar": 103.765,
-    "sp500": 7175.83008,
-    "bitcoin": 61515.42188
+    "corn": 4.345,
+    "corn-dec": 4.345,
+    "beans": 12.2075,
+    "beans-nov": 11.71,
+    "wheat": 5.7425,
+    "oats": 3.615,
+    "cattle": 223.0,
+    "feeders": 335.42499,
+    "hogs": 52.6,
+    "milk": 17.74,
+    "meal": 341.0,
+    "soyoil": 59.81,
+    "crude": 83.98,
+    "natgas": 3.411,
+    "gold": 3515.3999,
+    "silver": 41.035,
+    "dollar": 103.81,
+    "sp500": 6910.39014,
+    "bitcoin": 57742.30078
   },
   "locked_changes": {
     "corn": {
       "prev": 4.39,
-      "pct": -0.3986,
-      "kind": "last",
-      "at": "2026-11-20T13:01:08Z",
+      "pct": -1.0251,
+      "kind": "settle",
       "date": "2026-11-20",
       "prev_date": "2026-11-19",
-      "contract": "Dec '26",
-      "prev_net": 0.035
+      "contract": "Dec '26"
     },
     "corn-dec": {
       "prev": 4.39,
-      "pct": -0.3986,
-      "kind": "last",
-      "at": "2026-11-20T13:01:05Z",
+      "pct": -1.0251,
+      "kind": "settle",
       "date": "2026-11-20",
-      "prev_date": "2026-11-19",
-      "prev_net": 0.035
+      "prev_date": "2026-11-19"
     },
     "beans": {
       "prev": 12.075,
-      "pct": 0.352,
-      "kind": "last",
-      "at": "2026-11-20T13:01:09Z",
+      "pct": 1.0973,
+      "kind": "settle",
       "date": "2026-11-20",
       "prev_date": "2026-11-19",
-      "contract": "Jan '27",
-      "prev_net": -0.0925
+      "contract": "Jan '27"
     },
     "beans-nov": {
       "prev": 11.69,
-      "pct": -0.1711,
-      "kind": "last",
-      "at": "2026-11-20T13:01:06Z",
+      "pct": 0.1711,
+      "kind": "settle",
       "date": "2026-11-20",
-      "prev_date": "2026-11-19",
-      "prev_net": -0.05
+      "prev_date": "2026-11-19"
     },
     "wheat": {
       "prev": 5.7825,
-      "pct": 0.1729,
-      "kind": "last",
-      "at": "2026-11-20T13:01:11Z",
+      "pct": -0.6917,
+      "kind": "settle",
       "date": "2026-11-20",
       "prev_date": "2026-11-19",
-      "contract": "Dec '26",
-      "prev_net": 0.0825
+      "contract": "Dec '26"
     },
     "oats": {
       "prev": 3.555,
-      "pct": -0.9845,
-      "kind": "last",
-      "at": "2026-11-20T13:01:15Z",
+      "pct": 1.6878,
+      "kind": "settle",
       "date": "2026-11-20",
-      "prev_date": "2026-11-19",
-      "prev_net": 0.05
+      "prev_date": "2026-11-19"
     },
     "cattle": {
-      "prev": 219.775,
-      "pct": 1.3992,
+      "prev": 222.85,
+      "pct": 0.0673,
       "kind": "settle",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
       "contract": "Dec '26"
     },
     "feeders": {
-      "prev": 331.0,
-      "pct": 1.3746,
+      "prev": 335.55,
+      "pct": -0.0373,
       "kind": "settle",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
       "contract": "Jan '27"
     },
     "hogs": {
-      "prev": 51.35,
-      "pct": 2.0935,
+      "prev": 52.425,
+      "pct": 0.3338,
       "kind": "settle",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
       "contract": "Dec '26"
     },
     "milk": {
       "prev": 17.72,
-      "pct": -0.0564,
-      "kind": "last",
-      "at": "2026-11-20T13:01:17Z",
+      "pct": 0.1129,
+      "kind": "settle",
       "date": "2026-11-20",
       "prev_date": "2026-11-19",
-      "contract": "Nov '26",
-      "prev_net": 0.22
+      "contract": "Nov '26"
     },
     "meal": {
       "prev": 332.3,
-      "pct": 1.4144,
-      "kind": "last",
-      "at": "2026-11-20T13:01:16Z",
+      "pct": 2.6181,
+      "kind": "settle",
       "date": "2026-11-20",
-      "prev_date": "2026-11-19",
-      "prev_net": -3.60001
+      "prev_date": "2026-11-19"
     },
     "soyoil": {
-      "prev": 60.3,
-      "pct": -0.4478,
-      "kind": "last",
-      "at": "2026-11-20T13:01:16Z",
+      "prev": 60.09,
+      "pct": -0.466,
+      "kind": "settle",
       "date": "2026-11-20",
-      "prev_date": "2026-11-19",
-      "prev_net": 0.2
+      "prev_date": "2026-11-19"
     },
     "crude": {
       "prev": 83.21,
-      "pct": -0.7691,
+      "pct": 0.9254,
       "kind": "last",
-      "at": "2026-11-20T13:01:18Z",
+      "at": "2026-11-20T22:00:00Z",
       "date": "2026-11-20",
       "prev_date": "2026-11-19"
     },
     "natgas": {
-      "prev": null,
-      "pct": null,
+      "prev": 3.268,
+      "pct": 4.3758,
       "kind": "last",
-      "at": "2026-11-20T13:01:19Z",
+      "at": "2026-11-20T22:00:00Z",
       "date": "2026-11-20",
-      "prev_date": "2026-11-19",
-      "withheld": "NG=F moved +10.10% from 3.268 (2026-11-19) to 3.598 (2026-11-20), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld"
+      "prev_date": "2026-11-19"
     },
     "gold": {
       "prev": 3685.5,
-      "pct": -3.1719,
+      "pct": -4.6154,
       "kind": "last",
-      "at": "2026-11-20T13:01:19Z",
+      "at": "2026-11-20T22:00:00Z",
       "date": "2026-11-20",
       "prev_date": "2026-11-19"
     },
     "silver": {
       "prev": 44.318,
-      "pct": -4.9483,
+      "pct": -7.4078,
       "kind": "last",
-      "at": "2026-11-20T13:01:19Z",
+      "at": "2026-11-20T22:00:00Z",
       "date": "2026-11-20",
       "prev_date": "2026-11-19"
     },
     "dollar": {
       "prev": 103.9,
-      "pct": -0.1299,
+      "pct": -0.0866,
       "kind": "last",
-      "at": "2026-11-20T13:01:20Z",
+      "at": "2026-11-21T07:01:11Z",
       "date": "2026-11-20",
       "prev_date": "2026-11-19"
     },
     "sp500": {
-      "prev": 7323.6299,
-      "pct": -2.0181,
-      "kind": "settle",
-      "date": "2026-11-19",
-      "prev_date": "2026-11-18"
+      "prev": 7175.8301,
+      "pct": -3.6991,
+      "kind": "last",
+      "at": "2026-11-21T07:01:11Z",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19"
     },
     "bitcoin": {
       "prev": 61901.8203,
-      "pct": -0.6242,
+      "pct": -6.7195,
       "kind": "last",
-      "at": "2026-11-20T13:01:20Z",
-      "date": "2026-11-20",
+      "at": "2026-11-21T07:01:11Z",
+      "date": "2026-11-21",
       "prev_date": "2026-11-19"
     }
   },
   "board": {
-    "fetched": "2026-11-20T13:01:20Z",
+    "fetched": "2026-11-21T07:01:11Z",
     "quote_session": "2026-11-20",
     "prev_close_session": "2026-11-19"
   },
@@ -281,46 +252,45 @@
     "print": true,
     "rows": [
       {
-        "st": "OH",
-        "name": "Ohio",
-        "crop": "corn",
-        "wow": 5.0,
-        "n": 55,
-        "moved": 34,
-        "companies": 19
+        "st": "KS",
+        "name": "Kansas",
+        "crop": "soybeans",
+        "wow": 10.0,
+        "n": 32,
+        "moved": 25,
+        "companies": 9
       },
       {
-        "st": "OH",
-        "name": "Ohio",
-        "crop": "soybeans",
+        "st": "MN",
+        "name": "Minnesota",
+        "crop": "corn",
         "wow": 5.0,
-        "n": 63,
-        "moved": 38,
-        "companies": 17
+        "n": 81,
+        "moved": 54,
+        "companies": 23
       }
     ],
-    "why": "left IN:soybeans",
-    "snapshot": "2026-11-20T11:07:55Z"
+    "why": "entered KS:soybeans, MN:corn; left OH:corn, OH:soybeans",
+    "snapshot": "2026-11-21T11:06:25Z"
   },
   "edge": {
     "label": "Only on AGSIST",
-    "generated": "2026-11-20T13:04:38Z",
+    "generated": "2026-11-21T12:11:44Z",
     "facts": [
       {
         "id": "basis_wow",
         "kind": "basis_wow",
-        "sentence": "Basis firmed this week: Ohio soybeans +5¢ (38 of 63 bids moved) and Ohio corn +5¢ (34 of 55).",
+        "sentence": "Basis firmed this week: Kansas soybeans +10¢ (25 of 32 bids moved) and Minnesota corn +5¢ (54 of 81).",
         "key": "Basis firmed this week",
         "detail": "Each state's middle change in a week, across bids matched with the same elevator's same delivery and futures month; states with 30 or more such bids from 8 or more companies.",
         "url": "/basis",
         "link_text": "Basis by state",
-        "as_of": "2026-11-20"
+        "as_of": "2026-11-21"
       }
     ]
   },
   "chart_series": {
     "corn": [
-      4.415,
       4.3925,
       4.49,
       4.48,
@@ -329,10 +299,10 @@
       4.4875,
       4.4675,
       4.355,
-      4.39
+      4.39,
+      4.345
     ],
     "soybeans": [
-      11.9375,
       11.8825,
       12.28,
       12.3075,
@@ -341,11 +311,11 @@
       12.29,
       12.255,
       12.1675,
-      12.075
+      12.075,
+      12.2075
     ]
   },
   "chart_dates": [
-    "2026-11-06",
     "2026-11-09",
     "2026-11-10",
     "2026-11-11",
@@ -354,11 +324,11 @@
     "2026-11-16",
     "2026-11-17",
     "2026-11-18",
-    "2026-11-19"
+    "2026-11-19",
+    "2026-11-20"
   ],
   "chart_series_dates": {
     "corn": [
-      "2026-11-06",
       "2026-11-09",
       "2026-11-10",
       "2026-11-11",
@@ -367,10 +337,10 @@
       "2026-11-16",
       "2026-11-17",
       "2026-11-18",
-      "2026-11-19"
+      "2026-11-19",
+      "2026-11-20"
     ],
     "soybeans": [
-      "2026-11-06",
       "2026-11-09",
       "2026-11-10",
       "2026-11-11",
@@ -379,12 +349,13 @@
       "2026-11-16",
       "2026-11-17",
       "2026-11-18",
-      "2026-11-19"
+      "2026-11-19",
+      "2026-11-20"
     ]
   },
-  "chart_window": "Nov 6 - Nov 19",
+  "chart_window": "Nov 9 - Nov 20",
   "quote_strip": {
-    "asof": "2026-11-20T13:01:20Z",
+    "asof": "2026-11-21T07:01:11Z",
     "session": "2026-11-20",
     "vs_session": "2026-11-19",
     "quotes": [
@@ -392,31 +363,31 @@
         "key": "corn-dec",
         "name": "Corn",
         "contract": "Dec '26",
-        "last": 4.3725,
+        "last": 4.345,
         "prev": 4.39,
-        "pct": -0.3986,
-        "kind": "last",
-        "at": "2026-11-20T13:01:05Z"
+        "pct": -1.0251,
+        "kind": "settle",
+        "date": "2026-11-20"
       },
       {
         "key": "beans",
         "name": "Soybeans",
         "contract": "Jan '27",
-        "last": 12.1175,
+        "last": 12.2075,
         "prev": 12.075,
-        "pct": 0.352,
-        "kind": "last",
-        "at": "2026-11-20T13:01:09Z"
+        "pct": 1.0973,
+        "kind": "settle",
+        "date": "2026-11-20"
       },
       {
         "key": "wheat",
         "name": "Wheat",
         "contract": "Dec '26",
-        "last": 5.7925,
+        "last": 5.7425,
         "prev": 5.7825,
-        "pct": 0.1729,
-        "kind": "last",
-        "at": "2026-11-20T13:01:11Z"
+        "pct": -0.6917,
+        "kind": "settle",
+        "date": "2026-11-20"
       }
     ]
   },
@@ -426,15 +397,15 @@
       "items": [
         {
           "name": "Corn",
-          "text": "−6 1/2¢ (−1.46%)"
+          "text": "−11¢ (−2.47%)"
         },
         {
           "name": "Soybeans",
-          "text": "−24¢ (−1.95%)"
+          "text": "−10 3/4¢ (−0.87%)"
         },
         {
           "name": "Wheat",
-          "text": "−15¢ (−2.53%)"
+          "text": "−19¢ (−3.20%)"
         }
       ]
     },
@@ -443,7 +414,7 @@
       "items": [
         {
           "name": "Corn",
-          "text": "−8 3/4¢ (−1.95%)"
+          "text": "−13 1/4¢ (−2.96%)"
         },
         {
           "name": "Soybeans",
@@ -453,6 +424,146 @@
       ]
     }
   ],
+  "week_review": {
+    "title": "The week in review",
+    "head": "Friday vs last Friday",
+    "stamp": "settle each Friday",
+    "friday": "2026-11-20",
+    "prior": "2026-11-13",
+    "rows": [
+      {
+        "key": "corn-dec26",
+        "name": "Corn (Dec)",
+        "now": 434.5,
+        "prev": 445.5,
+        "now_basis": "settle",
+        "prev_basis": "settle",
+        "price": "$4.34 1/2",
+        "change": "down 11 cents",
+        "pct": "−2.5%",
+        "line": "Corn (Dec) $4.34 1/2, down 11 cents (−2.5%)"
+      },
+      {
+        "key": "beans-jan27",
+        "name": "Soybeans (Jan)",
+        "now": 1220.75,
+        "prev": 1231.5,
+        "now_basis": "settle",
+        "prev_basis": "settle",
+        "price": "$12.20 3/4",
+        "change": "down 10 3/4 cents",
+        "pct": "−0.9%",
+        "line": "Soybeans (Jan) $12.20 3/4, down 10 3/4 cents (−0.9%)"
+      },
+      {
+        "key": "wheat-dec26",
+        "name": "Chicago wheat (Dec)",
+        "now": 574.25,
+        "prev": 593.25,
+        "now_basis": "settle",
+        "prev_basis": "settle",
+        "price": "$5.74 1/4",
+        "change": "down 19 cents",
+        "pct": "−3.2%",
+        "line": "Chicago wheat (Dec) $5.74 1/4, down 19 cents (−3.2%)"
+      },
+      {
+        "key": "cattle-dec26",
+        "name": "Live cattle (Dec)",
+        "now": 223.0,
+        "prev": 220.65,
+        "now_basis": "settle",
+        "prev_basis": "settle",
+        "price": "$223.00",
+        "change": "up $2.35",
+        "pct": "+1.1%",
+        "line": "Live cattle (Dec) $223.00, up $2.35 (+1.1%)"
+      },
+      {
+        "key": "hogs-dec26",
+        "name": "Lean hogs (Dec)",
+        "now": 52.6,
+        "prev": 55.45,
+        "now_basis": "settle",
+        "prev_basis": "settle",
+        "price": "$52.60",
+        "change": "down $2.85",
+        "pct": "−5.1%",
+        "line": "Lean hogs (Dec) $52.60, down $2.85 (−5.1%)"
+      }
+    ],
+    "lines": [
+      "Corn (Dec) $4.34 1/2, down 11 cents (−2.5%)",
+      "Soybeans (Jan) $12.20 3/4, down 10 3/4 cents (−0.9%)",
+      "Chicago wheat (Dec) $5.74 1/4, down 19 cents (−3.2%)",
+      "Live cattle (Dec) $223.00, up $2.35 (+1.1%)",
+      "Lean hogs (Dec) $52.60, down $2.85 (−5.1%)"
+    ],
+    "notes": [],
+    "source": "CME futures via Yahoo Finance, delayed",
+    "closes": {
+      "corn-dec26": {
+        "root": "corn",
+        "name": "Corn",
+        "contract": "Dec '26",
+        "date": "2026-11-20",
+        "px": 434.5,
+        "kind": "settle",
+        "wk52_hi": 549.75,
+        "wk52_lo": 425.75
+      },
+      "beans-jan27": {
+        "root": "beans",
+        "name": "Soybeans",
+        "contract": "Jan '27",
+        "date": "2026-11-20",
+        "px": 1220.75,
+        "kind": "settle",
+        "wk52_hi": 1350.25,
+        "wk52_lo": 1067.25
+      },
+      "wheat-dec26": {
+        "root": "wheat",
+        "name": "Chicago wheat",
+        "contract": "Dec '26",
+        "date": "2026-11-20",
+        "px": 574.25,
+        "kind": "settle",
+        "wk52_hi": 795.0,
+        "wk52_lo": 557.25
+      },
+      "cattle-dec26": {
+        "root": "cattle",
+        "name": "Live cattle",
+        "contract": "Dec '26",
+        "date": "2026-11-20",
+        "px": 223.0,
+        "kind": "settle",
+        "wk52_hi": 245.9,
+        "wk52_lo": 197.05
+      },
+      "feeders-jan27": {
+        "root": "feeders",
+        "name": "Feeder cattle",
+        "contract": "Jan '27",
+        "date": "2026-11-20",
+        "px": 335.425,
+        "kind": "settle",
+        "wk52_hi": 366.425,
+        "wk52_lo": 282.6
+      },
+      "hogs-dec26": {
+        "root": "hogs",
+        "name": "Lean hogs",
+        "contract": "Dec '26",
+        "date": "2026-11-20",
+        "px": 52.6,
+        "kind": "settle",
+        "wk52_hi": 85.275,
+        "wk52_lo": 51.225
+      }
+    }
+  },
   "sponsor": {
     "active": false,
     "label": "SPONSOR · 1 SLOT",
@@ -464,136 +575,108 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "generated_at": "2026-11-20T13:04:39.136245+00:00",
+  "generated_at": "2026-11-21T12:11:44.704829+00:00",
   "generator_version": "5.5.0",
-  "surprise_count": 2,
-  "surprises": [
-    {
-      "commodity": "Gold",
-      "key": "gold",
-      "price": "$3,569",
-      "pct_change": -3.1719,
-      "direction": "down",
-      "surprise_magnitude": 2.1
-    },
-    {
-      "commodity": "Silver",
-      "key": "silver",
-      "price": "$42.12",
-      "pct_change": -4.9483,
-      "direction": "down",
-      "surprise_magnitude": 2.0
-    }
-  ],
+  "surprise_count": 0,
+  "surprises": [],
   "price_validation_clean": true,
-  "market_closed": false,
-  "market_status_reason": "open",
+  "market_closed": true,
+  "market_status_reason": "weekend",
   "otp_week_ahead": false,
   "theme": {
-    "kind": "agsist_only",
-    "tier": 6,
-    "key": "hogcash",
-    "value": "36.70",
-    "headline": "Cash hogs fell to $36.70 in the Nov. 19 report",
+    "kind": "report_result",
+    "tier": 1,
+    "key": "COT corn",
+    "value": "-33862",
+    "headline": "Funds sold corn for a ninth straight week",
     "lead": [
-      "USDA's negotiated cash hog price was $36.70 a hundredweight in the Nov. 19 report, down $2.05 from the report before.",
-      "That is the lowest of the 71 reports on file since Aug. 12.",
-      "The price covers 2,863 head bought on the spot market in that report; most hogs sell on formulas and contracts."
+      "Money managers sold 11,234 contracts of corn in the week to Tuesday, Nov. 17, CFTC data show.",
+      "That leaves them 33,862 contracts net short.",
+      "Over nine weeks they sold 448,322 contracts."
     ],
-    "figure": "$36.70",
-    "date": "2026-11-20",
+    "figure": "11,234",
+    "date": "2026-11-21",
     "move_date": null,
     "ledger": [
       {
-        "id": "hogcash:base",
-        "value": 36.7,
-        "unit": "$/cwt",
-        "file": "hog-cash.json",
-        "key": "history.hogs[].base",
-        "as_of": "2026-11-19",
-        "sample": "2,863 head, negotiated",
-        "comparable": "hogcash",
-        "subject": "hogs",
-        "kind": "daily",
-        "change": -2.049999999999997,
-        "head": 2863
+        "id": "cot:corn:net",
+        "value": -33862,
+        "unit": "contracts",
+        "file": "cot-history.json",
+        "key": "corn.net",
+        "as_of": "2026-11-17",
+        "sample": "CFTC managed money",
+        "comparable": "cot:corn",
+        "subject": "corn",
+        "kind": "weekly"
       },
       {
-        "id": "hogcash:prev",
-        "value": 38.75,
-        "unit": "$/cwt",
-        "file": "hog-cash.json",
-        "key": "history.hogs[].base",
-        "as_of": "2026-11-18",
-        "sample": "3,049 head, negotiated",
-        "comparable": "hogcash",
-        "kind": "history"
+        "id": "cot:corn:chg",
+        "value": 11234,
+        "unit": "contracts",
+        "file": "cot-history.json",
+        "key": "corn.net change",
+        "as_of": "2026-11-17",
+        "sample": "CFTC managed money",
+        "comparable": "cot:corn",
+        "subject": "corn",
+        "kind": "weekly",
+        "change": -11234
       },
       {
-        "id": "window:hogcash",
-        "value": 71,
-        "unit": "reports",
-        "file": "hog-cash.json",
-        "key": "history.hogs",
-        "as_of": "2026-11-19",
-        "sample": "from 2026-08-12",
-        "comparable": "window:hogcash",
-        "kind": "history"
+        "id": "cot:corn:total",
+        "value": 448322,
+        "unit": "contracts",
+        "file": "cot-history.json",
+        "key": "corn.net, 9 weeks",
+        "as_of": "2026-11-17",
+        "sample": "CFTC managed money",
+        "comparable": "cot:corn",
+        "subject": "corn",
+        "kind": "weekly",
+        "change": -448322
       },
       {
-        "id": "scope:hogcash:window",
-        "value": "2026-08-12",
-        "unit": "date",
-        "file": "hog-cash.json",
-        "key": "history.hogs",
-        "as_of": "2026-11-19",
-        "sample": "71 reports",
-        "comparable": "window:hogcash",
-        "scope": "window",
-        "subject": "hogs",
+        "id": "scope:cot:corn:streak",
+        "value": 9,
+        "unit": "weeks",
+        "file": "cot-history.json",
+        "key": "corn.net",
+        "as_of": "2026-11-17",
+        "sample": "CFTC managed money",
+        "comparable": "cot:corn",
+        "scope": "streak",
+        "subject": "corn",
         "kind": "history"
       }
     ],
     "withheld": []
   },
-  "chart_of_day": {
-    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 440\" width=\"600\" height=\"440\" role=\"img\" aria-label=\"Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report.\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect class=\"dc-bg\" x=\"0\" y=\"0\" width=\"600\" height=\"440\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Hogs, dollars per hundredweight, carcass</text><line x1=\"61.2\" x2=\"434.0\" y1=\"278.0\" y2=\"278.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"284.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$30</text><line x1=\"61.2\" x2=\"434.0\" y1=\"211.0\" y2=\"211.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"217.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$40</text><line x1=\"61.2\" x2=\"434.0\" y1=\"144.0\" y2=\"144.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"150.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$50</text><line x1=\"61.2\" x2=\"434.0\" y1=\"77.0\" y2=\"77.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"83.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$60</text><polyline points=\"61.2,79.4 86.0,105.8 110.9,90.4 185.5,117.8 210.3,147.8 235.2,189.2 260.0,186.1 284.9,185.9 359.5,177.7 384.3,210.7 409.2,219.4 434.0,233.1\" fill=\"none\" class=\"dc-s1\" stroke-width=\"3\" stroke-linejoin=\"round\"/><polyline points=\"61.2,93.4 86.0,109.8 110.9,120.4 185.5,104.6 210.3,105.1 235.2,103.6 260.0,109.5 284.9,107.5 359.5,108.1 384.3,123.2 409.2,134.9 434.0,127.7\" fill=\"none\" class=\"dc-s2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect class=\"dc-hit\" x=\"53.2\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 4: cash hogs $59.64 on 4,028 head; Dec futures $57.55\"/><rect class=\"dc-hit\" x=\"73.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 5: cash hogs $55.70 on 3,218 head; Dec futures $55.10\"/><rect class=\"dc-hit\" x=\"98.4\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 6: cash hogs $58.00 on 4,529 head; Dec futures $53.53\"/><rect class=\"dc-hit\" x=\"148.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 9: cash hogs $53.91 on 11,090 head; Dec futures $55.88\"/><rect class=\"dc-hit\" x=\"197.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 10: cash hogs $49.43 on 6,147 head; Dec futures $55.80\"/><rect class=\"dc-hit\" x=\"222.7\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 11: cash hogs $43.25 on 3,605 head; Dec futures $56.03\"/><rect class=\"dc-hit\" x=\"247.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 12: cash hogs $43.72 on 3,067 head; Dec futures $55.15\"/><rect class=\"dc-hit\" x=\"272.5\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 13: cash hogs $43.75 on 5,353 head; Dec futures $55.45\"/><rect class=\"dc-hit\" x=\"322.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 16: cash hogs $44.97 on 15,123 head; Dec futures $55.35\"/><rect class=\"dc-hit\" x=\"371.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 17: cash hogs $40.04 on 4,795 head; Dec futures $53.10\"/><rect class=\"dc-hit\" x=\"396.8\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 18: cash hogs $38.75 on 3,049 head; Dec futures $51.35\"/><rect class=\"dc-hit\" x=\"421.6\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 19: cash hogs $36.70 on 2,863 head; Dec futures $52.43\"/><circle cx=\"434.0\" cy=\"233.1\" r=\"6\" class=\"dc-f1\"/><circle cx=\"434.0\" cy=\"127.7\" r=\"6\" class=\"dc-f2\"/><text x=\"448.0\" y=\"123.7\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f2\">Dec futures</text><text x=\"448.0\" y=\"152.7\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$52.43</text><text x=\"448.0\" y=\"229.1\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f1\">Cash hogs</text><text x=\"448.0\" y=\"258.1\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$36.70</text><text x=\"63.2\" y=\"65.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$59.64</text><text x=\"63.2\" y=\"147.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$57.55</text><rect x=\"53.4\" y=\"365.7\" width=\"15.5\" height=\"12.3\" class=\"dc-bar\"/><rect x=\"78.3\" y=\"368.2\" width=\"15.5\" height=\"9.8\" class=\"dc-bar\"/><rect x=\"103.1\" y=\"364.2\" width=\"15.5\" height=\"13.8\" class=\"dc-bar\"/><rect x=\"177.7\" y=\"344.3\" width=\"15.5\" height=\"33.7\" class=\"dc-bar\"/><rect x=\"202.5\" y=\"359.3\" width=\"15.5\" height=\"18.7\" class=\"dc-bar\"/><rect x=\"227.4\" y=\"367.0\" width=\"15.5\" height=\"11.0\" class=\"dc-bar\"/><rect x=\"252.3\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"277.1\" y=\"361.7\" width=\"15.5\" height=\"16.3\" class=\"dc-bar\"/><rect x=\"351.7\" y=\"332.0\" width=\"15.5\" height=\"46.0\" class=\"dc-bar\"/><rect x=\"376.6\" y=\"363.4\" width=\"15.5\" height=\"14.6\" class=\"dc-bar\"/><rect x=\"401.4\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"426.3\" y=\"369.3\" width=\"15.5\" height=\"8.7\" class=\"dc-bar\"/><text x=\"448.0\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">2,863 head</text><text x=\"61.2\" y=\"326.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Head sold, spot market</text><text x=\"371.2\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">15,123</text><text x=\"61.2\" y=\"424.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Nov 4</text><text x=\"434.0\" y=\"424.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Nov 19</text></svg>",
-    "alt": "Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report. Source: USDA AMS negotiated hog prices through Nov 19; CME settles through Nov 19.",
-    "h": 440,
-    "date": "2026-11-19",
-    "source": "USDA AMS negotiated hog prices through Nov 19; CME settles through Nov 19",
-    "template": "T7",
-    "takeaway": "Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12.",
-    "w": 600,
-    "card": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 662\" width=\"600\" height=\"662\" role=\"img\" aria-label=\"Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report. Source: USDA AMS negotiated hog prices through Nov 19; CME settles through Nov 19.\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect class=\"dc-bg\" x=\"0\" y=\"0\" width=\"600\" height=\"662\"/><rect x=\"0\" y=\"0\" width=\"600\" height=\"662\" fill=\"#fbf8f1\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-f1\">AGSIST</text><text x=\"588.0\" y=\"30.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Chart of the day, Nov 20, 2026</text><line x1=\"12\" x2=\"588\" y1=\"42\" y2=\"42\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"12.0\" y=\"72.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Negotiated cash hogs lost $22.94 since</text><text x=\"12.0\" y=\"104.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Nov 4; December futures lost $5.12.</text><svg x=\"0\" y=\"120\" viewBox=\"0 0 600 440\" width=\"600\" height=\"440\" role=\"img\" aria-label=\"Negotiated cash hogs lost $22.94 since Nov 4; December futures lost $5.12. Chart: USDA negotiated cash hogs from $59.64 on Nov 4 to $36.70 on Nov 19; Dec futures from $57.55 to $52.43; head sold 2,863 on the last report.\" class=\"dc-svg\" font-family=\"Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif\"><style>.dc-bg{fill:#ffffff}.dc-ink{fill:#14100a}.dc-mut{fill:#5f5a52}.dc-grid{stroke:#e3ded4}.dc-s1{stroke:#7a5c14}.dc-f1{fill:#7a5c14}.dc-s2{stroke:#1f5f8a}.dc-f2{fill:#1f5f8a}.dc-bar{fill:#e3ded4}.dc-ring{fill:#ffffff;stroke:#14100a}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .dc-bg{fill:#191510}:root:not([data-theme=light]) .dc-ink{fill:#ece6da}:root:not([data-theme=light]) .dc-mut{fill:#b3aa9e}:root:not([data-theme=light]) .dc-grid{stroke:#332d24}:root:not([data-theme=light]) .dc-s1{stroke:#e3b955}:root:not([data-theme=light]) .dc-f1{fill:#e3b955}:root:not([data-theme=light]) .dc-s2{stroke:#7fb8e0}:root:not([data-theme=light]) .dc-f2{fill:#7fb8e0}:root:not([data-theme=light]) .dc-bar{fill:#6b6150}:root:not([data-theme=light]) .dc-ring{fill:#191510;stroke:#ece6da}}:root[data-theme=dark] .dc-bg{fill:#191510}:root[data-theme=dark] .dc-ink{fill:#ece6da}:root[data-theme=dark] .dc-mut{fill:#b3aa9e}:root[data-theme=dark] .dc-grid{stroke:#332d24}:root[data-theme=dark] .dc-s1{stroke:#e3b955}:root[data-theme=dark] .dc-f1{fill:#e3b955}:root[data-theme=dark] .dc-s2{stroke:#7fb8e0}:root[data-theme=dark] .dc-f2{fill:#7fb8e0}:root[data-theme=dark] .dc-bar{fill:#6b6150}:root[data-theme=dark] .dc-ring{fill:#191510;stroke:#ece6da}</style><rect fill=\"#fbf8f1\" x=\"0\" y=\"0\" width=\"600\" height=\"440\"/><text x=\"12.0\" y=\"30.0\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">Hogs, dollars per hundredweight, carcass</text><line x1=\"61.2\" x2=\"434.0\" y1=\"278.0\" y2=\"278.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"284.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$30</text><line x1=\"61.2\" x2=\"434.0\" y1=\"211.0\" y2=\"211.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"217.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$40</text><line x1=\"61.2\" x2=\"434.0\" y1=\"144.0\" y2=\"144.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"150.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$50</text><line x1=\"61.2\" x2=\"434.0\" y1=\"77.0\" y2=\"77.0\" class=\"dc-grid\" stroke-width=\"1\"/><text x=\"51.2\" y=\"83.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">$60</text><polyline points=\"61.2,79.4 86.0,105.8 110.9,90.4 185.5,117.8 210.3,147.8 235.2,189.2 260.0,186.1 284.9,185.9 359.5,177.7 384.3,210.7 409.2,219.4 434.0,233.1\" fill=\"none\" class=\"dc-s1\" stroke-width=\"3\" stroke-linejoin=\"round\"/><polyline points=\"61.2,93.4 86.0,109.8 110.9,120.4 185.5,104.6 210.3,105.1 235.2,103.6 260.0,109.5 284.9,107.5 359.5,108.1 384.3,123.2 409.2,134.9 434.0,127.7\" fill=\"none\" class=\"dc-s2\" stroke-width=\"3\" stroke-linejoin=\"round\"/><rect class=\"dc-hit\" x=\"53.2\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 4: cash hogs $59.64 on 4,028 head; Dec futures $57.55\"/><rect class=\"dc-hit\" x=\"73.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 5: cash hogs $55.70 on 3,218 head; Dec futures $55.10\"/><rect class=\"dc-hit\" x=\"98.4\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 6: cash hogs $58.00 on 4,529 head; Dec futures $53.53\"/><rect class=\"dc-hit\" x=\"148.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 9: cash hogs $53.91 on 11,090 head; Dec futures $55.88\"/><rect class=\"dc-hit\" x=\"197.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 10: cash hogs $49.43 on 6,147 head; Dec futures $55.80\"/><rect class=\"dc-hit\" x=\"222.7\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 11: cash hogs $43.25 on 3,605 head; Dec futures $56.03\"/><rect class=\"dc-hit\" x=\"247.6\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 12: cash hogs $43.72 on 3,067 head; Dec futures $55.15\"/><rect class=\"dc-hit\" x=\"272.5\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 13: cash hogs $43.75 on 5,353 head; Dec futures $55.45\"/><rect class=\"dc-hit\" x=\"322.2\" y=\"64.0\" width=\"49.7\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 16: cash hogs $44.97 on 15,123 head; Dec futures $55.35\"/><rect class=\"dc-hit\" x=\"371.9\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 17: cash hogs $40.04 on 4,795 head; Dec futures $53.10\"/><rect class=\"dc-hit\" x=\"396.8\" y=\"64.0\" width=\"24.9\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 18: cash hogs $38.75 on 3,049 head; Dec futures $51.35\"/><rect class=\"dc-hit\" x=\"421.6\" y=\"64.0\" width=\"20.4\" height=\"314.0\" fill=\"transparent\" data-r=\"Nov 19: cash hogs $36.70 on 2,863 head; Dec futures $52.43\"/><circle cx=\"434.0\" cy=\"233.1\" r=\"6\" class=\"dc-f1\"/><circle cx=\"434.0\" cy=\"127.7\" r=\"6\" class=\"dc-f2\"/><text x=\"448.0\" y=\"123.7\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f2\">Dec futures</text><text x=\"448.0\" y=\"152.7\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$52.43</text><text x=\"448.0\" y=\"229.1\" font-size=\"22\" text-anchor=\"start\" class=\"dc-f1\">Cash hogs</text><text x=\"448.0\" y=\"258.1\" font-size=\"24\" font-weight=\"700\" text-anchor=\"start\" class=\"dc-ink\">$36.70</text><text x=\"63.2\" y=\"65.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$59.64</text><text x=\"63.2\" y=\"147.4\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">$57.55</text><rect x=\"53.4\" y=\"365.7\" width=\"15.5\" height=\"12.3\" class=\"dc-bar\"/><rect x=\"78.3\" y=\"368.2\" width=\"15.5\" height=\"9.8\" class=\"dc-bar\"/><rect x=\"103.1\" y=\"364.2\" width=\"15.5\" height=\"13.8\" class=\"dc-bar\"/><rect x=\"177.7\" y=\"344.3\" width=\"15.5\" height=\"33.7\" class=\"dc-bar\"/><rect x=\"202.5\" y=\"359.3\" width=\"15.5\" height=\"18.7\" class=\"dc-bar\"/><rect x=\"227.4\" y=\"367.0\" width=\"15.5\" height=\"11.0\" class=\"dc-bar\"/><rect x=\"252.3\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"277.1\" y=\"361.7\" width=\"15.5\" height=\"16.3\" class=\"dc-bar\"/><rect x=\"351.7\" y=\"332.0\" width=\"15.5\" height=\"46.0\" class=\"dc-bar\"/><rect x=\"376.6\" y=\"363.4\" width=\"15.5\" height=\"14.6\" class=\"dc-bar\"/><rect x=\"401.4\" y=\"368.7\" width=\"15.5\" height=\"9.3\" class=\"dc-bar\"/><rect x=\"426.3\" y=\"369.3\" width=\"15.5\" height=\"8.7\" class=\"dc-bar\"/><text x=\"448.0\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">2,863 head</text><text x=\"61.2\" y=\"326.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Head sold, spot market</text><text x=\"371.2\" y=\"374.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-ink\">15,123</text><text x=\"61.2\" y=\"424.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Nov 4</text><text x=\"434.0\" y=\"424.0\" font-size=\"22\" text-anchor=\"end\" class=\"dc-mut\">Nov 19</text></svg><text x=\"12.0\" y=\"588.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Source: USDA AMS negotiated hog prices through</text><text x=\"12.0\" y=\"616.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">Nov 19; CME settles through Nov 19.</text><text x=\"12.0\" y=\"650.0\" font-size=\"22\" text-anchor=\"start\" class=\"dc-mut\">agsist.com/daily</text></svg>",
-    "card_h": 662,
-    "image": "daily/img/chart-2026-11-20.png"
-  },
   "weather_line": {
-    "text": "Rain in the week to Nov. 18: an average of 0.12 inch across 660 county gauges in 12 farm states; the 1991-2020 average for the same week is 0.50 inch; Ohio was wettest at an average of 0.57 inch (NOAA).",
-    "as_of": "2026-11-18",
-    "sample": 660
+    "text": "Rain in the week to Nov. 19: an average of 0.05 inch across 615 county gauges in 12 farm states; the 1991-2020 average for the same week is 0.51 inch (NOAA).",
+    "as_of": "2026-11-19",
+    "sample": 615
   },
-  "writer_headline": "Cash hogs fall to $36.70, lowest in 71 USDA reports",
-  "writer_lead": "USDA's negotiated cash hog price was $36.70 a hundredweight in Thursday's report, down $2.05 from the report before. It covers 2,863 head bought on the spot market.",
+  "writer_headline": "USDA hit by cyberattack; corn down 2.5% on the week",
+  "writer_lead": "Several USDA applications, including loan software, went offline this week after a cybersecurity breach, Reuters and NBC News reported. December corn settled Friday at $4.34½, down 11 cents on the week.",
   "critic_pass": {
     "version": "2.0",
-    "ran_at": "2026-11-20T13:04:52.276116+00:00",
+    "ran_at": "2026-11-21T12:11:49.454148+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 5,
-      "rule_2_conviction_earned": 6,
-      "rule_3_lede_no_deferral": 9,
+      "rule_1_lead_so_what": 4,
+      "rule_2_conviction_earned": 9,
+      "rule_3_lede_no_deferral": 6,
       "rule_4_watch_conditional": 9,
       "rule_5_so_what_synthesizes": 9,
-      "rule_6_quiet_days_quiet": 8,
+      "rule_6_quiet_days_quiet": 9,
       "rule_7_yc_honesty": 10,
-      "rule_8_word_budget": 6,
+      "rule_8_word_budget": 9,
       "rule_9_voice": 6,
       "rule_10_forward_test": 4,
       "rule_11_action_thresholded": 10,
-      "rule_12_one_fact_one_home": 5,
-      "rule_13_level_coherence": 6,
+      "rule_12_one_fact_one_home": 4,
+      "rule_13_level_coherence": 9,
       "rule_14_one_number_coherence": 9,
       "rule_15_markdown_not_html": 10,
       "rule_16_macro_anchoring": 10
@@ -601,32 +684,29 @@
     "rewrites_applied": [
       {
         "pass": 1,
-        "target": "trim: lead, sections[0].body",
-        "rule": "rule_13_level_coherence",
+        "target": "lead",
+        "rule": "rule_12_one_fact_one_home",
         "scores_before": {
-          "rule_1_lead_so_what": 5,
-          "rule_2_conviction_earned": 6,
-          "rule_3_lede_no_deferral": 9,
+          "rule_1_lead_so_what": 4,
+          "rule_2_conviction_earned": 9,
+          "rule_3_lede_no_deferral": 6,
           "rule_4_watch_conditional": 9,
           "rule_5_so_what_synthesizes": 9,
-          "rule_6_quiet_days_quiet": 8,
+          "rule_6_quiet_days_quiet": 9,
           "rule_7_yc_honesty": 10,
-          "rule_8_word_budget": 6,
+          "rule_8_word_budget": 9,
           "rule_9_voice": 6,
           "rule_10_forward_test": 4,
           "rule_11_action_thresholded": 10,
-          "rule_12_one_fact_one_home": 5,
-          "rule_13_level_coherence": 6,
+          "rule_12_one_fact_one_home": 4,
+          "rule_13_level_coherence": 9,
           "rule_14_one_number_coherence": 9,
           "rule_15_markdown_not_html": 10,
           "rule_16_macro_anchoring": 10
         }
       }
     ],
-    "consistency": [
-      "teaser flagged and the headline is flagged too: left for a person",
-      "not fixed, headline: hogs fell but hogs is +2.1%"
-    ],
+    "consistency": [],
     "dry_run": false
   }
 }

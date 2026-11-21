@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-21",
+      "date_display": "Saturday, November 21, 2026",
+      "headline": "Funds sold corn for a ninth straight week",
+      "teaser": "USDA systems hit by a breach; December corn ended the week down 11 cents at $4.34½.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-21",
+      "market_closed": true
+    },
+    {
       "date": "2026-11-20",
       "date_display": "Friday, November 20, 2026",
       "headline": "Cash hogs fell to $36.70 in the Nov. 19 report",
@@ -2877,5 +2888,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-20T13:04:52.308476+00:00"
+  "updated": "2026-11-21T12:11:49.483526+00:00"
 }
