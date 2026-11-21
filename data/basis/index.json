@@ -1,5 +1,5 @@
 {
- "generated":"2026-11-20",
+ "generated":"2026-11-21",
  "units":"integer cents per bushel",
  "note":"Basis history by elevator, commodity and delivery month.",
  "publicFrom":"2026-10-12",
@@ -32,7 +32,7 @@
   "IA":{
    "rows":7724,
    "facilities":508,
-   "kb":361.8
+   "kb":366.0
   },
   "ID":{
    "rows":1,
@@ -42,17 +42,17 @@
   "IL":{
    "rows":10254,
    "facilities":249,
-   "kb":466.2
+   "kb":468.9
   },
   "IN":{
    "rows":1177,
    "facilities":83,
-   "kb":53.5
+   "kb":53.8
   },
   "KS":{
    "rows":5156,
    "facilities":263,
-   "kb":229.7
+   "kb":229.8
   },
   "KY":{
    "rows":130,
@@ -67,17 +67,17 @@
   "MI":{
    "rows":397,
    "facilities":25,
-   "kb":17.7
+   "kb":17.8
   },
   "MN":{
    "rows":5400,
    "facilities":164,
-   "kb":240.2
+   "kb":241.5
   },
   "MO":{
    "rows":385,
    "facilities":42,
-   "kb":18.8
+   "kb":19.0
   },
   "MT":{
    "rows":118,
@@ -87,12 +87,12 @@
   "ND":{
    "rows":8066,
    "facilities":68,
-   "kb":337.3
+   "kb":338.2
   },
   "NE":{
    "rows":9752,
    "facilities":255,
-   "kb":442.6
+   "kb":443.7
   },
   "NY":{
    "rows":10,
@@ -102,12 +102,12 @@
   "OH":{
    "rows":4613,
    "facilities":91,
-   "kb":197.3
+   "kb":198.4
   },
   "OK":{
    "rows":3151,
    "facilities":81,
-   "kb":132.5
+   "kb":132.6
   },
   "OR":{
    "rows":11,
@@ -127,12 +127,12 @@
   "SD":{
    "rows":2077,
    "facilities":116,
-   "kb":91.2
+   "kb":91.5
   },
   "TN":{
    "rows":51,
    "facilities":4,
-   "kb":2.9
+   "kb":3.0
   },
   "TX":{
    "rows":389,
@@ -147,7 +147,7 @@
   "WI":{
    "rows":2344,
    "facilities":107,
-   "kb":106.8
+   "kb":107.0
   },
   "WY":{
    "rows":21,
