@@ -1,6 +1,6 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-11-22T19:06:11Z",
+ "generated": "2026-11-22T21:07:42Z",
  "note": "Elevators with a current bid on a cash bids page, and boards read on the latest coverage pass.",
  "bids": {
   "elevators": 838,
