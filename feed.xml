@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 21 Nov 2026 12:12:36 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 22 Nov 2026 14:12:51 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Monday Crop Progress opens a holiday week; hogs near $52</title>
+      <link>https://agsist.com/daily/2026-11-22</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-22</guid>
+      <pubDate>Sun, 22 Nov 2026 14:12:01 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>Soybeans rallied 13 cents to $12.20¾ Friday while corn slipped 4½ cents to $4.34½, so beans pulled away from corn going into the holiday week. Hogs held at $52.60, with cattle steady at $223.
+• Grains settle mixed Friday
+• Livestock mixed into the holiday
+Read more: https://agsist.com/daily/2026-11-22</description>
+    </item>
     <item>
       <title>Funds sold corn for a ninth straight week</title>
       <link>https://agsist.com/daily/2026-11-21</link>
@@ -343,18 +354,6 @@ Read more: https://agsist.com/daily/2026-10-25</description>
 • Cattle hold near highs
 • Crude climbs, gas drops
 Read more: https://agsist.com/daily/2026-10-24</description>
-    </item>
-    <item>
-      <title>Corn slips 4½¢ to $4.56 as crude climbs 3.7% to $103</title>
-      <link>https://agsist.com/daily/2026-10-23</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-23</guid>
-      <pubDate>Fri, 23 Oct 2026 10:48:06 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Corn closed lower at $4.56, while crude jumped 3.7% to $103. Soybeans edged up to $12.57½. Grain is soft and fuel is firm, so a farmer's input bill is rising while the corn check is not.
-• Corn eases, beans edge up
-• Cattle hold near $230
-• Crude and gas jump
-Read more: https://agsist.com/daily/2026-10-23</description>
     </item>
   </channel>
 </rss>

@@ -1,61 +1,65 @@
 {
-  "headline": "Funds sold corn for a ninth straight week",
-  "lead": "Funds have now sold corn nine weeks running, about 448,000 contracts in all. They are still only 33,862 contracts net short, so the selling has mostly cleared out earlier buying. December corn closed the week at $4.34½.",
-  "teaser": "USDA systems hit by a breach; December corn ended the week down 11 cents at $4.34½.",
+  "headline": "Monday Crop Progress opens a holiday week; hogs near $52",
+  "lead": "Soybeans rallied 13 cents to $12.20¾ Friday while corn slipped 4½ cents to $4.34½, so beans pulled away from corn going into the holiday week. Hogs held at $52.60, with cattle steady at $223.",
+  "teaser": "Crop Progress is Monday, Export Sales moves to Friday for Thanksgiving, and December hogs settled Friday at $52.60.",
   "one_number": {
-    "value": "9 weeks",
-    "unit": "straight weeks funds sold corn",
-    "context": "CFTC data show money managers sold 11,234 more corn contracts in the week to Nov. 17, leaving them net short 33,862."
+    "value": "7.3%",
+    "unit": "drop in cattle placements",
+    "context": "Drovers reports feeder lot placements fell 7.3%, a sign fewer feeder calves are moving to feed yards."
   },
   "sections": [
     {
-      "title": "Corn and wheat slip, beans gain",
-      "body": "- December corn settled Friday at **$4.34½**, down 2.5% on the week, and Chicago wheat fell 3.2% to $5.74¼.\n- January soybeans rose 13¼ cents Friday to $12.20¾, still down 10¾ cents on the week.",
+      "title": "Grains settle mixed Friday",
+      "body": "- December corn settled Friday at **$4.34½**, down 4½ cents, while January soybeans gained 13¼ cents to $12.20¾.\n- December wheat settled at $5.74¼, down 4 cents.\n- Successful Farming's Friday recap called soybean gains double digit and livestock mixed.",
       "conviction_level": "low",
       "overnight_surprise": false
     },
     {
-      "title": "Hogs fall on the week",
-      "body": "- December lean hog futures settled Friday at **$52.60**, down 5.1% on the week.\n- USDA AMS put national negotiated cash hogs at $39.02 carcass base on 4,760 head, killed Nov. 19, with the pork cutout at $67.88.",
+      "title": "Livestock mixed into the holiday",
+      "body": "- December live cattle settled Friday at **$223.00**, up 0.1%, and January feeders were about unchanged at $335.425.\n- December lean hogs settled at $52.60, up 0.3%.\n- Drovers says placements fell 7.3% as feeder supplies tighten.",
       "conviction_level": "low",
       "overnight_surprise": false
     }
   ],
   "outside_the_pit": [
     {
-      "title": "Cattle placements fall 7.3% as feeder supplies tighten",
-      "body": "Fewer calves entering feedlots points to tighter supplies of finished cattle later.",
+      "title": "Cattle markets have topped, Drovers says",
+      "body": "Drovers says the market is moving into a recalibration phase after the run-up. It is one view, not a forecast.",
       "tag": "LIVESTOCK",
-      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPbTFpWjZCdnpSYzRuMHlJbWhnMEdNZkRUdnhTWnExUGZxbzNfU1V0VVJiMGN2MmkxY2Q1UGFzZ3laZEp3Q2kzQVprTHJSZXI2VTVZbm9odWQ2R2kxTS1XdlVhRlpNbEE3ZzlUMVdnbC1SRTltZ0lQaDIxak5GeUxiNzQ5UTV1MVczRHpPbA?oc=5",
+      "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQS2ZzWWppbUJyWWxEdTY2aGZTQnNlT0tUd2ctQ3BEQmF3NnNZa241MTZscWxheklMdDA5QzM5dDZzamdEa3hPLTRsU25EX2tCc2pnNGN5NVU3UUdtdG9TVWZ6cHRRU1FvNTlVS0VveTRrUDVqQ1Nqb1ZrYlA1cW9ZbzF2NGl2RjdyTFNZamZKc2NOVk80b0dacFdzakIzYVAxb2RQWQ?oc=5",
       "source": "Drovers Magazine",
-      "news_id": "N10"
+      "news_id": "N14"
     },
     {
-      "title": "Judge approves $7.25 billion Roundup settlement",
-      "body": "The deal covers current and future Roundup claims, per Agri-Pulse.",
-      "tag": "TRADE",
-      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPU29KZTdrLWdocWtpdjZ6dnh5b1NoY0RodDdDNmF3ZHNHekNuY05RSlg5eTJxeE5ZOTVvTFlQLWswZ0VybjhFbF9mUHpaQkVxWEFXZzNlQjdobmp2ZmxWOGR2Q1VaR1JuLWN6NHptejk4WVliOHV2ZW84VUNvOUxPeEJDQzQtblBVN245LWlKWnJQOVpNUU9aWVd0S25pWFZ1V2g0WWtBQ1JIam9rSm1NNw?oc=5",
-      "source": "Agri-Pulse Communications, Inc.",
-      "news_id": "N27"
+      "title": "Fertilizer: five of eight major prices edge higher, DTN says",
+      "body": "DTN's weekly survey shows most fertilizer prices still creeping up as winter input planning starts.",
+      "tag": "INPUTS",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOXzk1Vmx6SEc4Z3llRGNYOE5kRDRNaWF2Qk13WDhLR3JTQWZVVkhubFRKeWRrVGFKeEx4MWVWMmRqUXJwelVOa19CMHFOX1ZmWFBEa0h6VTQybDNsU0VHcEs1SlFuX1NLR2xwQUlzaElMREdEVnJLZ19FOUI5WHAxRnJVQXpkMUZrQ0lKaTBWRDFkSzVfdzAyVTRVRy16dk9ETW4zS2RR?oc=5",
+      "source": "DTN Progressive Farmer",
+      "news_id": "N16"
     }
   ],
   "watch_list": [
     {
-      "time": "Monday, Nov 23, 3:00 PM CT",
+      "time": "Monday, Nov 23, 3:00 p.m. CT",
       "desc": "USDA Crop Progress."
+    },
+    {
+      "time": "Friday, Nov 27, 7:30 a.m. CT",
+      "desc": "USDA Export Sales, moved from Thursday by Thanksgiving."
     }
   ],
-  "source_summary": "AGSIST price table (Friday settles), CFTC, USDA AMS, Reuters and trade press",
-  "date": "Saturday, November 21, 2026",
+  "source_summary": "CME settlements, USDA calendar, Drovers, Reuters, DTN, Successful Farming",
+  "date": "Sunday, November 22, 2026",
   "meta": {
     "market_mood": "cautious",
     "heat_section": 0,
     "overnight_surprises_count": 0,
-    "word_count": 185,
+    "word_count": 203,
     "news_coverage": {
-      "ok": 18,
+      "ok": 19,
       "total": 26,
-      "items": 105,
+      "items": 107,
       "dark": [
         "nass.usda.gov",
         "agproud.com",
@@ -63,14 +67,13 @@
         "dairyherd.com",
         "porkbusiness.com",
         "extension.umn.edu",
-        "extension.purdue.edu",
         "cpc.ncep.noaa.gov"
       ]
     }
   },
   "freshness": {
     "window": 7,
-    "tries": 2,
+    "tries": 1,
     "hits": []
   },
   "locked_prices": {
@@ -249,7 +252,7 @@
     "prev_close_session": "2026-11-19"
   },
   "basis_wow": {
-    "print": true,
+    "print": false,
     "rows": [
       {
         "st": "KS",
@@ -265,29 +268,13 @@
         "name": "Minnesota",
         "crop": "corn",
         "wow": 5.0,
-        "n": 81,
-        "moved": 54,
-        "companies": 23
+        "n": 82,
+        "moved": 55,
+        "companies": 25
       }
     ],
-    "why": "entered KS:soybeans, MN:corn; left OH:corn, OH:soybeans",
-    "snapshot": "2026-11-21T11:06:25Z"
-  },
-  "edge": {
-    "label": "Only on AGSIST",
-    "generated": "2026-11-21T12:11:44Z",
-    "facts": [
-      {
-        "id": "basis_wow",
-        "kind": "basis_wow",
-        "sentence": "Basis firmed this week: Kansas soybeans +10¢ (25 of 32 bids moved) and Minnesota corn +5¢ (54 of 81).",
-        "key": "Basis firmed this week",
-        "detail": "Each state's middle change in a week, across bids matched with the same elevator's same delivery and futures month; states with 30 or more such bids from 8 or more companies.",
-        "url": "/basis",
-        "link_text": "Basis by state",
-        "as_of": "2026-11-21"
-      }
-    ]
+    "why": "the same states within 5 cents of the last print",
+    "snapshot": "2026-11-22T13:06:56Z"
   },
   "chart_series": {
     "corn": [
@@ -424,145 +411,36 @@
       ]
     }
   ],
-  "week_review": {
-    "title": "The week in review",
-    "head": "Friday vs last Friday",
-    "stamp": "settle each Friday",
-    "friday": "2026-11-20",
-    "prior": "2026-11-13",
-    "rows": [
+  "week_ahead": {
+    "title": "The week ahead",
+    "head": "Reports this week",
+    "monday": "2026-11-23",
+    "items": [
       {
-        "key": "corn-dec26",
-        "name": "Corn (Dec)",
-        "now": 434.5,
-        "prev": 445.5,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$4.34 1/2",
-        "change": "down 11 cents",
-        "pct": "−2.5%",
-        "line": "Corn (Dec) $4.34 1/2, down 11 cents (−2.5%)"
+        "date": "2026-11-23",
+        "day": "Mon Nov 23",
+        "text": "Crop Progress, 3:00 PM CT"
       },
       {
-        "key": "beans-jan27",
-        "name": "Soybeans (Jan)",
-        "now": 1220.75,
-        "prev": 1231.5,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$12.20 3/4",
-        "change": "down 10 3/4 cents",
-        "pct": "−0.9%",
-        "line": "Soybeans (Jan) $12.20 3/4, down 10 3/4 cents (−0.9%)"
+        "date": "2026-11-26",
+        "day": "Thu Nov 26",
+        "text": "Thanksgiving (federal offices closed)"
       },
       {
-        "key": "wheat-dec26",
-        "name": "Chicago wheat (Dec)",
-        "now": 574.25,
-        "prev": 593.25,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$5.74 1/4",
-        "change": "down 19 cents",
-        "pct": "−3.2%",
-        "line": "Chicago wheat (Dec) $5.74 1/4, down 19 cents (−3.2%)"
-      },
-      {
-        "key": "cattle-dec26",
-        "name": "Live cattle (Dec)",
-        "now": 223.0,
-        "prev": 220.65,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$223.00",
-        "change": "up $2.35",
-        "pct": "+1.1%",
-        "line": "Live cattle (Dec) $223.00, up $2.35 (+1.1%)"
-      },
-      {
-        "key": "hogs-dec26",
-        "name": "Lean hogs (Dec)",
-        "now": 52.6,
-        "prev": 55.45,
-        "now_basis": "settle",
-        "prev_basis": "settle",
-        "price": "$52.60",
-        "change": "down $2.85",
-        "pct": "−5.1%",
-        "line": "Lean hogs (Dec) $52.60, down $2.85 (−5.1%)"
+        "date": "2026-11-27",
+        "day": "Fri Nov 27",
+        "text": "Export Sales, 7:30 AM CT (moved from Thursday by Thanksgiving)"
       }
     ],
     "lines": [
-      "Corn (Dec) $4.34 1/2, down 11 cents (−2.5%)",
-      "Soybeans (Jan) $12.20 3/4, down 10 3/4 cents (−0.9%)",
-      "Chicago wheat (Dec) $5.74 1/4, down 19 cents (−3.2%)",
-      "Live cattle (Dec) $223.00, up $2.35 (+1.1%)",
-      "Lean hogs (Dec) $52.60, down $2.85 (−5.1%)"
+      "Mon Nov 23: Crop Progress, 3:00 PM CT",
+      "Thu Nov 26: Thanksgiving (federal offices closed)",
+      "Fri Nov 27: Export Sales, 7:30 AM CT (moved from Thursday by Thanksgiving)"
     ],
-    "notes": [],
-    "source": "CME futures via Yahoo Finance, delayed",
-    "closes": {
-      "corn-dec26": {
-        "root": "corn",
-        "name": "Corn",
-        "contract": "Dec '26",
-        "date": "2026-11-20",
-        "px": 434.5,
-        "kind": "settle",
-        "wk52_hi": 549.75,
-        "wk52_lo": 425.75
-      },
-      "beans-jan27": {
-        "root": "beans",
-        "name": "Soybeans",
-        "contract": "Jan '27",
-        "date": "2026-11-20",
-        "px": 1220.75,
-        "kind": "settle",
-        "wk52_hi": 1350.25,
-        "wk52_lo": 1067.25
-      },
-      "wheat-dec26": {
-        "root": "wheat",
-        "name": "Chicago wheat",
-        "contract": "Dec '26",
-        "date": "2026-11-20",
-        "px": 574.25,
-        "kind": "settle",
-        "wk52_hi": 795.0,
-        "wk52_lo": 557.25
-      },
-      "cattle-dec26": {
-        "root": "cattle",
-        "name": "Live cattle",
-        "contract": "Dec '26",
-        "date": "2026-11-20",
-        "px": 223.0,
-        "kind": "settle",
-        "wk52_hi": 245.9,
-        "wk52_lo": 197.05
-      },
-      "feeders-jan27": {
-        "root": "feeders",
-        "name": "Feeder cattle",
-        "contract": "Jan '27",
-        "date": "2026-11-20",
-        "px": 335.425,
-        "kind": "settle",
-        "wk52_hi": 366.425,
-        "wk52_lo": 282.6
-      },
-      "hogs-dec26": {
-        "root": "hogs",
-        "name": "Lean hogs",
-        "contract": "Dec '26",
-        "date": "2026-11-20",
-        "px": 52.6,
-        "kind": "settle",
-        "wk52_hi": 85.275,
-        "wk52_lo": 51.225
-      }
-    }
+    "notes": [
+      "The COT report for Nov 24 moves to Mon Nov 30, 2:30 PM CT, because of Thanksgiving."
+    ],
+    "source": "USDA and CFTC release calendars"
   },
   "sponsor": {
     "active": false,
@@ -575,7 +453,7 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "generated_at": "2026-11-21T12:11:44.704829+00:00",
+  "generated_at": "2026-11-22T14:12:01.029684+00:00",
   "generator_version": "5.5.0",
   "surprise_count": 0,
   "surprises": [],
@@ -584,100 +462,37 @@
   "market_status_reason": "weekend",
   "otp_week_ahead": false,
   "theme": {
-    "kind": "report_result",
-    "tier": 1,
-    "key": "COT corn",
-    "value": "-33862",
-    "headline": "Funds sold corn for a ninth straight week",
-    "lead": [
-      "Money managers sold 11,234 contracts of corn in the week to Tuesday, Nov. 17, CFTC data show.",
-      "That leaves them 33,862 contracts net short.",
-      "Over nine weeks they sold 448,322 contracts."
-    ],
-    "figure": "11,234",
-    "date": "2026-11-21",
+    "kind": "quiet",
+    "tier": 7,
+    "key": "none",
+    "value": "",
+    "headline": "",
+    "lead": [],
+    "figure": null,
+    "date": "2026-11-22",
     "move_date": null,
-    "ledger": [
-      {
-        "id": "cot:corn:net",
-        "value": -33862,
-        "unit": "contracts",
-        "file": "cot-history.json",
-        "key": "corn.net",
-        "as_of": "2026-11-17",
-        "sample": "CFTC managed money",
-        "comparable": "cot:corn",
-        "subject": "corn",
-        "kind": "weekly"
-      },
-      {
-        "id": "cot:corn:chg",
-        "value": 11234,
-        "unit": "contracts",
-        "file": "cot-history.json",
-        "key": "corn.net change",
-        "as_of": "2026-11-17",
-        "sample": "CFTC managed money",
-        "comparable": "cot:corn",
-        "subject": "corn",
-        "kind": "weekly",
-        "change": -11234
-      },
-      {
-        "id": "cot:corn:total",
-        "value": 448322,
-        "unit": "contracts",
-        "file": "cot-history.json",
-        "key": "corn.net, 9 weeks",
-        "as_of": "2026-11-17",
-        "sample": "CFTC managed money",
-        "comparable": "cot:corn",
-        "subject": "corn",
-        "kind": "weekly",
-        "change": -448322
-      },
-      {
-        "id": "scope:cot:corn:streak",
-        "value": 9,
-        "unit": "weeks",
-        "file": "cot-history.json",
-        "key": "corn.net",
-        "as_of": "2026-11-17",
-        "sample": "CFTC managed money",
-        "comparable": "cot:corn",
-        "scope": "streak",
-        "subject": "corn",
-        "kind": "history"
-      }
-    ],
+    "ledger": [],
     "withheld": []
   },
-  "weather_line": {
-    "text": "Rain in the week to Nov. 19: an average of 0.05 inch across 615 county gauges in 12 farm states; the 1991-2020 average for the same week is 0.51 inch (NOAA).",
-    "as_of": "2026-11-19",
-    "sample": 615
-  },
-  "writer_headline": "USDA hit by cyberattack; corn down 2.5% on the week",
-  "writer_lead": "Several USDA applications, including loan software, went offline this week after a cybersecurity breach, Reuters and NBC News reported. December corn settled Friday at $4.34½, down 11 cents on the week.",
   "critic_pass": {
     "version": "2.0",
-    "ran_at": "2026-11-21T12:11:49.454148+00:00",
+    "ran_at": "2026-11-22T14:12:05.420106+00:00",
     "threshold": 7,
     "final_scores": {
-      "rule_1_lead_so_what": 4,
+      "rule_1_lead_so_what": 3,
       "rule_2_conviction_earned": 9,
-      "rule_3_lede_no_deferral": 6,
+      "rule_3_lede_no_deferral": 4,
       "rule_4_watch_conditional": 9,
       "rule_5_so_what_synthesizes": 9,
-      "rule_6_quiet_days_quiet": 9,
+      "rule_6_quiet_days_quiet": 8,
       "rule_7_yc_honesty": 10,
       "rule_8_word_budget": 9,
       "rule_9_voice": 6,
-      "rule_10_forward_test": 4,
+      "rule_10_forward_test": 3,
       "rule_11_action_thresholded": 10,
       "rule_12_one_fact_one_home": 4,
       "rule_13_level_coherence": 9,
-      "rule_14_one_number_coherence": 9,
+      "rule_14_one_number_coherence": 7,
       "rule_15_markdown_not_html": 10,
       "rule_16_macro_anchoring": 10
     },
@@ -685,22 +500,22 @@
       {
         "pass": 1,
         "target": "lead",
-        "rule": "rule_12_one_fact_one_home",
+        "rule": "rule_1_lead_so_what",
         "scores_before": {
-          "rule_1_lead_so_what": 4,
+          "rule_1_lead_so_what": 3,
           "rule_2_conviction_earned": 9,
-          "rule_3_lede_no_deferral": 6,
+          "rule_3_lede_no_deferral": 4,
           "rule_4_watch_conditional": 9,
           "rule_5_so_what_synthesizes": 9,
-          "rule_6_quiet_days_quiet": 9,
+          "rule_6_quiet_days_quiet": 8,
           "rule_7_yc_honesty": 10,
           "rule_8_word_budget": 9,
           "rule_9_voice": 6,
-          "rule_10_forward_test": 4,
+          "rule_10_forward_test": 3,
           "rule_11_action_thresholded": 10,
           "rule_12_one_fact_one_home": 4,
           "rule_13_level_coherence": 9,
-          "rule_14_one_number_coherence": 9,
+          "rule_14_one_number_coherence": 7,
           "rule_15_markdown_not_html": 10,
           "rule_16_macro_anchoring": 10
         }

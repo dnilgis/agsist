@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-22",
+      "date_display": "Sunday, November 22, 2026",
+      "headline": "Monday Crop Progress opens a holiday week; hogs near $52",
+      "teaser": "Crop Progress is Monday, Export Sales moves to Friday for Thanksgiving, and December hogs settled Friday at $52.60.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-22",
+      "market_closed": true
+    },
+    {
       "date": "2026-11-21",
       "date_display": "Saturday, November 21, 2026",
       "headline": "Funds sold corn for a ninth straight week",
@@ -2888,5 +2899,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-21T12:11:49.483526+00:00"
+  "updated": "2026-11-22T14:12:05.448607+00:00"
 }
