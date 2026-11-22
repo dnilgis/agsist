@@ -1,0 +1,1 @@
+{"date":"2026-11-22","units":"integer cents per bushel","columns":["state","facility","city","commodity","symbol","deliveryMonth","from","to","idx"],"idCols":["elevId","fips","fipsSure"],"ids":[["eedpfw6eme","40041",true]],"changes":[["OK","BEACHNER GRAIN","AFTON","corn","4.3450S","CASH",-35,-69,0],["OK","BEACHNER GRAIN","AFTON","soybeans","12.2075S","CASH",-8,-32,0]]}
