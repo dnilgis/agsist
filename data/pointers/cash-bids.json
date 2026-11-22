@@ -413,13 +413,13 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-22"
   },
-  "cash-bids/iowa/aredale.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-22"
-  },
   "cash-bids/iowa/ayrshire.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/bayard.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
   },
   "cash-bids/iowa/booneville.html": {
    "to": "/cash-bids/iowa/",
@@ -613,10 +613,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/new-hartford.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-22"
-  },
   "cash-bids/iowa/north-washington.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -630,6 +626,14 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/prairie-city.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
+  },
+  "cash-bids/iowa/rake.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
+  },
+  "cash-bids/iowa/ralston.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-22"
   },
@@ -650,6 +654,10 @@
    "since": "2026-11-22"
   },
   "cash-bids/iowa/reinbeck.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
+  },
+  "cash-bids/iowa/rippey.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-22"
   },
