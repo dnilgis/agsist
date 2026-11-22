@@ -413,21 +413,21 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/auburn.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
   "cash-bids/iowa/ayrshire.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
-  "cash-bids/iowa/boone.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
   "cash-bids/iowa/booneville.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/boxholm.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
+  },
+  "cash-bids/iowa/bradford.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
   },
   "cash-bids/iowa/bradgate.html": {
    "to": "/cash-bids/iowa/",
@@ -461,10 +461,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/dawson.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
   "cash-bids/iowa/dexter.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -480,6 +476,10 @@
   "cash-bids/iowa/earlham.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/early.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
   },
   "cash-bids/iowa/elberon.html": {
    "to": "/cash-bids/iowa/",
@@ -548,6 +548,10 @@
   "cash-bids/iowa/knoke.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
+  },
+  "cash-bids/iowa/lake-view.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
   },
   "cash-bids/iowa/langdon.html": {
    "to": "/cash-bids/iowa/",
@@ -693,10 +697,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/templeton.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-21"
-  },
   "cash-bids/iowa/terril.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -724,6 +724,10 @@
   "cash-bids/iowa/waukee.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/wellsburg.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-22"
   },
   "cash-bids/iowa/wever.html": {
    "to": "/cash-bids/iowa/",
