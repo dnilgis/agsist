@@ -1,0 +1,1 @@
+Home: the ticker's age badge holds its widest words, so the ticker no longer slides when the age appears (home.css?v=52)

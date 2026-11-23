@@ -421,14 +421,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/boxholm.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
-  "cash-bids/iowa/bradford.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/bradgate.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -477,10 +469,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/early.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/elberon.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -525,11 +513,19 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
+  "cash-bids/iowa/hamlin.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
   "cash-bids/iowa/havelock.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
   "cash-bids/iowa/henderson.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
+  "cash-bids/iowa/ida-grove.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -541,6 +537,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
+  "cash-bids/iowa/jefferson.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
   "cash-bids/iowa/kellogg.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -549,7 +549,7 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
   },
-  "cash-bids/iowa/lake-view.html": {
+  "cash-bids/iowa/lake-city.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -628,6 +628,10 @@
   "cash-bids/iowa/north-washington.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/panora.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
   },
   "cash-bids/iowa/plover.html": {
    "to": "/cash-bids/iowa/",
@@ -722,10 +726,6 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/waukee.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
-  "cash-bids/iowa/wellsburg.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -928,6 +928,10 @@
   "cash-bids/new-york/buffalo.html": {
    "to": "/cash-bids/new-york/",
    "since": "2026-11-20"
+  },
+  "cash-bids/north-dakota/forest-river.html": {
+   "to": "/cash-bids/north-dakota/",
+   "since": "2026-11-23"
   },
   "cash-bids/north-dakota/milnor.html": {
    "to": "/cash-bids/north-dakota/",
