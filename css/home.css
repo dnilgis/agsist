@@ -2218,8 +2218,11 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
       Held to the live nav's height sitewide now, in components/styles.css.
    2. The ticker status opened as one "..." and became two short lines, and
       the whole ticker slid 30px right. Hold two lines of seven characters
-      ("Delayed" over "15 min", "Settle" over "Oct 16"). */
-.ticker-live #ticker-age{min-width:calc(7ch + .28em);min-height:2.2em}
+      ("Delayed" over "15 min", "Settle" over "Oct 16").
+      Nov 23, 2026 (rule 75b): seven characters no longer hold every line home-yield.js writes: "1:20 pm CT" after the
+      close moved the ticker 7px right at 1280 in the overnight hours (0.011). The badge now holds the widest it can
+      write, "Close" over "Dec 31, 2027" (6.6em at its own size). */
+.ticker-live #ticker-age{min-width:6.8em;min-height:2.2em}
 /* 3. A saved state's middle-bid line holds its space until the numbers come
       (components/price-local.js reserve()); unseen until filled. */
 .pl-line.pl-wait{visibility:hidden}
