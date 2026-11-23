@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-23",
+      "date_display": "Monday, November 23, 2026",
+      "headline": "Cattle on Feed shows placements below last year; corn up 3¾¢",
+      "teaser": "Cattle on Feed shows fewer placements; corn and beans edge up overnight before Crop Progress.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-23",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-22",
       "date_display": "Sunday, November 22, 2026",
       "headline": "Monday Crop Progress opens a holiday week; hogs near $52",
@@ -2899,5 +2910,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-22T14:12:05.448607+00:00"
+  "updated": "2026-11-23T13:49:15.794564+00:00"
 }

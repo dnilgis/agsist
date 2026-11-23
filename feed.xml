@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 22 Nov 2026 14:12:51 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 23 Nov 2026 13:50:00 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Cattle on Feed shows placements below last year; corn up 3¾¢</title>
+      <link>https://agsist.com/daily/2026-11-23</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-23</guid>
+      <pubDate>Mon, 23 Nov 2026 13:49:10 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>Dec corn is up 3¾ cents overnight at $4.38¼, giving back part of Friday's 1.0% drop. October cattle placements came in under last year, so fewer calves are heading to feedlots into winter.
+• Grains edge up overnight
+• Cattle on Feed and hogs
+Read more: https://agsist.com/daily/2026-11-23</description>
+    </item>
     <item>
       <title>Monday Crop Progress opens a holiday week; hogs near $52</title>
       <link>https://agsist.com/daily/2026-11-22</link>
@@ -342,18 +353,6 @@ Read more: https://agsist.com/daily/2026-10-26</description>
 • Cattle hold near highs
 • Crude gains; gas drops
 Read more: https://agsist.com/daily/2026-10-25</description>
-    </item>
-    <item>
-      <title>Corn ends the week at $4.56 as crude gains 3.8% to $103</title>
-      <link>https://agsist.com/daily/2026-10-24</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-24</guid>
-      <pubDate>Sat, 24 Oct 2026 10:55:04 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Corn closed Friday at $4.56, down 4½ cents, while beans added 3½ cents to $12.56½. Crude ran the other way, up 3.8% to $103.27 as Saudi-Houthi tension pushed Brent toward $120.
-• Grains finish the week quiet
-• Cattle hold near highs
-• Crude climbs, gas drops
-Read more: https://agsist.com/daily/2026-10-24</description>
     </item>
   </channel>
 </rss>

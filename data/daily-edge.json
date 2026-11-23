@@ -1,9 +1,56 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-11-22T14:11:40Z",
+ "generated": "2026-11-23T13:48:34Z",
  "label": "Only on AGSIST",
  "note": "From the elevator boards AGSIST reads.",
- "facts": [],
+ "facts": [
+  {
+   "id": "over_futures_corn",
+   "crop": "corn",
+   "kind": "over_futures",
+   "sentence": "Of 617 elevators AGSIST reads with a fresh corn bid on Nov 23, 80 were paying over futures, most of them in Colorado (19).",
+   "key": "80 were paying over futures",
+   "detail": "526 under futures, 11 even. Each board against the futures month it names.",
+   "value": 80,
+   "unit": "elevators bidding over futures",
+   "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
+   "n": 617,
+   "over": 80,
+   "under": 526,
+   "even": 11,
+   "states": [
+    {
+     "state": "CO",
+     "name": "Colorado",
+     "n": 19
+    },
+    {
+     "state": "IN",
+     "name": "Indiana",
+     "n": 17
+    },
+    {
+     "state": "IL",
+     "name": "Illinois",
+     "n": 11
+    },
+    {
+     "state": "KS",
+     "name": "Kansas",
+     "n": 10
+    },
+    {
+     "state": "OH",
+     "name": "Ohio",
+     "n": 5
+    }
+   ],
+   "as_of": "2026-11-23",
+   "source": "AGSIST elevator network, live board basis (merged-index.json)",
+   "url": "/cash-bids",
+   "link_text": "Cash bids near you"
+  }
+ ],
  "withheld": [
   {
    "id": "cash_change_corn",
@@ -14,11 +61,6 @@
    "id": "cash_change_soybeans",
    "why": "sample",
    "detail": "0 matched boards for 2026-11-19 to 2026-11-20, need 100"
-  },
-  {
-   "id": "over_futures_corn",
-   "why": "sample",
-   "detail": "84 fresh boards, need 200"
   }
  ]
 }
