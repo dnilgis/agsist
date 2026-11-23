@@ -54,7 +54,6 @@ jobs:
             git fetch -q origin main
             git reset -q --hard origin/main
             python scripts/build_infographic_pages.py
-            # the same as stage(), written out: the rule 61 check reads the dependents call after each builder run
             if [ -s infographic/_indexable.txt ]; then
               python scripts/update_sitemap.py --add $(cat infographic/_indexable.txt) --priority 0.6 --changefreq weekly
             fi
