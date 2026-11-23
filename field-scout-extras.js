@@ -168,7 +168,7 @@ window.__fsExtras = function (FSX) {
         return '<tr><td>'+esc(c.name)+'</td><td>class '+(c.nicc||'?')+'</td><td class="r-num">'+(hasArea?c.ac.toFixed(1)+' ac':'n/a')+'</td><td class="r-num">'+(pct!=null?pct+'%':'n/a')+'</td></tr>';
       }).join('')+'</table>';
       var bits=[];
-      if(s.csr2!=null) bits.push('CSR2 '+s.csr2.toFixed(1));
+      if(s.csr2!=null) bits.push('CSR2 '+(+s.csr2).toFixed(0));
       if(soilShare(s)) bits.push(soilShare(s));
       if(s.nccpi!=null) bits.push('USDA NCCPI '+s.nccpi.toFixed(2)+' (soil productivity, 0 to 1)');
       if(s.slope!=null) bits.push(s.slope+'% average slope'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':''));
@@ -230,15 +230,16 @@ window.__fsExtras = function (FSX) {
     var fCells='';
     function fcell(k,v,n){ fCells+='<div class="r-st r-st-f"><div class="r-stk">'+esc(k)+'</div><div class="r-stv">'+v+'</div>'+(n?'<div class="r-stn">'+esc(n)+'</div>':'')+'</div>'; }
     fcell('Acres', d.acres.toFixed(1), null);
-    if(s&&s.csr2!=null) fcell('CSR2', s.csr2.toFixed(1), 'Iowa corn suitability, of 100');
-    else if(s&&s.nccpi!=null) fcell('Soil productivity', s.nccpi.toFixed(2), 'USDA NCCPI, 0 to 1');
+    // the answer's figures, in its own rounding: NCCPI to two places, CSR2 whole
+    if(s&&s.nccpi!=null) fcell('Soil productivity', s.nccpi.toFixed(2), 'USDA NCCPI, 0 to 1');
+    if(s&&s.csr2!=null) fcell('CSR2', (+s.csr2).toFixed(0), 'Iowa corn suitability, of 100');
     if(s&&(s.farmPct!=null||s.primePct!=null)) fcell('Prime farmland', (s.farmPct!=null?s.farmPct:s.primePct)+'%', s.farmIfPct?('+'+s.farmIfPct+'% if drained'):'of the field');
     if(FSX.FIELD.thisYear&&FSX.FIELD.thisYear.code!=null) fcell((r&&r.nextYear)||'This year', FSX.FIELD.thisYear.code===1?'Corn':FSX.FIELD.thisYear.code===5?'Soybeans':'Other', FSX.FIELD.thisYear.src==='you'?'as told':'likely, from the pattern');
     if(d.indices&&d.indices.series&&d.indices.series.length){
       var fx=d.indices.latest||d.indices.series[d.indices.series.length-1], fn=d.indices.normal;
       if(fx.ndvi!=null) fcell('Vigor (NDVI)', fx.ndvi.toFixed(2), fn&&fn.ndvi!=null?('normal '+fn.ndvi.toFixed(2)+' for the date'):fx.date);
     }
-    if(se&&se.pNow!=null) fcell('Season rain', se.pNow.toFixed(1)+'<span class="r-stu">\u2033</span>', se.pDep!=null ? (se.pDep>=0?'+':'\u2212')+Math.abs(se.pDep).toFixed(1)+'\u2033 vs normal' : 'no normal for this gauge');
+    if(se&&se.pNow!=null) fcell('Rain since Jan 1', se.pNow.toFixed(1)+'<span class="r-stu"> in</span>', se.pDep!=null ? (se.pct!=null?Math.round(se.pct)+'% of normal, ':'')+(se.pDep>=0?'+':'\u2212')+Math.abs(se.pDep).toFixed(1)+' in' : 'no normal for this gauge');
     var fieldBand = '<div class="r-band r-band-f">'+fCells+'</div>';
 
     // The field's outline, drawn to scale, so the page shows which field it is about.
@@ -320,7 +321,7 @@ window.__fsExtras = function (FSX) {
       +'<div class="r-actions no-print"><button type="button" onclick="window.print()">\u2399 Print / Save as PDF</button></div>'
       +'<div class="r-head"><div class="r-brand">AGSIST \u00b7 Field Scout</div><div class="r-date">'+esc(dateStr)+'</div></div>'
       +'<div class="r-top">'+outline+'<div class="r-top-t"><h1>'+d.acres.toFixed(1)+'-acre field'+(cy&&cy.name?', '+esc(cy.name)+' County, '+esc(cy.st):'')+'</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
-      +verdictHtml+'</div></div>'+fieldBand+lead+flagsHtml+notesHtml+bandHtml
+      +verdictHtml+'</div><!--QR--></div>'+fieldBand+lead+flagsHtml+notesHtml+bandHtml
       +sect('Soil & productivity', soilHtml)
       +'<div class="r-cols">'
       +sect('Crop vigor & moisture (satellite)', vigorHtml)
@@ -338,8 +339,26 @@ window.__fsExtras = function (FSX) {
 
     var w=window.open('','_blank');
     if(!w){ flashHint('Allow pop-ups to open the printable field report.'); return; }
-    w.document.open(); w.document.write(html); w.document.close();
-    ga('field_report', { acres: Math.round(d.acres) });
+    ga('field_report', {});
+    // the printed sheet carries a QR that opens this field in Field Scout: the share link, the
+    // outline in its #hash, drawn here by components/qr.js (no outside QR service)
+    if(FSX.activePoly) FSX.writeHash(FSX.activePoly);
+    var link=location.href;
+    w.document.open(); w.document.write('<!DOCTYPE html><title>Field Report | AGSIST</title><p style="font:15px system-ui,sans-serif;padding:24px">Preparing the field report.</p>'); w.document.close();
+    qrLib().then(function(){
+      return window.AgPrintQR ? { css:window.AgPrintQR.CSS, html:window.AgPrintQR.html(link, 'agsist.com/field-scout', { screen:true }).replace('Scan to open this report on agsist.com', 'Scan to open this field in Field Scout') } : null;
+    }, function(){ return null; }).then(function(q){
+      var out = q ? html.replace('</style>', q.css+'.r-top .agpq{flex:none}</style>').replace('<!--QR-->', q.html) : html;
+      try{ w.document.open(); w.document.write(out); w.document.close(); }catch(e){}
+    });
+  }
+  var _qrP=null;
+  function qrLib(){
+    if(window.AgPrintQR && window.AgQR) return Promise.resolve();
+    if(!_qrP) _qrP=['/components/qr.js?v=11', '/components/print-qr.js?v=1'].reduce(function(p, src){
+      return p.then(function(){ return new Promise(function(ok, no){ var s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=function(){ _qrP=null; no(new Error(src)); }; document.head.appendChild(s); }); });
+    }, Promise.resolve());
+    return _qrP;
   }
 
   return { handlePhotoFile:handlePhotoFile, deletePhoto:deletePhoto, exportGeoJSON:exportGeoJSON, exportKML:exportKML, generateReport:generateReport };

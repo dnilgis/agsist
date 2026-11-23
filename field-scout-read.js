@@ -147,7 +147,8 @@ window.__fsRead = function (FSX) {
     if(window.matchMedia && matchMedia('(max-width:820px)').matches){
       setTimeout(function(){ var w=document.getElementById('fs-insight-wrap'); if(w && w.getBoundingClientRect().top>window.innerHeight-160){ try{ w.scrollIntoView({ block:'end', behavior:'smooth' }); }catch(e){ w.scrollIntoView(false); } } }, 450);
     }
-    var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', shareField);
+    var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', sharePicture);
+    var pcb=document.getElementById('fs-pic'); if(pcb) pcb.addEventListener('click', savePicture);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
     var gjb=document.getElementById('fs-export-geojson'); if(gjb) gjb.addEventListener('click', exportGeoJSON);
     var kmlb=document.getElementById('fs-export-kml'); if(kmlb) kmlb.addEventListener('click', exportKML);
@@ -187,6 +188,7 @@ window.__fsRead = function (FSX) {
         '<div class="fs-fh-btns">'+
         '<button class="fs-save-btn" id="fs-save" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8L3.5 9.7l5.9-.9z"/></svg>Save field</button>'+
         '<button class="fs-save-btn" id="fs-share" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Share</button>'+
+        '<button class="fs-save-btn" id="fs-pic" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-7 7"/></svg>Save picture</button>'+
         '<button class="fs-save-btn" id="fs-report" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Field report</button>'+
         '<button class="fs-save-btn" id="fs-newfield" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg>Draw a different field</button>'+
         '</div>'+
@@ -335,6 +337,8 @@ window.__fsRead = function (FSX) {
         var primeIfAc = classes.filter(function(x){ return x.farm && /^prime farmland if/i.test(x.farm); }).reduce(function(a,x){ return a+x.ac; },0);
         var csrAc=0, csrSum=0; classes.forEach(function(x){ if(x.csr2!=null&&x.ac>0){ csrSum+=x.csr2*x.ac; csrAc+=x.ac; } });
         var csr2 = csrAc>0 && csrAc>=0.5*total0 ? Math.round(csrSum/csrAc*10)/10 : null;
+        // the answer, the soil card and the picture print one CSR2: the soil card's own figure when USDA answered directly
+        if(dir && dir.s && dir.s.csr2!=null) csr2 = dir.s.csr2;
         var floodAc = classes.filter(function(x){ return x.flood && !/^none$/i.test(x.flood) && !/^very rare$/i.test(x.flood); }).reduce(function(a,x){ return a+x.ac; },0);
         // Field slope + steepest mapunit (erosion is largely slope-driven). Prefer
         // area-weighting; when acreage is unavailable (helper query returns no per-
@@ -357,7 +361,8 @@ window.__fsRead = function (FSX) {
                        farmPct: farmKnown&&total>0?Math.round(primeLegalAc/total*100):null, farmIfPct: farmKnown&&total>0?Math.round(primeIfAc/total*100):null,
                        floodPct: ext&&total>0?Math.round(floodAc/total*100):null,
                        top:classes[0]||null, slope:avgSlope, maxSlope:maxSlope, drainageTop:drTop, poorDrainPct:poorPct,
-                       nccpi:wNccpi('nccpi'), nccpiCorn:wNccpi('nccpiCorn'), nccpiSoy:wNccpi('nccpiSoy') };
+                       nccpi:wNccpi('nccpi'), nccpiCorn:wNccpi('nccpiCorn'), nccpiSoy:wNccpi('nccpiSoy'),
+                       asOf: dir ? ((dir.c && dir.c.asOf) || (dir.s && dir.s.asOf) || null) : null };
         recomputeInsight(); renderRisk();
         var palette=['#7c5a2e','#9c7339','#b58d4f','#c9a878','#8a6a3b','#a37d45'];
         var html = rows.slice(0,6).map(function(r,i){
@@ -587,11 +592,15 @@ window.__fsRead = function (FSX) {
     if(nCrop*2>codes.length) return 'USDA&rsquo;s crop map shows '+otherYears.join(', ')+'; a crop in the other '+nCrop+' of these '+codes.length+' years.';
     return 'USDA&rsquo;s crop map shows a crop here in '+nCrop+' of these '+codes.length+' years ('+cropYears.join(', ')+'); the other years are '+Object.keys(other).join(' or ')+'.';
   }
+  // one year's chip: its words and color (the strip on the page and the Field Report picture)
+  function chipInfo(x, code){
+    // a chip names land cover by its kind, short enough for the chip ("Developed", not "Developed/Low Intensity")
+    var ln=landName(x.code, x.crop), short={ 'developed land':'Developed', 'grassland or pasture':'Grass/Pasture', 'open water':'Water', 'fallow land':'Fallow', 'barren land':'Barren' }[ln];
+    return code ? (CDL_CROPS[code] ? crop(code) : { l:x.crop||'Code '+code, c:'#8a948f' }) : { l:short||(ln.charAt(0).toUpperCase()+ln.slice(1)), c:(CDL_CROPS[x.code]||{}).c||'#9c9c9c' };
+  }
   function rotationHtml(recent, codes, years, full){
     var chips=recent.map(function(x,i){
-      // a chip names land cover by its kind, short enough for the chip ("Developed", not "Developed/Low Intensity")
-      var ln=landName(x.code, x.crop), short={ 'developed land':'Developed', 'grassland or pasture':'Grass/Pasture', 'open water':'Water', 'fallow land':'Fallow', 'barren land':'Barren' }[ln];
-      var code=codes[i], info = code ? (CDL_CROPS[code] ? crop(code) : { l:x.crop||'Code '+code, c:'#8a948f' }) : { l:short||(ln.charAt(0).toUpperCase()+ln.slice(1)), c:(CDL_CROPS[x.code]||{}).c||'#9c9c9c' };
+      var code=codes[i], info=chipInfo(x, code);
       return '<li class="fs-yr'+(code?'':' fs-yr-land')+'" style="background:'+hexA(info.c,.16)+';border-color:'+hexA(info.c,.55)+'"><span class="fs-yr-y">'+years[i]+'</span><span class="fs-yr-c">'+esc(info.l)+'</span></li>';
     }).join('');
     var words=rotationWords(codes, years) || landWords(recent, codes, years, full);
@@ -2288,19 +2297,25 @@ window.__fsRead = function (FSX) {
   // no advice (it was a verdict line, two lists of flags and to-dos, and a stat strip that repeated
   // the same numbers).
   function shortSoil(n){ return String(n||'').split(',')[0]; }
+  // the three largest soils by name: two map units of one series (Burchard clay loam 6 to 11% and
+  // 11 to 17%) are one soil, their acres together, so no name shows twice. The answer and the
+  // Field Report picture both read this, so they print the same names and shares.
+  function topSoils(s){
+    var tot=s.total||0, byName={}, names=[];
+    s.classes.forEach(function(x){ var k=shortSoil(x.name); if(!byName[k]){ byName[k]={ name:k, ac:0 }; names.push(byName[k]); } byName[k].ac+=x.ac; });
+    return names.sort(function(a,b){ return b.ac-a.ac; }).slice(0,3).map(function(x){ return { name:x.name, ac:x.ac, pct: tot>0 ? Math.round(x.ac/tot*100) : null }; });
+  }
+  function nccpiParts(s){ var p=[]; if(s.nccpiCorn!=null) p.push('corn '+s.nccpiCorn.toFixed(2)); if(s.nccpiSoy!=null) p.push('soybeans '+s.nccpiSoy.toFixed(2)); return p.join(', '); }
   function answerHtml(){
     var F=FSX.FIELD||{}, s=F.soil, r=F.rotation, d=F.drought, se=F.season, cy=F.county, M=F.missing||{};
     var W='<span class="fs-ans-wait">reading</span>', out=[];
     out.push('<b>'+(F.acres!=null?(+F.acres).toFixed(1):'')+' acres</b>'+(cy&&cy.name?' in '+esc(cy.name)+' County, '+esc(cy.st||cy.abbr||''):''));
     if(s && s.classes && s.classes.length){
-      // by soil name: two map units of one series (Burchard clay loam 6 to 11% and 11 to 17%) are one
-      // soil in the answer, their acres together, so no name shows twice
-      var tot=s.total||0, byName={}, names=[];
-      s.classes.forEach(function(x){ var k=shortSoil(x.name); if(!byName[k]){ byName[k]={ name:k, ac:0 }; names.push(byName[k]); } byName[k].ac+=x.ac; });
-      var top=names.sort(function(a,b){ return b.ac-a.ac; }).slice(0,3);
-      var parts=[]; if(s.nccpiCorn!=null) parts.push('corn '+s.nccpiCorn.toFixed(2)); if(s.nccpiSoy!=null) parts.push('soybeans '+s.nccpiSoy.toFixed(2));
-      out.push('Soils: '+top.map(function(x){ return esc(shortSoil(x.name))+(tot>0?' '+Math.round(x.ac/tot*100)+'%':''); }).join(', ')+
-        (s.nccpi!=null?'; <b>NCCPI '+s.nccpi.toFixed(2)+'</b>'+(parts.length?' ('+parts.join(', ')+')':''):''));
+      var parts=nccpiParts(s);
+      // CSR2 next to NCCPI where USDA rates it (Iowa), the soil card's own figure
+      out.push('Soils: '+topSoils(s).map(function(x){ return esc(x.name)+(x.pct!=null?' '+x.pct+'%':''); }).join(', ')+
+        (s.nccpi!=null?'; <b>NCCPI '+s.nccpi.toFixed(2)+'</b>'+(parts?' ('+parts+')':''):'')+
+        (s.csr2!=null?(s.nccpi!=null?', ':'; ')+'<b>CSR2 '+(+s.csr2).toFixed(0)+'</b>':''));
     } else if(s==null && !M['fs-soil']) out.push('Soils: '+W);
     if(r && r.codes && r.codes.length){
       // "Last 3 crops" only when the last 3 years are crops (Nov 20, 2026: the real answers for the
@@ -2330,8 +2345,101 @@ window.__fsRead = function (FSX) {
     var h=answerHtml(); if(el.innerHTML!==h) el.innerHTML=h;
     // the field report and the changed-since check read this; it holds facts only, no verdict
     FSX.FIELD.read = { verdict:null, flags:[], lines:[h.replace(/^<p[^>]*>|<\/p>$/g,'')] };
-    if(h.indexOf('fs-ans-wait')<0) scheduleSettle();
+    if(h.indexOf('fs-ans-wait')<0){ scheduleSettle(); warmPicture(); }
   }
 
-  return { renderPassTimeline:renderPassTimeline, scrubTo:scrubTo, toggleHail:toggleHail, runAll:runAll, soilShare:soilShare, vigorWord:vigorWord, ordinal:ordinal, atlasCounty:atlasCounty, atlasRows:atlasRows };
+  // ── The Field Report picture (Nov 23, 2026): the read's own facts, drawn on a canvas in this
+  // browser by components/field-card.js. Nothing about the field leaves the phone until the reader
+  // sends the picture; the link it goes with keeps the outline in the #hash, which no server sees.
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function mdy(iso, year){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||'')); return m ? MON[+m[2]-1]+' '+(+m[3])+(year?', '+m[1]:'') : null; }
+  function cardModel(){
+    var F=FSX.FIELD; if(!F || F.acres==null || !F.county || !F.county.name) return null;
+    var el=document.getElementById('fs-insight'); if(!el || el.querySelector('.fs-ans-wait')) return null;   // the read is still landing
+    var cy=F.county, s=F.soil, r=F.rotation, se=F.season, now=new Date();
+    var m={ acres:(+F.acres).toFixed(1), place:cy.name+' County, '+(cy.st||cy.abbr||''), slug:cy.name+' county '+(cy.abbr||''),
+      made:MON[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear(), src:{} };
+    if(s && s.classes && s.classes.length){
+      var top=topSoils(s), tot=s.total||0;
+      if(tot>0 && top.every(function(x){ return x.pct!=null; })){
+        m.soils=top.map(function(x){ return { name:x.name, pct:x.pct }; });
+        var rest=Math.round((tot-top.reduce(function(a,x){ return a+x.ac; },0))/tot*100);
+        m.restPct=rest>0?rest:0;
+      }
+      if(s.nccpi!=null){ m.nccpi=s.nccpi.toFixed(2); m.nccpiParts=nccpiParts(s); }
+      if(s.csr2!=null) m.csr2=(+s.csr2).toFixed(0);
+      m.src.soil='Soils: USDA NRCS SSURGO'+(s.asOf&&mdy(s.asOf,1)?', data as of '+mdy(s.asOf,1):'');
+    }
+    if(r && r.recent && r.recent.length){
+      m.chips=r.recent.map(function(x,i){ var info=chipInfo(x, r.codes[i]); return { y:r.years[i], l:info.l, c:info.c, land:!r.codes[i] }; });
+      m.src.crops='Crops: USDA Cropland Data Layer, '+r.years[0]+' to '+r.years[r.years.length-1];
+    }
+    if(se && se.pNow!=null){
+      m.rain={ inches:se.pNow.toFixed(1), pct:se.pct!=null?Math.round(se.pct):null };
+      m.src.rain='Rain: '+se.station+' gauge, Jan 1 through '+(mdy(se.thru)||'')+(se.pct!=null&&se.pLbl?', against its '+se.pLbl:'');
+    }
+    if(!m.soils && !m.chips) return null;   // no picture without a real soil or crop figure
+    return m;
+  }
+  var CARD_JS='/components/field-card.js?v=1', _cardP=null, _pic=null;
+  function cardLib(){
+    if(window.AgFieldCard) return Promise.resolve(window.AgFieldCard);
+    if(!_cardP) _cardP=new Promise(function(ok, no){
+      var sc=document.createElement('script'); sc.src=CARD_JS;
+      sc.onload=function(){ window.AgFieldCard ? ok(window.AgFieldCard) : no(new Error('card')); };
+      sc.onerror=function(){ if(sc.parentNode) sc.parentNode.removeChild(sc); no(new Error('card')); };
+      document.head.appendChild(sc);
+    }).catch(function(e){ _cardP=null; throw e; });
+    return _cardP;
+  }
+  // the picture is drawn once the read settles, so a tap on Share can hand it over at once
+  // (a phone's share sheet opens only straight from the tap)
+  function picture(){
+    var m=cardModel(); if(!m) return Promise.resolve(null);
+    var key=JSON.stringify(m);
+    if(_pic && _pic.key===key) return _pic.p;
+    var p=cardLib().then(function(C){ return new Promise(function(ok){ C.blob(m, 2, function(b){ ok(b ? { blob:b, model:m, name:C.fileName(m) } : null); }); }); }, function(){ return null; });
+    _pic={ key:key, p:p, done:null }; p.then(function(v){ if(_pic && _pic.key===key) _pic.done=v; });
+    return p;
+  }
+  function warmPicture(){ var g=FSX.fieldGen; setTimeout(function(){ if(g===FSX.fieldGen) picture(); }, 300); }
+  function download(pic){
+    var a=document.createElement('a'); a.href=URL.createObjectURL(pic.blob); a.download=pic.name;
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  function shareText(m){ return m.acres+' acres in '+m.place+(m.nccpi?': NCCPI '+m.nccpi:'')+(m.csr2?', CSR2 '+m.csr2:'')+'. Field Scout on AGSIST'; }
+  // Share: the picture and the field link through the phone's share sheet where it takes files;
+  // else the link the way it always went (the share sheet, or copied) and the picture saved. One
+  // count per tap, with how it went and nothing about the field.
+  function sharePicture(){
+    if(!FSX.activePoly) return;
+    writeHash(FSX.activePoly);
+    var url=location.href, pic=_pic && _pic.done, nav=navigator, file=null;
+    try{ if(pic && nav.share && nav.canShare && window.File){ file=new File([pic.blob], pic.name, { type:'image/png' }); if(!nav.canShare({ files:[file] })) file=null; } }catch(e){ file=null; }
+    if(file){
+      ga('field_share', { via:'picture' });
+      nav.share({ files:[file], title:pic.model.acres+'-acre field, '+pic.model.place, text:shareText(pic.model)+' '+url }).catch(function(){});
+      return;
+    }
+    var coarse=window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+    if(coarse && nav.share){
+      ga('field_share', { via:'sheet' });
+      var m=cardModel();
+      nav.share({ title:(m?m.acres+'-acre field, '+m.place:'Field')+' | AGSIST Field Scout', url:url }).catch(function(){});
+      return;
+    }
+    ga('field_share', { via:'copy' });
+    var saved=function(){ picture().then(function(p){ if(p) download(p); }); };
+    var done=function(){ flashHint('Field link copied'+(cardModel()?' and the picture saved':'')+': anyone who opens the link sees this exact field', 6000); saved(); };
+    if(nav.clipboard && nav.clipboard.writeText) nav.clipboard.writeText(url).then(done, function(){ window.prompt('Copy this field link:', url); saved(); });
+    else { window.prompt('Copy this field link:', url); saved(); }
+  }
+  function savePicture(){
+    if(!cardModel()){ flashHint('The picture is ready once the read finishes.', 4000); return; }
+    ga('field_picture', {});
+    picture().then(function(p){ if(p) download(p); else flashHint('The picture could not be drawn in this browser.', 5000); });
+  }
+
+  return { renderPassTimeline:renderPassTimeline, scrubTo:scrubTo, toggleHail:toggleHail, runAll:runAll, soilShare:soilShare, vigorWord:vigorWord, ordinal:ordinal, atlasCounty:atlasCounty, atlasRows:atlasRows,
+    cardModel:cardModel, picture:picture };
 };
