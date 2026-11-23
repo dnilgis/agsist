@@ -3167,7 +3167,9 @@
     top.hidden = false;
     // one tap (xmasTap): while a cutoff is ahead, this year's design to last year; after both, through Dec 24, a past
     // year's design to this year's gift card (2026-11-23: the card comes in minutes, the print in January)
-    var tap = canOrder() && ST.place && !(GIFT && GIFT.lock) ? xmasTap(TODAY, pc, fc, gift) : '';
+    // shown from the moment the town and year are in (not only once drawn), so the row is in place before the print
+    // paints and nothing below it moves (Nov 23: the late tap measured 0.09 CLS at 1280 when it waited for the draw)
+    var tap = !SAMPLE && !BLOCKED && (ST.place || $('rp-place').value.trim()) && !(GIFT && GIFT.lock) ? xmasTap(TODAY, pc, fc, gift) : '';
     if (tap) {
       $('rp-xmas-last').textContent = tap === 'last' ? 'Make it ' + ly + ', by Christmas' : 'Give it as a gift card now, the ' + CURRENT_YEAR + ' print in January';
       $('rp-xmas-last').setAttribute('data-to', tap);
