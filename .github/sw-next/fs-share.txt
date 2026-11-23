@@ -1,0 +1,1 @@
+Field Scout: a Field Report picture of your field drawn in your browser, Save picture and Share, CSR2 in the Iowa answer, a QR on the printed report (field-scout.js?v=46, field-scout-read.js?v=33, field-scout-extras.js?v=8, field-card.js?v=1)

@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T15:09:40Z",
+ "updated": "2026-11-23T23:24:53Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, state hay reports",
  "note": "Confirmed trades as AMS reports them, $ per ton, by grade and bale type. Each report has its own date. Not blended with the NASS monthly prices in hay-prices.json.",
  "reports": [
@@ -161,7 +161,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -337,7 +337,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -347,7 +347,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -573,7 +573,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -1639,7 +1639,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -1649,7 +1649,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    },
    "title": "Iowa Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 11/20/2026",
@@ -1770,7 +1770,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -1780,7 +1780,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -1866,7 +1866,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -1876,7 +1876,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -1992,7 +1992,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -2093,7 +2093,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -2103,7 +2103,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    },
    "title": "Montana Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 11/13/2026",
@@ -2360,7 +2360,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -2716,7 +2716,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -2982,7 +2982,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3178,7 +3178,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3188,7 +3188,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    },
    "title": "Utah Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 11/20/2026",
@@ -3424,7 +3424,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    },
    "title": "Nevada Direct Hay Report (Bi-Weekly)",
    "heading": "Direct Hay Weighted Average Report for week ending 11/13/2026",
@@ -3480,7 +3480,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3490,7 +3490,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3500,7 +3500,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3510,7 +3510,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3520,7 +3520,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3530,7 +3530,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3540,7 +3540,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3550,7 +3550,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3560,7 +3560,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3696,7 +3696,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -3706,7 +3706,7 @@
    "status": {
     "ok": false,
     "note": "held: sells every lot by the bale (Oct 10 2026 report); bale prices are never converted to tons",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -4127,7 +4127,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -4443,7 +4443,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -4594,7 +4594,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   },
   {
@@ -4604,7 +4604,7 @@
    "status": {
     "ok": false,
     "note": "held: sells every lot by the bale (Oct 5 2026 report); bale prices are never converted to tons",
-    "checked": "2026-11-21T15:09:40Z"
+    "checked": "2026-11-23T23:24:53Z"
    }
   }
  ]

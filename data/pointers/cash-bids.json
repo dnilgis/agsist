@@ -441,6 +441,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
+  "cash-bids/iowa/collins.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
   "cash-bids/iowa/colo.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -498,8 +502,12 @@
    "since": "2026-10-20"
   },
   "cash-bids/iowa/grant.html": {
-   "to": "/cash-bids/iowa/paton",
+   "to": "/cash-bids/iowa/",
    "since": "2026-10-20"
+  },
+  "cash-bids/iowa/greene.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
   },
   "cash-bids/iowa/griswold.html": {
    "to": "/cash-bids/iowa/",
@@ -513,19 +521,11 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/hamlin.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/havelock.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
   "cash-bids/iowa/henderson.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
-  "cash-bids/iowa/ida-grove.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -537,10 +537,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/jefferson.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/kellogg.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -548,10 +544,6 @@
   "cash-bids/iowa/knoke.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
-  },
-  "cash-bids/iowa/lake-city.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
   },
   "cash-bids/iowa/langdon.html": {
    "to": "/cash-bids/iowa/",
@@ -629,7 +621,7 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/panora.html": {
+  "cash-bids/iowa/paton.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
