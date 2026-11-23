@@ -167,7 +167,10 @@
     // the sources, then the address
     var src = sourceText(m);
     x.font = '400 15px ' + FONT; x.fillStyle = DIM;
-    var sl = src ? wrap(x, src, W - PAD * 2, 2) : [];
+    // a line breaks between sources, never inside one, when they fit that way
+    var sl = [], segs = src ? src.split(' · ') : [];
+    segs.forEach(function (sg) { var t = sl.length ? sl[sl.length - 1] + ' · ' + sg : sg; if (sl.length && x.measureText(t).width <= W - PAD * 2) sl[sl.length - 1] = t; else sl.push(sg); });
+    if (sl.length > 2 || sl.some(function (l) { return x.measureText(l).width > W - PAD * 2; })) sl = src ? wrap(x, src, W - PAD * 2, 2) : [];
     var sy = H - 44 - (sl.length - 1) * 20;
     sl.forEach(function (l, i) { x.fillText(l, PAD, sy + i * 20); });
     x.font = '700 19px ' + FONT; x.fillStyle = GOLD; x.fillText('agsist.com/field-scout', PAD, H - 16);
