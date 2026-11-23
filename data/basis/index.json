@@ -45,14 +45,14 @@
    "kb":470.7
   },
   "IN":{
-   "rows":1202,
+   "rows":1203,
    "facilities":83,
    "kb":55.0
   },
   "KS":{
-   "rows":5170,
+   "rows":5171,
    "facilities":263,
-   "kb":233.9
+   "kb":234.0
   },
   "KY":{
    "rows":130,
@@ -100,14 +100,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4639,
+   "rows":4641,
    "facilities":91,
-   "kb":199.3
+   "kb":199.4
   },
   "OK":{
-   "rows":3169,
+   "rows":3170,
    "facilities":81,
-   "kb":133.2
+   "kb":133.3
   },
   "OR":{
    "rows":11,
