@@ -297,6 +297,18 @@
     if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas, if you OK the proof the day it comes.';
     return 'Orders placed now ship after Christmas.';
   }
+  /* THE ONE TAP UNDER THE CHRISTMAS LINE (2026-11-23), from the two cutoffs in data/rain-print.json. While a
+     cutoff is ahead and this year's print is drawn: 'last' (make it last year, it still arrives by Christmas).
+     Once both cutoffs have passed, through Dec 24, and a past year is drawn: 'card' (nothing in the mail makes
+     Christmas now, so give this year's print as a gift card: the card to print comes by email within minutes,
+     the print in January). Otherwise ''. Pure: the tests run it for every day. */
+  function xmasTap(todayIso, printCut, framedCut, giftYr) {
+    var D = /^\d{4}-\d{2}-\d{2}$/, t = String(todayIso || ''), pc = String(printCut || ''), fc = String(framedCut || '');
+    if (!D.test(t) || !D.test(pc) || !D.test(fc) || t < pc.slice(0, 4) + '-10-01' || t > pc.slice(0, 4) + '-12-24') return '';
+    var late = t > pc && t > fc;
+    if (!late) return giftYr ? 'last' : '';
+    return giftYr ? '' : 'card';
+  }
   /* CHRISTMAS DATES (2026-10-13). The last day to order and still have it by
      Dec 24, from the page's own promise in data/rain-print.json: the owner sends the
      proof within proof_business_days, the buyer OKs it within
@@ -1935,7 +1947,7 @@
 
   var api = { buyLine: buyLine, promiseLine: promiseLine, GUARANTEE: GUARANTEE, familyMessage: familyMessage, countyFips: countyFips, encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
-    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
+    chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, xmasTap: xmasTap, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, hashRef: hashRef, orderRecord: orderRecord, frameColor: frameColor, frameOf: frameOf, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, notTwice: notTwice, thinWords: thinWords, againWords: againWords, priceDateFor: priceDateFor, ldPriceDates: ldPriceDates, suggestWords: suggestWords, stKey: stKey, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
@@ -3140,7 +3152,7 @@
     // a gift card holder reads the card's banner, not the buying lines (2026-10-20)
     if (typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid)) { top.hidden = true; why.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
-    var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give the gift card now and the print after Christmas.';
+    var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give a gift card now and the ' + CURRENT_YEAR + ' print in January.';
     var gift = giftYear(), ly = CURRENT_YEAR - 1;
     /* "Last year, by Christmas" beside "This year, in January" (2026-10-19, board B: a county link opened this
        year's print and nobody said last year still comes by Christmas). While a cutoff is ahead the first screen
@@ -3153,8 +3165,14 @@
       : gift ? 'For Christmas: ' + thisYr.charAt(0).toLowerCase() + thisYr.slice(1) + ' Last year (' + ly + ') comes by Christmas if you order it ' + by + '.'
       : 'For Christmas: last year (' + ly + '), or any past year, comes by Christmas if you order it ' + by + '. ' + thisYr;
     top.hidden = false;
-    if (!late && gift && canOrder() && ST.place && !(GIFT && GIFT.lock)) {
-      $('rp-xmas-last').textContent = 'Make it ' + ly + ', by Christmas';
+    // one tap (xmasTap): while a cutoff is ahead, this year's design to last year; after both, through Dec 24, a past
+    // year's design to this year's gift card (2026-11-23: the card comes in minutes, the print in January)
+    // shown from the moment the town and year are in (not only once drawn), so the row is in place before the print
+    // paints and nothing below it moves (Nov 23: the late tap measured 0.09 CLS at 1280 when it waited for the draw)
+    var tap = !SAMPLE && !BLOCKED && (ST.place || $('rp-place').value.trim()) && !(GIFT && GIFT.lock) ? xmasTap(TODAY, pc, fc, gift) : '';
+    if (tap) {
+      $('rp-xmas-last').textContent = tap === 'last' ? 'Make it ' + ly + ', by Christmas' : 'Give it as a gift card now, the ' + CURRENT_YEAR + ' print in January';
+      $('rp-xmas-last').setAttribute('data-to', tap);
       $('rp-xmas-alt').hidden = false;
     }
     if (Number.isInteger(J.ship_business_days) && J.transit_business_days) {
@@ -6014,11 +6032,13 @@
     try { p.select(); } catch (e) {}
     ga('rain_print_shared_own', {});
   });
-  // last year, by Christmas: the same town, last year, drawn now (the station is picked again for that year)
+  // last year, by Christmas: the same town, last year, drawn now (the station is picked again for that year);
+  // after the cutoffs (data-to="card"), the same town this year, which orders as a gift card now, the print in January
   $('rp-xmas-last').addEventListener('click', function () {
     if (GIFT && GIFT.lock) return;
-    $('rp-year').value = String(CURRENT_YEAR - 1);
-    ga('rain_print_last_year', { from: 'top' });
+    var card = this.getAttribute('data-to') === 'card';
+    $('rp-year').value = String(card ? CURRENT_YEAR : CURRENT_YEAR - 1);
+    ga(card ? 'rain_print_gift_card_late' : 'rain_print_last_year', { from: 'top' });
     run({ type: 'submit', preventDefault: function () {} });
   });
   $('rp-another').addEventListener('click', function () {
