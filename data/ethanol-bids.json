@@ -1,13 +1,13 @@
 {
  "schema": "agsist-ethanol-bids/1",
- "generated": "2026-11-20T21:54:45Z",
+ "generated": "2026-11-23T15:24:47Z",
  "source": "USDA AMS",
  "credit": "USDA AMS, National Daily Ethanol Report and National Weekly Grain Co-Products Report",
  "corn": {
   "report": "National Daily Ethanol Report",
   "slug": "3617",
-  "report_date": "2026-11-20",
-  "published": "2026-11-20 07:16:56",
+  "report_date": "2026-11-23",
+  "published": "2026-11-23 06:45:07",
   "unit": "$/bu",
   "basis_unit": "cents/bu",
   "terms": "#2 yellow corn, delivered to the plant by truck, current delivery",
@@ -18,226 +18,226 @@
     "state_name": "Illinois",
     "region": null,
     "label": "Illinois",
-    "bid_lo": 4.33,
-    "bid_hi": 4.61,
+    "bid_lo": 4.285,
+    "bid_hi": 4.565,
     "basis_lo": -6.0,
     "basis_hi": 22.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.4743,
-    "avg_year_ago": 4.295
+    "avg": 4.4393,
+    "avg_year_ago": 4.2836
    },
    {
     "state": "IN",
     "state_name": "Indiana",
     "region": null,
     "label": "Indiana",
-    "bid_lo": 4.49,
-    "bid_hi": 4.74,
+    "bid_lo": 4.445,
+    "bid_hi": 4.695,
     "basis_lo": 10.0,
     "basis_hi": 35.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.5889,
-    "avg_year_ago": 4.3406
+    "avg": 4.5517,
+    "avg_year_ago": 4.3294
    },
    {
     "state": "IA",
     "state_name": "Iowa",
     "region": "East",
     "label": "Iowa East",
-    "bid_lo": 3.99,
-    "bid_hi": 4.41,
+    "bid_lo": 3.945,
+    "bid_hi": 4.375,
     "basis_lo": -40.0,
-    "basis_hi": 2.0,
+    "basis_hi": 3.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.1885,
-    "avg_year_ago": 4.1112
+    "avg": 4.1304,
+    "avg_year_ago": 4.0996
    },
    {
     "state": "IA",
     "state_name": "Iowa",
     "region": "West",
     "label": "Iowa West",
-    "bid_lo": 4.04,
-    "bid_hi": 4.27,
-    "basis_lo": -35.0,
+    "bid_lo": 3.895,
+    "bid_hi": 4.225,
+    "basis_lo": -45.0,
     "basis_hi": -12.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.1676,
-    "avg_year_ago": 4.0392
+    "avg": 4.1074,
+    "avg_year_ago": 4.0361
    },
    {
     "state": "KS",
     "state_name": "Kansas",
     "region": null,
     "label": "Kansas",
-    "bid_lo": 4.29,
-    "bid_hi": 4.89,
+    "bid_lo": 4.245,
+    "bid_hi": 4.845,
     "basis_lo": -10.0,
     "basis_hi": 50.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.5525,
-    "avg_year_ago": 3.99
+    "avg": 4.52,
+    "avg_year_ago": 3.98
    },
    {
     "state": "MI",
     "state_name": "Michigan",
     "region": null,
     "label": "Michigan",
-    "bid_lo": 4.09,
-    "bid_hi": 4.34,
+    "bid_lo": 4.045,
+    "bid_hi": 4.345,
     "basis_lo": -30.0,
-    "basis_hi": -5.0,
+    "basis_hi": 0.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.254,
-    "avg_year_ago": 4.095
+    "avg": 4.229,
+    "avg_year_ago": 4.085
    },
    {
     "state": "MN",
     "state_name": "Minnesota",
     "region": null,
     "label": "Minnesota",
-    "bid_lo": 3.84,
-    "bid_hi": 4.11,
+    "bid_lo": 3.795,
+    "bid_hi": 4.065,
     "basis_lo": -55.0,
     "basis_hi": -28.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 3.985,
-    "avg_year_ago": 3.9217
+    "avg": 3.9483,
+    "avg_year_ago": 3.9233
    },
    {
     "state": "MO",
     "state_name": "Missouri",
     "region": null,
     "label": "Missouri",
-    "bid_lo": 4.21,
-    "bid_hi": 4.54,
+    "bid_lo": 4.165,
+    "bid_hi": 4.495,
     "basis_lo": -18.0,
     "basis_hi": 15.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.3325,
-    "avg_year_ago": 4.1075
+    "avg": 4.3125,
+    "avg_year_ago": 4.0975
    },
    {
     "state": "NE",
     "state_name": "Nebraska",
     "region": null,
     "label": "Nebraska",
-    "bid_lo": 3.94,
-    "bid_hi": 4.59,
+    "bid_lo": 3.895,
+    "bid_hi": 4.545,
     "basis_lo": -45.0,
     "basis_hi": 20.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.3053,
-    "avg_year_ago": 3.9544
+    "avg": 4.2703,
+    "avg_year_ago": 3.9556
    },
    {
     "state": "OH",
     "state_name": "Ohio",
     "region": null,
     "label": "Ohio",
-    "bid_lo": 4.39,
-    "bid_hi": 4.59,
+    "bid_lo": 4.345,
+    "bid_hi": 4.545,
     "basis_lo": 0.0,
     "basis_hi": 20.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 4.5017,
-    "avg_year_ago": 4.3983
+    "avg": 4.4733,
+    "avg_year_ago": 4.3883
    },
    {
     "state": "SD",
     "state_name": "South Dakota",
     "region": null,
     "label": "South Dakota",
-    "bid_lo": 3.59,
-    "bid_hi": 4.14,
+    "bid_lo": 3.545,
+    "bid_hi": 4.095,
     "basis_lo": -80.0,
     "basis_hi": -25.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 3.865,
-    "avg_year_ago": 3.6292
+    "avg": 3.8242,
+    "avg_year_ago": 3.6217
    },
    {
     "state": "WI",
     "state_name": "Wisconsin",
     "region": null,
     "label": "Wisconsin",
-    "bid_lo": 3.77,
-    "bid_hi": 4.19,
+    "bid_lo": 3.725,
+    "bid_hi": 4.145,
     "basis_lo": -62.0,
     "basis_hi": -20.0,
     "futures": "December",
     "futures_code": "Z",
-    "avg": 3.944,
-    "avg_year_ago": 3.843
+    "avg": 3.899,
+    "avg_year_ago": 3.841
    }
   ]
  },
  "coproducts": {
   "report": "National Weekly Grain Co-Products Report",
   "slug": "3618",
-  "week_of": "2026-11-09",
-  "week_end": "2026-11-13",
-  "published": "2026-11-16 06:34:18",
-  "year_ago_week_of": "2025-11-10",
+  "week_of": "2026-11-16",
+  "week_end": "2026-11-20",
+  "published": "2026-11-23 06:21:33",
+  "year_ago_week_of": "2025-11-17",
   "rows": [
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Illinois",
     "unit": "$/ton",
-    "price": 201.0,
-    "year_ago": 167.5
+    "price": 205.0,
+    "year_ago": 172.5
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Indiana",
     "unit": "$/ton",
-    "price": 173.38,
-    "year_ago": 147.5
+    "price": 173.5,
+    "year_ago": 151.63
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Iowa",
     "unit": "$/ton",
-    "price": 165.19,
-    "year_ago": 129.37
+    "price": 160.5,
+    "year_ago": 140.57
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Kansas",
     "unit": "$/ton",
-    "price": 225.0,
-    "year_ago": 170.0
+    "price": 230.0,
+    "year_ago": 175.0
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Michigan",
     "unit": "$/ton",
-    "price": 176.5,
-    "year_ago": 141.25
+    "price": 175.7,
+    "year_ago": 149.75
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Minnesota",
     "unit": "$/ton",
-    "price": 166.25,
-    "year_ago": 141.75
+    "price": 168.75,
+    "year_ago": 150.0
    },
    {
     "product": "ddgs",
@@ -245,7 +245,7 @@
     "area": "Missouri",
     "unit": "$/ton",
     "price": 197.5,
-    "year_ago": 167.5
+    "year_ago": 170.0
    },
    {
     "product": "ddgs",
@@ -253,54 +253,54 @@
     "area": "Nebraska",
     "unit": "$/ton",
     "price": 188.75,
-    "year_ago": 153.0
+    "year_ago": 151.57
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Ohio",
     "unit": "$/ton",
-    "price": 180.63,
-    "year_ago": 148.75
+    "price": 180.88,
+    "year_ago": 155.5
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "South Dakota",
     "unit": "$/ton",
-    "price": 175.0,
-    "year_ago": 140.2
+    "price": 170.0,
+    "year_ago": 142.2
    },
    {
     "product": "ddgs",
     "name": "Dried distillers grains (10% moisture)",
     "area": "Wisconsin",
     "unit": "$/ton",
-    "price": 169.5,
-    "year_ago": 134.5
+    "price": 168.5,
+    "year_ago": 137.5
    },
    {
     "product": "wdg",
     "name": "Wet distillers grains (65-70%)",
     "area": "Iowa",
     "unit": "$/ton",
-    "price": 70.0,
-    "year_ago": 47.5
+    "price": 72.0,
+    "year_ago": 50.0
    },
    {
     "product": "wdg",
     "name": "Wet distillers grains (65-70%)",
     "area": "Kansas",
     "unit": "$/ton",
-    "price": 69.33,
-    "year_ago": 60.67
+    "price": 67.67,
+    "year_ago": 62.33
    },
    {
     "product": "wdg",
     "name": "Wet distillers grains (65-70%)",
     "area": "Minnesota",
     "unit": "$/ton",
-    "price": 56.0,
+    "price": 54.0,
     "year_ago": 55.0
    },
    {
@@ -309,22 +309,22 @@
     "area": "Missouri",
     "unit": "$/ton",
     "price": 60.0,
-    "year_ago": 53.0
+    "year_ago": 55.0
    },
    {
     "product": "wdg",
     "name": "Wet distillers grains (65-70%)",
     "area": "Nebraska",
     "unit": "$/ton",
-    "price": 60.67,
-    "year_ago": 55.0
+    "price": 61.0,
+    "year_ago": 56.5
    },
    {
     "product": "wdg",
     "name": "Wet distillers grains (65-70%)",
     "area": "South Dakota",
     "unit": "$/ton",
-    "price": 61.0,
+    "price": 62.0,
     "year_ago": 58.0
    },
    {
@@ -332,16 +332,16 @@
     "name": "Distillers corn oil",
     "area": "Eastern Cornbelt",
     "unit": "cents/lb",
-    "price": 65.75,
-    "year_ago": 54.86
+    "price": 65.58,
+    "year_ago": 55.23
    },
    {
     "product": "corn_oil",
     "name": "Distillers corn oil",
     "area": "Iowa",
     "unit": "cents/lb",
-    "price": 65.42,
-    "year_ago": 53.5
+    "price": 65.69,
+    "year_ago": 53.75
    },
    {
     "product": "corn_oil",
@@ -356,7 +356,7 @@
     "name": "Distillers corn oil",
     "area": "Minnesota",
     "unit": "cents/lb",
-    "price": 65.67,
+    "price": 65.5,
     "year_ago": 54.63
    },
    {
@@ -372,26 +372,26 @@
     "name": "Distillers corn oil",
     "area": "Nebraska",
     "unit": "cents/lb",
-    "price": 67.25,
-    "year_ago": 55.5
+    "price": 66.0,
+    "year_ago": 55.33
    },
    {
     "product": "corn_oil",
     "name": "Distillers corn oil",
     "area": "South Dakota",
     "unit": "cents/lb",
-    "price": 67.5,
-    "year_ago": 53.9
+    "price": 65.67,
+    "year_ago": 53.97
    },
    {
     "product": "corn_oil",
     "name": "Distillers corn oil",
     "area": "Wisconsin",
     "unit": "cents/lb",
-    "price": 66.0,
+    "price": 63.0,
     "year_ago": 52.0
    }
   ]
  },
- "daily_line": "Ethanol plants bid $3.59 to $4.89 for corn in 11 states, basis -80 to +50 cents against December futures (USDA AMS, National Daily Ethanol Report, Nov 20, 2026)."
+ "daily_line": "Ethanol plants bid $3.54 to $4.85 for corn in 11 states, basis -80 to +50 cents against December futures (USDA AMS, National Daily Ethanol Report, Nov 23, 2026)."
 }
