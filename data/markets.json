@@ -1,19 +1,57 @@
 {
-  "fetched": "2026-11-22T09:36:57Z",
+  "fetched": "2026-11-23T10:09:26Z",
   "version": 5,
-  "count": 0,
-  "total_found": 0,
+  "count": 1,
+  "total_found": 1,
   "tier_breakdown": {
     "direct_ag": 0,
     "trade_energy": 0,
-    "macro_weather": 0
+    "macro_weather": 1
   },
   "published_tier_breakdown": {
     "direct_ag": 0,
     "trade_energy": 0,
-    "macro_weather": 0
+    "macro_weather": 1
   },
-  "published_event_count": 0,
-  "categories": {},
-  "markets": []
+  "published_event_count": 1,
+  "categories": {
+    "Economy & Markets": [
+      {
+        "platform": "Polymarket",
+        "ticker": "2657589",
+        "title": "Will 1 Fed rate hike happen in 2026?",
+        "yes": 6,
+        "no": 94,
+        "volume_24h": 2926.870154,
+        "close_time": "2026-12-31T23:59:00Z",
+        "time_left": "Closes in ~1mo",
+        "url": "https://polymarket.com/event/how-many-fed-rate-hikes-in-2026-20260623190717369",
+        "slug": "how-many-fed-rate-hikes-in-2026-20260623190717369",
+        "event_title": "",
+        "relevance": 40,
+        "tier": 3,
+        "category": "Economy & Markets",
+        "why_it_matters": "6% odds of a rate hike. Tighter policy strengthens the dollar and pressures grain export competitiveness."
+      }
+    ]
+  },
+  "markets": [
+    {
+      "platform": "Polymarket",
+      "ticker": "2657589",
+      "title": "Will 1 Fed rate hike happen in 2026?",
+      "yes": 6,
+      "no": 94,
+      "volume_24h": 2926.870154,
+      "close_time": "2026-12-31T23:59:00Z",
+      "time_left": "Closes in ~1mo",
+      "url": "https://polymarket.com/event/how-many-fed-rate-hikes-in-2026-20260623190717369",
+      "slug": "how-many-fed-rate-hikes-in-2026-20260623190717369",
+      "event_title": "",
+      "relevance": 40,
+      "tier": 3,
+      "category": "Economy & Markets",
+      "why_it_matters": "6% odds of a rate hike. Tighter policy strengthens the dollar and pressures grain export competitiveness."
+    }
+  ]
 }
