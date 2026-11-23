@@ -2,6 +2,20 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-23-farmland-atlas-share",
+   "date": "2026-11-23",
+   "title": "Farmland Atlas: send your county in one tap",
+   "line": "Each county page says how its cash rent ranks in the state and sends by text or Facebook in one tap; the link shows its land value, change and rent.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-23-field-scout-picture",
+   "date": "2026-11-23",
+   "title": "Field Scout: a picture of your field to send",
+   "line": "Draw a field and tap Save picture or Share: acres, soils, NCCPI (CSR2 in Iowa), ten years of crops and rain against normal, drawn on your phone.",
+   "link": "/field-scout"
+  },
+  {
    "id": "2026-11-23-rain-print-gift-card-late",
    "date": "2026-11-23",
    "title": "Rain Print: a gift card when the mail is too late",
