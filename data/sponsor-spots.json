@@ -28,6 +28,13 @@
    "bing": 3976,
    "source": "Google Search Console (US) and Bing Webmaster"
   },
+  "ai": {
+   "start": "2026-10-23",
+   "end": "2026-11-21",
+   "total": 86064,
+   "perDay": 2869,
+   "source": "Bing Webmaster AI Performance"
+  },
   "states": {
    "start": "2026-10-23",
    "end": "2026-11-21",
