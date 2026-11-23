@@ -409,6 +409,10 @@
    "to": "/cash-bids/indiana/",
    "since": "2026-11-21"
   },
+  "cash-bids/iowa/adair.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
   "cash-bids/iowa/alleman.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -418,14 +422,6 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/booneville.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
-  "cash-bids/iowa/boxholm.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
-  "cash-bids/iowa/bradford.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -477,10 +473,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/early.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/elberon.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -490,6 +482,10 @@
    "since": "2026-11-20"
   },
   "cash-bids/iowa/fairfield.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
+  "cash-bids/iowa/farnhamville.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -548,10 +544,6 @@
   "cash-bids/iowa/knoke.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
-  },
-  "cash-bids/iowa/lake-view.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
   },
   "cash-bids/iowa/langdon.html": {
    "to": "/cash-bids/iowa/",
@@ -722,10 +714,6 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/waukee.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
-  "cash-bids/iowa/wellsburg.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
