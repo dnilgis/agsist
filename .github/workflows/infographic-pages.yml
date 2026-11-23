@@ -54,7 +54,12 @@ jobs:
             git fetch -q origin main
             git reset -q --hard origin/main
             python scripts/build_infographic_pages.py
-            stage
+            # the same as stage(), written out: the rule 61 check reads the dependents call after each builder run
+            if [ -s infographic/_indexable.txt ]; then
+              python scripts/update_sitemap.py --add $(cat infographic/_indexable.txt) --priority 0.6 --changefreq weekly
+            fi
+            git add -A infographic sitemap.xml
+            python scripts/generated_sets.py dependents infographic --stage || true
             if git diff --staged --quiet; then echo "no change on the new main"; exit 0; fi
             git commit -q -m "pages: rebuild /infographic"
             sleep $((10 * i))
