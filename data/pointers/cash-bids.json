@@ -405,6 +405,10 @@
    "to": "/cash-bids/indiana/",
    "since": "2026-11-21"
   },
+  "cash-bids/indiana/rushville.html": {
+   "to": "/cash-bids/indiana/",
+   "since": "2026-11-23"
+  },
   "cash-bids/indiana/wheatfield.html": {
    "to": "/cash-bids/indiana/",
    "since": "2026-11-21"
@@ -413,13 +417,13 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/aredale.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/ayrshire.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/beaver.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
   },
   "cash-bids/iowa/booneville.html": {
    "to": "/cash-bids/iowa/",
@@ -477,6 +481,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
+  "cash-bids/iowa/emerson.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
   "cash-bids/iowa/fairfield.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -500,6 +508,10 @@
   "cash-bids/iowa/grant.html": {
    "to": "/cash-bids/iowa/paton",
    "since": "2026-10-20"
+  },
+  "cash-bids/iowa/griswold.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
   },
   "cash-bids/iowa/grundy-center.html": {
    "to": "/cash-bids/iowa/",
@@ -605,10 +617,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/new-hartford.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/north-washington.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -677,6 +685,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
+  "cash-bids/iowa/somers.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
   "cash-bids/iowa/stanhope.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -733,6 +745,10 @@
    "to": "/cash-bids/kansas/",
    "since": "2026-11-21"
   },
+  "cash-bids/kansas/levant.html": {
+   "to": "/cash-bids/kansas/",
+   "since": "2026-11-23"
+  },
   "cash-bids/kansas/wakefield.html": {
    "to": "/cash-bids/kansas/",
    "since": "2026-11-21"
@@ -752,6 +768,10 @@
   "cash-bids/michigan/reese.html": {
    "to": "/cash-bids/michigan/",
    "since": "2026-11-21"
+  },
+  "cash-bids/minnesota/bricelyn.html": {
+   "to": "/cash-bids/minnesota/",
+   "since": "2026-11-23"
   },
   "cash-bids/minnesota/sauk-centre.html": {
    "to": "/cash-bids/minnesota/",
