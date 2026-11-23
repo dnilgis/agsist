@@ -56,6 +56,7 @@ Each figure below is read from the same file the site's pages read and carries t
 - [USDA Crop Data by State](https://agsist.com/usda-quick-stats): yields, acres, production and prices by state for corn, soybeans and wheat, from USDA NASS
 - [Yield by Year, by State](https://agsist.com/yield/iowa): each state's corn and soybean yield by year since 2010, at /yield/<state>
 - [Fund Positioning (COT)](https://agsist.com/cot): weekly CFTC managed-money positioning for 11 ag markets, and whether positioning has predicted price
+- [Friday Chart](https://agsist.com/infographic/): the Infographic of the Week: one farm number in one picture, from USDA, CFTC and other public sources, with the source and date on every fact, each week at /infographic/YYYY-MM-DD
 - [Ag Stocks and the AGSIST Ag 20](https://agsist.com/ag-stocks): daily closes of U.S.-listed farm equipment, input, grain, livestock and food companies, their latest SEC reports, and an equal-weight index of 20 of them; not investment advice
 - [Tariff Tracker](https://agsist.com/tariffs): current tariff rates on US corn, soybean, wheat and pork exports
 
