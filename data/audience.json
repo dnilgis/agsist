@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-23T12:11:10+00:00",
+ "built": "2026-11-23T19:20:43+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -6113,7 +6113,7 @@
     {
      "q": "grain prices",
      "clicks": 6,
-     "impr": 117
+     "impr": 128
     },
     {
      "q": "corn and soybean prices today",
@@ -6175,9 +6175,9 @@
   }
  },
  "email": {
-  "subscribers": 296,
+  "subscribers": 300,
   "asOf": "2026-11-23",
-  "people": 352
+  "people": 357
  },
  "returns": {
   "through": "2026-11-21",
@@ -7044,36 +7044,36 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T12:11:10+00:00"
+   "fetched": "2026-11-23T19:20:43+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-23T12:11:10+00:00"
+   "fetched": "2026-11-23T19:20:43+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-23T12:11:10+00:00"
+   "fetched": "2026-11-23T19:20:43+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-23T12:11:10+00:00"
+   "fetched": "2026-11-23T19:20:43+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T12:11:10+00:00"
+   "fetched": "2026-11-23T19:20:43+00:00"
   },
   "cotKit": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T12:11:10+00:00"
+   "fetched": "2026-11-23T19:20:43+00:00"
   },
   "aiVisits": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T12:11:10+00:00"
+   "fetched": "2026-11-23T19:20:43+00:00"
   }
  }
 }
