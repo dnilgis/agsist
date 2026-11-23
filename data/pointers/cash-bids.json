@@ -405,10 +405,6 @@
    "to": "/cash-bids/indiana/",
    "since": "2026-11-21"
   },
-  "cash-bids/indiana/rushville.html": {
-   "to": "/cash-bids/indiana/",
-   "since": "2026-11-23"
-  },
   "cash-bids/indiana/wheatfield.html": {
    "to": "/cash-bids/indiana/",
    "since": "2026-11-21"
@@ -420,10 +416,6 @@
   "cash-bids/iowa/ayrshire.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
-  },
-  "cash-bids/iowa/beaver.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
   },
   "cash-bids/iowa/booneville.html": {
    "to": "/cash-bids/iowa/",
@@ -573,6 +565,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
+  "cash-bids/iowa/manilla.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
   "cash-bids/iowa/manson.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -590,6 +586,10 @@
    "since": "2026-11-23"
   },
   "cash-bids/iowa/missouri-valley.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
+  "cash-bids/iowa/mitchellville.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -620,6 +620,14 @@
   "cash-bids/iowa/north-washington.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/plainfield.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
+  },
+  "cash-bids/iowa/pleasant-hill.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-23"
   },
   "cash-bids/iowa/plover.html": {
    "to": "/cash-bids/iowa/",
@@ -682,10 +690,6 @@
    "since": "2026-11-21"
   },
   "cash-bids/iowa/slater.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
-  "cash-bids/iowa/somers.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
@@ -768,10 +772,6 @@
   "cash-bids/michigan/reese.html": {
    "to": "/cash-bids/michigan/",
    "since": "2026-11-21"
-  },
-  "cash-bids/minnesota/bricelyn.html": {
-   "to": "/cash-bids/minnesota/",
-   "since": "2026-11-23"
   },
   "cash-bids/minnesota/sauk-centre.html": {
    "to": "/cash-bids/minnesota/",
