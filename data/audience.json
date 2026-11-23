@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-23T20:14:08+00:00",
+ "built": "2026-11-23T23:41:44+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -6175,9 +6175,9 @@
   }
  },
  "email": {
-  "subscribers": 300,
+  "subscribers": 301,
   "asOf": "2026-11-23",
-  "people": 357
+  "people": 358
  },
  "returns": {
   "through": "2026-11-21",
@@ -6361,6 +6361,44 @@
     "week": "2026-11-16"
    }
   ]
+ },
+ "fieldKit": {
+  "through": "2026-11-21",
+  "weeks": [
+   {
+    "week": "2026-10-26",
+    "events": {
+     "field_share": 0,
+     "field_picture": 0,
+     "field_report": 7
+    }
+   },
+   {
+    "week": "2026-11-02",
+    "events": {
+     "field_share": 0,
+     "field_picture": 0,
+     "field_report": 0
+    }
+   },
+   {
+    "week": "2026-11-09",
+    "events": {
+     "field_share": 0,
+     "field_picture": 0,
+     "field_report": 2
+    }
+   },
+   {
+    "week": "2026-11-16",
+    "events": {
+     "field_share": 0,
+     "field_picture": 0,
+     "field_report": 4
+    }
+   }
+  ],
+  "page": "/field-scout"
  },
  "aiVisits": {
   "start": "2026-10-08",
@@ -7044,36 +7082,41 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T20:14:08+00:00"
+   "fetched": "2026-11-23T23:41:44+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-23T20:14:08+00:00"
+   "fetched": "2026-11-23T23:41:44+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-23T20:14:08+00:00"
+   "fetched": "2026-11-23T23:41:44+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-23T20:14:08+00:00"
+   "fetched": "2026-11-23T23:41:44+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T20:14:08+00:00"
+   "fetched": "2026-11-23T23:41:44+00:00"
   },
   "cotKit": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T20:14:08+00:00"
+   "fetched": "2026-11-23T23:41:44+00:00"
   },
   "aiVisits": {
    "ok": true,
    "through": "2026-11-21",
-   "fetched": "2026-11-23T20:14:08+00:00"
+   "fetched": "2026-11-23T23:41:44+00:00"
+  },
+  "fieldKit": {
+   "ok": true,
+   "through": "2026-11-21",
+   "fetched": "2026-11-23T23:41:44+00:00"
   }
  }
 }
