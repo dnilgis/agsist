@@ -39,12 +39,13 @@
      rule; both are run over one list of cases): no BOM, control character, emoji or colon; the vendor's
      price-feed boilerplate gone ("Price Delayed 10 minutes", "Delayed", "Protein Premium Not Included"); the class
      and protein kept; cut at 40 characters at a word boundary, never inside a bracket. */
-  var WW_SPACE = /[\t\n\r\u000b\u000c\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000:]/gu;
-  var WW_DROP = /[\u0000-\u001f\u007f-\u009f\u00ad\u200b-\u200f\u202a-\u202e\u2060-\u206f\u20e3\ufe00-\ufe0f\ufeff\ud800-\udfff\u00a9\u00ae\u2122\u203c\u2049\u2190-\u21ff\u2300-\u23ff\u25a0-\u27bf\u2900-\u297f\u2b00-\u2bff\u3030\u303d\u3297\u3299\u{1f000}-\u{1faff}\u{e0000}-\u{e007f}]/gu;
+  var WW_SPACE = /[\t\n\r\u000b\u000c\u001c-\u001f\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000:]/gu;
+  var WW_DROP = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\u20e3\ufe00-\ufe0f\ufeff\ud800-\udfff\u00a9\u00ae\u2122\u203c\u2049\u2190-\u21ff\u2300-\u23ff\u25a0-\u27bf\u2900-\u297f\u2b00-\u2bff\u3030\u303d\u3297\u3299\u{1f000}-\u{1faff}\u{e0000}-\u{e007f}]/gu;
   var WW_SEP = '[ ,;\\-\\u2013\\u2014/]*';
-  var WW_NOISE = [new RegExp(WW_SEP + '\\bprice +delayed\\b(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'giu'),
-                  new RegExp(WW_SEP + '\\bdelayed\\b(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'giu'),
-                  new RegExp(WW_SEP + '(?:\\b(?:protein|premium|price|freight|fees?|dockage)\\b *)*\\bnot +included\\b', 'giu')];
+  /* no u flag: ASCII-only matching, as re.ASCII in the Python twin. "Delayed Price" is a contract term and stays. */
+  var WW_NOISE = [new RegExp(WW_SEP + '\\bprice +delayed\\b(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'gi'),
+                  new RegExp(WW_SEP + '\\bdelayed\\b(?! +price\\b)(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'gi'),
+                  new RegExp(WW_SEP + '(?:\\b(?:protein|premium|price|freight|fees?|dockage)\\b *)*\\bnot +included\\b', 'gi')];
   var WW_PUNCT = /^[ ,;\-\u2013\u2014/&.]+|[ ,;\-\u2013\u2014/&.]+$/gu;
   function wwTidy(s){
     return s.replace(/ +/g, ' ').replace(/[(\[] *[)\]]/g, '').replace(/([(\[])[ ,;\-\u2013\u2014/]+/g, '$1')
