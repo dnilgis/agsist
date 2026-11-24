@@ -576,8 +576,8 @@ html.lp-saved .lp-out{min-height:48rem}
       <details><summary>What&rsquo;s a fair rate for my county?</summary><p>USDA NASS publishes county cash rent annually. <a href="/rent/" style="color:var(--gold)">AGSIST cash rent by state</a> shows every published county, its history, and rent as a share of realistic gross, the number that decides whether a lease actually cash-flows.</p></details>
       <details><summary>Why is this lease so short?</summary><p>Because leases fail at the coffee shop, not in court. A lease both parties have actually read beats a 20-page one neither has. The additional-terms box is there for what your situation genuinely needs; your attorney can tell you what your state requires beyond it.</p></details>
       <details><summary>Can I mail the notice to end an Iowa farm lease, and when does it have to go out?</summary><p>Yes, by certified mail, but it has to be mailed before September 1, not on it. If you hand it over instead, the other party signs an acceptance of service on or before September 1 (Iowa Code 562.7).</p></details>
-      <details><summary>In Kansas, what happens to the wheat if I give notice after my tenant already planted it?</summary><p>Kansas law protects that crop. When notice comes after a fall seeded grain crop is planted on ground prepared the normal way, the tenancy on that part ends the day after harvest is done or August 1, whichever comes first. The rest of the farm still ends March 1 (<a href="https://www.ksrevisor.org/statutes/chapters/ch58/058_025_0006.html" rel="noopener">K.S.A. 58-2506</a>).</p></details>
-      <details><summary>How much notice does Wisconsin want to end a year-to-year farm lease?</summary><p>Wisconsin law says a year-to-year farm tenancy needs at least 90 days' written notice, and it ends at the end of the rental year, even if rent is paid more often than once a year (<a href="https://docs.legis.wisconsin.gov/statutes/statutes/704/19" rel="noopener">Wis. Stat. 704.19</a>).</p></details>
+      <details><summary>In Kansas, what happens to the wheat if I give notice after my tenant already planted it?</summary><p>Kansas law protects that crop. When notice comes after a fall seeded grain crop is planted on ground prepared the normal way, the tenancy on that part ends the day after harvest is done or August 1, whichever comes first. The rest of the farm still ends March 1 (K.S.A. 58-2506).</p></details>
+      <details><summary>How much notice does Wisconsin want to end a year-to-year farm lease?</summary><p>Wisconsin law says a year-to-year farm tenancy needs at least 90 days' written notice, and it ends at the end of the rental year, even if rent is paid more often than once a year (Wis. Stat. 704.19).</p></details>
     </div>
   </section>
 
@@ -644,7 +644,7 @@ html.lp-saved .lp-out{min-height:48rem}
     NY:{n:'New York',t:'cited',d:'Commonly cited: written notice about 90 DAYS before expiration, certified mail.'},
     TN:{n:'Tennessee',t:'cited',s:'Smith v. Holt (Tenn. 1945), a court ruling',d:'Written notice at least 6 MONTHS before a year-to-year lease ends: by JUNE 30 for a lease that ends December 31, so mail it well before. This comes from a court ruling (Smith v. Holt, 1945, not a farm case), not a statute, and UT Extension says the rule for oral farm leases is unclear. A written lease that states its end date needs no notice. Check with a Tennessee attorney.'},
     MI:{n:'Michigan',t:'none',d:'No single farm deadline widely cited; the lease’s own terms control; industry guides suggest written notice by ~September 30.'},
-    OH:{n:'Ohio',t:'firm',s:'Ohio Rev. Code 5301.71',u:'https://codes.ohio.gov/ohio-revised-code/section-5301.71',d:'ORC 5301.71: for ANY farm lease, written OR oral, that carries no termination date and no notice deadline of its own, written notice is due ON OR BEFORE SEPTEMBER 1. A lease that spells out its own termination controls; one that does not falls under the statute.'},
+    OH:{n:'Ohio',t:'firm',s:'Ohio Rev. Code 5301.71',u:'https://codes.ohio.gov/ohio-revised-code/section-5301.71',d:'ORC 5301.71 (in force July 21, 2022) covers CROP leases, written or oral, that set no end date and no way to give notice. Pasture, timber and farm buildings are left out. The landlord gives the tenant written notice ON OR BEFORE SEPTEMBER 1 of the year the lease is to end, by personal delivery, fax or email. The lease then ends when harvest is done or December 31, whichever comes first, unless both sign a different date. A lease that sets its own end date or notice method controls.'},
     CA:{n:'California',t:'cited',d:'Leases over one year must be WRITTEN to be enforceable; put the termination deadline in the lease itself (industry guides suggest ~July 1).'},
     TX:{n:'Texas',t:'none',d:'Practices vary too much to summarize here; put the deadline in the lease and confirm with a local attorney.'}
   };
@@ -655,7 +655,14 @@ html.lp-saved .lp-out{min-height:48rem}
   var VERIFIED={
     IA:['2026-10-16','written notice served on or before September 1, or mailed by certified mail before September 1; the tenancy then ends March 1'],
     KS:['2026-10-16','written notice at least 30 days before March 1, naming March 1 as the end of the tenancy; a written lease signed by both can set other terms'],
-    OH:['2026-10-16','for a lease that sets no end date or notice of its own, the landlord’s written notice on or before September 1']};
+    OH:['2026-10-16','for a crop lease that sets no end date or notice method, the landlord’s written notice on or before September 1, by personal delivery, fax or email']};
+  /* How each state's statute lets notice be delivered (the same copies; Wisconsin from 704.21). A state without a
+     line here is one whose statute text we could not read: it keeps the general advice. */
+  var DELIVERY={
+    IA:'Deliver it before September 1 one of three ways (Iowa Code 562.7): hand it over and have the other party sign an acceptance of service, serve it personally, or send it by certified mail mailed before September 1.',
+    KS:'Put it in writing, at least 30 days before March 1 (K.S.A. 58-2506). The statute names no delivery method, so keep proof of the day the other party got it.',
+    OH:'The landlord delivers it on or before September 1 by personal delivery, fax or email (Ohio Rev. Code 5301.71). Certified mail is not on the statute’s list.',
+    WI:'Wisconsin lists the ways to give notice in Wis. Stat. 704.21, among them giving it personally or sending it by registered or certified mail.'};
   Object.keys(VERIFIED).forEach(function(ab){ RULES[ab].v=VERIFIED[ab][0]; RULES[ab].short=VERIFIED[ab][1]; });
   if(typeof window!=='undefined') window.AgLeaseRules=RULES;
   var STATES='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
@@ -835,13 +842,14 @@ html.lp-saved .lp-out{min-height:48rem}
           h+='<span class="cl-ndate">Serve by '+longDate(sb.iso)+'</span>'
            +'The lease ends '+longDate(end)+'; this is '+esc(sb.how)+'. Aim to have it in their hands by '+longDate(sb.early)+': some states count the day it arrives, not the day you mail it.';
           if(sb.oral) h+=' <br>This deadline is for <b>oral</b> leases. A written lease runs on its own terms.';
+          if(ab==='OH'&&!owner) h+=' <br>Ohio’s statute is written for the landlord’s notice to the tenant.';
           if(sb.mar1) h+=' <br>Kansas notice has to name March 1 as the end of the tenancy. Your end date is not March 1.';
           if(sb.lease) h+=' <br>No state farm deadline we can point to, so this uses the notice days written in your lease.';
         } else {
           h+='<span class="cl-ndate">No date we can count for you</span>No farm notice deadline we can point to for this state. Your lease&rsquo;s own notice terms rule: put the number of days in section 11 above and this will count it.';
         }
         if(r&&r.s) h+=' <br>Law: '+(r.u?'<a href="'+r.u+'" rel="noopener">'+esc(r.s)+'</a>':esc(r.s))+'.';
-        h+='<ul><li>Put it in writing and sign it.</li><li>Deliver it in hand and have them sign and date the receipt line, or send it certified mail with a return receipt.'+(ab==='IA'?' Iowa Code 562.7 lists the ways notice can be served.':'')+'</li><li>Keep a copy and the receipt.</li></ul>'
+        h+='<ul><li>Put it in writing and sign it.</li><li>'+(DELIVERY[ab]?esc(DELIVERY[ab]):'Deliver it in hand and have them sign and date the receipt line, or send it certified mail with a return receipt.')+'</li><li>Keep a copy and the receipt.</li></ul>'
          +'<span style="font-size:.8em;opacity:.85">Educational, not legal advice. Statutes change, and a written lease can set its own terms. Check with an attorney before a deadline you cannot miss.</span>';
         when.innerHTML=h;
       }
@@ -858,7 +866,11 @@ html.lp-saved .lp-out{min-height:48rem}
       +(owner?'Possession of the land returns to the Owner at the end of that day.':'I will give up possession of the land at the end of that day.')+'</p>'
       +'<div class="np-sig"><div><div class="np-line"></div><div class="np-lbl">'+who.toUpperCase()+' &middot; SIGNATURE</div></div>'
       +'<div><div class="np-line"></div><div class="np-lbl">PRINTED NAME</div></div></div>'
-      +'<div class="np-box"><b>How this was delivered</b> (check one)<br>&#9744; In hand on '+blank('',14)+' &nbsp; &#9744; Certified mail, return receipt, no. '+blank('',20)+' mailed on '+blank('',12)
+      +'<div class="np-box"><b>How this was delivered</b> (check one)<br>'+(ab==='OH'
+        ?'&#9744; Personal delivery on '+blank('',12)+' &nbsp; &#9744; Fax on '+blank('',12)+' &nbsp; &#9744; Email on '+blank('',12)
+        :ab==='IA'
+        ?'&#9744; In hand, acceptance signed below, on '+blank('',12)+' &nbsp; &#9744; Served personally on '+blank('',12)+' &nbsp; &#9744; Certified mail, return receipt, no. '+blank('',16)+' mailed on '+blank('',12)
+        :'&#9744; In hand on '+blank('',14)+' &nbsp; &#9744; Certified mail, return receipt, no. '+blank('',20)+' mailed on '+blank('',12))
       +'<div class="np-sig" style="margin-top:20px"><div><div class="np-line"></div><div class="np-lbl">RECEIVED BY ('+other.toUpperCase()+')</div></div><div><div class="np-line"></div><div class="np-lbl">DATE RECEIVED</div></div></div></div>'
       +'<p class="np-foot">agsist.com/cash-lease &middot; educational sample, not legal advice &middot; keep a copy</p>';
   }
