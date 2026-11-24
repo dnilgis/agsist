@@ -665,12 +665,18 @@ rows().forEach(function(z){z.classList.remove('ls-hit');});r.classList.add('ls-h
 /* a link to a row (#src-ia) lands once the Atlas above has finished filling in, not before: the browser's own early
    jump left the table under the reader while the map above settled (a layout shift of 0.08 on a slow machine). The
    row's id comes off until the section's place on the page holds still, then the row opens and scrolls into view;
-   a reader who scrolls first is left where they are. */
+   a reader who scrolls first is left where they are.
+   Nov 24, 2026: holding still is not enough on its own. While the map's own files are still on the way nothing moves,
+   so the jump went first; when they came, the question cards filled the column beside the map, the map block grew
+   125 px at 1280 and the table moved under the reader (0.083 every time the map files came 0.8 s late; 0.016 in CI).
+   So the jump also waits for the map to be drawn or to have given up (#an ready or failed), for at most 12 s
+   (counted in polls: a test's fixed clock does not move Date.now). */
 (function(){var m=/^#src-([a-z]{2})$/.exec(location.hash||''),r=m&&document.getElementById('src-'+m[1]);
-if(!r){hash();return;}var id=r.id,sec=document.getElementById('fa-sources'),moved=false,last=-1,still=0,t0=Date.now();r.removeAttribute('id');
+if(!r){hash();return;}var id=r.id,sec=document.getElementById('fa-sources'),an=document.getElementById('an'),moved=false,last=-1,still=0,polls=0;r.removeAttribute('id');
 ['wheel','touchstart','keydown','pointerdown'].forEach(function(t){window.addEventListener(t,function(){moved=true;},{once:true,passive:true});});
 (function wait(){var y=sec.getBoundingClientRect().top+scrollY;still=Math.abs(y-last)<1?still+1:0;last=y;
-if(still<4&&Date.now()-t0<6000){setTimeout(wait,150);return;}r.id=id;hash();if(!moved)r.scrollIntoView({block:'center'});})();})();
+var drawn=!an||an.classList.contains('ready')||an.classList.contains('failed');
+if((still<4||!drawn)&&++polls<80){setTimeout(wait,150);return;}r.id=id;hash();if(!moved)r.scrollIntoView({block:'center'});})();})();
 window.addEventListener('hashchange',hash);
 var host=document.getElementById('ls-map'),done=false;if(!host)return;
 function draw(){if(done)return;done=true;var m={};rows().forEach(function(r){var s=r.id.slice(4).toUpperCase(),l=r.getAttribute('data-best');if(s&&FILL[l])m[s]={fill:FILL[l],text:WORD[l],href:'#src-'+s.toLowerCase()};});
