@@ -1,1 +1,0 @@
-Field Scout: Text it sends the field's line and its link in one tap, and the printed field report fits one page (field-scout.js?v=47, field-scout-read.js?v=34, field-scout-extras.js?v=9)
