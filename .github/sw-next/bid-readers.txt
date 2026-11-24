@@ -1,0 +1,1 @@
+Price alerts: a wheat alert names the board's own wheat, such as DNS 14% or Hard Red Spring, when that board posts more than plain wheat (cb-alerts.js?v=8, cb-myelev.js?v=12)
