@@ -35,6 +35,15 @@
   var RADII = [10, 25, 50, 75, 100];
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats'];
   var NAMES = { corn:'Corn', soybeans:'Soybeans', wheat:'Wheat', sorghum:'Sorghum', oats:'Oats' };
+  /* The crop as an alert names it (scripts/send_elevator_watch.py crop_words): a wheat row that is not
+     plain "Wheat" carries the board's own words, so a board posting DNS and HRW for one month says which
+     one the alert watches: "Wheat (DNS 14%)", or the words alone when they say wheat. */
+  function cropWords(r, lower){
+    var base = NAMES[r.crop] || r.crop, w = String(r.cword || '').replace(/:/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
+    if(lower) base = base.toLowerCase();
+    if(r.crop !== 'wheat' || !w || w.toLowerCase() === 'wheat') return base;
+    return /wheat/i.test(w) ? w : base + ' (' + w + ')';
+  }
   /* components/bids-homepage.js PPU_BAND, scripts/send_elevator_watch.py PPU_BAND */
   var BAND = { corn:[2,12], soybeans:[6,32], wheat:[3,20], sorghum:[2,7], oats:[1,8] };
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -112,7 +121,7 @@
           var period = String(n.period || ''), end = period.split('/').pop();
           if(/^\d{4}-\d{2}/.test(end) && end.slice(0, 7) < month) return;
           var w = widFor(p.state, p.operator, p.city, crop);
-          var row = { place:p, crop:crop, period:period, plabel:periodLabel(period, n.delivery || ''),
+          var row = { place:p, crop:crop, cword:String(n.commodity || ''), period:period, plabel:periodLabel(period, n.delivery || ''),
                       cash:Math.round(cash * 100), basis:basisCents(n), pricedAt:p.pricedAt || '' };
           idx[w] = (w in idx) ? 'ambiguous' : row;
         });
@@ -239,7 +248,7 @@
     var h = '<form class="cba-form" novalidate><p class="cba-title">Email me about ' + esc(name) + '</p>';
     if(rows.length){
       h += '<div class="cba-row"><label class="cba-f"><span class="cba-k">Crop</span><select class="cba-crop">'
-        + rows.map(function(r, i){ return '<option value="' + i + '">' + NAMES[r.crop] + ', ' + esc(r.plabel || 'delivery not named') + '</option>'; }).join('')
+        + rows.map(function(r, i){ return '<option value="' + i + '">' + esc(cropWords(r)) + ', ' + esc(r.plabel || 'delivery not named') + '</option>'; }).join('')
         + '</select></label></div>'
         + '<p class="cba-now" aria-live="polite"></p>'
         + '<fieldset class="cba-kind"><legend class="cba-k">Tell me when</legend>'
@@ -275,7 +284,7 @@
       var em = form.querySelector('.cba-email'), email = (em.value || '').trim(), body;
       if(rows.length){
         var r = rows[+crop.value], kind = form.querySelector('input[name="' + id + '-k"]:checked').value;
-        var lead = r.place.operator + ', ' + (r.place.town || r.place.city || '') + ', ' + r.place.state + ': ' + r.crop + ' ' + r.plabel + ': ';
+        var lead = r.place.operator + ', ' + (r.place.town || r.place.city || '') + ', ' + r.place.state + ': ' + cropWords(r, true) + ' ' + r.plabel + ': ';
         body = { email:email, kind:kind, ewid:widFor(r.place.state, r.place.operator, r.place.city, r.crop), crop:r.crop, period:r.period, plabel:(r.plabel || r.period).slice(0, 40) };
         if(kind === 'cash'){
           var v = parseFloat(price.value);

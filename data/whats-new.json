@@ -16,11 +16,25 @@
    "link": "/field-scout"
   },
   {
+   "id": "2026-11-24-lease-notice-reminder",
+   "date": "2026-11-24",
+   "title": "Cash lease: a reminder before your notice deadline",
+   "line": "Pick Iowa, Kansas or Ohio in the notice section and get one email about two weeks before that state's deadline to end a farm lease, with what the law asks.",
+   "link": "/cash-lease#notice"
+  },
+  {
    "id": "2026-11-24-lease-text",
    "date": "2026-11-24",
    "title": "Cash lease: each state's notice rule as the statute says it",
    "line": "Ohio's notice rule now covers crop leases only and lists personal delivery, fax or email. Iowa, Kansas and Wisconsin delivery lines follow their statutes.",
    "link": "/cash-lease#notice"
+  },
+  {
+   "id": "2026-11-24-elevator-alerts-wheat-classes",
+   "date": "2026-11-24",
+   "title": "Elevator alerts: spring and white wheat boards",
+   "line": "A cash or basis target on a spring wheat, DNS or white wheat board now fires on that board's current bid, and the alert names the board's own wheat.",
+   "link": "/"
   },
   {
    "id": "2026-11-24-elevator-alerts-later-delivery",

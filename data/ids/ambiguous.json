@@ -44,7 +44,7 @@
   },
   {
    "key": "basis:IA|GOLD-EAGLE COOPERATIVE|CLARION",
-   "rule": "name+town",
+   "rule": "exact",
    "candidates": [
     "eg6t6kbk54",
     "eh4rg9gctr"
@@ -52,7 +52,7 @@
   },
   {
    "key": "basis:IA|GOLD-EAGLE COOPERATIVE|CORWITH",
-   "rule": "name+town",
+   "rule": "exact",
    "candidates": [
     "ec84fg1n59",
     "emjrppph0b"
@@ -60,7 +60,7 @@
   },
   {
    "key": "basis:IA|HEARTLAND CO-OP|EARLHAM",
-   "rule": "name+town",
+   "rule": "exact",
    "candidates": [
     "e0ntq9maee",
     "eykrn5wx1m"
@@ -133,7 +133,7 @@
   },
   {
    "key": "basis:IL|TOTAL GRAIN MARKETING|SHELBYVILLE",
-   "rule": "name+town",
+   "rule": "exact",
    "candidates": [
     "e45mfbvb9a",
     "egf2jv2mby"
@@ -239,7 +239,7 @@
   },
   {
    "key": "basis:MN|STATELINE COOPERATIVE|BLUE EARTH",
-   "rule": "name+town",
+   "rule": "exact",
    "candidates": [
     "efzmk6c591",
     "ehkebqrcqy"
@@ -304,7 +304,7 @@
   },
   {
    "key": "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|CHAPPELL",
-   "rule": "name+town",
+   "rule": "exact",
    "candidates": [
     "er5mv869f2",
     "eyyn5bc94h"
@@ -979,6 +979,7 @@
    "rule": "name+town",
    "candidates": [
     "enks2cphxw",
+    "evppn7g6w7",
     "ewpvvge45n"
    ]
   },
@@ -1043,6 +1044,7 @@
    "rule": "name+town",
    "candidates": [
     "e2sk7avyd2",
+    "eh8xr788vb",
     "ehg38p0qag"
    ]
   },
@@ -1312,6 +1314,7 @@
    "rule": "name+town",
    "candidates": [
     "e9n4wy87cd",
+    "erhnt55182",
     "ewpde3r46e"
    ]
   },
