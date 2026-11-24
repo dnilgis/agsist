@@ -4528,6 +4528,456 @@
       "checked": "2026-11-24",
       "quote": "Current studies indicate that 25-30% of consumers would be willing to substitute meatless meat for animal meat if both products were priced the same.",
       "added": "2026-11-25"
+    },
+    {
+      "id": "cash-rent-passed-share-2006",
+      "category": "land and rent",
+      "fact": "On Illinois grain farms, 2006 was the last year more land was crop-shared than cash-rented. By 2023, 48 percent was cash-rented and 27 percent crop-shared.",
+      "source": "University of Illinois farmdoc daily, Tenure Characteristics of Illinois Farmland (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/07/tenure-characteristics-of-illinois-farmland-5.html",
+      "checked": "2026-11-24",
+      "quote": "From 2019 to 2023, the amount of land crop shared decreased from 32 percent to 27 percent while the amount of land cash rented increased from 45 percent to 48 percent. ... The last year where a larger amount of the farmland was crop shared compared to cash rented was in 2006.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-operators-own-24pct",
+      "category": "land and rent",
+      "fact": "Illinois grain farmers owned only 24 percent of the land they farmed in 2023. In central Illinois it was 15 percent.",
+      "source": "University of Illinois farmdoc daily, Tenure Characteristics of Illinois Farmland (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/07/tenure-characteristics-of-illinois-farmland-5.html",
+      "checked": "2026-11-24",
+      "quote": "Southern Illinois farm operators own 27 percent of their land while central Illinois operators own only 15 percent. ... On a statewide basis, operators owned 24 percent of their land in 2023.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "north-illinois-cash-66pct",
+      "category": "land and rent",
+      "fact": "In 2023, northern Illinois farmers cash-rented 66 percent of their land, while central Illinois farmers crop-shared 37 percent.",
+      "source": "University of Illinois farmdoc daily, Tenure Characteristics of Illinois Farmland (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/07/tenure-characteristics-of-illinois-farmland-5.html",
+      "checked": "2026-11-24",
+      "quote": "For example, in 2023, farmers in northern Illinois cash rented 66 percent of their land and crop shared 16 percent while central Illinois farmers cash rented 48 percent and crop shared 37 percent.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "share-rent-vs-cash-2000-2021",
+      "category": "land and rent",
+      "fact": "From 2000 to 2021, Illinois share rents averaged $229 an acre, just $9 more than cash rents. Share rent ran higher in the boom years 2003 to 2012.",
+      "source": "University of Illinois farmdoc daily, Variable Cash Rental Arrangements in 2023",
+      "url": "https://farmdocdaily.illinois.edu/2023/01/variable-cash-rental-arrangements-in-2023.html",
+      "checked": "2026-11-24",
+      "quote": "From 2000 to 2021, share rents averaged $229 per acre, $9 per acre higher than the average cash rent. ... Share rent levels were above cash rents from 2003 to 2012, when operator and land returns were high.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "new-futures-52pct-never-trade",
+      "category": "markets and prices",
+      "fact": "Of 584 new futures contracts launched worldwide in 2011, 52% never traded even once.",
+      "source": "University of Illinois farmdoc daily, How Many Futures Contracts Can One Market Support? (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/05/how-many-futures-contracts-can.html",
+      "checked": "2026-11-24",
+      "quote": "A recent report by Futures and Options World found that of the 584 new contracts launched worldwide in 2011, 52% failed to trade even one time.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "cbot-22-hours-2012",
+      "category": "markets and prices",
+      "fact": "In 2012, a new rival exchange offered grain futures nearly around the clock, and the CBOT answered by going to 22 hours of trading a day.",
+      "source": "University of Illinois farmdoc daily, How Many Futures Contracts Can One Market Support? (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/05/how-many-futures-contracts-can.html",
+      "checked": "2026-11-24",
+      "quote": "Trading hours will be from 8 PM Sunday to 6 PM Friday, which is substantially longer than the CBOT’s current 6:00 PM to 7:15 AM and 9:30 AM to 1:15 PM trading day. ... In this particular case, the CBOT announced that it would increase its trading hours to 22 hours a day, beginning later this month, to match the ICE trading hours.",
+      "note": "2012 is the year of the article (May 2012).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-nonconvergence-132",
+      "category": "markets and prices",
+      "fact": "On July 1, 2008, expiring CBOT wheat futures closed at $8.50 while cash wheat at Toledo, a delivery point, was $7.18, a $1.32 gap that should have been near zero.",
+      "source": "University of Illinois farmdoc daily, Solving the Commodity Markets' Non-Convergence Puzzle (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/08/solving-markets-non-convergence-puzzle.html",
+      "checked": "2026-11-24",
+      "quote": "For example, on July 1, 2008, the price for the July 2008 Chicago Board of Trade (CBOT) wheat futures contract closed at $8.50 per bushel. Even though that contract was eligible for immediate physical delivery–the process by which futures contracts can be converted into the cash commodity–that day’s per bushel cash price in the Toledo delivery market was only $7.18, a difference of $1.32 per bushel.",
+      "note": "\"Should have been near zero\": the page's subject is non-convergence, where expiring futures and cash prices are expected to meet.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soviet-grain-1973-plateau",
+      "category": "global trade",
+      "fact": "In 1973 the Soviet Union made large US grain purchases, and corn prices moved to a higher plateau, averaging $2.36 a bushel from 1973 to 2005.",
+      "source": "University of Illinois farmdoc daily, Are Long-Run Prices Still $4 for Corn, $10 for Soybeans, and $5.50 for Wheat? (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/05/are-long-run-prices-still-4-for-corn-10-for-soybeans-and-5-50-for-wheat.html",
+      "checked": "2026-11-24",
+      "quote": "In 1973, the Soviet Union made large grain purchases, reversing trade policy dating back to the Bolshevik Revolution, thereby open more markets to global trade. From 1973 to 2005, corn prices averaged $2.36 per bushel.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-194-1998",
+      "category": "markets and prices",
+      "fact": "US corn averaged $3.24 a bushel in 1995 and fell to $1.94 in 1998.",
+      "source": "University of Illinois farmdoc daily, Are Long-Run Prices Still $4 for Corn, $10 for Soybeans, and $5.50 for Wheat? (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/05/are-long-run-prices-still-4-for-corn-10-for-soybeans-and-5-50-for-wheat.html",
+      "checked": "2026-11-24",
+      "quote": "Sometimes corn prices were considerably above the $2.36 average, as occurred in 1995 when corn prices were $3.24 per bushel. ... Corn prices again went below the $2.36 average, falling to $1.94 per bushel in 1998.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "rootworm-bt-4-proteins",
+      "category": "pests and disease",
+      "fact": "Only 4 Bt proteins target corn rootworm. In many Nebraska counties, rootworms beat single-trait hybrids planted more than three years in a row.",
+      "source": "University of Nebraska-Lincoln CropWatch, Corn Rootworm Management Update (2018)",
+      "url": "https://cropwatch.unl.edu/2018/corn-rootworm-management-update/",
+      "checked": "2026-11-24",
+      "quote": "Four types of Bt proteins target corn rootworms: Cry3Bb1, mCry3A, eCry3.1Ab, and Cry34/35Ab1. In multiple counties across Nebraska, greater than expected injury has been observed or resistance confirmed when single trait Cry3Bb1 or mCry3A hybrids have been planted for more than three consecutive years.",
+      "note": "Four is written as 4.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "bt-ecb-999pct",
+      "category": "pests and disease",
+      "fact": "Bt corn aimed at European corn borer has been widely grown since the late 1990s, and today's Bt proteins kill over 99.9% of borer larvae.",
+      "source": "University of Nebraska-Lincoln CropWatch, First ECB Resistance to Bt Corn Reported in Canada (2019)",
+      "url": "https://cropwatch.unl.edu/2019/first-ecb-resistance-bt-corn-canada/",
+      "checked": "2026-11-24",
+      "quote": "Widely available since the late 1990s, Bt corn hybrids targeting ECB are grown throughout the U.S. ... Current Bt proteins (i.e, Cry1Ab, Cry1A.105, Cry1F and Cry2Ab2) kill over 99.9% of the ECB larvae",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "ecb-resistance-nova-scotia",
+      "category": "pests and disease",
+      "fact": "The first field resistance of European corn borer to a Bt corn protein, Cry1F, was confirmed in Nova Scotia, Canada, in 2019.",
+      "source": "University of Nebraska-Lincoln CropWatch, First ECB Resistance to Bt Corn Reported in Canada (2019)",
+      "url": "https://cropwatch.unl.edu/2019/first-ecb-resistance-bt-corn-canada/",
+      "checked": "2026-11-24",
+      "quote": "confirmed the resistance of ECB to the Cry1F protein in Bt corn hybrids in Nova Scotia, Canada.",
+      "note": "2019 is the year of the article, titled First ECB Resistance to Bt Corn Reported in Canada.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "denmark-15-pigs-litter",
+      "category": "livestock",
+      "fact": "US sows set a record of 11.92 pigs per litter in fall 2024. Denmark already averages around 15.",
+      "source": "University of Illinois farmdoc daily, Record Pig Crop driven by Record Pigs per Litter (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/12/record-pig-crop-driven-by-record-pigs-per-litter.html",
+      "checked": "2026-11-24",
+      "quote": "a 0.2% cut in sows farrowed was more than offset by 11.92 pigs per litter, up 2.3% from last year’s record for the period ... further productivity growth is feasible, as Denmark is recently averaging around 15 pigs per litter.",
+      "note": "Fall 2024 is the September-November quarter of the December 2024 report named on the page.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "pork-per-capita-521-2019",
+      "category": "food and the consumer",
+      "fact": "Americans ate an estimated 50.5 pounds of pork per person in 2024, still below the 52.1 pounds of 2019.",
+      "source": "University of Illinois farmdoc daily, Record Pig Crop driven by Record Pigs per Litter (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/12/record-pig-crop-driven-by-record-pigs-per-litter.html",
+      "checked": "2026-11-24",
+      "quote": "The USDA estimates U.S. per capita pork consumption at 50.5 pounds per person for 2024, and forecasts the number rising to 50.9 pounds per person in 2025, still below the pre-COVID-19 level of 52.1 pounds per person in 2019.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "swine-pig-crop-1994-2023",
+      "category": "livestock",
+      "fact": "From 1994 to 2023, the US pig crop grew from 101.5 million to 135.8 million head while the sow herd grew only 0.17 percent a year.",
+      "source": "University of Illinois farmdoc daily, Long-Term Trends in Pigs per Litter (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/11/long-term-trends-in-pigs-per-litter-3.html",
+      "checked": "2026-11-24",
+      "quote": "The annual growth rate in the U.S. sow herd during the 1994 to 2023 period is only 0.17 percent per year. ... In 1994, the pig crop (swine production) was 101.5 million head (24.4 billion pounds). The pig crop in 2023 was 135.8 million head",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "farm-mortgage-175pct",
+      "category": "land and rent",
+      "fact": "Farm mortgage rates peaked at nearly 17.5% in the 1980s, and some loans then ran up to 40 years.",
+      "source": "University of Illinois farmdoc daily, Farmland Markets: Comparing the 1980s and the Present (2014)",
+      "url": "https://farmdocdaily.illinois.edu/2014/05/farmland-markets-comparing-1980-and-present.html",
+      "checked": "2026-11-24",
+      "quote": "In the 1980s, farm mortgage rates peaked at nearly 17.5% ... In addition, typical mortgage loans in the 1980s included longer amortization periods (up to 40 years in some cases) and higher loan-to-value fractions than is typical today.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "ag-assets-down-22pct-1988",
+      "category": "farm history",
+      "fact": "US farm assets fell 22% from 1980 to 1988, to $789 billion. They did not pass the 1980 high again until 1996.",
+      "source": "University of Illinois farmdoc daily, Agricultural Assets Compared to Agricultural Debt (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/03/agricultural-assets-compared-to-agricultural-debt.html",
+      "checked": "2026-11-24",
+      "quote": "From 1980 through 1988, agricultural assets were decreasing due to lower values of machinery and land due the farm crisis in the 1980s. ... By 1988, agricultural assets had declined by 22% reaching a level of $789 billion. ... At the end of 1996, agricultural assets reached $1,003 billion, surpassing the previous high set in 1980.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "farm-debt-above-income-1977",
+      "category": "farm history",
+      "fact": "US farm debt passed gross farm income in 1977 and stayed above it through 1985. By then nearly a quarter of farm debt could not be repaid from income.",
+      "source": "University of Illinois farmdoc daily, The Other Side of the Seventies (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/07/the-other-side-of-the-seventies.html",
+      "checked": "2026-11-24",
+      "quote": "As income began to fall after the spike, debt continued increasing at a steep pace, debt bypassing income in 1977. ... Debt remained above gross farm income through 1985. ... By 1985, estimates were that nearly a quarter of the farm debt could not be repaid from income (Bullock, 1985).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "exports-peak-1981",
+      "category": "global trade",
+      "fact": "US farm exports jumped in 1972 and 1973 and kept rising through the 1970s, peaking in 1981.",
+      "source": "University of Illinois farmdoc daily, The Other Side of the Seventies (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/07/the-other-side-of-the-seventies.html",
+      "checked": "2026-11-24",
+      "quote": "The change in exports beginning in 1972 and 1973 stand out compared to the years preceding them (average from 1960 to 1971 in gray area), but also that exports continued to increase throughout the 1970s, peaking in 1981.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "treasury-15pct-1981",
+      "category": "markets and prices",
+      "fact": "Ten-year Treasury yields topped 15% in 1981, then trended down to a low of 1.37% on July 5, 2016.",
+      "source": "University of Illinois farmdoc daily, Rising Interest Rates and Farmland Prices (2016)",
+      "url": "https://farmdocdaily.illinois.edu/2016/12/rising-interest-rates-and-farmland-prices.html",
+      "checked": "2026-11-24",
+      "quote": "Ten-year Treasury yields reached highs of over 15% in 1981. Since the 1981 highs, Treasury yields have been on a general downward trend, reaching a low of 1.37% on July 5, 2016.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "safrinha-little-harvest-70pct",
+      "category": "global trade",
+      "fact": "Brazil's second corn crop is called safrinha, \"little harvest\" in Portuguese. It is now the big one, about 70% of Brazil's corn.",
+      "source": "University of Illinois farmdoc daily, Comparing Brazilian (1st and 2nd Crops), American, and Argentine Corn Yields (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/01/comparing-brazilian-1st-and-2nd-crops-american-and-argentine-corn-yields.html",
+      "checked": "2026-11-24",
+      "quote": "Initially smaller than the 1st crop, it was named the safrinha, “little harvest” in Portuguese. However, it is now the largest crop, accounting for 70% of Brazilian corn.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "brazil-corn-trade-75-to-22",
+      "category": "global trade",
+      "fact": "Brazil's share of world corn trade grew from 7.5% in 2010/11 to 22% in 2020/21.",
+      "source": "University of Illinois farmdoc daily, Comparing Brazilian (1st and 2nd Crops), American, and Argentine Corn Yields (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/01/comparing-brazilian-1st-and-2nd-crops-american-and-argentine-corn-yields.html",
+      "checked": "2026-11-24",
+      "quote": "Brazil’s share of world corn trade increased from 7.5% percent in 2010/11 to 22% percent in 2020/21.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "brazil-corn-exports-2012-13",
+      "category": "global trade",
+      "fact": "Before the 2022-23 season, Brazil had out-exported the US in corn only once, in the US drought year of 2012/13.",
+      "source": "University of Illinois farmdoc daily, Will Brazil Emerge as the Number One Corn Exporting Nation? (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/03/will-brazil-emerges-as-the-number-one-corn-exporting-nation.html",
+      "checked": "2026-11-24",
+      "quote": "Brazil exported more corn than the U.S. only once before, in the drought year of 2012/13. ... In its March “World Agricultural Supply and Demand Estimates (WASDE)” report, the USDA raised its forecast for Brazilian corn exports to 50 million tons for the 2022-23 marketing year",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "brazil-corn-china-nov-2022",
+      "category": "global trade",
+      "fact": "The first shipment of Brazilian corn to China sailed in November 2022. By January 2023 China was Brazil's top corn buyer.",
+      "source": "University of Illinois farmdoc daily, Will Brazil Emerge as the Number One Corn Exporting Nation? (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/03/will-brazil-emerges-as-the-number-one-corn-exporting-nation.html",
+      "checked": "2026-11-24",
+      "quote": "the first shipment of Brazilian corn to China occurred in November 2022. ... In January 2023, China became the primary destination of Brazilian corn exports by volume",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "triple-la-nina-twice-1950",
+      "category": "weather and climate",
+      "fact": "Three La Nina winters in a row has happened only twice since 1950. The 1999-2001 run left US corn yields right on trend.",
+      "source": "University of Illinois farmdoc daily, What to Expect as Corn Yields Face a Third Straight La Nina (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/07/what-to-expect-as-corn-yields-face-a-third-straight-la-nina.html",
+      "checked": "2026-11-24",
+      "quote": "A triple La Niña has happened only twice since 1950. The last time La Nina was in place for three years in a row was from 1999 to 2001. ... And the last time that three consecutive La Niña happened (1999-2000-2001), the yields were just on the trendline.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "low-yields-neutral-years",
+      "category": "weather and climate",
+      "fact": "Two of the worst US corn yields in recent decades, 1993 and 2012, came in ENSO-neutral years, not El Nino or La Nina years.",
+      "source": "University of Illinois farmdoc daily, What to Expect as Corn Yields Face a Third Straight La Nina (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/07/what-to-expect-as-corn-yields-face-a-third-straight-la-nina.html",
+      "checked": "2026-11-24",
+      "quote": "Also, two very low yield levels happened in Neutral years (1993 and 2012), and only one in a La Niña year (1995).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "winter-precip-5-bushels",
+      "category": "weather and climate",
+      "fact": "In Illinois and Iowa from 1960 on, going from the driest to the wettest winter changed corn yield by at most 5 bushels an acre.",
+      "source": "University of Illinois farmdoc daily, Winter Precipitation and Corn Yield (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/04/winter-precipitation-and-corn.html",
+      "checked": "2026-11-24",
+      "quote": "Once again, the analysis is conducted for Illinois and Iowa (the two largest corn producing states) over the period 1960 through 2011. ... The yield impact of moving from the minimum to the maximum winter precipitation observed over 1960-2012 in both states is at most 5 bushels per acre.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "bushel-1244-cubic-feet",
+      "category": "markets and prices",
+      "fact": "An official bushel is 1.244 cubic feet. US No. 1 yellow corn must weigh at least 56 pounds per bushel.",
+      "source": "University of Nebraska-Lincoln CropWatch, Why Grain Test Weights Matter (2017)",
+      "url": "https://cropwatch.unl.edu/2017/why-grain-test-weights-matter/",
+      "checked": "2026-11-24",
+      "quote": "Grain test weight, often used as a grain quality indicator, is a volumetric measurement based on an official bushel being 1.244 cubic feet. ... No. 1 yellow corn, the official minimum test weight is 56 pounds per bushel.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-emc-50f-15pct",
+      "category": "agronomy",
+      "fact": "Corn kept below 50°F can be stored at 15% moisture. If it will be warmer, the safe level is about 13.5%.",
+      "source": "University of Nebraska-Lincoln CropWatch, Maintaining Grain Quality During Long-Term Storage (2016)",
+      "url": "https://cropwatch.unl.edu/2016/maintaining-grain-qaulity-during-long-term-storage/",
+      "checked": "2026-11-24",
+      "quote": "If you can keep stored corn below 50 degrees, you can store it at 15% moisture. But if the temperature will be warmer, then the recommended storage moisture content is about 13.5%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "grain-insects-30f-killed",
+      "category": "pests and disease",
+      "fact": "Stored grain insects go dormant below about 50°F and die if the grain stays below 30°F for a few weeks.",
+      "source": "University of Nebraska-Lincoln CropWatch, Maintaining Grain Quality During Long-Term Storage (2016)",
+      "url": "https://cropwatch.unl.edu/2016/maintaining-grain-qaulity-during-long-term-storage/",
+      "checked": "2026-11-24",
+      "quote": "\"Insect reproduction is reduced below about 70 degrees, insects are dormant below about 50°F, and insects are killed if grain is below 30°F for a few weeks.\"",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "storage-time-doubles-10-degrees",
+      "category": "agronomy",
+      "fact": "Allowable storage time for grain roughly doubles with each 10-degree drop in grain temperature.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Drying and Storage Tips (2016)",
+      "url": "https://cropwatch.unl.edu/2016/grain-drying-and-storage-tips/",
+      "checked": "2026-11-24",
+      "quote": "In addition, grain moisture content and temperature affect the rate of mold growth and grain deterioration, with the allowable storage time approximately doubling with each 10-degree reduction in grain temperature.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "one-inch-rain-pile-9-points",
+      "category": "weather and climate",
+      "fact": "A 1-inch rain on an open corn pile raises the moisture of the top foot of grain by 9 percentage points.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Drying and Storage Tips (2016)",
+      "url": "https://cropwatch.unl.edu/2016/grain-drying-and-storage-tips/",
+      "checked": "2026-11-24",
+      "quote": "Just a 1-inch rain will increase the moisture content of a 1-foot layer of corn by 9 percentage points.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "pile-1-foot-13pct",
+      "category": "machinery and safety",
+      "fact": "Losing just the top foot of a 25-foot-high cone-shaped grain pile loses about 13% of the grain.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Drying and Storage Tips (2016)",
+      "url": "https://cropwatch.unl.edu/2016/grain-drying-and-storage-tips/",
+      "checked": "2026-11-24",
+      "quote": "A 1-foot loss on the surface of a 25-foot-high cone-shaped pile is about 13% of the grain.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soybeans-8pct-lose-543",
+      "category": "markets and prices",
+      "fact": "Selling soybeans at 8% moisture instead of the 13% standard gives away about 5.43% of the crop's weight. At 12% it is 1.14%.",
+      "source": "University of Nebraska-Lincoln CropWatch, Plan Harvest to Deliver Soybean at Optimum Moisture (2017)",
+      "url": "https://cropwatch.unl.edu/2017/plan-harvest-deliver-soybean-optimum-moisture/",
+      "checked": "2026-11-24",
+      "quote": "Soybean delivered below or above 13% moisture — the elevator standard — lose potential profit. ... If you sell soybean at 8% moisture, you're losing about 5.43% of your yield; at 9% moisture, it's 4.4%; at 10% moisture, 3.3%; at 11% moisture, 2.25%; and at 12% moisture, it's 1.14% yield loss.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-land-doubled-2003-2011",
+      "category": "land and rent",
+      "fact": "Illinois farmland prices more than doubled from 2003 to 2011, growing 9.2 percent a year compounded.",
+      "source": "University of Illinois farmdoc daily, A Historical Perspective on Illinois Farmland Sales (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/05/historical-illinois-farmland-sales.html",
+      "checked": "2026-11-24",
+      "quote": "From 2003 to 2011, Illinois farmland prices more than doubled, reflecting 9.2 percent annually compounded growth.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "northern-plains-cows-170000",
+      "category": "livestock",
+      "fact": "In the 2012 drought, beef cow numbers fell 9 percent in the Southern Plains, while the wetter Northern Plains gained about 170,000 cows.",
+      "source": "University of Illinois farmdoc daily, Where Have All the Beef Cows Gone? (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/02/where-have-all-the-beef-cows-gone.html",
+      "checked": "2026-11-24",
+      "quote": "The impacts were largest for producers in the Southern Plains where beef cow numbers dropped by 9 percent last year ... Likely some of those cows moved to the Northern Plains where rain was more abundant and cow numbers expanded by four percent, totaling about 170,000 cows.",
+      "note": "Last year is 2012; the article is dated February 2013 and the paragraph is about the 2012 drought.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "china-income-vs-india-1980-2013",
+      "category": "global trade",
+      "fact": "Adjusted for buying power, income per person in China was 47% below India's in 1980 and 118% above it by 2013.",
+      "source": "University of Illinois farmdoc daily, China, India, the Food Transition, and Future Demand Growth (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/07/china-india-the-food-transition-future-demand.html",
+      "checked": "2026-11-24",
+      "quote": "After adjusting for purchasing power parity, per capita income in China was 47% lower in 1980 than in India but 118% higher in 2013.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "great-lakes-plains-farm-jobs-45pct",
+      "category": "farm history",
+      "fact": "The Great Lakes and Plains states lost almost 45 percent of their farm jobs, about 630,000, from 1969 to 2021.",
+      "source": "University of Illinois farmdoc daily, Changes in Farm Employment, 1969 to 2021 (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/07/changes-in-farm-employment-1969-to-2021.html",
+      "checked": "2026-11-24",
+      "quote": "Combined, the states in the Great Lakes and Plains regions lost almost 45 percent of their farm employment (roughly 630,000 jobs) since 1969.",
+      "note": "2021 is the end year in the article's title.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "farm-employment-down-35pct",
+      "category": "farm history",
+      "fact": "US farm employment fell 35% from 1969 to 2021. In 1969 the Southeast alone held 31.6% of all farm jobs.",
+      "source": "University of Illinois farmdoc daily, Changes in Farm Employment, 1969 to 2021 (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/07/changes-in-farm-employment-1969-to-2021.html",
+      "checked": "2026-11-24",
+      "quote": "Overall, U.S. farm employment has declined 35% percent since 1969. ... In 1969, the Southeast (31.6% of total U.S. farm employment), Plains (19.7%), and Great Lakes (16.3%) regions accounted for almost two-thirds of total U.S. farm employment.",
+      "note": "2021 is the end year in the article's title.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "safrinha-2-million-tons-1992",
+      "category": "global trade",
+      "fact": "Brazil's safrinha corn crop first topped 2 million metric tons in 1992/93. Its share of world corn grew elevenfold, from 0.45% to 5%.",
+      "source": "University of Illinois farmdoc daily, Comparing Brazilian (1st and 2nd Crops), American, and Argentine Corn Yields (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/01/comparing-brazilian-1st-and-2nd-crops-american-and-argentine-corn-yields.html",
+      "checked": "2026-11-24",
+      "quote": "Safrinha corn in Brazil has grown significantly since 1992/93, when production exceeded 2 million metric tons for the first time. ... Safrinha share of world corn production increased eleven fold, from 0.45% to 5%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "great-plains-committee-1936",
+      "category": "policy and programs",
+      "fact": "In 1936 the Great Plains Committee told President Roosevelt about 15 million acres of the Dust Bowl region should go back to permanent grass.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 2: Lessons Written in Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/10/the-conservation-question-part-2-lessons-written-in-dust.html",
+      "checked": "2026-11-24",
+      "quote": "A 1936 report produced for President Franklin Roosevelt by the Great Plains Committee concluded that approximately 15 million acres in the region should be taken out of production and returned to permanent grassland (GPC Report 1936).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "dust-bowl-100-million-acres",
+      "category": "soil",
+      "fact": "At its peak the Dust Bowl hit about 100 million acres, mostly in the Oklahoma and Texas panhandles, southwest Kansas, southeast Colorado and northeast New Mexico.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 2: Lessons Written in Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/10/the-conservation-question-part-2-lessons-written-in-dust.html",
+      "checked": "2026-11-24",
+      "quote": "the Dust Bowl has largely applied to the southern portion, concentrated in the Oklahoma and Texas panhandles, southwestern Kansas, southeastern Colorado and northeastern New Mexico (Stephens 1937). ... The peak of the Dust Bowl impacted about 100 million acres in this region (Egan 2006).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "marketing-loan-9-10-months",
+      "category": "policy and programs",
+      "fact": "Federal marketing loans for crops date to 1938, and farmers generally repay them within 9 or 10 months.",
+      "source": "University of Illinois farmdoc daily, Farm Bill Review: Historical Background on Marketing Assistance Loans (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/farm-bill-review-historical-background-marketing.html",
+      "checked": "2026-11-24",
+      "quote": "If Congress reauthorizes the nonrecourse, price-support loan program in 2018 it will mark eighty years of this policy for U.S. commodity farmers. ... Also unlike the payment programs, farmers generally have to repay all or part of the loan within 9 or 10 months.",
+      "note": "1938 is 2018 minus the eighty years stated on the page.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "heifers-on-feed-40pct",
+      "category": "livestock",
+      "fact": "In mid-2024, heifers were nearly 40% of US cattle on feed, against 31% to 33% during most of the last herd expansion, a sign the herd was not rebuilding.",
+      "source": "University of Illinois farmdoc daily, How Big is the U.S. Cattle Herd? (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/07/how-big-is-the-us-cattle-herd.html",
+      "checked": "2026-11-24",
+      "quote": "the latter’s share of cattle on feed, as already mentioned, also remains similar to a year ago at nearly 40%, as compared to only 31%-33% during much of the last expansion. ... Hence, it appears the U.S. cattle industry overall remains in a contractionary phase",
+      "note": "Mid-2024 is the July 1, 2024 count the article discusses.",
+      "added": "2026-11-25"
     }
   ]
 }
