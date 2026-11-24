@@ -1,0 +1,1 @@
+Basis by distance: the month view stays off when a crop is pressed under the history box.

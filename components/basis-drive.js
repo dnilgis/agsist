@@ -653,7 +653,7 @@
     [].slice.call(box.querySelectorAll('.bd-crop button')).forEach(function (b, i, all) {
       b.addEventListener('click', function () {
         cur = b.getAttribute('data-crop'); all.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
-        sel = -1; draw(true); if (box.classList.contains('bd-on-hist')) month(); ga('basis_drive_crop');
+        sel = -1; draw(true); if (MONTH_V2 && box.classList.contains('bd-on-hist')) month(); ga('basis_drive_crop');
         try { var u = new URL(root.location.href); if (cur === (cfg.crops || [])[0]) u.searchParams.delete('crop'); else u.searchParams.set('crop', cur); root.history.replaceState(null, '', u.toString()); } catch (e) {}
       });
       b.setAttribute('aria-pressed', String(b.getAttribute('data-crop') === cur));
