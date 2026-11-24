@@ -409,10 +409,6 @@
    "to": "/cash-bids/indiana/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/adair.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/alleman.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -485,10 +481,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/farnhamville.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/gilman.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -545,10 +537,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
   },
-  "cash-bids/iowa/lake-view.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/langdon.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
@@ -556,6 +544,10 @@
   "cash-bids/iowa/lanyon.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
+  },
+  "cash-bids/iowa/latimer.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/iowa/lime-springs.html": {
    "to": "/cash-bids/iowa/",
@@ -577,6 +569,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
+  "cash-bids/iowa/manilla.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
+  },
   "cash-bids/iowa/manson.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -596,6 +592,10 @@
   "cash-bids/iowa/missouri-valley.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
+  },
+  "cash-bids/iowa/mitchellville.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/iowa/modale.html": {
    "to": "/cash-bids/iowa/",
@@ -721,10 +721,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/wellsburg.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/wever.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -740,6 +736,10 @@
   "cash-bids/iowa/woodward.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
+  },
+  "cash-bids/iowa/yale.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
