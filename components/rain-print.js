@@ -5687,17 +5687,26 @@
     if (PRODUCTS.indexOf(u) >= 0) { PICK_CHOSEN = true; return u; }
     var sv = savedCheckout();
     if (sv && !PAID && sv.code === encodeCode(ST) && PRODUCTS.indexOf(sv.choice) >= 0) { PICK_CHOSEN = true; return sv.choice; }
-    var r = radios('rp-product').filter(function (x) { return x.checked; })[0], tapped = '';
-    try { tapped = root.sessionStorage.getItem(TAPPED_KEY) || ''; } catch (e) { tapped = ''; }
+    var r = radios('rp-product').filter(function (x) { return x.checked; })[0], tapped = TAPPED;
     // a pick the browser kept; the Christmas pick rain-print.html's early script checked (data-rp-early) is a default,
     // so a reader outside the US and Canada still moves to the file (setAway), unless this tab's reader tapped that
-    // same choice (the browser puts it back after Back, after the early script ran)
+    // same choice and came back to it with Back (the browser puts it back after the early script ran)
     if (r && r !== radios('rp-product')[0] && (!r.hasAttribute('data-rp-early') || r.value === tapped)) PICK_CHOSEN = true;
     return r && PRODUCTS.indexOf(r.value) >= 0 ? r.value : 'framed12x18';
   }
-  // the choice this tab's reader tapped last (step 3, the review sheet or the buttons under the print)
+  // the choice this tab's reader tapped last (step 3, the review sheet or the buttons under the print). It counts only
+  // when this load is Back or Forward to the page it was tapped on; any other load (a link, a typed address, a reload)
+  // starts fresh and drops it, so an old tap never holds a reader outside the US on a print.
   var TAPPED_KEY = 'rp-tapped';
   function noteTapped(id) { try { root.sessionStorage.setItem(TAPPED_KEY, id); } catch (e) {} }
+  function backForward() {
+    // the Navigation API's own answer first, then the navigation timing entry; anything unreadable is not Back
+    try { var a = root.navigation && root.navigation.activation; if (a && a.navigationType) return a.navigationType === 'traverse'; } catch (e) {}
+    try { var n = root.performance.getEntriesByType('navigation')[0]; return !!n && n.type === 'back_forward'; } catch (e) { return false; }
+  }
+  var TAPPED = '';
+  if (backForward()) { try { TAPPED = root.sessionStorage.getItem(TAPPED_KEY) || ''; } catch (e) { TAPPED = ''; } }
+  else { try { root.sessionStorage.removeItem(TAPPED_KEY); } catch (e) {} }
   /* The frame color comes back the same way: ?frame=, else the one saved at
      the press for this same design, else the radio the browser kept, else oak. */
   function startFrame() {
