@@ -3,22 +3,18 @@
  "generated": "2026-11-24",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 771,
+  "live_boards": 748,
   "with_parent": 128,
-  "with_dest": 17,
+  "with_dest": 9,
   "parent_by_rule": {
    "chs-brand": 128
   },
   "dest_by_brand": {
-   "ADM": 3,
    "AGP": 5,
-   "Big River": 1,
-   "CGB": 1,
    "Cargill": 1,
-   "Marquis": 2,
+   "Marquis": 1,
    "POET": 1,
-   "Valero": 2,
-   "Viserion": 1
+   "Valero": 1
   },
   "board_pages_with_other_firms": 0
  },
@@ -701,46 +697,6 @@
   "nexus-valerocharlescityia": {
    "elevId": "ev4rkxwapd",
    "dest": "Valero",
-   "dv": "location"
-  },
-  "premiercooperative-valerocc": {
-   "elevId": "ehysxd2cqp",
-   "dest": "Valero",
-   "dv": "location"
-  },
-  "premiercooperative-viserionmcgregor": {
-   "elevId": "e67nm42geg",
-   "dest": "Viserion",
-   "dv": "location"
-  },
-  "rivervalleycoop-admclinton": {
-   "elevId": "e2z63q24mt",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "rivervalleycoop-admclintongrain": {
-   "elevId": "e1kq5xbrmq",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "rivervalleycoop-admcrevecoeur": {
-   "elevId": "e6paazzke9",
-   "dest": "ADM",
-   "dv": "location"
-  },
-  "rivervalleycoop-bigriverdyersville": {
-   "elevId": "ernfzav5bw",
-   "dest": "Big River",
-   "dv": "location"
-  },
-  "rivervalleycoop-cgbhennepin": {
-   "elevId": "e8qwdx4r8v",
-   "dest": "CGB",
-   "dv": "location"
-  },
-  "rivervalleycoop-marquisenergy": {
-   "elevId": "em86kw2svr",
-   "dest": "Marquis",
    "dv": "location"
   },
   "seatonvilleelevator-marquis": {
