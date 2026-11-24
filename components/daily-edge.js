@@ -35,12 +35,16 @@
         (f.detail ? '<p class="dv3-edge-d">' + esc(f.detail) + '</p>' : '') + '</li>';
     }).join('');
     var cite = /^\d{4}-\d{2}-\d{2}$/.test(String(dateIso || '')) ? ' Quote it with the date and a link to agsist.com/daily/' + esc(dateIso) + '.' : '';
+    /* a co-op fertilizer fact names its own source and rule (daily_edge.FERT_SOURCE, FERT_RULE) */
+    var fert = facts.some(function (f) { return f.id === 'fert_coop'; });
     return '<section class="dv3-edge" aria-labelledby="dv3-edge-h">' +
       '<h2 class="dv3-edge-label" id="dv3-edge-h">' + esc(edge.label || 'Only on AGSIST') + '</h2>' +
       '<ol class="dv3-edge-list">' + items + '</ol>' +
-      '<p class="dv3-edge-note">Counted by code from the elevator boards AGSIST reads itself, ' +
+      '<p class="dv3-edge-note">Counted by code from the elevator boards' + (fert ? ' and the co-op fertilizer price lists' : '') + ' AGSIST reads itself, ' +
       'not by the writer of this briefing. A week\'s change is each bid against ' +
-      'the same elevator\'s same delivery and futures month a week before.' + cite + ' <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>' +
+      'the same elevator\'s same delivery and futures month a week before.' +
+      (fert ? ' A fertilizer price is the median of the co-ops\' own posted cash prices, against the same co-ops a month before.' : '') +
+      cite + ' <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>' +
       ' &middot; <a href="/cash-bid-index">Monthly: AGSIST Cash Bid Index</a></p>' +
       '</section>';
   }
