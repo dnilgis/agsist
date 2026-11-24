@@ -2294,6 +2294,801 @@
       "quote": "55 percent of U.S. farms with beef cows had fewer than 20 beef cows on December 31, 2022, while less than 1 percent had 1,000 or more beef cows.",
       "order": 233,
       "added": "2026-11-03"
+    },
+    {
+      "id": "payment-limit-1938-10000",
+      "category": "policy and programs",
+      "fact": "The first cap on federal farm program payments, $10,000, dates to the Agricultural Adjustment Act of 1938.",
+      "source": "University of Illinois farmdoc daily, Farm Payment Limits: History and Observations (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/06/farm-payment-limits-history-an.html",
+      "checked": "2026-11-24",
+      "quote": "To the author’s knowledge, the first limit on payments by farm programs ($10,000) date to the Agricultural Adjustment Act of 1938.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "farm-income-ratio-1960-1972",
+      "category": "farm history",
+      "fact": "Income per person in the farm population was 65% of nonfarm income in 1960 and 70% in 1970. It first passed 100% in 1972.",
+      "source": "University of Illinois farmdoc daily, Farm Payment Limits: History and Observations (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/06/farm-payment-limits-history-an.html",
+      "checked": "2026-11-24",
+      "quote": "By 1970, per capita income of the farm population had reached 70% of the per capita income of the nonfarm population. ... This ratio is first available for 1960, when it was 65%. ... The ratio exceeded 100% in 1972",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "crop-ins-80-85-coverage-1996-2014",
+      "category": "policy and programs",
+      "fact": "In 1996 almost no insured crop acres carried 80 or 85 percent coverage. By 2014, 21 percent did.",
+      "source": "University of Illinois farmdoc daily, U.S. Crop Insurance Since 1996 (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/07/us-crop-insurance-since-1996.html",
+      "checked": "2026-11-24",
+      "quote": "In particular, share of acres covered at 80% and 85% rounded to 0% in 1996, a stark contrast to 2014’s 21% share.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "revenue-insurance-first-1996",
+      "category": "policy and programs",
+      "fact": "Revenue insurance, now the main kind of crop insurance, was first offered for the 1996 crop year.",
+      "source": "University of Illinois farmdoc daily, U.S. Crop Insurance Since 1996 (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/07/us-crop-insurance-since-1996.html",
+      "checked": "2026-11-24",
+      "quote": "Initial year is 1996, the first crop year in which revenue insurance, now the dominant insurance product, was offered.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "loan-rate-cap-1996-corn-189",
+      "category": "policy and programs",
+      "fact": "The 1996 Farm Bill capped the marketing loan rate at $1.89 a bushel for corn and $2.58 for wheat.",
+      "source": "University of Illinois farmdoc daily, Farm Bill Review: Historical Background on Marketing Assistance Loans (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/farm-bill-review-historical-background-marketing.html",
+      "checked": "2026-11-24",
+      "quote": "For example, the wheat loan rate was 85 percent of the five-year Olympic moving average but not to exceed $2.58 per bushel; corn not to exceed $1.89 per bushel and cotton not to exceed $0.5192 per pound (see, Federal Agriculture Improvement and Reform Act of 1996",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "parity-word-1938",
+      "category": "policy and programs",
+      "fact": "The Agricultural Adjustment Act of 1938 was the first farm law to use the word parity and define it.",
+      "source": "University of Illinois farmdoc daily, Farm Bill Review: Historical Background on Marketing Assistance Loans (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/farm-bill-review-historical-background-marketing.html",
+      "checked": "2026-11-24",
+      "quote": "The formula was known as parity; the 1938 Act was the first to explicitly use the term and define it.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "target-prices-1973-first",
+      "category": "farm history",
+      "fact": "The first federal target prices, in the 1973 Farm Bill, were $1.38 a bushel for corn, $2.50 for wheat and $0.38 a pound for cotton.",
+      "source": "University of Illinois farmdoc daily, Farm Bill Review: Origins of Fixed Price Policy (2018)",
+      "url": "https://farmdocdaily.illinois.edu/2018/02/farm-bill-review-origins-fixed-price-policy.html",
+      "checked": "2026-11-24",
+      "quote": "Agriculture and Consumer Protection Act of 1973 (1973 Farm Bill). ... The initial target prices were: $1.38 per bushel for corn; $2.50 per bushel for wheat; and $0.38 per pound for cotton.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-parity-referendum-1958",
+      "category": "farm history",
+      "fact": "In 1958, corn growers won the right to vote themselves out of the parity price support system in a referendum.",
+      "source": "University of Illinois farmdoc daily, Reviewing Farm Bill History: the Agricultural Act of 1954 (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/02/reviewing-farm-bill-history-agricultural-act-1954.html",
+      "checked": "2026-11-24",
+      "quote": "In 1958, corn interests won the right to vote themselves out of the parity system all together in a referendum.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "tractorcade-1978",
+      "category": "farm history",
+      "fact": "In 1978, farmers drove a tractorcade onto the National Mall in Washington to protest the 1977 Farm Bill.",
+      "source": "University of Illinois farmdoc daily, Reviewing Farm Bill History: Budgets, Boll Weevils and the 1981 Farm Bill (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/03/reviewing-farm-bill-history-budgets-boll-weevils.html",
+      "checked": "2026-11-24",
+      "quote": "In 1978, for example, farmers made their frustrations with the 1977 Farm Bill clear when they conducted a “tractorcade” on the National Mall.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soviet-grain-embargo-1979",
+      "category": "global trade",
+      "fact": "The U.S. put a grain embargo on the Soviet Union in December 1979, after the Soviet invasion of Afghanistan.",
+      "source": "University of Illinois farmdoc daily, Reviewing Farm Bill History: Budgets, Boll Weevils and the 1981 Farm Bill (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/03/reviewing-farm-bill-history-budgets-boll-weevils.html",
+      "checked": "2026-11-24",
+      "quote": "including a grain embargo on the Soviet Union in December 1979 following its invasion of Afghanistan.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soil-bank-1956-crp-ancestor",
+      "category": "policy and programs",
+      "fact": "Today's Conservation Reserve Program descends from the Soil Bank, created in 1956 to cut surplus production by retiring acres.",
+      "source": "University of Illinois farmdoc daily, Historical Background on the Conservation Reserve Program (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/05/historical-background-on-the-crp.html",
+      "checked": "2026-11-24",
+      "quote": "In fact, today’s CRP is a direct descendant of the Soil Bank created by Congress and the Eisenhower Administration in 1956; designed to address surplus production with short and long-term acreage retirement programs.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "crp-cap-2008-32m",
+      "category": "policy and programs",
+      "fact": "Congress has moved the CRP acreage cap with crop prices: 39.2 million acres in 2002, then 32 million in 2008.",
+      "source": "University of Illinois farmdoc daily, Historical Background on the Conservation Reserve Program (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/05/historical-background-on-the-crp.html",
+      "checked": "2026-11-24",
+      "quote": "After a period of low prices in the late Nineties, Congress increased the CRP acreage cap to 39.2 million acres in the FSRI Act of 2002. As prices improved, Congress again lowered the acreage cap in the FCE Act of 2008, this time to 32 million acres.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "hog-broiler-productivity-1993-2018",
+      "category": "livestock",
+      "fact": "From 1993 to 2018, broiler output grew 63% and hog output 43%. Yet hog productivity rose more, because the breeding herd shrank 15% while the broiler flock grew 15%.",
+      "source": "University of Illinois farmdoc daily, Comparing Livestock Productivity Since 1993 (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/05/comparing-livestock-productivity-since-1993.html",
+      "checked": "2026-11-24",
+      "quote": "The analysis spans 1993, the earliest calendar year for which the chicken hatching flock by broilers and layers is available, through 2018 ... And, while production increased more for broilers than hogs (63% vs. 43%), productivity increased more for hogs as its foundation herd declined -15% vs. a +15% increase for broilers.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "dust-chicago-may-1934",
+      "category": "weather and climate",
+      "fact": "A dust storm that began May 9, 1934, dropped 12 million pounds of Great Plains soil on Chicago, then dusted cities from Boston to Atlanta.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 2: Lessons Written in Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/10/the-conservation-question-part-2-lessons-written-in-dust.html",
+      "checked": "2026-11-24",
+      "quote": "A storm that began on May 9, 1934, would deposit 12 million pounds of Great Plains soil on Chicago and within days drop dust on cities along the eastern seaboard from Boston to Atlanta (Worster 2004).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "dust-bowl-wind-erosion-1938",
+      "category": "soil",
+      "fact": "By 1938, the Soil Conservation Service found that 80% of the southern Great Plains had wind erosion damage, 40% of it serious.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 2: Lessons Written in Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/10/the-conservation-question-part-2-lessons-written-in-dust.html",
+      "checked": "2026-11-24",
+      "quote": "by 1938, it concluded that 80% of the southern Great Plains had been impacted by wind erosion, 40% seriously impacted (Hansen and Libecap 2004).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "homestead-160-320-acres",
+      "category": "land and rent",
+      "fact": "The Homestead Act of 1862 gave settlers up to 160 acres. In 1909 Congress raised it to 320 acres, since 160 was too small for dry country.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 2: Lessons Written in Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/10/the-conservation-question-part-2-lessons-written-in-dust.html",
+      "checked": "2026-11-24",
+      "quote": "The Homestead Act of 1862 drove settlement on the Great Plains by providing free land of 160 acres or less for any U.S. citizen if they settled (occupied) and cultivated the land for five years; Congress increased the acreage to 320 acres with the Enlarged Homestead Act of 1909 ... Ultimately, 160 acres proved simply too small to be a viable farm in this more arid (or semiarid) region",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "homestead-patents-270m-acres",
+      "category": "land and rent",
+      "fact": "From 1868 to 1960, about 1.5 to 1.6 million homestead patents moved 248 million to 270 million acres of public land into private hands.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 2: Lessons Written in Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/10/the-conservation-question-part-2-lessons-written-in-dust.html",
+      "checked": "2026-11-24",
+      "quote": "records indicate that 1.5 to 1.6 million homestead patents transferred between 248 million and 270 million acres of land from 1868 to 1960",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "drought-1956-worse-than-1934",
+      "category": "weather and climate",
+      "fact": "The Great Plains drought came back in the 1950s, and by one measure 1956 and early 1957 were worse than 1934.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 3: Lessons in Settling Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/11/the-conservation-question-part-3-lessons-in-settling-dust.html",
+      "checked": "2026-11-24",
+      "quote": "Based on this measure, note that drought returned in the 1950s and that 1956 and early 1957 were worse than in 1934.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "taylor-grazing-1934",
+      "category": "land and rent",
+      "fact": "Congress ended the policy of giving away free homestead land in 1934, with the Taylor Grazing Act.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 3: Lessons in Settling Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/11/the-conservation-question-part-3-lessons-in-settling-dust.html",
+      "checked": "2026-11-24",
+      "quote": "In 1934, Congress formally ended the homesteading policy of giving away free land with the Taylor Grazing Act (Hargreaves 1976).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "megadroughts-1000-years",
+      "category": "weather and climate",
+      "fact": "Researchers have found at least four megadroughts on the Great Plains in the past 1,000 years. Each lasted decades and was likely far worse than the Dust Bowl.",
+      "source": "University of Illinois farmdoc daily, The Conservation Question, Part 3: Lessons in Settling Dust (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/11/the-conservation-question-part-3-lessons-in-settling-dust.html",
+      "checked": "2026-11-24",
+      "quote": "researchers have found at least four “megadroughts” during the previous 1,000 years that lasted for decades and estimated to have been far more extreme (Lee & Gill 2015).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "pik-1983-78m-acres",
+      "category": "farm history",
+      "fact": "In 1983, the Payment-in-Kind year, farmers idled nearly 78 million acres. Only 60 million acres went to corn, against an average of nearly 83 million.",
+      "source": "University of Illinois farmdoc daily, Production Controls & Set Aside Acres, Part 1: Reviewing History (2020)",
+      "url": "https://farmdocdaily.illinois.edu/2020/06/production-controls-set-aside-acres-part-1-reviewing-history.html",
+      "checked": "2026-11-24",
+      "quote": "The 1983 crop year remains the high-water mark for set aside policy when farmers reduced planting by nearly 78 million acres. That year farmers drastically reduced acres planted to corn by more than 20 million acres compared to the average planted acres in the five previous years; 60 million acres planted to corn in 1983 compared to nearly 83 million average acres planted to corn (1978-1982).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "crp-peak-2007-37m",
+      "category": "policy and programs",
+      "fact": "CRP enrollment peaked in 2007 at nearly 37 million acres. By 2019, 22 million acres were under contract.",
+      "source": "University of Illinois farmdoc daily, Production Controls & Set Aside Acres, Part 1: Reviewing History (2020)",
+      "url": "https://farmdocdaily.illinois.edu/2020/06/production-controls-set-aside-acres-part-1-reviewing-history.html",
+      "checked": "2026-11-24",
+      "quote": "CRP acres peaked in 2007 at nearly 37 million acres but have declined steadily since; 22 million acres were under contract in 2019.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "china-beef-import-share-40x",
+      "category": "global trade",
+      "fact": "From 2011 to 2018, imports went from 0.4% to 17.5% of the beef eaten in China, a 40-fold jump.",
+      "source": "University of Illinois farmdoc daily, China's Imports of Meat and Dairy during the 21st Century (2020)",
+      "url": "https://farmdocdaily.illinois.edu/2020/12/chinas-imports-of-meat-and-dairy-during-the-21st-century.html",
+      "checked": "2026-11-24",
+      "quote": "Between 2011 and 2018, imports as a share of beef consumption increased 40-fold, from 0.4% to 17.5%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "china-nonfat-dry-milk-90",
+      "category": "global trade",
+      "fact": "By 2020, imports supplied over 90% of the nonfat dry milk used in China, and over 50% of its butter.",
+      "source": "University of Illinois farmdoc daily, China's Imports of Meat and Dairy during the 21st Century (2020)",
+      "url": "https://farmdocdaily.illinois.edu/2020/12/chinas-imports-of-meat-and-dairy-during-the-21st-century.html",
+      "checked": "2026-11-24",
+      "quote": "By 2020, imports as a share of domestic consumption exceeded 90% for nonfat dry milk, 50% for butter, and 30% for cheese and dry whole milk powder.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "china-fluid-milk-trade-50",
+      "category": "global trade",
+      "fact": "China's share of world fluid milk trade rose from 5% in 2011 to nearly 50% in 2020.",
+      "source": "University of Illinois farmdoc daily, China's Imports of Meat and Dairy during the 21st Century (2020)",
+      "url": "https://farmdocdaily.illinois.edu/2020/12/chinas-imports-of-meat-and-dairy-during-the-21st-century.html",
+      "checked": "2026-11-24",
+      "quote": "An important addition to the story is the nearly 10-fold increase in China’s share of world trade of fluid milk, from 5% in 2011 to nearly 50% in 2020.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "bankhead-jones-1937",
+      "category": "policy and programs",
+      "fact": "USDA's farm loan programs began with the Bankhead-Jones Farm Tenant Act, signed July 22, 1937, to help tenants and sharecroppers buy farms.",
+      "source": "University of Illinois farmdoc daily, Reviewing the History and Development of USDA's Farm Loan Programs, Part 1 (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/reviewing-the-history-and-development-of-usdas-farm-loan-programs-part-1-origins.html",
+      "checked": "2026-11-24",
+      "quote": "Today’s farm loan programs originated with the Bankhead-Jones Farm Tenant Act of 1937, signed into law by President Roosevelt on July 22, 1937 (P.L. 75-210). The 1937 Act provided loans to enable persons to acquire farms but only “farm tenants, farm laborers, sharecroppers” and others",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "tenant-farms-1930-42pct",
+      "category": "land and rent",
+      "fact": "The 1930 census counted 2,664,365 farms run by tenants, 42.4% of the 6,288,648 farms in the country.",
+      "source": "University of Illinois farmdoc daily, Reviewing the History and Development of USDA's Farm Loan Programs, Part 1 (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/reviewing-the-history-and-development-of-usdas-farm-loan-programs-part-1-origins.html",
+      "checked": "2026-11-24",
+      "quote": "The committee reported included data from the 1930 census that reported 2,664,365 farms operated by tenants (42.4%) out of 6,288,648 total farms.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "farm-specialization-1964-2017",
+      "category": "farm history",
+      "fact": "In the 1964 Census of Agriculture, 25% of US farms sold hogs and 20% sold milk. By 2017 it was 3% and 2%.",
+      "source": "University of Illinois farmdoc daily, 50 Years of Little Change: The Distribution of US Farming by State (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/50-years-of-little-change-the-distribution-of-us-farming-by-state.html",
+      "checked": "2026-11-24",
+      "quote": "For example, share of farms that had beef cows, grew corn, grew wheat, sold hogs, and sold milk declined from 72%, 44%, 23%, 25%, and 20% to 36%, 15%, 5%, 3%, and 2%, respectively, between the 1964 and 2017 Censuses of Agriculture.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-farms-44-to-15",
+      "category": "agronomy",
+      "fact": "In 1964, 44% of US farms grew corn. By the 2017 Census of Agriculture, 15% did.",
+      "source": "University of Illinois farmdoc daily, 50 Years of Little Change: The Distribution of US Farming by State (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/50-years-of-little-change-the-distribution-of-us-farming-by-state.html",
+      "checked": "2026-11-24",
+      "quote": "For example, share of farms that had beef cows, grew corn, grew wheat, sold hogs, and sold milk declined from 72%, 44%, 23%, 25%, and 20% to 36%, 15%, 5%, 3%, and 2%, respectively, between the 1964 and 2017 Censuses of Agriculture.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "black-farmers-1920-925708",
+      "category": "farm history",
+      "fact": "The 1920 Census of Agriculture counted nearly 6.5 million farm operators, and 925,708 of them, 14%, were Black.",
+      "source": "University of Illinois farmdoc daily, The History and Development of USDA Farm Loan Programs, Part 3: 1946 to 1961 (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/the-history-and-development-of-usda-farm-loan-programs-part-3-1946-to-1961.html",
+      "checked": "2026-11-24",
+      "quote": "The Census of Agriculture data of farm operators indicates a peak in 1920 with nearly 6.5 million farm operators, of whom 925,708 (14%) were Black and nearly 5.5 million (85%) were white",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "brazil-soy-ninefold-30-years",
+      "category": "global trade",
+      "fact": "Brazil's soybean crop grew almost ninefold in 30 years, from 566 million bushels in 1990/91 to 4,965 million bushels in 2020/21.",
+      "source": "University of Illinois farmdoc daily, New Soybean Record: Historical Growing of Production in Brazil (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/new-soybean-record-historical-growing-of-production-in-brazil.html",
+      "checked": "2026-11-24",
+      "quote": "Soybean production in Brazil over the past 30 years has increased almost ninefold, from 566 million bushels for the 1990/91 crop to 4,965 million bushels for the 2020/21 crop",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "mato-grosso-soy-2m-25m",
+      "category": "global trade",
+      "fact": "Soybean acres in Brazil's Mato Grosso state grew from 2 million around 1990 to 25 million in 2020/21, over a quarter of Brazil's soybean land.",
+      "source": "University of Illinois farmdoc daily, New Soybean Record: Historical Growing of Production in Brazil (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/new-soybean-record-historical-growing-of-production-in-brazil.html",
+      "checked": "2026-11-24",
+      "quote": "Acres in Mato Grosso — a Midwest state — grew from 2 million acres in 1990/92 to 25 million acres in 2020/21. Mato Grosso’s percent of Brazilian acres grew from 10.3% in 1990/91 to 26.5% in 2020/21.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "brazil-soy-yield-23-to-52",
+      "category": "agronomy",
+      "fact": "Brazil's average soybean yield rose 121%, from 23.5 bushels an acre in 1990/91 to 52.0 in 2020/21.",
+      "source": "University of Illinois farmdoc daily, New Soybean Record: Historical Growing of Production in Brazil (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/new-soybean-record-historical-growing-of-production-in-brazil.html",
+      "checked": "2026-11-24",
+      "quote": "From the 1990/91 season to the 2020/21 season, the average yield increased 121%, from 23.5 bushels per acre to 52.0 bushels per acre.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "china-73pct-brazil-soy-2020",
+      "category": "global trade",
+      "fact": "China bought 73.2% of the soybeans Brazil exported in 2020, worth $20.91 billion.",
+      "source": "University of Illinois farmdoc daily, New Soybean Record: Historical Growing of Production in Brazil (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/new-soybean-record-historical-growing-of-production-in-brazil.html",
+      "checked": "2026-11-24",
+      "quote": "China purchased 73.2% of Brazilian soybeans exported in 2020, which corresponded to $20.91 billion (Mapa, 2021).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "public-stocks-1996-private",
+      "category": "markets and prices",
+      "fact": "The 1996 farm bill ended most government grain stock programs. Since 1996 almost all US grain stocks are held by farmers, elevators and processors.",
+      "source": "University of Illinois farmdoc daily, Stock-to-Use Ratios of US Corn, Soybeans, and Wheat Since 1960 (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/06/stock-to-use-ratios-of-us-corn-soybeans-and-wheat-since-1960.html",
+      "checked": "2026-11-24",
+      "quote": "In the 1996 farm bill, Congress eliminated most public stock programs as well as annual land set asides, a production reserve program. Since 1996, almost all US stocks have been held by private storage agents, in particular farmers, elevators, and processors.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "drought-1988-public-stocks",
+      "category": "markets and prices",
+      "fact": "Government grain stocks piled up again in the early 1980s. Lower price floors from the 1985 farm bill and the severe 1988 drought largely used them up.",
+      "source": "University of Illinois farmdoc daily, Stock-to-Use Ratios of US Corn, Soybeans, and Wheat Since 1960 (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/06/stock-to-use-ratios-of-us-corn-soybeans-and-wheat-since-1960.html",
+      "checked": "2026-11-24",
+      "quote": "Sizable public stocks reappeared in the early 1980s as the export boom faded. The high cost of public stocks prompted Congress to substantially reduce US farm program price floors in the 1985 farm bill in an attempt to spur use. The ensuing increase in use combined with the severe drought of 1988 largely eliminated public stocks.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "sherman-act-1890-212-0",
+      "category": "policy and programs",
+      "fact": "The Sherman Antitrust Act passed the House 212 to 0 on June 20, 1890, and was signed July 2, 1890.",
+      "source": "University of Illinois farmdoc daily, On Agriculture & Antitrust: A Brief Summary of Legislative History (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/05/on-agriculture-antitrust-a-brief-summary-of-legislative-history.html",
+      "checked": "2026-11-24",
+      "quote": "The House agreed to the conference report on June 20, 1890, by a vote of 212 to 0 (85 not voting) ... signed the Sherman Act into law on July 2, 1890",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "drought-1988-relief-39b",
+      "category": "weather and climate",
+      "fact": "After the 1988 drought, a $3.9 billion disaster relief bill for farmers was signed in August 1988, part of an estimated $20 billion in help.",
+      "source": "University of Illinois farmdoc daily, Climate Change and the Farm Bill: A Brief History (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/09/climate-change-and-the-farm-bill-a-brief-history.html",
+      "checked": "2026-11-24",
+      "quote": "USDA predicted substantial crop losses and President Reagan signed a $3.9 billion disaster relief bill for farmers in August of 1988. The relief was among an estimated $20 billion spent to help farmers.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "fmha-1946-replaces-fsa",
+      "category": "policy and programs",
+      "fact": "The Farmers' Home Administration Act of 1946 replaced the New Deal's Farm Security Administration with a new farm lending agency.",
+      "source": "University of Illinois farmdoc daily, Reviewing the History and Development of USDA Farm Loans, Part 2: 1937 to 1946 (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/03/reviewing-the-history-and-development-of-usda-farm-loans-part-2-1937-to-1946.html",
+      "checked": "2026-11-24",
+      "quote": "The Farmers’ Home Administration Act of 1946 created a new agency to replace the FSA.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "ethanol-6-to-40-pct-corn",
+      "category": "markets and prices",
+      "fact": "Ethanol went from 6% of US corn use in 2000 to 40% in 2010. Since 2011 it has held almost constant at 5.2 billion bushels.",
+      "source": "University of Illinois farmdoc daily, The Impact of Long-Run Declines in Gasoline Use on the US Corn Market (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/12/the-impact-of-long-run-declines-in-gasoline-use-on-the-us-corn-market.html",
+      "checked": "2026-11-24",
+      "quote": "After 2000, the ethanol market expanded rapidly, going from 6% of corn use in 2000 to 40% in 2010. ... Since 2011, corn use for ethanol has been almost constant at 5.2 billion bushels.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "ethanol-94pct-corn",
+      "category": "food and the consumer",
+      "fact": "Most US gasoline is 10% ethanol, and 94% of US ethanol is made from corn grain.",
+      "source": "University of Illinois farmdoc daily, The Impact of Long-Run Declines in Gasoline Use on the US Corn Market (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/12/the-impact-of-long-run-declines-in-gasoline-use-on-the-us-corn-market.html",
+      "checked": "2026-11-24",
+      "quote": "Nearly all US gasoline contains ethanol as an oxygenate, with the typical mixture begin 10% ethanol and 90% gasoline. ... Corn is the U.S.’s primary raw material for ethanol production, and 94% of ethanol production uses corn grain (EIA 2022).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "pigs-per-litter-379pct",
+      "category": "livestock",
+      "fact": "US pigs per litter grew 0.105 pigs a year from 1993 to 2022, about 37.9 percent over the 30 years.",
+      "source": "University of Illinois farmdoc daily, Long-Term Trends in Pigs per Litter (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/02/long-term-trends-in-pigs-per-litter-2.html",
+      "checked": "2026-11-24",
+      "quote": "The annual growth rate in pigs per litter was 0.105 pigs or 1.1 percent per year. This may seem small, however, over the 30-year period, this equates to an increase of 3.15 pigs per litter or an increase of approximately 37.9 percent over the 1993 to 2022 period.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "pork-per-sow-1979-3314",
+      "category": "livestock",
+      "fact": "Pounds of pork produced per US sow rose from 1,979 in 1993 to 3,314 in 2021, while the sow herd barely grew.",
+      "source": "University of Illinois farmdoc daily, Long-Term Trends in Pigs per Litter (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/02/long-term-trends-in-pigs-per-litter-2.html",
+      "checked": "2026-11-24",
+      "quote": "The annual growth rate in the U.S. sow herd during the 1993 to 2022 period is only 0.15 percent per year. ... In terms of per sow production, pounds produced per sow increased from 1,979 in 1993 to 3,314 in 2021.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "baenziger-42-wheat-varieties",
+      "category": "agronomy",
+      "fact": "In 34 years at the University of Nebraska, wheat breeder Stephen Baenziger released or co-released 42 wheat varieties.",
+      "source": "University of Nebraska-Lincoln CropWatch, To All the Wheats That I Have Known (2020)",
+      "url": "https://cropwatch.unl.edu/2020/all-wheats-i-have-known/",
+      "checked": "2026-11-24",
+      "quote": "I came in June 1986 and in the following 34 years have released or co-released 42 wheat cultivars with 2 additional ones pending.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "rops-1986-voluntary",
+      "category": "machinery and safety",
+      "fact": "US tractor makers began putting rollover protection on all tractors over 20 horsepower in 1986. Many older tractors still in use have none.",
+      "source": "University of Nebraska-Lincoln CropWatch, Older Tractors Still a Danger in Agriculture (2023)",
+      "url": "https://cropwatch.unl.edu/2023/older-tractors-still-danger-agriculture/",
+      "checked": "2026-11-24",
+      "quote": "Beginning in 1986, American tractor manufacturers began voluntarily adding ROPS (Roll Over Protection Structure) on all farm tractors sold in the United States over 20 horsepower. ... Many tractors manufactured before 1986 are still widely used on farms and unlikely to have been retrofitted with ROPS.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "tractor-overturn-130-deaths",
+      "category": "machinery and safety",
+      "fact": "Tractor overturns kill about 130 people a year on US farms, the leading cause of fatal farm injuries. One operator in 10 overturns a tractor in a lifetime.",
+      "source": "University of Nebraska-Lincoln CropWatch, Older Tractors Still a Danger in Agriculture (2023)",
+      "url": "https://cropwatch.unl.edu/2023/older-tractors-still-danger-agriculture/",
+      "checked": "2026-11-24",
+      "quote": "Tractor overturns are the leading cause of fatal injuries on U.S. farms, resulting in an average of about 130 deaths each year. One in 10 operators overturns a tractor in his or her lifetime.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-42-entrapments-2022",
+      "category": "machinery and safety",
+      "fact": "In 2022, at least 42 grain bin entrapments were reported in Nebraska, the most in a decade.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Safety Takes Center Stage (2024)",
+      "url": "https://cropwatch.unl.edu/2024/grain-safety-takes-center-stage-nebraska-corn-board-nebraska-soybean-board-promote-stand-4/",
+      "checked": "2026-11-24",
+      "quote": "In 2022, at least 42 grain bin entrapments were reported in Nebraska, the highest in a decade.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "engulfment-62pct-fatal",
+      "category": "machinery and safety",
+      "fact": "Purdue counted more than 900 grain engulfments in the US over 50 years, and 62% of them were fatal.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Engulfment: Quicksand of the Midwest (2016)",
+      "url": "https://cropwatch.unl.edu/2016/grain-engulfment-quicksand-midwest/",
+      "checked": "2026-11-24",
+      "quote": "Purdue University reported more than 900 cases of grain engulfment nationally and a fatality rate of 62% in the past 50 years.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "engulfment-waist-600-lb",
+      "category": "machinery and safety",
+      "fact": "Freeing a person buried to the waist in grain takes force equal to their body weight plus 600 pounds. Fully buried, it can exceed 2,000 pounds.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Engulfment: Quicksand of the Midwest (2016)",
+      "url": "https://cropwatch.unl.edu/2016/grain-engulfment-quicksand-midwest/",
+      "checked": "2026-11-24",
+      "quote": "A person buried to the waist in grain requires a force equivalent to his/her own body weight plus 600 pounds to be freed. The force required to remove a person buried under grain can exceed 2,000 pounds.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "great-plains-soils-young-om",
+      "category": "soil",
+      "fact": "Northern Great Plains soils are only 11,000 to 14,000 years old, yet hold some of the highest organic matter of any US mineral soils, 4% to 7%.",
+      "source": "University of Nebraska-Lincoln CropWatch, Soil Organic Matter and Its Benefits (2017)",
+      "url": "https://cropwatch.unl.edu/2017/soil-organic-matter-and-its-benefits/",
+      "checked": "2026-11-24",
+      "quote": "Soils of the Northern Great Plains are relatively young (11,000 to 14,000 years old) and have some of the highest organic matter levels (4% to 7%) of all mineral soils in the United States",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "microbes-cn-25-30",
+      "category": "soil",
+      "fact": "Soil microbes need 25 to 30 parts carbon for each part nitrogen. Residue above 30:1 breaks down slowly; below 20:1, nitrogen is lost.",
+      "source": "University of Nebraska-Lincoln CropWatch, Soil Organic Matter and Its Benefits (2017)",
+      "url": "https://cropwatch.unl.edu/2017/soil-organic-matter-and-its-benefits/",
+      "checked": "2026-11-24",
+      "quote": "On average microorganisms require 25 to 30 parts of carbon for every part of nitrogen they consume. Therefore, high C:N ratios above 30:1 will result in slower decomposition rates, whereas, low C:N ratios below 20:1 will result in nitrogen losses.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-2024-second-warmest",
+      "category": "weather and climate",
+      "fact": "2024 was Nebraska's second warmest year on record at 52.7°F, behind only 2012 at 54.0°F.",
+      "source": "University of Nebraska-Lincoln CropWatch, 2024 Was the Second Warmest Year on Record in Nebraska",
+      "url": "https://cropwatch.unl.edu/2024-was-second-warmest-year-record-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "Official statewide average temperature for the year comes in at 52.7°F. This puts 2024 as the second warmest all-time in Nebraska, behind only 54.0°F in 2012.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "norfolk-60-degree-drop-2024",
+      "category": "weather and climate",
+      "fact": "Norfolk, Nebraska, fell from 75°F to 15°F between Feb. 26 and 27, 2024, a new all-time temperature drop for the town.",
+      "source": "University of Nebraska-Lincoln CropWatch, February 2024 Climate Summary",
+      "url": "https://cropwatch.unl.edu/2024/february-2024-climate-summary/",
+      "checked": "2026-11-24",
+      "quote": "For Norfolk, the drop from 75°F to 15°F between the 1556 CST observations on Feb. 26 and 27 was a new all-time temperature drop.",
+      "note": "The year comes from the page title, February 2024 Climate Summary.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-feb-1954-record",
+      "category": "weather and climate",
+      "fact": "February 2024 averaged 38.4°F in Nebraska, 11.7°F above normal. Only February 1954, at 40.2°F, was warmer.",
+      "source": "University of Nebraska-Lincoln CropWatch, February 2024 Climate Summary",
+      "url": "https://cropwatch.unl.edu/2024/february-2024-climate-summary/",
+      "checked": "2026-11-24",
+      "quote": "The statewide average temperature of 38.4°F in February 2024 was 11.7°F above average and made it the second-warmest February on record in Nebraska, cooler only than February 1954 (40.2°F).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-june-1933-record",
+      "category": "weather and climate",
+      "fact": "Nebraska's warmest June on record is still June 1933, at a statewide 76.6°F.",
+      "source": "University of Nebraska-Lincoln CropWatch, June 2024 Climate Summary",
+      "url": "https://cropwatch.unl.edu/2024/june-2024-climate-summary/",
+      "checked": "2026-11-24",
+      "quote": "Temperatures were well-shy of record levels at the state level (record warmest was 76.6°F in 1933).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-june-4f-warmer",
+      "category": "weather and climate",
+      "fact": "Over the past three decades, June in Nebraska has warmed by nearly 4°F on average.",
+      "source": "University of Nebraska-Lincoln CropWatch, June Ranks in Top 10 Driest on Record for Nebraska (2022)",
+      "url": "https://cropwatch.unl.edu/2022/june-ranks-top-10-driest-record-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "For the past three decades, Nebraska has gotten hotter in June, with an increase of nearly 4°F in the average monthly temperatures.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-june7-2022-89-hail",
+      "category": "weather and climate",
+      "fact": "On June 7, 2022, storm spotters filed 89 hail reports and 74 wind reports across Nebraska in one day.",
+      "source": "University of Nebraska-Lincoln CropWatch, June Ranks in Top 10 Driest on Record for Nebraska (2022)",
+      "url": "https://cropwatch.unl.edu/2022/june-ranks-top-10-driest-record-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "Widespread severe weather was reported on June 7 when 89 hail and 74 wind reports were issued by storm spotters",
+      "note": "The year comes from the article, a summary of June 2022 published that year.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "sorghum-ergot-2014-return",
+      "category": "pests and disease",
+      "fact": "Sorghum ergot turned up in Nebraska fields in 2026 for the first time since 2014. It favors 50 to 55°F nights around flowering.",
+      "source": "University of Nebraska-Lincoln CropWatch, Sorghum Ergot in Nebraska May Lead to Harvest Challenges",
+      "url": "https://cropwatch.unl.edu/sorghum-ergot-nebraska-may-lead-harvest-challenges/",
+      "checked": "2026-11-24",
+      "quote": "A rare disease is showing up in Nebraska sorghum fields for the first time since 2014 ... Infection is favored when nighttime temperatures are 50°–55°F during pollen formation (two-three weeks prior to flowering) and at flowering",
+      "note": "2026 is the year of the article, which reports the find in the current season.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "combine-36-seconds-65mph",
+      "category": "machinery and safety",
+      "fact": "A car at 65 mph closes on a combine half a mile ahead going 15 mph in just 36 seconds.",
+      "source": "University of Nebraska-Lincoln CropWatch, Staying Safe During Harvest (2022)",
+      "url": "https://cropwatch.unl.edu/2022/staying-safe-during-harvest/",
+      "checked": "2026-11-24",
+      "quote": "if a vehicle is traveling 65 mph, and a combine is half of a mile ahead and traveling at 15 mph in the same direction, it would take 36 seconds for your vehicle to meet the combine.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-corn-stored-890m",
+      "category": "markets and prices",
+      "fact": "USDA counted over 890 million bushels of corn stored on Nebraska farms in 2023, up 31% from 2022.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Safety Takes Center Stage (2024)",
+      "url": "https://cropwatch.unl.edu/2024/grain-safety-takes-center-stage-nebraska-corn-board-nebraska-soybean-board-promote-stand-4/",
+      "checked": "2026-11-24",
+      "quote": "According to the USDA NASS report in 2023, there were over 890 million bushels of corn stored on Nebraska farms, an increase of 31% from 2022.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "pivot-makers-75",
+      "category": "machinery and safety",
+      "fact": "At one time there were over 75 companies making center pivot and lateral move irrigation systems.",
+      "source": "University of Nebraska-Lincoln CropWatch, Center Pivots: Innovation That Grew Crops and Acres in Nebraska (2024)",
+      "url": "https://cropwatch.unl.edu/2024/center-pivots-innovation-grew-crops-and-acres-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "There were once over 75 center pivot/lateral move irrigation manufacturers.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "pivot-patent-1952",
+      "category": "farm history",
+      "fact": "The center pivot's inventor built his first system in 1948, applied for a patent in 1949 and was awarded it in 1952.",
+      "source": "University of Nebraska-Lincoln CropWatch, Center Pivots: Innovation That Grew Crops and Acres in Nebraska (2024)",
+      "url": "https://cropwatch.unl.edu/2024/center-pivots-innovation-grew-crops-and-acres-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "He designed and built his first system in 1948, applied for a patent in 1949, and the patent was awarded in 1952.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-passes-california-irrigation-2007",
+      "category": "agronomy",
+      "fact": "The 2007 Census of Agriculture showed Nebraska passing California for the most irrigated farmland, about one of every six irrigated acres in the US.",
+      "source": "University of Nebraska-Lincoln CropWatch, Nebraska Leads the Nation in Irrigated Acres",
+      "url": "https://cropwatch.unl.edu/nebraska-leads-nation-irrigated-acres/",
+      "checked": "2026-11-24",
+      "quote": "The most recent U.S. 2007 Census of Agriculture, released in February, shows Nebraska now has more irrigated farmland acres than any other state, accounting for about one of every six acres of U.S. irrigated farmland. ... California, which historically has been first in irrigated acres",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-52000-pivots-2005",
+      "category": "machinery and safety",
+      "fact": "An estimated 52,000 center pivots were running in Nebraska in 2005, and every one of the state's 93 counties has some irrigation.",
+      "source": "University of Nebraska-Lincoln CropWatch, Nebraska Leads the Nation in Irrigated Acres",
+      "url": "https://cropwatch.unl.edu/nebraska-leads-nation-irrigated-acres/",
+      "checked": "2026-11-24",
+      "quote": "In 2005, an estimated 52,000 center-pivot systems operated in Nebraska, and that number has only increased, he said. There is some irrigation in each of the state's 93 counties.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "texas-ogallala-750000",
+      "category": "weather and climate",
+      "fact": "Texas cut irrigation on about 750,000 acres from 1997 to 2007 as the Ogallala Aquifer dropped from overuse.",
+      "source": "University of Nebraska-Lincoln CropWatch, Nebraska Leads the Nation in Irrigated Acres",
+      "url": "https://cropwatch.unl.edu/nebraska-leads-nation-irrigated-acres/",
+      "checked": "2026-11-24",
+      "quote": "Texas, which shares part of the vast Ogallala Aquifer with Nebraska, reduced irrigation on about 750,000 acres between 1997 and 2007 as aquifer levels have declined due to overuse.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-great-northern-beans",
+      "category": "agronomy",
+      "fact": "Nebraska grows more Great Northern beans than any other state. Its 2023 dry bean crop brought $82.4 million from 92,000 acres.",
+      "source": "University of Nebraska-Lincoln CropWatch, Dry Beans",
+      "url": "https://cropwatch.unl.edu/dry-beans/",
+      "checked": "2026-11-24",
+      "quote": "In 2023, Nebraska's dry edible beans production resulted in $82.4 million from 92,000 acres harvested, according to USDA National Agricultural Statistics Service. Nebraska ranks 1st in production of Great Northern beans.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-beef-exports-2b",
+      "category": "global trade",
+      "fact": "Nebraska is first in the nation for beef and veal exports, at $2,039,768,864 in the year cited by the state's ag department.",
+      "source": "University of Nebraska-Lincoln CropWatch, Nebraska Agriculture is Amazing! Celebrate National Ag Week March 16-22",
+      "url": "https://cropwatch.unl.edu/news/nebraska-agriculture-amazing-celebrate-national-ag-week-march-16-22/",
+      "checked": "2026-11-24",
+      "quote": "Last year, Nebraska beef and veal exports reached a milestone, surpassing the $2 billion-mark. At $2,039,768,864, Nebraska is number one in the nation for beef and veal exports.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-24-ethanol-plants",
+      "category": "markets and prices",
+      "fact": "Nebraska has 24 ethanol plants that can make over 2.3 billion gallons a year, second only to one other state.",
+      "source": "University of Nebraska-Lincoln CropWatch, Nebraska Agriculture is Amazing! Celebrate National Ag Week March 16-22",
+      "url": "https://cropwatch.unl.edu/news/nebraska-agriculture-amazing-celebrate-national-ag-week-march-16-22/",
+      "checked": "2026-11-24",
+      "quote": "For example, our state is home to 24 ethanol plants with a production capacity exceeding 2.3 billion gallons annually, making us the secondlargest ethanol producer in the nation.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "combine-exhaust-1200f",
+      "category": "machinery and safety",
+      "fact": "Combine exhaust parts and turbochargers can reach 1,000 to 1,200°F. Crop residue can catch fire at about 500°F.",
+      "source": "University of Nebraska-Lincoln CropWatch, Preventing and Responding to Combine Fires",
+      "url": "https://cropwatch.unl.edu/2022/preventing-and-responding-combine-fires/",
+      "checked": "2026-11-24",
+      "quote": "The exhaust components and turbochargers can reach 1,000-1,200oF, with surface temperatures reaching around 900oF. Crop residues have been reported to ignite at approximately 500oF and above.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "combine-fires-2-to-4-pm",
+      "category": "machinery and safety",
+      "fact": "In one study, 48.5% of combine fires started between 2 and 4 p.m., when it is hottest and humidity is lowest.",
+      "source": "University of Nebraska-Lincoln CropWatch, Preventing and Responding to Combine Fires",
+      "url": "https://cropwatch.unl.edu/2022/preventing-and-responding-combine-fires/",
+      "checked": "2026-11-24",
+      "quote": "A study conducted by Venem, M.T., et al found that 48.5% of combine fires occurred between 2 p.m. and 4 p.m. when temperatures have peaked, and relative humidity is the lowest.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "combine-bearings-18pct",
+      "category": "machinery and safety",
+      "fact": "A Spanish study in 2018 and 2019 found bearings and belts caused 18% of combine fires. A bearing over 300°F means shut the machine off now.",
+      "source": "University of Nebraska-Lincoln CropWatch, Preventing and Responding to Combine Fires",
+      "url": "https://cropwatch.unl.edu/2022/preventing-and-responding-combine-fires/",
+      "checked": "2026-11-24",
+      "quote": "A study out of Spain conducted in 2018 and 2019 found that bearings and belts caused 18% of combine fires. ... If bearing reach temperatures above 300oF, shut the machine off immediately.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "combine-tractor-fires-20m",
+      "category": "machinery and safety",
+      "fact": "Combine and tractor fires cause over $20 million in US property losses a year and 40 to 50 serious injuries.",
+      "source": "University of Nebraska-Lincoln CropWatch, Keeping Your Equipment and Fields Fire Safe At Harvest (2017)",
+      "url": "https://cropwatch.unl.edu/2017/keeping-equipment-fields-fire-safe-harvest/",
+      "checked": "2026-11-24",
+      "quote": "The National Ag Safety Database estimates that combine and tractor fires cause over $20 million in property losses annually in the US ... Combine and tractor fires also cause 40-50 serious injuries each year.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "resistant-weeds-480-cases",
+      "category": "pests and disease",
+      "fact": "By 2017 there were 480 unique cases of herbicide-resistant weeds worldwide, across 252 weed species.",
+      "source": "University of Nebraska-Lincoln CropWatch, Status of Herbicide-Resistant Weeds in Nebraska (2017)",
+      "url": "https://cropwatch.unl.edu/2017/status-herbicide-resistant-weeds-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "There are 480 unique cases of herbicide-resistant weed biotypes globally in 252 weed species (147 dicots and 105 monocots).",
+      "note": "2017 is the year of the article, dated March 2017 on the page.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-corn-2025-2billion",
+      "category": "agronomy",
+      "fact": "Nebraska grew 2.02 billion bushels of corn in 2025 at 194 bushels an acre, and soybeans averaged 65.5 bushels.",
+      "source": "University of Nebraska-Lincoln CropWatch, Nebraska 2025 Annual Crop Production Summary",
+      "url": "https://cropwatch.unl.edu/news/nebraska-2025-annual-crop-production-summary/",
+      "checked": "2026-11-24",
+      "quote": "Nebraska’s 2025 crop production reflected a year of contrasts ... Corn for grain production in Nebraska based on year-end surveys is estimated at 2.02 billion bushels, up 12% from 2024 ... Yield of 194 bushels per acre is up 6 bushels from last year. ... Yield, at 65.5 bushels per acre, is up 8 bushels from a year earlier.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wbc-egg-clusters-200",
+      "category": "pests and disease",
+      "fact": "Western bean cutworm moths lay eggs in clusters of 5 to 200 on the top of a corn plant's uppermost leaf. Flight usually peaks July 10 to 24.",
+      "source": "University of Nebraska-Lincoln CropWatch, Scouting and Treating Western Bean Cutworm",
+      "url": "https://cropwatch.unl.edu/scouting-and-treating-western-bean-cutworm/",
+      "checked": "2026-11-24",
+      "quote": "Western bean cutworm moths lay eggs in clusters of five to 200 on the top surface of the upper most leaf of a corn plant and on any leaf surface of dry beans. ... The moth flight usually peaks between July 10 and July 24.",
+      "note": "five is written as 5.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "rootworm-beetles-5-10-per-ear",
+      "category": "pests and disease",
+      "fact": "It usually takes an average of 5 to 10 corn rootworm beetles per ear to seriously hurt pollination.",
+      "source": "University of Nebraska-Lincoln CropWatch, Time to Scout for Western Corn Rootworm Beetles (2017)",
+      "url": "https://cropwatch.unl.edu/2017/start-scouting-western-corn-rootworm-beetles/",
+      "checked": "2026-11-24",
+      "quote": "Usually an average of 5-10 beetles per ear is required to seriously affect pollination.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "sugar-35pct-beets",
+      "category": "food and the consumer",
+      "fact": "About 35% of the world's sugar comes from sugarbeets and 65% from sugar cane. In the US, beets supply about 50 to 55%.",
+      "source": "University of Nebraska-Lincoln CropWatch, Sugarbeets",
+      "url": "https://cropwatch.unl.edu/sugarbeets/",
+      "checked": "2026-11-24",
+      "quote": "Of the current world production of more than 130 million metric tons of sugar, about 35% comes from sugarbeet and 65% from sugar cane. In the USA, about 50-55% of the domestic production of about 8.4 million metric tons derives from sugarbeet.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-sugarbeet-1890-grand-island",
+      "category": "farm history",
+      "fact": "Nebraska's sugarbeet industry began in 1890 with the first factory at Grand Island. Leaf spot later pushed it west to the Panhandle.",
+      "source": "University of Nebraska-Lincoln CropWatch, Sugarbeets",
+      "url": "https://cropwatch.unl.edu/sugarbeets/",
+      "checked": "2026-11-24",
+      "quote": "Sugarbeet production in Nebraska began in 1890, with the first factory being established in Grand Island. Production moved into western Nebraska and the Panhandle early in the 20th Century, due in large part because of increasingly severe problems with Cercospora leaf spot.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "great-western-sugar-1901",
+      "category": "farm history",
+      "fact": "The Great Western Sugar Company brought sugar to Colorado in 1901. Its growers formed the Western Sugar Cooperative in December 2002, with more than 1,000 members.",
+      "source": "University of Nebraska-Lincoln CropWatch, Sugarbeets",
+      "url": "https://cropwatch.unl.edu/sugarbeets/",
+      "checked": "2026-11-24",
+      "quote": "The Great Western Sugar Company brought the sugar industry into Colorado in 1901 before expanding into Nebraska, Wyoming and Montana. After undergoing several different changes of ownership, the Western Sugar Cooperative was formed in December of 2002 consisting of more than 1,000 growers in Colorado, Nebraska, Wyoming and Montana.",
+      "added": "2026-11-25"
     }
   ]
 }
