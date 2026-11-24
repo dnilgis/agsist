@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 23 Nov 2026 13:50:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 24 Nov 2026 14:05:19 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn harvest reaches 94%; the five-year average is 96%</title>
+      <link>https://agsist.com/daily/2026-11-24</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-24</guid>
+      <pubDate>Tue, 24 Nov 2026 14:04:30 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>USDA put corn 94% harvested by Nov. 22, up from 88% a week earlier; the five-year average is 96%. Winter wheat were 95% planted, against 97% on average.
+• Harvest nears the finish
+• Cattle firm, hogs soft
+Read more: https://agsist.com/daily/2026-11-24</description>
+    </item>
     <item>
       <title>Cattle on Feed shows placements below last year; corn up 3¾¢</title>
       <link>https://agsist.com/daily/2026-11-23</link>
@@ -341,18 +352,6 @@ Read more: https://agsist.com/daily/2026-10-27</description>
 • Cattle hold near highs
 • Crude slips; gas gains
 Read more: https://agsist.com/daily/2026-10-26</description>
-    </item>
-    <item>
-      <title>Corn ends the week at $4.56; crude up 3.8% to $103</title>
-      <link>https://agsist.com/daily/2026-10-25</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-25</guid>
-      <pubDate>Sun, 25 Oct 2026 10:54:38 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Corn ended the week at **$4.56**, down 4½ cents, and soybeans edged up to $12.56½. Grains barely moved, but crude gained 3.8% to $103.27. This issue did not check diesel or fertilizer prices. (Corrected Nov 17, see the note below.)
-• Grains finish the week quiet
-• Cattle hold near highs
-• Crude gains; gas drops
-Read more: https://agsist.com/daily/2026-10-25</description>
     </item>
   </channel>
 </rss>
