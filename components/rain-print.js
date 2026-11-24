@@ -3959,7 +3959,8 @@
       /* Lost or damaged in shipping: replaced free, same serial number (2026-10-18; was $15).
          The FAQ says so in the page itself; no fee comes from data/rain-print.json. */
       syncCutoffs();
-      var xp = !PICK_CHOSEN && !januaryGift() ? xmasPick(TODAY, OJ().j) : '';
+      // outside the US and Canada the file stays the pick (setAway), whichever answer came first
+      var xp = !PICK_CHOSEN && !AWAY && !januaryGift() ? xmasPick(TODAY, OJ().j) : '';
       if (xp && xp !== PICK) setPick(xp);
       syncXmas();
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
@@ -4160,6 +4161,7 @@
     if (DRAWING || PRODUCTS.indexOf(id) < 0) return;
     endExample();
     PICK_CHOSEN = true;
+    noteTapped(id);
     setPick(id);
     if (DATA) updateUrl();
     ga('rain_print_pick', { choice: id, where: 'now' });
@@ -5685,10 +5687,26 @@
     if (PRODUCTS.indexOf(u) >= 0) { PICK_CHOSEN = true; return u; }
     var sv = savedCheckout();
     if (sv && !PAID && sv.code === encodeCode(ST) && PRODUCTS.indexOf(sv.choice) >= 0) { PICK_CHOSEN = true; return sv.choice; }
-    var r = radios('rp-product').filter(function (x) { return x.checked; })[0];
-    if (r && r !== radios('rp-product')[0]) PICK_CHOSEN = true;   // a pick the browser kept
+    var r = radios('rp-product').filter(function (x) { return x.checked; })[0], tapped = TAPPED;
+    // a pick the browser kept; the Christmas pick rain-print.html's early script checked (data-rp-early) is a default,
+    // so a reader outside the US and Canada still moves to the file (setAway), unless this tab's reader tapped that
+    // same choice and came back to it with Back (the browser puts it back after the early script ran)
+    if (r && r !== radios('rp-product')[0] && (!r.hasAttribute('data-rp-early') || r.value === tapped)) PICK_CHOSEN = true;
     return r && PRODUCTS.indexOf(r.value) >= 0 ? r.value : 'framed12x18';
   }
+  // the choice this tab's reader tapped last (step 3, the review sheet or the buttons under the print). It counts only
+  // when this load is Back or Forward to the page it was tapped on; any other load (a link, a typed address, a reload)
+  // starts fresh and drops it, so an old tap never holds a reader outside the US on a print.
+  var TAPPED_KEY = 'rp-tapped';
+  function noteTapped(id) { try { root.sessionStorage.setItem(TAPPED_KEY, id); } catch (e) {} }
+  function backForward() {
+    // the Navigation API's own answer first, then the navigation timing entry; anything unreadable is not Back
+    try { var a = root.navigation && root.navigation.activation; if (a && a.navigationType) return a.navigationType === 'traverse'; } catch (e) {}
+    try { var n = root.performance.getEntriesByType('navigation')[0]; return !!n && n.type === 'back_forward'; } catch (e) { return false; }
+  }
+  var TAPPED = '';
+  if (backForward()) { try { TAPPED = root.sessionStorage.getItem(TAPPED_KEY) || ''; } catch (e) { TAPPED = ''; } }
+  else { try { root.sessionStorage.removeItem(TAPPED_KEY); } catch (e) {} }
   /* The frame color comes back the same way: ?frame=, else the one saved at
      the press for this same design, else the radio the browser kept, else oak. */
   function startFrame() {
@@ -5862,7 +5880,7 @@
   $('rp-logo-remove').addEventListener('click', removeLogo);
   $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
   // step 3: the picker (and its copy in the review sheet), the button, the no-name question, the phone bar
-  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); PICK_CHOSEN = true; setPick(r.value); if (DATA) updateUrl(); ga('rain_print_pick', { choice: r.value, where: r.name === 'rp-pproduct' ? 'review' : 'step3' }); } }); });
+  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); PICK_CHOSEN = true; noteTapped(r.value); setPick(r.value); if (DATA) updateUrl(); ga('rain_print_pick', { choice: r.value, where: r.name === 'rp-pproduct' ? 'review' : 'step3' }); } }); });
   $('rp-pay').addEventListener('click', checkIt);
   $('rp-bar-go').addEventListener('click', checkIt);
   // the order under the print: each button picks its product and goes the step 3 way; the link turns the gift on
