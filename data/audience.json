@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-24T06:25:13+00:00",
+ "built": "2026-11-24T10:02:44+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5940,8 +5940,8 @@
     "d": "2026-11-22",
     "users": 351,
     "engaged": 271,
-    "gClicks": null,
-    "gImpr": null,
+    "gClicks": 292,
+    "gImpr": 14727,
     "bClicks": 83,
     "bImpr": 1903
    }
@@ -5961,43 +5961,49 @@
     {
      "q": "grain prices at local elevators",
      "clicks": 37,
-     "impr": 902,
+     "impr": 909,
      "pos": 3.0
     },
     {
      "q": "cash rents by county per acre",
      "clicks": 19,
-     "impr": 285,
+     "impr": 293,
      "pos": 3.3
     },
     {
      "q": "adm winona cash bids",
      "clicks": 11,
-     "impr": 167,
+     "impr": 168,
      "pos": 5.7
     },
     {
      "q": "poet preston",
-     "clicks": 9,
-     "impr": 167,
+     "clicks": 10,
+     "impr": 174,
      "pos": 9.0
     },
     {
      "q": "prf insurance calculator",
      "clicks": 9,
-     "impr": 107,
-     "pos": 9.6
+     "impr": 109,
+     "pos": 9.4
     },
     {
      "q": "custom farming rates 2026 per acre",
      "clicks": 8,
-     "impr": 253,
-     "pos": 8.0
+     "impr": 274,
+     "pos": 7.7
+    },
+    {
+     "q": "free grain bin calculator with cone",
+     "clicks": 8,
+     "impr": 14,
+     "pos": 1.3
     },
     {
      "q": "louis dreyfus upper sandusky cash bids",
      "clicks": 8,
-     "impr": 37,
+     "impr": 39,
      "pos": 4.5
     },
     {
@@ -6009,14 +6015,8 @@
     {
      "q": "adm grand ledge",
      "clicks": 7,
-     "impr": 175,
-     "pos": 10.7
-    },
-    {
-     "q": "free grain bin calculator with cone",
-     "clicks": 7,
-     "impr": 12,
-     "pos": 1
+     "impr": 178,
+     "pos": 10.8
     },
     {
      "q": "usda cash rent by county per acre",
@@ -6027,49 +6027,49 @@
     {
      "q": "arc plc payments 2026 calculator",
      "clicks": 6,
-     "impr": 56,
-     "pos": 7.1
+     "impr": 58,
+     "pos": 7.3
     },
     {
      "q": "custom farming rates 2026",
      "clicks": 6,
-     "impr": 164,
-     "pos": 6.4
+     "impr": 187,
+     "pos": 6.1
     },
     {
      "q": "flash grain",
      "clicks": 6,
-     "impr": 749,
+     "impr": 754,
      "pos": 3.5
     },
     {
      "q": "grain bin calculator",
      "clicks": 6,
-     "impr": 128,
-     "pos": 10.5
+     "impr": 134,
+     "pos": 10.6
     },
     {
      "q": "isu custom farming rates 2026",
      "clicks": 6,
-     "impr": 155,
-     "pos": 5.2
+     "impr": 167,
+     "pos": 5.1
     },
     {
      "q": "landus grain bids",
      "clicks": 6,
-     "impr": 1767,
+     "impr": 1791,
      "pos": 6.7
     },
     {
      "q": "poet grain cash bids today",
      "clicks": 6,
-     "impr": 219,
-     "pos": 5.4
+     "impr": 225,
+     "pos": 5.3
     },
     {
      "q": "usda cash rent by county",
      "clicks": 6,
-     "impr": 75,
+     "impr": 76,
      "pos": 2.5
     }
    ],
@@ -7093,41 +7093,41 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-22",
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-22",
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   },
   "cotKit": {
    "ok": true,
    "through": "2026-11-22",
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   },
   "aiVisits": {
    "ok": true,
    "through": "2026-11-22",
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   },
   "fieldKit": {
    "ok": true,
    "through": "2026-11-22",
-   "fetched": "2026-11-24T06:25:13+00:00"
+   "fetched": "2026-11-24T10:02:44+00:00"
   }
  }
 }
