@@ -6,7 +6,7 @@
 
    WIRING: one plain (not deferred) script tag where the line goes, after the
    page's answer, never above it:
-     <script src="/components/rp-line.js?v=1" data-src="town" data-name="Ackley" data-place="Ackley, IA"></script>
+     <script src="/components/rp-line.js?v=2" data-src="town" data-name="Ackley" data-place="Ackley, IA"></script>
    data-src   the source tag the link carries (src=<tag>), for the counts
    data-name  the place in the words ("Ackley's 2026 rain"); none = "Your farm's"
    data-place the place Rain Print draws; none = the reader's saved ZIP, if any
@@ -51,7 +51,7 @@
     var name = String(o.name || '').trim().slice(0, 40), year = today.slice(0, 4);
     var who = name ? esc(name) + '’s ' + year + ' rain' : 'Your farm’s ' + year + ' rain';
     return '<a href="' + esc(href(o, today)) + '" data-placement="line-' + esc(SRC.test(o.src || '') ? o.src : 'page') + '">' + who +
-      ' as a Rain Print</a>, from $' + PRICE + '. Give it for Christmas: a gift card to put under the tree now, the print in January.';
+      ' as a Rain Print</a>, from $' + PRICE + '. Give it for Christmas: a card to give now, the print in January.';
   }
   var CSS = '.rpl{margin:1.2rem 0 .8rem;font-size:.9rem;line-height:1.5;color:var(--text-dim)}' +
     '.rpl a{color:var(--brand);text-decoration:underline;text-underline-offset:2px}' +
