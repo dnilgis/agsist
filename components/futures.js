@@ -11,7 +11,7 @@
 
    The page says which crop it is before loading this file:
      <script>window.AGSIST_FUTURES='corn'</script>
-     <script src="/components/futures.js?v=39"></script>
+     <script src="/components/futures.js?v=40"></script>
    Prices print through components/util.js (AG.px), which loads in the head. */
 (function(){
 'use strict';
@@ -336,7 +336,13 @@ function rpBridgeHtml(rp,bq,pendingWord){
   }
   return L;
 }
-window.AgsistFuturesPure={nearbyOf:nearbyOf,amt:amt,wheatProgressRows:wheatProgressRows,rpPrices:rpPrices,rpBridgeHtml:rpBridgeHtml};
+/* One pace rule (Nov 24, 2026), twin of scripts/pace_rule.py, which the Daily reads. A gap in whole points
+   against the prior year or the 5-year average is "even" only at zero; any other gap says its points. The
+   Daily printed "2 points behind" for 94% against 96% while this card said "Even with the 5-year average"
+   for any gap up to 3. test/pace-rule.test.mjs runs both readers over test/fixtures/pace-rule/cases.json. */
+function paceState(gap){return gap===0?'even':gap<0?'behind':'ahead';}
+function pacePoints(gap){var n=Math.abs(gap);return n+(n===1?' point':' points');}
+window.AgsistFuturesPure={nearbyOf:nearbyOf,amt:amt,wheatProgressRows:wheatProgressRows,rpPrices:rpPrices,rpBridgeHtml:rpBridgeHtml,paceState:paceState,pacePoints:pacePoints};
 var CROP=CROPS[window.AGSIST_FUTURES];
 if(!CROP)return;
 var CROP_KEY=CROP.key;
@@ -532,9 +538,10 @@ function renderCropProgress(data){
     var pace=document.getElementById('crop-plant-pace');
     if(pace&&d.planting_prev_year!=null){
       var diff=d.planting_pct-d.planting_prev_year;
-      if(Math.abs(diff)<=3){pace.textContent='On pace: even with prior year';pace.className='crop-pace onpace';}
-      else if(diff<0){pace.textContent='Behind pace: '+Math.abs(diff)+' points vs prior year';pace.className='crop-pace behind';}
-      else{pace.textContent='Ahead of pace: '+diff+' points vs prior year';pace.className='crop-pace ahead';}
+      var ps=paceState(diff);
+      if(ps==='even'){pace.textContent='On pace: even with prior year';pace.className='crop-pace onpace';}
+      else if(ps==='behind'){pace.textContent='Behind pace: '+pacePoints(diff)+' vs prior year';pace.className='crop-pace behind';}
+      else{pace.textContent='Ahead of pace: '+pacePoints(diff)+' vs prior year';pace.className='crop-pace ahead';}
       pace.style.display='block';
     }else if(pace){pace.style.display='none';}
   }else if(plantSec){plantSec.style.display='none';}
@@ -550,7 +557,7 @@ function renderCropProgress(data){
     var hb=d.harvest_5yr_avg!=null?d.harvest_5yr_avg:d.harvest_prev_year,hw=d.harvest_5yr_avg!=null?'5-year average':'prior year';
     var hpw=document.getElementById('crop-plant-prev');if(hpw)hpw.innerHTML=hb!=null?'Same week, '+hw+': <span class="v">'+hb+'%</span>':'';
     var hpc=document.getElementById('crop-plant-pace');
-    if(hpc&&hb!=null){var hd=d.harvest_pct-hb;hpc.textContent=Math.abs(hd)<=3?'Even with the '+hw:hd<0?Math.abs(hd)+' points behind the '+hw:hd+' points ahead of the '+hw;hpc.className='crop-pace '+(Math.abs(hd)<=3?'onpace':hd<0?'behind':'ahead');hpc.style.display='block';}
+    if(hpc&&hb!=null){var hd=d.harvest_pct-hb,hs=paceState(hd);hpc.textContent=hs==='even'?'Even with the '+hw:pacePoints(hd)+' '+hs+(hs==='ahead'?' of':'')+' the '+hw;hpc.className='crop-pace '+(hs==='even'?'onpace':hs);hpc.style.display='block';}
     else if(hpc)hpc.style.display='none';
   }
 
