@@ -3089,6 +3089,690 @@
       "checked": "2026-11-24",
       "quote": "The Great Western Sugar Company brought the sugar industry into Colorado in 1901 before expanding into Nebraska, Wyoming and Montana. After undergoing several different changes of ownership, the Western Sugar Cooperative was formed in December of 2002 consisting of more than 1,000 growers in Colorado, Nebraska, Wyoming and Montana.",
       "added": "2026-11-25"
+    },
+    {
+      "id": "beef-spending-halved-78pct",
+      "category": "food and the consumer",
+      "fact": "Over one stretch of the 1980s and 1990s, Americans cut what they spent on beef per person by half after inflation and still got 78% as much beef.",
+      "source": "University of Illinois farmdoc daily, Consumer Spending and Beef Demand (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/08/consumer-spending-and-beef-dem.html",
+      "checked": "2026-11-24",
+      "quote": "Spending collapsed from $539.15 per person to $260.25 per person, all in 2011 dollars, and the amounts purchased slid from 87.5 pounds per person to 68.1 pounds per person, all on a retail-weight basis. It’s clear that the industry had a serious demand problem during this period, because consumers were able to cut spending by one-half on an inflation-adjusted basis and still receive 78% as much product.",
+      "note": "The decades are the period the article's chart covers, which ends with 1998, the start of the next period it describes.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "beef-demand-peak-after-bse",
+      "category": "food and the consumer",
+      "fact": "From 1998 to 2004, Americans paid more for less beef, a sign of stronger demand. The high point came in 2004, the year right after the December 2003 BSE discovery.",
+      "source": "University of Illinois farmdoc daily, Consumer Spending and Beef Demand (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/08/consumer-spending-and-beef-dem.html",
+      "checked": "2026-11-24",
+      "quote": "Per capita expenditures recovered through 2004 ... Between 1998 and 2004, consumers spent more inflation-adjusted dollars ($60.15) for less beef (1.9 pounds) – a textbook example of stronger demand. Even more remarkable is the fact that the high point occurred in the calendar year immediately following the December 2003 BSE discovery.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "kru-grain-exports-3-to-12",
+      "category": "global trade",
+      "fact": "After the Soviet breakup, Kazakhstan, Russia and Ukraine went from 3% to 12% of world grain exports, while the U.S. share fell from 41% to 31%.",
+      "source": "University of Illinois farmdoc daily, Kazakhstan, Russia, Ukraine (KRU) and World Grain Markets (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/10/kazakhstan-russia-ukraine.html",
+      "checked": "2026-11-24",
+      "quote": "The corresponding increase in KRU’s average share of world grain exports was from 3% to 12%. In comparison for the same periods, the U.S. average share of world wheat exports declined from 31% to 20% while the U.S. average share of world grain exports declined from 41% to 31%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-feeding-484m-1990",
+      "category": "livestock",
+      "fact": "US livestock ate as little as 16 million bushels of wheat in 2007/08 and as much as 484 million in 1990/91, nearly 20% of the wheat supply.",
+      "source": "University of Illinois farmdoc daily, Wheat Feeding (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/10/wheat-feeding.html",
+      "checked": "2026-11-24",
+      "quote": "Wheat feeding has ranged from 16 million bushels or a 0.7% share in the 2007 wheat crop year to 484 million bushels or a 19.9% share in the 1990 wheat crop year.",
+      "note": "The wheat crop year runs June 1 to May 31, so the 2007 crop year is 2007/08 and 1990 is 1990/91; 19.9% is written as nearly 20%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-fed-first-quarter",
+      "category": "livestock",
+      "fact": "Most wheat fed to livestock goes in summer: from 1974 to 2011, USDA reports 15% more wheat fed in the June to August quarter than for the whole year.",
+      "source": "University of Illinois farmdoc daily, Wheat Feeding (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/10/wheat-feeding.html",
+      "checked": "2026-11-24",
+      "quote": "The wheat crop year runs from June 1 through May 31. ... In fact, between the 1974 and 2011 crop years, USDA reports that 15% more wheat was fed during the first quarter than was fed for the entire year.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-share-rent-18pct",
+      "category": "land and rent",
+      "fact": "In 2010, about 56% of US farmland was farmed by its owner, but only 41% in Illinois. Share rent covered 18% of Illinois acres against 7% nationally.",
+      "source": "University of Illinois farmdoc daily, Farmland Tenure in the USA and in Illinois (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/01/farmland-tenure-in-the-usa.html",
+      "checked": "2026-11-24",
+      "quote": "In 2010, the USDA collected detailed information on land tenure ... Thus, the majority of acreage in the United States is owner-operated, at approximately 56%. ... In contrast, only 41% of farmland acreage in Illinois is owner-operated. ... In addition, share rental agreements account for a larger portion of Illinois farmland acreage (18%) than for United States as a whole (7%).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "cattle-lowest-since-1952",
+      "category": "livestock",
+      "fact": "In early 2013, after the 2012 drought, US cattle numbers fell to their lowest since 1952 and beef cows to their lowest since 1962.",
+      "source": "University of Illinois farmdoc daily, Where Have All the Beef Cows Gone? (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/02/where-have-all-the-beef-cows-gone.html",
+      "checked": "2026-11-24",
+      "quote": "Cattle numbers are down again, to their lowest level since 1952, according to USDA’s recent inventory count. Beef cow numbers are at their lowest level since 1962 as the devastating impacts of the 2012 drought continues the longer-term decline.",
+      "note": "2013 is the year of the article (February 2013), which reports USDA's January inventory.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "beef-herd-down-36m-2007-2012",
+      "category": "livestock",
+      "fact": "From 2007 to 2012 the US beef cow herd dropped 3.6 million head, 11 percent. The Northern Plains was the only region that grew.",
+      "source": "University of Illinois farmdoc daily, Where Have All the Beef Cows Gone? (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/02/where-have-all-the-beef-cows-gone.html",
+      "checked": "2026-11-24",
+      "quote": "The 2012 drought was just the latest event to result in the liquidation of cows that has been accelerating since 2007. Nationally, the beef cow herd has dropped by 3.6 million head (11 percent) with reductions in all regions except the Northern Plains.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-land-2011-jump-214",
+      "category": "land and rent",
+      "fact": "Illinois farmland prices rose 21.4 percent in 2011, the biggest one-year jump in over three decades.",
+      "source": "University of Illinois farmdoc daily, A Historical Perspective on Illinois Farmland Sales (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/05/historical-illinois-farmland-sales.html",
+      "checked": "2026-11-24",
+      "quote": "In 2011, Illinois farmland prices increased 21.4 percent, the largest single-year jump in over three decades.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-land-1981-1987-decline",
+      "category": "land and rent",
+      "fact": "After peaking in 1981, Illinois farmland prices fell 8.7 percent a year, compounded, until bottoming in 1987.",
+      "source": "University of Illinois farmdoc daily, A Historical Perspective on Illinois Farmland Sales (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/05/historical-illinois-farmland-sales.html",
+      "checked": "2026-11-24",
+      "quote": "After peaking in 1981, Illinois farmland prices declined at an annually compounded rate of 8.7 percent through 1987.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "retail-beef-record-555-2014",
+      "category": "food and the consumer",
+      "fact": "Retail beef averaged $5.29 a pound in 2013, then hit a record $5.55 in the first quarter of 2014.",
+      "source": "University of Illinois farmdoc daily, How Did Cattle Prices Get So High? (2014)",
+      "url": "https://farmdocdaily.illinois.edu/2014/05/how-did-cattle-prices-get-so-high.html",
+      "checked": "2026-11-24",
+      "quote": "In 2013, retail beef prices averaged $5.29 per pound but moved to a record $5.55 in the first quarter of 2014.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "urban-reach-33-miles",
+      "category": "land and rent",
+      "fact": "A study of over 10,000 Illinois farmland sales from 2001 to 2009 found big cities lift farmland prices as far as 33 miles beyond their edge.",
+      "source": "University of Illinois farmdoc daily, The Impact of Urban Areas on Farmland Prices in Illinois (2014)",
+      "url": "https://farmdocdaily.illinois.edu/2014/11/urban-area-impact-on-illinois-farmland-prices.html",
+      "checked": "2026-11-24",
+      "quote": "By examining data from over 10,000 transactions between 2001 and 2009, the study suggested that the large urban centers influence farmland prices as far as 33 miles beyond their boundary.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "hog-price-76-2014-collapse",
+      "category": "markets and prices",
+      "fact": "Fear of PED virus losses sent live hogs to a record $76 per hundredweight average in 2014. Production fell only 2%, and by early 2015 hogs were near $45.",
+      "source": "University of Illinois farmdoc daily, Pork's Boom and Bust Price Pattern (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/03/porks-boom-and-bust-price-pattern.html",
+      "checked": "2026-11-24",
+      "quote": "In recent weeks, live hog prices reached five year lows near $45 per live hundredweight, a price bust from record highs a year earlier. ... The reality that pork production was only down two percent in 2014 ... down from the extraordinary record of $76 in 2014 (previous record was $66 in 2011).",
+      "note": "two percent is written as 2%; 2015 is the year of the article (March 2015).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "china-animal-protein-426pct",
+      "category": "food and the consumer",
+      "fact": "From 1980 to 2013, animal protein eaten per person rose 426% in China but 82% in India.",
+      "source": "University of Illinois farmdoc daily, China, India, the Food Transition, and Future Demand Growth (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/07/china-india-the-food-transition-future-demand.html",
+      "checked": "2026-11-24",
+      "quote": "Between 1980 and 2013, per capita consumption of animal protein increased by 82% in India but by 426% in China while per capita caloric intake increased by 23% in India vs. 44% in China.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "food-plateau-3000-calories",
+      "category": "food and the consumer",
+      "fact": "Across countries in 2011, food use per person leveled off around 3,000 calories and 50 grams of animal protein a day, no matter how much richer people got.",
+      "source": "University of Illinois farmdoc daily, China, India, the Food Transition, and Future Demand Growth (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/07/china-india-the-food-transition-future-demand.html",
+      "checked": "2026-11-24",
+      "quote": "The cross sections for 2011 calories and animal protein consumed per capita per day are presented in Figures 1 and 2, respectively. ... In 2011, the plateaus occur around 3,000 calories per day and 50 grams of protein per day.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-rent-38b-2014",
+      "category": "land and rent",
+      "fact": "In 2014 Illinois led the nation in total farm rent paid, $3.8 billion.",
+      "source": "University of Illinois farmdoc daily, Farmland Ownership in Illinois: New Highlights from USDA Survey (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/09/farmland-ownership-in-illinois-new-highlights.html",
+      "checked": "2026-11-24",
+      "quote": "The USDA recently released the results of the 2014 Tenure, Ownership, and Transition of Agricultural Land (TOTAL). ... One of the most striking findings of the survey is that Illinois leads the nation in total agricultural rent at $3.8 billion.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-131337-landlords",
+      "category": "land and rent",
+      "fact": "Illinois had 131,337 farmland landlords in 2014, and only 15,684 of them farmed themselves.",
+      "source": "University of Illinois farmdoc daily, Farmland Ownership in Illinois: New Highlights from USDA Survey (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/09/farmland-ownership-in-illinois-new-highlights.html",
+      "checked": "2026-11-24",
+      "quote": "Illinois, for example, had 131,337 total landlords in 2014, only 15,684 of which are farm operators.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-trust-landlords-182",
+      "category": "land and rent",
+      "fact": "Trusts are the second most common kind of Illinois farm landlord, 18.2% of them in 2014, after individuals at 46.8%.",
+      "source": "University of Illinois farmdoc daily, Farmland Ownership in Illinois: New Highlights from USDA Survey (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/09/farmland-ownership-in-illinois-new-highlights.html",
+      "checked": "2026-11-24",
+      "quote": "The non-operator landlords are further classified by five ownership types, the most common of which is individual ownership, accounting for 46.8% of all landlords in Illinois. Trusts were the second most common ownership arrangement at 18.2% of all landlords.",
+      "note": "2014 is the survey year named on the page.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "kru-wheat-variability-27",
+      "category": "global trade",
+      "fact": "Wheat output in Kazakhstan, Russia and Ukraine swings more than any other big crop region's, 27% a year on average. US corn is next at 21%.",
+      "source": "University of Illinois farmdoc daily, Variability in Corn, Soybean, and Wheat Production across the Globe (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/11/variability-in-corn-soybean-and-wheat-production.html",
+      "checked": "2026-11-24",
+      "quote": "Moreover, variability of wheat production in Kazakhstan-Russia-Ukraine (27%) is higher than for any other crop-country group combination. The next highest variability of production is Canada-U.S. corn at 21%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "real-cash-cost-42pct-lower",
+      "category": "markets and prices",
+      "fact": "After inflation, the cash cost of growing a bushel of corn in 2010-2014 was 42% lower than in 1975-1979. Soybeans were 44% lower and wheat 37%.",
+      "source": "University of Illinois farmdoc daily, Declining Real Cash Cost of Producing Corn, Soybean, and Wheat (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/11/declining-real-cash-cost-producing-corn-soybean-wheat.html",
+      "checked": "2026-11-24",
+      "quote": "Comparing 2010-2014 with 1975-1979, real cash cost per bushel is 42%, 44%, and 37% lower for corn, soybeans, and wheat, respectively.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "global-corn-yield-85",
+      "category": "agronomy",
+      "fact": "The world's average corn yield topped 85 bushels an acre every year from 2013 to 2016. The earlier global high was 83.",
+      "source": "University of Illinois farmdoc daily, IFES 2016: Long-Term Weather and Prospects for a Recovery in Corn Prices (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/01/long-term-weather-and-prospects-corn-prices.html",
+      "checked": "2026-11-24",
+      "quote": "In fact, the global average corn yield exceeded 85 bushels per acre in each year over 2013-2016. The previous high yield on a global basis was 83 bushels.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "oats-harvested-69-to-36",
+      "category": "agronomy",
+      "fact": "US farmers harvested 69% of their planted oat acres in 1978-1982, but only 36% in 2013-2017.",
+      "source": "University of Illinois farmdoc daily, Long Term Relationship between Yield and Acres of U.S. Field Crops (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/09/long-term-relationship-between-yield-and-acres.html",
+      "checked": "2026-11-24",
+      "quote": "Harvested acres and yield per harvested acre are used for oats because share of planted oats acres harvested has declined from 69% in 1978-1982 to 36% in 2013-2017, or by 33 percentage points.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "yield-acres-crops-fell-30",
+      "category": "agronomy",
+      "fact": "The 4 crops whose yields grew slowest since 1978, oats, barley, sorghum and wheat, each lost at least 30% of their planted acres by 2013-17.",
+      "source": "University of Illinois farmdoc daily, Long Term Relationship between Yield and Acres of U.S. Field Crops (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/09/long-term-relationship-between-yield-and-acres.html",
+      "checked": "2026-11-24",
+      "quote": "In contrast, planted acres declined by at least 30% for the 4 crops with the lowest growth in yield (oats, barley, sorghum, wheat). ... A strong positive relationship is found between the increase in yield and change in planted acres since 1978",
+      "note": "2013-17 is the comparison period named on the page.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-trend-60-40",
+      "category": "agronomy",
+      "fact": "Over 52 years, US corn yield beat trend in 60% of years. But misses ran bigger: 8.6 bushels below on average against 5.8 above, with the worst 29.1 below in 1988.",
+      "source": "University of Illinois farmdoc daily, The Historic Pattern of U.S Corn Yields, Any Implications for 2012? (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/02/the-historic-pattern-of-us-cor-1.html",
+      "checked": "2026-11-24",
+      "quote": "Over the 52 year period, the average yield was above the trend yield in 60 percent of the years and below the trend in 40 percent of the years. ... Specifically, the average deviation below trend was 8.6 bushels while the average deviation above trend was 5.8 bushels. The largest deviation below trend was 29.1 bushels (1988)",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-above-trend-7-years",
+      "category": "weather and climate",
+      "fact": "The longest run of above-trend US corn yields in the 52 years to 2011 was 7 years, 2003 to 2009.",
+      "source": "University of Illinois farmdoc daily, The Historic Pattern of U.S Corn Yields, Any Implications for 2012? (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/02/the-historic-pattern-of-us-cor-1.html",
+      "checked": "2026-11-24",
+      "quote": "The longest run of negative deviations was 4 years (1974-1977), while positive deviations had runs of 4 years (1984-1987), 5 years (1965-1969), and 7 years (2003–2009).",
+      "note": "52 years to 2011: the article's sample is the 52 years before its February 2012 date.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "us-wheat-exports-41-to-27",
+      "category": "global trade",
+      "fact": "US wheat exports averaged 41 million metric tons a year in 1981-1985 but only 27 million in 2018-2022.",
+      "source": "University of Illinois farmdoc daily, US Feed Grain, Oilseed, and Food Grain Land since 1980 (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/11/us-feed-grain-oilseed-and-food-grain-land-since-1980.html",
+      "checked": "2026-11-24",
+      "quote": "In contrast, use of US wheat has declined following a linear trend as US exports have declined from an average of 41 million metric tons in 1981-1985 to 27 million metric tons in 2018-2022.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "us-oilseed-exports-23-to-55",
+      "category": "global trade",
+      "fact": "US oilseed exports rose from 23 to 55 million metric tons a year between 1981-1985 and 2018-2022, and home use nearly doubled too.",
+      "source": "University of Illinois farmdoc daily, US Feed Grain, Oilseed, and Food Grain Land since 1980 (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/11/us-feed-grain-oilseed-and-food-grain-land-since-1980.html",
+      "checked": "2026-11-24",
+      "quote": "In comparison, average US domestic consumption of both feed grains and oilseeds nearly doubled, increasing from 161 to 319 million metric tons for feed grains and from 37 to 72 million metric tons for oilseeds. US exports increased from 52 to 63 million metric tons for feed grains and from 23 to 55 million metric tons for oilseeds.",
+      "note": "The periods 1981-1985 and 2018-2022 are the ones the page compares throughout.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-north-corn-659",
+      "category": "agronomy",
+      "fact": "On northern Illinois grain farms from 2013 to 2022, corn never took less than 54.7% of tillable land, and peaked at 65.9% in 2013. Wheat stayed under 1%.",
+      "source": "University of Illinois farmdoc daily, Historical Cropping Patterns on Illinois Grain Farms (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/06/historical-cropping-patterns-on-illinois-grain-farms.html",
+      "checked": "2026-11-24",
+      "quote": "During the 2013 through 2022 time period, at least 54.7 percent of the tillable land in these farms each year has been in corn. The highest was 65.9 percent in 2013 and the lowest was 54.7 percent in 2019. ... Less than 1 percent of the tillable land on these farms in any year has been planted to wheat.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "sorghum-dryland-50pct",
+      "category": "agronomy",
+      "fact": "In dryland rotations on the High Plains, grain sorghum has yielded 50% more than corn grown in similar rotations.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Sorghum Research in Western Nebraska (2019)",
+      "url": "https://cropwatch.unl.edu/2019/grain-sorghum-research-western-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "A 50% higher yield than corn in similar dryland crop rotations (Schlegel et al., 2019).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "sorghum-bloom-20-days-late",
+      "category": "agronomy",
+      "fact": "In cool western Nebraska, grain sorghum can reach mid-bloom as much as 20 days later than seed companies list.",
+      "source": "University of Nebraska-Lincoln CropWatch, Grain Sorghum Research in Western Nebraska (2019)",
+      "url": "https://cropwatch.unl.edu/2019/grain-sorghum-research-western-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "Keep in mind that in our cooler environments, days to mid-bloom can be delayed by as much as 20 days when compared to what is reported by companies.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "sawfly-lodging-100-feet",
+      "category": "pests and disease",
+      "fact": "Wheat stem sawfly was first noted in Nebraska winter wheat in the 1990s. Lodging on field edges has since reached 100 feet, with losses of 30% to 50% in badly lodged fields.",
+      "source": "University of Nebraska-Lincoln CropWatch, Wheat Stem Sawfly Infestations Continue to Impact Western Nebraska",
+      "url": "https://cropwatch.unl.edu/wheat-stem-sawfly-infestations-continue-impact-western-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "Yield losses in seriously lodged fields can range from 30% to 50%. ... Prior to 2013 the serious border lodging may have been 20 or 30 feet, but in the last couple years growers have reported severe lodging up to 100 feet on field margins. ... Wheat stem sawfly infesting winter wheat was first noted in Nebraska in the early to mid 1990s.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-mosaic-3-viruses-2025",
+      "category": "pests and disease",
+      "fact": "The wheat mosaic complex is 3 mite-spread viruses. In May 2025 surveys it turned up in every south-central and southeast Nebraska field checked.",
+      "source": "University of Nebraska-Lincoln CropWatch, Mosaic Virus Complex Emerges as Leading Threat to Wheat in 2025",
+      "url": "https://cropwatch.unl.edu/mosaic-virus-complex-emerges-leading-threat-wheat-2025/",
+      "checked": "2026-11-24",
+      "quote": "Wheat disease surveys were conducted in south-central and southeast Nebraska on May 7. ... The complex consists of three viruses (WSMV, Triticum mosaic virus [TriMV] and High Plains wheat mosaic virus [HPWMoV]) and it was found in every field visited from trace levels to 100% incidence and severity.",
+      "note": "three is written as 3; the mite carrier is named on the page (\"the mite source was a large area of volunteer wheat\").",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soybean-315-lb-n",
+      "category": "agronomy",
+      "fact": "An average soybean crop takes up 315 pounds of nitrogen an acre, about 190 of it into the seed. Most studies find 50% to 60% comes from fixation.",
+      "source": "University of Nebraska-Lincoln CropWatch, Check Soybean Nodulation to Determine Inoculant Efficacy (2013)",
+      "url": "https://cropwatch.unl.edu/check-soybean-nodulation-determine-inoculant-efficacy-unl-cropwatch-aug-29-2013/",
+      "checked": "2026-11-24",
+      "quote": "On average, a soybean crop needs 315 lb N per acre, about 60% of which (190 lb) goes to seed production and 40% (125 lb) goes to stover and roots. ... Most studies show that btween 50% and 60% of the nitrogen is from N fixation.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soybean-48-lb-n-per-bu",
+      "category": "agronomy",
+      "fact": "Soybeans absorb about 4.8 pounds of nitrogen per bushel, so an 80-bushel crop needs about 384 pounds an acre. 60% of it is taken up after pod set begins.",
+      "source": "University of Nebraska-Lincoln CropWatch, Is Soybean Yield Limited by Nitrogen Supply? (2018)",
+      "url": "https://cropwatch.unl.edu/2018/soybean-yield-limited-nitrogen-supply/",
+      "checked": "2026-11-24",
+      "quote": "On average, soybean needs to absorb 4.8 lbs of N per bushel produced. ... In contrast, a well-managed, irrigated crop that produces 80 bu/ac will need about 384 lbs N per acre. ... First, soybean absorbs 60% of the N after R3 (beginning of pod setting)",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soybean-70bu-equals-245-corn",
+      "category": "agronomy",
+      "fact": "A 70-bushel soybean crop takes up about 330 pounds of nitrogen an acre above ground, about what a 245-bushel corn crop needs.",
+      "source": "University of Nebraska-Lincoln CropWatch, Soybean Inoculation: When, Where, and Why",
+      "url": "https://cropwatch.unl.edu/soybean-inoculation-when-where-and-why/",
+      "checked": "2026-11-24",
+      "quote": "A 70 bushel per acre soybean crop will take up roughly 330 lb N/acre in the aboveground portion of the plant, roughly equivalent to the nitrogen demand of a 245 bushel per acre corn crop.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "inoculant-49-bu-new-ground",
+      "category": "agronomy",
+      "fact": "On Nebraska ground that had never grown soybeans, inoculation has raised yields by 49 bushels an acre. On old soybean ground, an 8-year multistate test of 51 products averaged 0.",
+      "source": "University of Nebraska-Lincoln CropWatch, Soybean Inoculation: When, Where, and Why",
+      "url": "https://cropwatch.unl.edu/soybean-inoculation-when-where-and-why/",
+      "checked": "2026-11-24",
+      "quote": "In situations where soybeans have never been grown, yield responses of 49 bushels per acre have been measured in Nebraska (Elmore 1984). ... An eight-year study (2000-2008) testing 51 inoculant products in 73 experiments conducted in Wisconsin, Iowa, Indiana, Minnesota, and Nebraska resulted in average yield response of 0 bu/ac (De Bruin 2008).",
+      "note": "eight-year is written as 8-year. The multistate study is described as testing fields generally; the page sets it against the never-grown-soybeans case.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "rhizobia-30-years-grass",
+      "category": "soil",
+      "fact": "Soybean nodule bacteria are still in the soil after 30 years in grass, just in smaller numbers.",
+      "source": "University of Nebraska-Lincoln CropWatch, Soybean Inoculation: When, Where, and Why",
+      "url": "https://cropwatch.unl.edu/soybean-inoculation-when-where-and-why/",
+      "checked": "2026-11-24",
+      "quote": "These bacteria are still present in soils after 30 years in grass production, just at a much lower population.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "japanese-beetle-1916-nj",
+      "category": "pests and disease",
+      "fact": "Japanese beetles were first found in the US in a New Jersey nursery in 1916, likely in iris bulbs. By 2015 they were in 34 states and feed on over 300 plant species.",
+      "source": "University of Nebraska-Lincoln CropWatch, Nebraska Extension Pest of the Month: Japanese Beetle (2017)",
+      "url": "https://cropwatch.unl.edu/2017/nebraska-extension-pest-month-japanese-beetle/",
+      "checked": "2026-11-24",
+      "quote": "This pest was first found in the United States in a New Jersey nursery in 1916 and was likely introduced in infested iris bulbs from Japan. ... As of January of 2015, Japanese beetle has been found in 34 states in the United States. ... As adults, Japanese beetles feed on over 300 species of plants",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "japanese-beetle-crete-1994-2011",
+      "category": "pests and disease",
+      "fact": "Japanese beetles were found on a golf course in Crete, Nebraska, in 1994. The first report of them injuring a Nebraska field crop came in July 2011.",
+      "source": "University of Nebraska-Lincoln CropWatch, Japanese Beetles Reported for First Time in Nebraska Field Crops (2011)",
+      "url": "https://cropwatch.unl.edu/japanese-beetles-reported-first-time-nebraska-field-crops-unl-cropwatch-july-19-2011/",
+      "checked": "2026-11-24",
+      "quote": "Japanese Beetles Reported for First Time in Nebraska Field Crops - UNL CropWatch, July 19, 2011 ... Japanese beetles were reported previously in 1994 on turf in Crete at the Country Club.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "frost-31-vs-28",
+      "category": "weather and climate",
+      "fact": "A few hours at 31°F will kill corn and soybean leaves. A few minutes at 28°F can kill the whole plant, stalk and all.",
+      "source": "University of Nebraska-Lincoln CropWatch, Premature Frost Damage to Crops (2022)",
+      "url": "https://cropwatch.unl.edu/2022/premature-frost-damage-crops/",
+      "checked": "2026-11-24",
+      "quote": "Temperatures at 31°F for a few hours will kill leaves, while temperatures at 28°F for a few minutes can kill the plant, including the stalk of corn and soybean.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "alfalfa-24f-four-hours",
+      "category": "weather and climate",
+      "fact": "It takes four hours at 24°F or colder to freeze the growing point of alfalfa. Sorghum dies at 26°F.",
+      "source": "University of Nebraska-Lincoln CropWatch, Premature Frost Damage to Crops (2022)",
+      "url": "https://cropwatch.unl.edu/2022/premature-frost-damage-crops/",
+      "checked": "2026-11-24",
+      "quote": "Four hours at 24°F or lower will freeze the growing point at the top of alfalfa. Temperatures down to 26°F will kill milo (sorghum) and sorghum species used for grazing.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-hard-freeze-dates",
+      "category": "weather and climate",
+      "fact": "Nebraska's average first hard freeze runs Oct. 1-10 in the far north and Panhandle, but Oct. 17-24 in the far south and southeast.",
+      "source": "University of Nebraska-Lincoln CropWatch, Corn Maturity & Freeze Dates",
+      "url": "https://cropwatch.unl.edu/corn-maturity-freeze-dates/",
+      "checked": "2026-11-24",
+      "quote": "Oct. 1-10 for extreme northern Nebraska and the Panhandle ... October 17-24 for extreme southern Nebraska and the southeast corner of the state.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "rogers-farm-tillage-1981",
+      "category": "soil",
+      "fact": "A University of Nebraska tillage study has run since 1981 at Rogers Memorial Farm, 10 miles east of Lincoln.",
+      "source": "University of Nebraska-Lincoln CropWatch, Yields From a Long-term Tillage Comparison Study",
+      "url": "https://cropwatch.unl.edu/tillage/yields/",
+      "checked": "2026-11-24",
+      "quote": "A tillage study was established in 1981 at the University of Nebraska Rogers Memorial Farm (RMF), 10 miles east of Lincoln, to gain experience with various tillage systems.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "residue-grazing-16-years",
+      "category": "soil",
+      "fact": "After 16 years of grazing corn residue in a Nebraska study, soil organic matter, N, P and K were unchanged, and soil microbes had increased.",
+      "source": "University of Nebraska-Lincoln CropWatch, Studies Show Minimal Soil Compaction With Winter Grazing (2017)",
+      "url": "https://cropwatch.unl.edu/2017/impacts-cattle-grazing-corn-residue/",
+      "checked": "2026-11-24",
+      "quote": "After 16 years of grazing corn residue, an increase in the soil microbial community was observed (when compared to areas that were not grazed). ... After 16 years of grazing, no differences in soil organic matter, N, P or K were measured.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "residue-grazing-rate-100bu",
+      "category": "livestock",
+      "fact": "Nebraska's guide for grazing corn stalks is one cow for one month per 100 bushels of corn grown, which removes only about 15% of the residue.",
+      "source": "University of Nebraska-Lincoln CropWatch, Studies Show Minimal Soil Compaction With Winter Grazing (2017)",
+      "url": "https://cropwatch.unl.edu/2017/impacts-cattle-grazing-corn-residue/",
+      "checked": "2026-11-24",
+      "quote": "Grazing only removes a small percentage of residue (target 15%) and thus cover is maintained and erosion risk is not substantially increased. ... when grazed at the University's recommended rate of one cow for one month for every 100 bushels of corn grain produced.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "falls-city-freeze-1944",
+      "category": "weather and climate",
+      "fact": "Falls City, Nebraska, has not dropped below 28°F after May 1 since 1944. In Valentine and Scottsbluff, a killing freeze after May 1 is about a coin flip.",
+      "source": "University of Nebraska-Lincoln CropWatch, Last Spring Frost and Freeze Information",
+      "url": "https://cropwatch.unl.edu/last-spring-frost-and-freeze-information/",
+      "checked": "2026-11-24",
+      "quote": "Falls City hasn't dropped below 28°F after this date since 1944 ... Chances of a killing freeze after May 1 go up to about four in 10 for North Platte and is essentially a coin-flip for Valentine and Scottsbluff.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "barge-rate-record-106",
+      "category": "markets and prices",
+      "fact": "Barge rates out of St. Louis usually hover around $20 a ton. During the low Mississippi River of October 2022, the spot rate hit a record $106.",
+      "source": "University of Illinois farmdoc daily, Low Mississippi River Barge Disruptions (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/11/low-mississippi-river-barge-disruptions-effects-on-grain-barge-movement-basis-and-fertilizer-prices.html",
+      "checked": "2026-11-24",
+      "quote": "Historically barge rates have hovered around $20 per a ton. ... Louis barge spot rate hit a record $106 per ton during the week of Oct 11.",
+      "note": "2022 is the year of the article (November 2022), which covers that fall.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "barge-draft-9-foot",
+      "category": "global trade",
+      "fact": "Grain barges are usually loaded to an 11 to 12 foot draft in fall. Low water in 2022 forced 9-foot limits, cutting 10,000 to 15,000 bushels per barge.",
+      "source": "University of Illinois farmdoc daily, Low Mississippi River Barge Disruptions (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/11/low-mississippi-river-barge-disruptions-effects-on-grain-barge-movement-basis-and-fertilizer-prices.html",
+      "checked": "2026-11-24",
+      "quote": "Typically, barges are loaded to a 11-12 foot draft during the fall, but companies started imposing 9-foot barge draft restrictions in October, which can lead to a reduction of 10,000-15,000 bushels per barge (Wicks, 2022).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "gulf-soy-94pct-barge",
+      "category": "global trade",
+      "fact": "Most US soybean exports leave through the Gulf, and 94% of those ride Mississippi River barges to Louisiana.",
+      "source": "University of Illinois farmdoc daily, Low Mississippi River Barge Disruptions (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/11/low-mississippi-river-barge-disruptions-effects-on-grain-barge-movement-basis-and-fertilizer-prices.html",
+      "checked": "2026-11-24",
+      "quote": "The vast majority of U.S. soybean exports get shipped out through the Gulf port, 94% of which rely on the Mississippi River barge system to get to Louisiana (Munch, 2022).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "barge-tow-30-40",
+      "category": "machinery and safety",
+      "fact": "A Mississippi River tow normally pushes 30 to 40 barges. Low water in 2022 cut tows to 25.",
+      "source": "University of Illinois farmdoc daily, Low Mississippi River Barge Disruptions (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/11/low-mississippi-river-barge-disruptions-effects-on-grain-barge-movement-basis-and-fertilizer-prices.html",
+      "checked": "2026-11-24",
+      "quote": "The slowdown during this period coincides with river closures (McWhirter, 2022) and restrictions on barge companies that reduced the bar tow, normally 30-40 barges to 25 (Kennedy, 2022).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "rail-58pct-grain",
+      "category": "global trade",
+      "fact": "Cereal grains are 58% of the farm and food freight moved by US rail and 52% on waterways, but only 35% on highways.",
+      "source": "University of Illinois farmdoc daily, Agri-Food Transportation by Highway, Railway, and Waterway in the United States (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/05/agri-food-transportation-by-highway-railway-and-waterway-in-the-united-states.html",
+      "checked": "2026-11-24",
+      "quote": "Notably, cereal grains (SCTG 02) dominate flows on railways and waterways—accounting for 58% and 52% of mass moved on those modes, respectively—while they constitute a smaller fraction on highways (35%).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "brazil-truck-440-miles",
+      "category": "global trade",
+      "fact": "In Brazil, grain is trucked about 440 miles on average from farm to rail or barge. In the US the haul to an inland elevator is about 25 to 100 miles.",
+      "source": "University of Illinois farmdoc daily, Investments in Brazilian Grain Transportation Shrink U.S. Logistical Advantage (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/01/investments-in-brazilian-grain-transportation-shrink-u-s-logistical-advantage.html",
+      "checked": "2026-11-24",
+      "quote": "In Brazil, short-haul trucking averages about 440 miles from farm to rail and barge terminals. In the United States, the average distance from farm to inland grain elevator terminals is about 25-100 miles (Salin, 2021).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "brazil-north-ports-410pct",
+      "category": "global trade",
+      "fact": "From 2011 to 2020, Brazil's corn and soybean exports through its northern ports rose 410%, from 8.3 million to 42.3 million tons.",
+      "source": "University of Illinois farmdoc daily, Investments in Brazilian Grain Transportation Shrink U.S. Logistical Advantage (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/01/investments-in-brazilian-grain-transportation-shrink-u-s-logistical-advantage.html",
+      "checked": "2026-11-24",
+      "quote": "Between 2011 and 2020, Brazilian exports of corn and soybeans through the northern and northeastern ports increased by 410%, from 8.3 million tons to 42.3 million tons",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "br163-paved-2019",
+      "category": "global trade",
+      "fact": "The 663-mile stretch of Brazil's BR-163 highway from Sorriso, Mato Grosso, to the northern state of Para was finished only in late November 2019.",
+      "source": "University of Illinois farmdoc daily, Investments in Brazilian Grain Transportation Shrink U.S. Logistical Advantage (2022)",
+      "url": "https://farmdocdaily.illinois.edu/2022/01/investments-in-brazilian-grain-transportation-shrink-u-s-logistical-advantage.html",
+      "checked": "2026-11-24",
+      "quote": "The 663-mile stretch of BR-163 from Sorriso, North Mato Grosso, to Pará was completed in late November 2019.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "h2a-15pct-crop-farms",
+      "category": "policy and programs",
+      "fact": "H-2A guest workers now make up 15% of the workforce on US crop farms, and farms in every state use the program.",
+      "source": "University of Illinois farmdoc daily, The Growing Role of H-2A Workers in U.S. Agriculture (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/07/the-growing-role-of-h-2a-workers-in-us-agriculture.html",
+      "checked": "2026-11-24",
+      "quote": "H-2A workers now account for 15% of employment on U.S. crop farms (Castillo, Martin, and Rutledge, 2024). ... Farms in all states across the U.S. utilize the H-2A program.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "southeast-farm-jobs-1969-2021",
+      "category": "farm history",
+      "fact": "The Southeast had almost 1.3 million farm jobs in 1969 and 612,000 in 2021. It went from 35 people per farm job to 140.",
+      "source": "University of Illinois farmdoc daily, Changes in Farm Employment, 1969 to 2021 (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/07/changes-in-farm-employment-1969-to-2021.html",
+      "checked": "2026-11-24",
+      "quote": "The Southeast region had 612,000 farm jobs in 2021—down from almost 1.3 million in 1969. ... Consider that in 1969, the Southeast region had 35 people for every farm job; by 2021, there were 140 people per farm job.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "dakotas-farm-jobs-52pct",
+      "category": "farm history",
+      "fact": "In North and South Dakota, farm jobs are 5.2% of all jobs, the highest share of any state.",
+      "source": "University of Illinois farmdoc daily, Changes in Farm Employment, 1969 to 2021 (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/07/changes-in-farm-employment-1969-to-2021.html",
+      "checked": "2026-11-24",
+      "quote": "In North and South Dakota, farm employment represents 5.2% of total employment which is greater than in any other state.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "renewable-diesel-11-fold",
+      "category": "markets and prices",
+      "fact": "Feedstock used for US renewable diesel grew from a little over 2 billion pounds in 2017 to over 22 billion in 2023, nearly eleven-fold.",
+      "source": "University of Illinois farmdoc daily, FAME Biodiesel, Renewable Diesel, and Biomass-Based Diesel Feedstock Trends over 2011-2023 (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/04/fame-biodiesel-renewable-diesel-and-biomass-based-diesel-feedstock-trends-over-2011-2023.html",
+      "checked": "2026-11-24",
+      "quote": "As recently as 2017 total feedstock usage for renewable diesel was a little over two billion pounds. This surged to over 22 billion pounds in 2023, a nearly eleven-fold increase.",
+      "note": "two billion is written as 2 billion.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "yellow-grease-6b-lb",
+      "category": "markets and prices",
+      "fact": "Used cooking oil, called yellow grease, went from under 100 million pounds of US biofuel feedstock in 2015 to over 6 billion pounds in 2023.",
+      "source": "University of Illinois farmdoc daily, FAME Biodiesel, Renewable Diesel, and Biomass-Based Diesel Feedstock Trends over 2011-2023 (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/04/fame-biodiesel-renewable-diesel-and-biomass-based-diesel-feedstock-trends-over-2011-2023.html",
+      "checked": "2026-11-24",
+      "quote": "Yellow grease feedstock increased the most, from under 100 million pounds in 2015 to over 6 billion pounds in 2023.",
+      "note": "Yellow grease is the trade name for used cooking oil.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "dairy-1000-cows-66pct-milk",
+      "category": "livestock",
+      "fact": "In 2022, the 2,013 US farms with 1,000 or more cows sold 66% of all the milk.",
+      "source": "University of Illinois farmdoc daily, US Dairy Herds and Policy and the 2022 Census of Agriculture (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/02/us-dairy-herds-and-policy-and-the-2022-census-of-agriculture.html",
+      "checked": "2026-11-24",
+      "quote": "In 2022, the 2,013 farms with 1,000 or more cows accounted for 66% of all US milk sales (see Figures 1 and 2).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "dairy-milk-226b-2022",
+      "category": "livestock",
+      "fact": "The US made 226.4 billion pounds of milk in 2022, 5% more than in 2017, even though 39% fewer farms sold milk.",
+      "source": "University of Illinois farmdoc daily, US Dairy Herds and Policy and the 2022 Census of Agriculture (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/02/us-dairy-herds-and-policy-and-the-2022-census-of-agriculture.html",
+      "checked": "2026-11-24",
+      "quote": "In 2022, the US produced 226.4 billion pounds of milk, up from 215.5 billion pounds in 2017 or by 5% ... In total, 39% fewer US farms sold milk in 2022 than 2017.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "western-dairy-passes-2020",
+      "category": "livestock",
+      "fact": "Newer dairy states, mostly in the West, passed the traditional ones in milk output in 2004 and in cow numbers in 2020.",
+      "source": "University of Illinois farmdoc daily, Production Trends in the US Dairy Sector (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/10/production-trends-in-the-us-dairy-sector.html",
+      "checked": "2026-11-24",
+      "quote": "Rapid production growth in modern states led their output to exceed traditional states in 2004. ... in 2020 the number of cows in modern dairy states was higher than traditional dairy states for the first time.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "traditional-dairy-yield-18pct",
+      "category": "livestock",
+      "fact": "Since 2010, milk per cow in traditional dairy states rose about 18%, against 8% in newer Western dairy states, about when genomic testing of bulls arrived.",
+      "source": "University of Illinois farmdoc daily, Production Trends in the US Dairy Sector (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/10/production-trends-in-the-us-dairy-sector.html",
+      "checked": "2026-11-24",
+      "quote": "While yield growth prior to 2010 was roughly the same in both regions, traditional states have increased milk yield about 18% since 2010, compared to just 8% growth in modern dairy states. This change in relative yield growth happens to coincide with an increase in the genetic milk yield potential of dairy bulls due to the introduction of genomic testing",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "south-crop-acres-down-134m",
+      "category": "land and rent",
+      "fact": "Since 1980, harvested crop acres in the US South fell by 13.4 million, while cotton acres fell by 3.4 million.",
+      "source": "University of Illinois farmdoc daily, The Evolving US Southern Crop Problem (2026)",
+      "url": "https://farmdocdaily.illinois.edu/2026/06/the-evolving-us-southern-crop-problem.html",
+      "checked": "2026-11-24",
+      "quote": "However, since 1980, or roughly the last 50 years, harvested acres of all crops in the US South have declined by 13.4 million, much greater than the 3.4 million decline in cotton harvested acres",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "july-2012-six-degrees",
+      "category": "weather and climate",
+      "fact": "July 2012 ran about six degrees above average in Illinois, Indiana and Iowa. Before 2012, the worst recent season for US corn and soybeans was 1988.",
+      "source": "University of Illinois farmdoc daily, How Bad Was the 2012 Corn and Soybean Growing Season? (2012)",
+      "url": "https://farmdocdaily.illinois.edu/2012/10/how-bad-was-the-2012-corn-and.html",
+      "checked": "2026-11-24",
+      "quote": "Prior to 2012, the most adverse growing season weather conditions for U.S. corn and soybeans in recent history occurred in 1988. ... July was astonishingly hot in all three states in 2012, with temperatures about six degrees above average.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "2012-kentucky-47pct-trend",
+      "category": "weather and climate",
+      "fact": "In the 2012 drought, Kentucky corn made just 47% of trend yield and Illinois 62%, 105 bushels against 169. South Carolina hit 131% of trend.",
+      "source": "University of Illinois farmdoc daily, Locating the 2012 Drought Using State Corn Yields (2013)",
+      "url": "https://farmdocdaily.illinois.edu/2013/02/locating-the-2012-drought.html",
+      "checked": "2026-11-24",
+      "quote": "This means that the 2012 yield of 105 bushels is 62% of the 169 bushel trend yield. ... Relative to trend yields, the lowest yields were in Kentucky (47% of trend) and Missouri (53%). ... States with exceptionally high yields include South Carolina (131% of trend)",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-loss-ratio-62",
+      "category": "policy and programs",
+      "fact": "From 1989 to 2023, Illinois crop insurance paid out 62 cents for each premium dollar, against 94 cents for the whole US. In 2022 it was just 10 cents.",
+      "source": "University of Illinois farmdoc daily, Crop Insurance Loss Performance in Illinois and the Midwest (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/07/crop-insurance-loss-performance-in-illinois-and-the-midwest.html",
+      "checked": "2026-11-24",
+      "quote": "A loss ratio of 1.0 means that crop insurance payments equal the total premium. ... The Illinois loss ratio was .28 in 2020, .13 in 2021, and .10 in 2022. ... From 1989 to 2023, the loss ratio for Illinois averaged .62 compared to .94 for the U.S.",
+      "note": "Loss ratios .62, .94 and .10 are written as cents paid per premium dollar.",
+      "added": "2026-11-25"
     }
   ]
 }
