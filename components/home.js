@@ -1456,6 +1456,11 @@ var TICK={corn:'Corn',beans:'Soybeans',wheat:'Chicago SRW wheat',kcwheat:'KC HRW
 /* WAVE1-C: the whole prices.json, for the keys geo.js does not hand over
    (absent quotes, withheld_keys, spreads). Null until it loads. */
 var D=null;
+/* Nov 24 2026: the ticker row is held unseen until its words are final (geo.js tickerReady). geo.js fills the prices,
+   then this script names each contract ("Corn Dec '26"), adds the date notes and drops the rows with no quote: two
+   rewrites that slid the row twice after the first paint. This script says when it is done (renderAll, once the
+   price file is in); it runs before geo.js (geo.js is deferred), so the hold is in place before any price lands. */
+if(document.querySelector('.prices-strip'))window.__tickerHold=true;
 /* Why a row has no quote, in words, when the file says nothing more. */
 var NOQ={mplswheat:'No quote: our price source does not carry this contract',
   cotton:'No quote yet: first price run pending',rice:'No quote yet: first price run pending',
@@ -1677,7 +1682,8 @@ function deferredChips(){
     if(chip&&!chip.textContent.trim()){var lb=cmByTicker(Q[p[1]]);if(lb)chip.textContent=lb;}
   });
 }
-function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);noQuoteNote();renderTicker();deferredChips();dress();}
+function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);noQuoteNote();renderTicker();deferredChips();dress();
+  if(D&&window.__tickerHold){window.__tickerHold=false;if(typeof window.tickerReady==='function')window.tickerReady();}}
 function schedule(){clearTimeout(timer);timer=setTimeout(renderAll,80);}
 /* Reader wording on the four key tiles and the ticker, applied after any
    writer. Every rewrite is idempotent, so the observers settle. */

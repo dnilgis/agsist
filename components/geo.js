@@ -1204,13 +1204,28 @@ function fetchAllPrices() {
         if (!q || q.close === null || q.close === undefined) return;
         applyPriceResult(key, q, q.close, q.open, q.netChange, q.pctChange);
       });
+      tickerReady();
     })
-    .catch(function(e) { console.warn('prices.json fetch failed:', e); });
+    .catch(function(e) { console.warn('prices.json fetch failed:', e); tickerReady(true); });
 }
 
 // ─────────────────────────────────────────────────────────────────
 // TICKER
 // ─────────────────────────────────────────────────────────────────
+/* THE TICKER ROW SHOWS WHOLE (Nov 24, 2026). Its prices land after the first paint, and each one widens its item, so
+   the row slid 270 px at 1280 when they came (0.008 to 0.011 of layout shift on the home page and /index1). The page
+   holds the row unseen (.prices-strip without .t-ready, a style beside the strip, 5 s at most by CSS alone) and this
+   shows it in the same task that writes the last price, so it never moves on screen. A page script that rewrites
+   the row after the prices (home.js) sets window.__tickerHold before this runs and calls tickerReady when done.
+   force: the price file did not come; show the row as it is. */
+function tickerReady(force) {
+  var s = document.querySelector('.prices-strip');
+  if (!s || s.classList.contains('t-ready')) return;
+  if (!force && window.__tickerHold) return;
+  s.classList.add('t-ready');
+}
+window.tickerReady = tickerReady;
+
 var _tickerRebuildTimer = null;
 function rebuildTickerLoop() {
   if (_tickerRebuildTimer) clearTimeout(_tickerRebuildTimer);

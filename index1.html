@@ -133,6 +133,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <!-- /static-nav:header -->
 </div>
 <div class="prices-strip" aria-label="Delayed commodity prices" role="region">
+  <style>/* the ticker row shows whole: its prices and contract names land after the first paint, so it stays unseen until
+    geo.js marks the strip t-ready (components/geo.js tickerReady), at most 5 s by this rule alone */
+  .prices-strip:not(.t-ready) .ticker-track-wrap{visibility:hidden;animation:t-hold 0s 5s forwards}@keyframes t-hold{to{visibility:visible}}</style>
   <div class="ticker-outer">
     <div class="ticker-live stale"><div class="live-dot" aria-hidden="true"></div><span id="ticker-age">&hellip;</span></div>
     <div class="ticker-track-wrap">
@@ -301,7 +304,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </script>
 <script src="/components/loader.js?v=23" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
-<script src="/components/geo.js?v=41" defer></script>
+<script src="/components/geo.js?v=42" defer></script>
 <!-- index1:own js -->
 <script src="/components/home-world.js?v=1" defer></script>
 <script src="/components/home-land.js?v=4" defer></script>
