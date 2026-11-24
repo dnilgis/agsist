@@ -413,6 +413,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
+  "cash-bids/iowa/aredale.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
+  },
   "cash-bids/iowa/ayrshire.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -545,10 +549,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-18"
   },
-  "cash-bids/iowa/latimer.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/lime-springs.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -569,10 +569,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/manilla.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/manson.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -592,10 +588,6 @@
   "cash-bids/iowa/missouri-valley.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
-  },
-  "cash-bids/iowa/mitchellville.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
   },
   "cash-bids/iowa/modale.html": {
    "to": "/cash-bids/iowa/",
@@ -621,9 +613,21 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
+  "cash-bids/iowa/new-hartford.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
+  },
   "cash-bids/iowa/north-washington.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
+  },
+  "cash-bids/iowa/plainfield.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
+  },
+  "cash-bids/iowa/pleasant-hill.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/iowa/plover.html": {
    "to": "/cash-bids/iowa/",
@@ -736,10 +740,6 @@
   "cash-bids/iowa/woodward.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
-  },
-  "cash-bids/iowa/yale.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
   },
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
