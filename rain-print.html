@@ -101,6 +101,8 @@
   .rp-xmas-top{margin:0;font-size:var(--fs-sm);font-weight:600;color:var(--brand);line-height:1.45}
   .rp-xmas-alt{margin:.15rem 0 0;font-size:var(--fs-sm)}
   .rp-xmas-alt[hidden]{display:none}
+  .rp-xmas-alt[hidden][data-hold]{display:block!important;visibility:hidden}
+  #rp-xmas-top:not([hidden])~#rp-xmas-early{display:none!important}
   /* "Paid, thank you": the page Stripe sends a buyer back to */
   .rp-paid{margin:0 0 1rem;padding:14px 16px;border:1px solid var(--green);border-left-width:4px;border-radius:var(--r-md);background:var(--surface);line-height:1.55}
   .rp-paid:focus{outline:none}
@@ -835,7 +837,39 @@
       <p class="rp-lede">A framed print of the farm&rsquo;s year of rain, from the gauge nearest it. Type a town and a year, and I draw every rain and snow the nearest weather station caught. A gift for a farmer, or for the year you married or a child was born. Drawing it is free.</p>
       <p class="rp-prices" id="rp-prices"><span><b data-price="framed12x18">$89</b> framed</span><span><b data-price="print12x18">$45</b> print</span><span><b data-price="digital">$19</b> digital file</span><span>Shipping included</span></p>
       <p class="rp-xmas-top" id="rp-xmas-top" hidden></p>
+      <p class="rp-xmas-top" id="rp-xmas-early" data-pc="2026-12-10" data-fc="2026-12-09" hidden></p>
       <p class="rp-xmas-alt" id="rp-xmas-alt" hidden><button type="button" class="rp-linkbtn" id="rp-xmas-last">Make it last year, by Christmas</button></p>
+      <script>/* The Christmas line, written before the first paint (Nov 24, 2026). rain-print.js writes it (#rp-xmas-top) once
+        the price file is in, and it pushed the page down 43 px at 1280 and 92 px at 390 when it came (0.017 and 0.046 of
+        layout shift; 0.038 and 0.064 after the cutoffs, when the one tap under it and the change from the frame to the
+        print came too). A plain visit (no design, place or gift in the link) opens on last year, so its words are known
+        here, from the two cutoffs above (data-pc, data-fc: data/rain-print.json print_ and framed_christmas_cutoff;
+        test/rp-xmas-top.test.mjs holds them, and these words to what rain-print.js writes at every clock state). This
+        copy stands in the same place until the price file is in, then gives way to rain-print.js's own line (hidden
+        under it by CSS once that shows, taken out once the prices are written). After both cutoffs, through Dec 24, the
+        row of the one tap keeps its room until the town is in; past the framed cutoff the print is picked from the
+        start (the scripts after #rp-wall and the product choice), as rain-print.js picks it once the file is in. */
+      (function(){try{
+        var h=document.documentElement;if(/(^|\s)rp-(from-link|tool-first)(\s|$)/.test(h.className))return;
+        var q=(location.search||'').replace(/^\?/,'').split('&').filter(function(p){return p&&!/^(src|utm_[a-z]+)=/.test(p);});if(q.length)return;
+        var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        function sd(s){var m=/^\d{4}-(\d{2})-(\d{2})$/.exec(String(s||''));return m?M[+m[1]-1]+' '+(+m[2]):'';}
+        function words(t,pc,fc,cy){var D=/^\d{4}-\d{2}-\d{2}$/;t=String(t||'');pc=String(pc||'');fc=String(fc||'');
+          if(!D.test(t)||!D.test(pc)||!D.test(fc)||t>pc.slice(0,4)+'-12-25'||t<pc.slice(0,4)+'-10-01')return '';
+          if(t>pc&&t>fc)return 'For Christmas: past years ordered now ship after Christmas. Too late for the mail? The digital file comes by email in 1 business day, or give a gift card now and the '+cy+' print in January.';
+          var by=t<=pc&&t<=fc?'framed by '+sd(fc)+', or as a print by '+sd(pc):t<=pc?'as a print by '+sd(pc)+' (framed now ships after Christmas)':'framed by '+sd(fc)+' (a print now ships after Christmas)';
+          return 'For Christmas: last year ('+(cy-1)+'), or any past year, comes by Christmas if you order it '+by+'. This year ('+cy+') is a gift card now, the print in January.';}
+        var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});
+        var t=p.year+'-'+p.month+'-'+p.day,e=document.getElementById('rp-xmas-early'),a=document.getElementById('rp-xmas-alt');
+        var pc=e.getAttribute('data-pc'),fc=e.getAttribute('data-fc'),w=words(t,pc,fc,+p.year);
+        if(!w)return;
+        e.textContent=w;e.hidden=false;
+        if(t>pc&&t>fc&&t<=pc.slice(0,4)+'-12-24')a.setAttribute('data-hold','');
+        if(t>fc)h.setAttribute('data-rp-early-pick',t<=pc?'print12x18':'digital');
+        // the prices written (rain-print.js loadPrices, the same task that writes the line): this copy goes
+        var pr=document.querySelector('[data-price="digital"]');
+        if(pr&&window.MutationObserver){var mo=new MutationObserver(function(){mo.disconnect();if(e.parentNode)e.parentNode.removeChild(e);});mo.observe(pr,{childList:true,characterData:true,subtree:true});}
+      }catch(err){}})();</script>
       <p class="rp-start"><a class="btn btn-primary" id="rp-start" href="#rp-place">Make yours, free</a></p>
       <div class="rp-fm" id="rp-fm">
         <p class="rp-fm-t"><b>Rather not fiddle with it?</b> Call or text me at <a href="tel:+17157972428">(715) 797-2428</a>, or <button type="button" class="rp-linkbtn" id="rp-fm-open" aria-expanded="false" aria-controls="rp-fm-form">leave your number and the place</button>. I&rsquo;ll make two or three versions and email them to you to pick one. No charge for the design help; you only pay if you order.</p>
@@ -858,6 +892,7 @@
     <div class="rp-flow">
       <div class="rp-pv" id="rp-pv">
         <figure class="rp-wall" id="rp-wall" data-view="framed">
+          <script>if(document.documentElement.getAttribute('data-rp-early-pick'))document.getElementById('rp-wall').setAttribute('data-view','print');</script>
           <div class="rp-frame"><div class="rp-art rp-empty" id="rp-art"><picture class="rp-ex"><source type="image/webp" srcset="/img/rain-print-example-2012-ames-ia.webp"><img src="/img/rain-print-example-2012-ames-ia.jpg" width="1200" height="800" fetchpriority="high" decoding="async" alt="Example Rain Print of 2012 at Ames, Iowa, the drought year, drawn from NOAA daily records: a stair-step line of the year&rsquo;s rain climbing to 25.52 in of rain and melted snow, well under the dashed line of NOAA&rsquo;s normal year, each month&rsquo;s normal printed under its total, and the year&rsquo;s remarkable days marked: the wettest week, the last snow and the biggest snow. Biggest rain: 1.89 in on Apr 15."></picture><span class="rp-ex-tag" aria-hidden="true">Example</span><p class="rp-placeholder">Type the town nearest the farm and press Draw my year.</p></div></div>
           <figcaption class="rp-cap">
             <span class="rp-cap-l"><span id="rp-sample-txt">Print in an oak frame</span><span class="rp-sample-line" id="rp-sample-line" hidden> <button type="button" class="rp-sample-use" id="rp-sample-use">Order this one</button></span></span>
@@ -1008,6 +1043,7 @@
             <label class="rp-prod" data-choice="framed12x18"><input type="radio" name="rp-product" value="framed12x18" checked><span class="rp-prod-b"><span class="rp-prod-t">Framed</span><span class="rp-prod-s" id="rp-sub-framed12x18">13 x 19 frame in oak wood or black, acid-free white mat, 2 mm tempered glass.</span></span><span class="rp-price" data-price="framed12x18">$89</span></label>
             <label class="rp-prod" data-choice="print12x18"><input type="radio" name="rp-product" value="print12x18"><span class="rp-prod-b"><span class="rp-prod-t">Print</span><span class="rp-prod-s" id="rp-sub-print12x18">13 x 19 paper, ships flat.</span></span><span class="rp-price" data-price="print12x18">$45</span></label>
             <label class="rp-prod" data-choice="digital"><input type="radio" name="rp-product" value="digital"><span class="rp-prod-b"><span class="rp-prod-t">Digital file</span><span class="rp-prod-s" id="rp-sub-digital">A PDF, a PNG and a JPG by email within minutes of your OK on the proof.</span></span><span class="rp-price" data-price="digital">$19</span></label>
+            <script>/* past the framed cutoff a plain visit opens on the Christmas pick (the early words above set it) */(function(){var c=document.documentElement.getAttribute('data-rp-early-pick'),r=c&&document.querySelector('input[name="rp-product"][value="'+c+'"]');if(r)r.checked=true;})();</script>
           </fieldset>
           <fieldset class="rp-fcolor" id="rp-fcolor"><legend id="rp-fcolor-l">Frame</legend>
             <label class="rp-fc"><input type="radio" name="rp-frame" value="oak" checked><span class="rp-fc-sw rp-fc-oak" aria-hidden="true"></span><span class="rp-fc-t">Oak</span></label>
