@@ -106,7 +106,7 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json data/production-costs.json data/fert-prices"
-          BAKED="fertilizer-prices.html fertilizer-prices"
+          BAKED="fertilizer-prices.html fertilizer-prices sitemap.xml"
           rm -rf /tmp/fams && mkdir -p /tmp/fams
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/fams/ || true
@@ -120,6 +120,7 @@ jobs:
             python scripts/fetch_fert_reports.py --bake || echo "::warning title=Fertilizer pages::the bake failed; the pages stay as they were"
             for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
             for f in $BAKED; do [ -e "$f" ] && git add -A "$f" || true; done
+            python scripts/generated_sets.py dependents fertilizer-prices --stage || true
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Fertilizer USDA AMS series $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
