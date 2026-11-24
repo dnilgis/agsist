@@ -172,6 +172,7 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           ENGINE_MODE: ${{ vars.ENGINE_MODE }}
           CUSTOMRATES_NOTICE_LIVE: ${{ vars.CUSTOMRATES_NOTICE_LIVE }}
+          LEASE_NOTICE_LIVE: ${{ vars.LEASE_NOTICE_LIVE }}
           HFR_NOTICE_LIVE: ${{ vars.HFR_NOTICE_LIVE }}
           DAILY_WELCOME_LIVE: ${{ vars.DAILY_WELCOME_LIVE }}
           DAIRY_MONTHLY_LIVE: ${{ vars.DAIRY_MONTHLY_LIVE }}
