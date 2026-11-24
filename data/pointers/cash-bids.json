@@ -413,10 +413,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/aredale.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/ayrshire.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -444,6 +440,10 @@
   "cash-bids/iowa/carlisle.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
+  },
+  "cash-bids/iowa/collins.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/iowa/colo.html": {
    "to": "/cash-bids/iowa/",
@@ -502,8 +502,12 @@
    "since": "2026-10-20"
   },
   "cash-bids/iowa/grant.html": {
-   "to": "/cash-bids/iowa/paton",
+   "to": "/cash-bids/iowa/",
    "since": "2026-10-20"
+  },
+  "cash-bids/iowa/greene.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/iowa/griswold.html": {
    "to": "/cash-bids/iowa/",
@@ -613,15 +617,11 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/new-hartford.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-24"
-  },
   "cash-bids/iowa/north-washington.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/pleasant-hill.html": {
+  "cash-bids/iowa/paton.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-24"
   },
