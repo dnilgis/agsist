@@ -163,6 +163,8 @@
     .cl-nwhen strong{color:var(--gold)}
     .cl-nwhen .cl-ndate{font-family:var(--font-display);font-size:1.5rem;color:var(--text,#e6ebe9);display:block;margin:2px 0}
     .cl-nwhen ul{margin:6px 0 0;padding-left:20px}
+    .cl-nask{margin:0 0 14px}
+    .cl-nask[hidden]{display:none}
     .notice-paper{background:#fff;color:#111;border-radius:var(--r-md);padding:28px 30px;line-height:1.6;font-size:.95rem;max-width:720px;margin:6px auto 0}
     .notice-paper h2{text-align:center;font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;margin:0 0 18px;color:#111}
     .notice-paper p{margin:0 0 12px}
@@ -178,7 +180,7 @@
       body.cl-printing-notice main > *:not(.cl-notice-panel){display:none !important}
       body.cl-printing-notice .cl-notice-panel{display:block !important}
       body.cl-printing-notice .cl-notice-panel .cl-notice-lede,body.cl-printing-notice .cl-ngrid,
-      body.cl-printing-notice #cl-n-fill,body.cl-printing-notice .cl-nwhen,body.cl-printing-notice .cl-actions{display:none !important}
+      body.cl-printing-notice #cl-n-fill,body.cl-printing-notice .cl-nwhen,body.cl-printing-notice .cl-nask,body.cl-printing-notice .cl-actions{display:none !important}
       body.cl-printing-notice .notice-paper{padding:0;max-width:none;font-size:11.5pt;line-height:1.55}
     }
     .lease-print-foot,.lease-pg-foot,.lease-pg-head{display:none}
@@ -558,6 +560,7 @@ html.lp-saved .lp-out{min-height:48rem}
       </div>
       <button class="cl-btn cl-btn--ghost" id="cl-n-fill" type="button">Use the names from the lease above</button>
       <div class="cl-nwhen" id="cl-n-when" role="status" aria-live="polite"><strong>Pick a state and the day the lease ends</strong> to see the serve-by date.</div>
+      <div class="cl-nask" id="cl-n-ask" hidden></div>
       <div class="notice-paper" id="cl-notice-paper" aria-label="Notice preview"></div>
       <div class="cl-actions"><button class="cl-btn" id="cl-n-print" type="button">Print the notice</button></div>
     </div>
@@ -821,7 +824,44 @@ html.lp-saved .lp-out{min-height:48rem}
   function nval(k){ var f=document.querySelector('[data-n="'+k+'"]'); return f?String(f.value||'').trim():''; }
   function blank(v,w){ return v?'<span class="np-b">'+esc(v)+'</span>':'<span class="np-b">'+'&nbsp;'.repeat(w||24)+'</span>'; }
   function nsave(){ var d={}; nf.forEach(function(f){ if(f.value) d[f.dataset.n]=f.value; }); try{ localStorage.setItem(NKEY,JSON.stringify(d)); }catch(e){} }
+  /* leaseAsk:start (test/lease-notice.test.mjs evaluates this block)
+     One reminder email about two weeks before the state's next notice deadline, for the three states
+     whose deadline was read against the statute text: Iowa and Ohio September 1, Kansas 30 days before
+     March 1 (January 30, January 31 in a leap year). This season's deadline is offered while it is more
+     than 14 days off, then next season's. */
+  var LEASE_ASK={IA:1,KS:1,OH:1};
+  function leaseDeadline(ab,y){
+    if(ab==='IA'||ab==='OH') return new Date(Date.UTC(y,8,1));
+    if(ab==='KS') return new Date(Date.UTC(y,2,1)-30*864e5);
+    return null;
+  }
+  function leaseAskDeadline(ab,now){
+    if(!LEASE_ASK[ab]) return null;
+    var t=new Date(now), today=Date.UTC(t.getFullYear(),t.getMonth(),t.getDate());
+    for(var y=t.getFullYear(); y<=t.getFullYear()+1; y++){ var d=leaseDeadline(ab,y); if(d&&(d.getTime()-today)/864e5>14) return d; }
+    return null;
+  }
+  /* leaseAsk:end */
+  var askBox=document.getElementById('cl-n-ask'), askFor=null;
+  function nask(){
+    if(!askBox) return;
+    var ab=nval('st'), d=leaseAskDeadline(ab,Date.now()), topic=d?'lease:'+ab.toLowerCase()+':'+isoOf(d):'';
+    if(topic===askFor) return;
+    askFor=topic; askBox.innerHTML=''; askBox.hidden=!topic;
+    if(!topic) return;
+    var day=MON[d.getUTCMonth()]+' '+d.getUTCDate()+', '+d.getUTCFullYear();
+    var el=document.createElement('div');
+    el.setAttribute('data-signup-ask','Email me once, about two weeks before the '+stName(ab)+' notice deadline of '+day+'.');
+    el.setAttribute('data-topic',topic);
+    el.setAttribute('data-source','page:cash-lease');
+    el.setAttribute('data-btn','Remind me');
+    el.setAttribute('data-ok','Done. One email about two weeks before '+day+'.');
+    el.setAttribute('data-stack','');
+    askBox.appendChild(el);
+    if(window.AgsistSignup&&window.AgsistSignup.mount) window.AgsistSignup.mount(el);
+  }
   function nrender(){
+    nask();
     var ab=nval('st'), end=nval('end'), owner=nval('dir')!=='tenant';
     var ld=numOf('notice_days',3650).v;
     var when=document.getElementById('cl-n-when'), r=RULES[ab], sb=ab?serveBy(ab,end,ld):null;

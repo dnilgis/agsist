@@ -16,6 +16,10 @@ on:
         description: "Also send the custom rates new-survey emails on this manual run (yes to send; needs CUSTOMRATES_NOTICE_LIVE=1)"
         required: false
         default: "no"
+      lease_send:
+        description: "Lease notice reminder emails on this manual run: no, dry (counts and a preview, sends nothing), or yes (send; needs LEASE_NOTICE_LIVE=1)"
+        required: false
+        default: "no"
 
 permissions:
   contents: write
@@ -146,6 +150,25 @@ jobs:
           git fetch -q --shallow-since="$(date -u -d '-400 days' +%Y-%m-%d)" origin "${GITHUB_REF_NAME}" || true
           python3 scripts/send_custom_rates_notice.py --selftest
           python3 scripts/send_custom_rates_notice.py --send
+
+      - name: Lease notice reminder emails
+        if: (vars.LEASE_NOTICE_LIVE == '1' && github.event_name != 'workflow_dispatch') || (github.event_name == 'workflow_dispatch' && (inputs.lease_send == 'yes' || inputs.lease_send == 'dry'))
+        env:
+          LEASE_NOTICE_LIVE: ${{ vars.LEASE_NOTICE_LIVE }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.lease_send == 'dry' && '1' || '' }}
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+        run: |
+          python3 scripts/send_lease_notice.py --selftest
+          python3 scripts/send_lease_notice.py --send
 
       - name: IndexNow ping (Bing learns about new pages in seconds)
         if: steps.window.outputs.go == '1'
