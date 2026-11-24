@@ -1866,7 +1866,7 @@
     var out = [];
     if (sv && sv.gift) {
       // the card goes out by email the moment Stripe says paid (scripts/rp_buyer_email.py, worker v5.40; 2026-10-20)
-      out.push(what + 'Your gift card to print comes by email within minutes, with what they get and how to use it. ' +
+      out.push(what + 'Your card to print comes by email within minutes, with what they get and how to use it. ' +
         (file ? 'Your proof follows in January, once the full year is in, and the full file once you approve it.' : 'The print follows in January, with a proof to you first.'));
     } else if (sv && sv.settle) {
       out.push(what + 'NOAA doesn\u2019t have all of ' + sv.year + ' in yet. I make it once the full year is in, and email you the proof then. Approve it there, or ask for a change.' +
@@ -3026,7 +3026,7 @@
   function syncYearNote() {
     var y = parseInt($('rp-year').value, 10), el = $('rp-year-note');
     if (!el) return;
-    el.textContent = y === CURRENT_YEAR ? CURRENT_YEAR + ' isn\u2019t over yet. Order it now and a gift card to print comes by email within minutes; the print ships in January.' : '';
+    el.textContent = y === CURRENT_YEAR ? CURRENT_YEAR + ' isn\u2019t over yet. Order it now and a card to print comes by email within minutes; the print ships in January.' : '';
     el.hidden = !el.textContent;
   }
   var KEEP_URL = false;   // a ?d=RPS- link that didn't open stays in the address bar until the reader draws
@@ -3107,7 +3107,7 @@
        With a checkout link they come onto the review sheet's gift box
        (#rp-pgift) and go to the owner as a rain-print-order post before checkout. */
     $('rp-gift-fields').hidden = false;
-    $('rp-gift-cardnote').textContent = 'Want a gift card for under the tree? Fill in the boxes above, then order. Within minutes of paying, a card to print comes by email, with a code they use to see their print.';
+    $('rp-gift-cardnote').textContent = 'Want a card to give for under the tree? Fill in the boxes above, then order. Within minutes of paying, a card to print comes by email, with a code they use to see their print.';
     // the digital file's card (2026-10-14, no proof step for the file; he redoes it free on request)
     $('rp-dig-when').textContent = giftYear() ? 'A proof by email in January, once the full year is in, the full file once you approve it'
       : SETTLE && canOrder() ? 'A proof by email once the full year is in, the full file once you approve it' : 'A proof by email within 1 business day of paying, the full file once you approve it';
@@ -3131,9 +3131,9 @@
       var el = $('rp-sub-' + id);
       if (!el) return;
       el.textContent = id === 'digital'
-        ? (gift ? 'A gift card to print by email within minutes. The file comes in January, once the full year is in.'
+        ? (gift ? 'A card to print by email within minutes. The file comes in January, once the full year is in.'
           : settle ? 'A PDF, a PNG and a JPG by email once the full year is in.' : 'A PDF, a PNG and a JPG by email within minutes of your OK on the proof.')
-        : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within minutes; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
+        : (SUB_BASE[id] + ' ' + (gift ? 'A card to print by email within minutes; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
           : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, OJ().j && OJ().j[CUTOFF_KEY[id]]))).trim();
       if (blockedPick(id)) el.textContent = L('Shipping to Canada starts soon.', 'Envoi au Canada bientôt.');
     });
@@ -3152,7 +3152,7 @@
     // a gift card holder reads the card's banner, not the buying lines (2026-10-20)
     if (typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid)) { top.hidden = true; why.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
-    var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give a gift card now and the ' + CURRENT_YEAR + ' print in January.';
+    var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give a card now and the ' + CURRENT_YEAR + ' print in January.';
     var gift = giftYear(), ly = CURRENT_YEAR - 1;
     /* "Last year, by Christmas" beside "This year, in January" (2026-10-19, board B: a county link opened this
        year's print and nobody said last year still comes by Christmas). While a cutoff is ahead the first screen
@@ -3160,8 +3160,8 @@
     var by = TODAY <= pc && TODAY <= fc ? 'framed by ' + shortDate(fc) + ', or as a print by ' + shortDate(pc)
       : TODAY <= pc ? 'as a print by ' + shortDate(pc) + ' (framed now ships after Christmas)'
       : 'framed by ' + shortDate(fc) + ' (a print now ships after Christmas)';
-    var thisYr = 'This year (' + CURRENT_YEAR + ') is a gift card now, the print in January.';
-    top.textContent = late ? (gift ? 'For Christmas: a gift card now, the print in January.' : 'For Christmas: past years ordered now ship after Christmas.' + lateMail)
+    var thisYr = 'This year (' + CURRENT_YEAR + ') is a card to give now, the print in January.';
+    top.textContent = late ? (gift ? 'For Christmas: a card to give now, the print in January.' : 'For Christmas: past years ordered now ship after Christmas.' + lateMail)
       : gift ? 'For Christmas: ' + thisYr.charAt(0).toLowerCase() + thisYr.slice(1) + ' Last year (' + ly + ') comes by Christmas if you order it ' + by + '.'
       : 'For Christmas: last year (' + ly + '), or any past year, comes by Christmas if you order it ' + by + '. ' + thisYr;
     top.hidden = false;
@@ -3171,7 +3171,7 @@
     // paints and nothing below it moves (Nov 23: the late tap measured 0.09 CLS at 1280 when it waited for the draw)
     var tap = !SAMPLE && !BLOCKED && (ST.place || $('rp-place').value.trim()) && !(GIFT && GIFT.lock) ? xmasTap(TODAY, pc, fc, gift) : '';
     if (tap) {
-      $('rp-xmas-last').textContent = tap === 'last' ? 'Make it ' + ly + ', by Christmas' : 'Give it as a gift card now, the ' + CURRENT_YEAR + ' print in January';
+      $('rp-xmas-last').textContent = tap === 'last' ? 'Make it ' + ly + ', by Christmas' : 'Give a card now, the ' + CURRENT_YEAR + ' print in January';
       $('rp-xmas-last').setAttribute('data-to', tap);
       $('rp-xmas-alt').hidden = false;
     }
@@ -4781,7 +4781,7 @@
   function syncSummary() {
     var el = $('ro-summary'), id = $('ro-choice').value, J = OJ().j || {};
     if (!el || !canOrder()) { if (el) el.innerHTML = ''; return; }
-    var paid = !!(GIFT && GIFT.usable);   // a gift card: already paid for (2026-10-13: the form asked a card holder to pay)
+    var paid = !!(GIFT && GIFT.usable);   // a card: already paid for (2026-10-13: the form asked a card holder to pay)
     var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
     var jan = januaryGift() || (SETTLE && canOrder()), print = id !== 'digital';
     var whenIn = januaryGift() ? 'In January, once the full year is in' : 'Once the full year is in';
@@ -4868,7 +4868,7 @@
      Christmas date on each card holds only if the proof is OK'd the day it
      comes; this says what happens when it isn't. */
   function payWhen(id, today) {
-    if (giftYear()) return 'Arrives in January, once the year is done. A gift card for under the tree comes by email within minutes.';
+    if (giftYear()) return 'Arrives in January, once the year is done. A card for under the tree comes by email within minutes.';
     var J = OJ().j || {}, hol = holidaysFor(J, today), next = addBizDays(today, 1, hol);
     var by = next === isoMinusDays(today, -1) ? 'tomorrow' : 'by ' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(next + 'T12:00:00Z').getUTCDay()];
     if (id === 'digital') return 'Watch for an email from Sig with your proof. Approve it there and the full file follows. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.';
@@ -4904,7 +4904,7 @@
     var offered = pgOffered(), on = offered && $('rp-pg-on').checked, file = PICK === 'digital', theirs = pgTheirs();
     $('rp-pgift').hidden = !offered;
     $('rp-pg-box').hidden = !on;
-    $('rp-pg-msg-l').textContent = januaryGift() ? 'A message for the gift card (optional)' : file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
+    $('rp-pg-msg-l').textContent = januaryGift() ? 'A message for the card (optional)' : file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
     /* The address is Stripe's (2026-10-19, board B: the same address typed twice on a phone was a quit point;
  The owner keeps Stripe's shipping field on, 2026-10-18). With a payment link the sheet asks no address and says
        where it goes; the order post says it is at checkout. Without one, the order form path, it is asked here. */
@@ -4921,7 +4921,7 @@
     if (on) {
       var to = cleanText($('rp-pg-to').value, GIFT_TO_MAX), msg = $('rp-pg-msg').value.trim();
       sum.innerHTML = [['Gift for', to || '(say who it\u2019s for)'], [file ? 'Note with the file' : 'Note on the letter', msg || '(none)'],
-        ['Goes to', theirs ? (to || 'them') : 'you']].map(function (r, i) { return i === 1 && januaryGift() ? ['Note on the gift card', r[1]] : r; }).map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
+        ['Goes to', theirs ? (to || 'them') : 'you']].map(function (r, i) { return i === 1 && januaryGift() ? ['Note on the card', r[1]] : r; }).map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
     }
   }
   // the gift as an order post, or {bad: [field id, words]}
@@ -4954,7 +4954,7 @@
   // when it comes, in words, for the review sheet
   function whenWords(id) {
     var file = id === 'digital', J = OJ().j || {};
-    if (giftYear()) return 'This one is made in January, once the full year is in, and I send the proof then. Within minutes of paying, a gift card to print comes by email.';
+    if (giftYear()) return 'This one is made in January, once the full year is in, and I send the proof then. Within minutes of paying, a card to print comes by email.';
     if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the proof then; ' + (file ? 'the full file comes once you approve it.' : 'nothing prints until you approve it.');
     if (file) return 'A PDF, a PNG and a JPG by email within minutes of your OK on the proof.';
     return 'Shipping included. A proof by email within 1 business day; it ships within ' + (J.ship_business_days || 3) + ' business days of your OK. ' + cutoffNote(TODAY, J[CUTOFF_KEY[id]]);
@@ -5153,7 +5153,7 @@
       send('rain-print-order', data, fs).then(function () {
         ga('rain_print_order', { result: 'ok', choice: x.choice, gift: gift ? 1 : plain ? 2 : 0 });
         out.innerHTML = gift
-          ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within 1 business day with a payment link; nothing is charged until you pay it. Within 1 business day of paying, I email you a gift card to print.</p>' +
+          ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email you within 1 business day with a payment link; nothing is charged until you pay it. Within 1 business day of paying, I email you a card to print.</p>' +
             '<p>Your ' + ST.year + ' print is made once the full year is in, and I send the ' + (x.choice === 'digital' ? 'finished file' : 'proof') + ' then, in January. I\u2019ll write to ' + esc(x.email) + '. Your design code is <code>' + esc(x.design_code) + '</code>.</p></div>'
           : x.choice === 'digital'
           ? '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll email ' + esc(x.email) + ' within 1 business day with a payment link.</p>' +
