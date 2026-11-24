@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-24-trust-fixes",
+ "date": "2026-11-24",
+ "title": "Markets and links: one contract per change",
+ "line": "Cotton and KC wheat show no day change when the price and the settle are different contract months. County PRF links open the state page on that county.",
+ "link": "/markets",
+ "rank": 5
+}
