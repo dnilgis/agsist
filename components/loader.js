@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '110';
+  var CV = '111';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -564,12 +564,26 @@
   /* Sitewide sponsor line: sold, else the open spot (no reader figure). It fills #sw-slot after the answer; with no
      slot it goes above the footer. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
-  function swSold(sp) {
-    return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
+  // Sold: on, not the house ad, a name, an https link, and today (Central) in start..end, both days counted in.
+  // Outside them, or a date that does not read: the open strip. day: YYYY-MM-DD, else today.
+  function swSold(sp, day) {
+    if (!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''))) return false;
+    var bad = function (v) {
+      if (v == null || v === '') return false;
+      var t = /^\d{4}-\d{2}-\d{2}$/.test(v) ? Date.parse(v + 'T12:00:00Z') : NaN;
+      return isNaN(t) || new Date(t).toISOString().slice(0, 10) !== v;
+    };
+    if (bad(sp.start) || bad(sp.end)) return false;
+    if (!sp.start && !sp.end) return true;
+    if (!day) {
+      try { day = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
+      catch (e) { day = new Date().toISOString().slice(0, 10); }
+    }
+    return !(sp.start && day < sp.start) && !(sp.end && day > sp.end);
   }
-  function swLine(sp, card, spots, preview) {
+  function swLine(sp, card, spots, preview, day) {
     if (preview) sp = { active: true, advertiser: 'Your Business', headline: 'Your one line here.', cta_url: 'https://agsist.com/sponsor' };
-    if (swSold(sp)) {
+    if (swSold(sp, day)) {
       var href = sp.cta_url + (sp.cta_url.indexOf('?') < 0 ? '?' : '&') + 'utm_source=agsist&utm_medium=sitewide';
       return { sold: true, html: '<span class="sw-in"><span class="sw-tag">Sponsor</span>Supported by <b>' + slotEsc(sp.advertiser) + '</b>' +
         (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +

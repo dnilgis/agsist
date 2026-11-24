@@ -129,7 +129,7 @@ Each figure below is read from the same file the site's pages read and carries t
 - [LRP Calculator (Livestock Risk Protection)](https://agsist.com/lrp): pick fed cattle, feeder cattle or hogs, enter head and weight at sale and pick the end date: today's RMA LRP cost for the lot, a head and a cwt after the subsidy at the top coverage and 95%, the floor and the floor net of premium, the premium billing date, what LRP pays if the price drops by an amount you pick, and since July 2020 what each $1 of premium paid back for that animal and length; the weight picks RMA's weight class; inputs in the URL (?a=fed&h=120&w=1400&l=13); FAQ on how LRP pays, subsidy, sales hours, premium due date, head limits and basis
 - [LRP Record and Tests](https://agsist.com/lrp/record): the 95-100% coverage record per $100 of coverage on every RMA sales day since July 2013; 36 walk-forward tests of lower coverage levels and a best-so-far rule under one Holm family, none kept; each test year by year; the method, gaps and subsidy table
 - [Farm Bill](https://agsist.com/farm-bill): what the 2026 farm bill fight changes for a farm, where it stands, and where the money goes
-- [Cash Farm Lease](https://agsist.com/cash-lease): a fillable, printable plain-English cash lease that starts from your county's cash rent, with a flex lease calculator and each state's termination notice deadline
+- [Cash Farm Lease](https://agsist.com/cash-lease): your county's cash rent per acre (USDA NASS) to start the rent from; a flex lease calculator that shows the rent at nine price and yield outcomes; each state's deadline to give notice to end a farm lease; and a fillable, printable plain-English cash lease and notice to end it
 
 ## Every morning
 

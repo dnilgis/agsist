@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-24-elevator-alerts-later-delivery",
+   "date": "2026-11-24",
+   "title": "Elevator alerts: boards that post only a later delivery",
+   "line": "An elevator that posts only next harvest or a month well out keeps its alerts and Daily line, named by that delivery. A price target fires only on a current bid.",
+   "link": "/"
+  },
+  {
    "id": "2026-11-23-farmland-atlas-share",
    "date": "2026-11-23",
    "title": "Farmland Atlas: send your county in one tap",
