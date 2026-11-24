@@ -18,4 +18,9 @@ if(cp)cp.addEventListener('click',function(){
   try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
 });
 try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
+[].forEach.call(document.querySelectorAll('a[data-share]'),function(a){a.addEventListener('click',function(){
+  if(a.getAttribute('data-share')==='text'){var m=document.querySelector('meta[property="og:image:alt"]'),c=document.querySelector('link[rel=canonical]');
+    a.href='sms:?&body='+encodeURIComponent((m?m.getAttribute('content')+' ':'')+(c?c.href:location.origin+location.pathname));}
+  try{gaEvent('county_print',{kind:a.getAttribute('data-share'),fips:rec.fips});}catch(e){}
+});});
 })();

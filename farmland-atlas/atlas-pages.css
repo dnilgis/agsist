@@ -80,6 +80,7 @@
 .ap .cpr button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 1rem;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface,#12161a);color:var(--text);font:inherit;font-weight:700;font-size:.9rem;cursor:pointer}
 .ap .cpr button:hover{border-color:var(--gold);color:var(--gold)}
 .ap .cpr-st{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ap .cmp{margin:.35rem 0 .5rem;font-weight:600;border-left:3px solid var(--gold);padding-left:.6rem}
 .ap .so h2{margin-top:.6rem}
 .ap .so-g{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;margin:0 0 1rem}
 @media(min-width:760px){.ap .so-g{grid-template-columns:repeat(3,minmax(0,1fr))}}
