@@ -564,9 +564,8 @@
   /* Sitewide sponsor line: sold, else the open spot (no reader figure). It fills #sw-slot after the answer; with no
      slot it goes above the footer. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
-  /* Sold: switched on, not the house ad, a name, an https link, and today inside start..end (data/sponsor.json,
-     optional YYYY-MM-DD days in Central time, both counted in, the same rule as the Daily's line). Before start,
-     after end, or a day that does not read as a date: not sold, so the open strip shows. day: YYYY-MM-DD, else today. */
+  // Sold: on, not the house ad, a name, an https link, and today (Central) in start..end, both days counted in.
+  // Outside them, or a date that does not read: the open strip. day: YYYY-MM-DD, else today.
   function swSold(sp, day) {
     if (!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''))) return false;
     var bad = function (v) {
