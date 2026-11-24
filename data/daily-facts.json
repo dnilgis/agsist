@@ -4973,7 +4973,7 @@
     },
     {
       "id": "nssl-hail-hda-1990s",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "NSSL researchers developed the Hail Detection Algorithm, deployed in the late 1990s, the first operational hail sizing algorithm for the WSR-88D radars.",
       "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: Hail Detection (page read 2026)",
       "url": "https://www.nssl.noaa.gov/education/svrwx101/hail/detection/",
@@ -5074,7 +5074,7 @@
     {
       "id": "nssl-tornado-warning-15-20min",
       "category": "machinery and safety",
-      "fact": "For the most dangerous violent tornadoes, the National Weather Service is usually able to get tornado warnings out 15 to 20 minutes in advance.",
+      "fact": "For the most dangerous violent tornadoes, NSSL says \"we're usually able to get tornado warnings out 15 to 20 minutes in advance.\"",
       "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: 'Twisters' FAQ (page read 2026)",
       "url": "https://www.nssl.noaa.gov/education/svrwx101/tornadoes/twisters/",
       "checked": "2026-11-24",
@@ -5133,7 +5133,7 @@
     },
     {
       "id": "nssl-wind-58mph-1962",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "The 58 mph severe wind limit dates to 1962, when negotiations with the Air Force raised the aviation watch minimum to 58 mph (50 knots). In 1970 the watches merged into one.",
       "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: Damaging Winds FAQ (page read 2026)",
       "url": "https://www.nssl.noaa.gov/education/svrwx101/wind/faq/",
@@ -5264,8 +5264,8 @@
     },
     {
       "id": "nssl-hist-1964-founded",
-      "category": "farm history",
-      "fact": "NSSL took its present form in 1964, when the National Severe Storms Project moved to Norman, Oklahoma, and was reorganized as the National Severe Storms Laboratory with Edwin Kessler as director.",
+      "category": "weather and climate",
+      "fact": "In 1964 the National Severe Storms Project moved to Norman, Oklahoma, and was reorganized as the National Severe Storms Laboratory with Edwin Kessler as director.",
       "source": "NOAA National Severe Storms Laboratory, NSSL History (page read 2026)",
       "url": "https://www.nssl.noaa.gov/about/history/",
       "checked": "2026-11-24",
@@ -5274,7 +5274,7 @@
     },
     {
       "id": "nssl-hist-1973-tvs",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "On May 24, 1973, an NSSL team filmed a tornado's whole life cycle near its Doppler radar and found a pattern showing the tornado forming before it appeared on film: the Tornado Vortex Signature.",
       "source": "NOAA National Severe Storms Laboratory, NSSL History (page read 2026)",
       "url": "https://www.nssl.noaa.gov/about/history/",
@@ -5285,7 +5285,7 @@
     },
     {
       "id": "nssl-hist-toto-55gal-drum",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "The movie Twister was based on NSSL work in the mid-1980s with a 55-gallon drum of weather sensors called TOTO, which NSSL tried for several years to place in a tornado's path with minimal success.",
       "source": "NOAA National Severe Storms Laboratory, Severe Weather 101: Tornado FAQ (page read 2026)",
       "url": "https://www.nssl.noaa.gov/education/svrwx101/tornadoes/faq/",
@@ -5295,7 +5295,7 @@
     },
     {
       "id": "nssl-hist-1985-dualpol",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "In 1985 NSSL researchers tested radar pulses sent both horizontally and vertically on the Cimarron radar and called the result dual-polarization technology.",
       "source": "NOAA National Severe Storms Laboratory, NSSL History (page read 2026)",
       "url": "https://www.nssl.noaa.gov/about/history/",
@@ -5305,7 +5305,7 @@
     },
     {
       "id": "nssl-hist-2004-130-radars",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "In 2004 NSSL mosaicked all 130 National Weather Service and Department of Defense weather radars into the first real-time, coast-to-coast high-resolution picture of storms.",
       "source": "NOAA National Severe Storms Laboratory, NSSL History (page read 2026)",
       "url": "https://www.nssl.noaa.gov/about/history/",
@@ -5315,7 +5315,7 @@
     },
     {
       "id": "nssl-hist-vortex2-largest",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "VORTEX2, begun in 2009, was the largest field tornado research project in history, with ten mobile radars and 40 other instrumented vehicles. It sampled 36 supercells and 11 tornadoes.",
       "source": "NOAA National Severe Storms Laboratory, NSSL History (page read 2026)",
       "url": "https://www.nssl.noaa.gov/about/history/",
@@ -5336,7 +5336,7 @@
     },
     {
       "id": "nssl-hist-2011-phoenix-dust-45min",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "In 2011 an NSSL algorithm helped alert a power company to the chance of a dust storm in Phoenix with 45 minutes of advance notice.",
       "source": "NOAA National Severe Storms Laboratory, NSSL History (page read 2026)",
       "url": "https://www.nssl.noaa.gov/about/history/",
@@ -5346,7 +5346,7 @@
     },
     {
       "id": "nssl-hist-2017-hurricane-eye-balloon",
-      "category": "farm history",
+      "category": "weather and climate",
       "fact": "In 2017 an NSSL researcher launched a weather balloon in the eye of a hurricane, which no one had done before, as part of efforts to collect data in the path of Hurricane Harvey.",
       "source": "NOAA National Severe Storms Laboratory, NSSL History (page read 2026)",
       "url": "https://www.nssl.noaa.gov/about/history/",
