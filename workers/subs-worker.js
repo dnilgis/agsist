@@ -5,6 +5,14 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.71 (2026-11-24): LEASE NOTICE REMINDER. /notice takes one more topic, lease:<st>:<YYYY-MM-DD>:
+ *   one email about two weeks before that state's farm lease termination notice deadline (the ask on
+ *   /cash-lease). Iowa, Kansas and Ohio only, and the date must be that state's deadline: September 1
+ *   for Iowa and Ohio, 30 days before March 1 for Kansas (January 30, January 31 in a leap year), still
+ *   ahead and within about 13 months. Each season is its own topic, so a reader is mailed once a season
+ *   and asks again for the next. Same record as every notice: note:<email>.t[topic] = {ts, src}; no
+ *   ZIP or place. GET /notice-list?topic=lease: lists them for scripts/send_lease_notice.py.
+ *   No new binding or secret. Every other route and topic answers as before.
  * v5.70 (2026-11-13): GA BURST DAMPING, A BACKSTOP. GET /ga-ok also answers {"ok":false} for an
  *   hour to a network and place (request.cf.asn plus request.cf.city, else region, else country;
  *   never an address) that sends more than GA_BURST_MAX fresh calls in one minute. The main cuts
@@ -1593,6 +1601,14 @@ const HFR = "hfr";
 const HFR_ASK = "Stop the Harvest Fuel Relief email for this address?";
 const HFR_DONE = "Stopped. No more Harvest Fuel Relief emails.";
 const CR_STATES = new Set("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy".split(" "));
+// v5.71: lease:<st>:<YYYY-MM-DD>, the farm lease notice deadline reminder. The date is the state's
+// own deadline in that year (scripts/send_lease_notice.py DEADLINE): Iowa and Ohio September 1,
+// Kansas 30 days before March 1.
+function leaseDeadline(st, y) {
+  if (st === "ia" || st === "oh") return Date.UTC(y, 8, 1);
+  if (st === "ks") return Date.UTC(y, 2, 1) - 30 * 864e5;
+  return null;
+}
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
@@ -1606,6 +1622,14 @@ function noticeTopic(v, anyDate) {
   // state's next custom rate survey is on /custom-rates (scripts/send_custom_rates_notice.py)
   const cr = /^customrates:([a-z]{2})$/.exec(t);
   if (cr) return CR_STATES.has(cr[1]) ? t : null;
+  // v5.71: lease:<st>:<YYYY-MM-DD>, the state's own deadline, still ahead (a day of slack), within ~13 months
+  const ld = /^lease:([a-z]{2}):(\d{4})-(\d{2})-(\d{2})$/.exec(t);
+  if (ld) {
+    const want = leaseDeadline(ld[1], +ld[2]);
+    if (want === null || new Date(want).toISOString().slice(0, 10) !== t.slice(9)) return null;
+    if (!anyDate && (want < Date.now() - 864e5 || want > Date.now() + 400 * 864e5)) return null;
+    return t;
+  }
   const pg = /^prf:(\d+)$/.exec(t);
   if (pg) return prfGridOk(pg[1]) ? t : null;
   // v5.54: rain-month:<county FIPS>, the monthly county rain email
