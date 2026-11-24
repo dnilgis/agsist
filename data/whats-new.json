@@ -30,6 +30,13 @@
    "link": "/cash-lease#notice"
   },
   {
+   "id": "2026-11-24-elevator-alerts-wheat-classes",
+   "date": "2026-11-24",
+   "title": "Elevator alerts: spring and white wheat boards",
+   "line": "A cash or basis target on a spring wheat, DNS or white wheat board now fires on that board's current bid, and the alert names the board's own wheat.",
+   "link": "/"
+  },
+  {
    "id": "2026-11-24-elevator-alerts-later-delivery",
    "date": "2026-11-24",
    "title": "Elevator alerts: boards that post only a later delivery",
