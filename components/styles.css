@@ -157,10 +157,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .hamburger.open .h-bar:nth-child(2) { opacity: 0 }
 .hamburger.open .h-bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg) }
 @media (max-width: 60em) { .nav-menu { display: none } .hamburger { display: flex } }
-/* Phone header controls (ZIP chip, search, menu) look 36 px tall and are 44 px to a finger: a transparent overlay
-   reaches 4 px above and below the border box. The search and menu boxes sit 6 px apart, so each takes its 8 px
-   of width from the free space around it (search 5 left, 3 right; menu 2 left, 6 right) and the two never overlap.
-   No size, icon or spacing changes. */
+/* Phone header taps: a clear overlay makes each 36 px control 44 px to a finger */
 @media (max-width: 60em) {
   .hamburger, .srch-btn, .zip-chip { position: relative }
   .hamburger::before, .srch-btn::before, .zip-chip::before { content: ""; position: absolute }

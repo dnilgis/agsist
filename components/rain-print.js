@@ -3112,7 +3112,7 @@
     $('rp-dig-when').textContent = giftYear() ? 'A proof by email in January, once the full year is in, the full file once you approve it'
       : SETTLE && canOrder() ? 'A proof by email once the full year is in, the full file once you approve it' : 'A proof by email within 1 business day of paying, the full file once you approve it';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
-    $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
+    $('ro-order-note').textContent = GIFT && GIFT.usable ? 'Your gift card covers this print, so there\u2019s nothing to pay. Check the design below, then send it.'
       : on ? 'I\u2019ll email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it. In January, once the full year is in, I send the proof of a print, or the finished file.' : ORDER_NOTE;
     $('rp-preview-line').hidden = !(on && PREVIEW);
     syncAddress();
@@ -3741,7 +3741,7 @@
         /* A gift card's locked design keeps its station: no quiet re-pick,
            the reader tries again instead (2026-10-15). */
         if (GIFT && GIFT.lock && GIFT.lock.design) {
-          var gl = new Error('NOAA didn\u2019t send the station on your card (' + sidPlain(linked) + ') just now. Try again in a minute.');
+          var gl = new Error('NOAA didn\u2019t send the station on your gift card (' + sidPlain(linked) + ') just now. Try again in a minute.');
           gl.retry = true; throw gl;
         }
         ST.station = '';
@@ -4782,7 +4782,7 @@
     var el = $('ro-summary'), id = $('ro-choice').value, J = OJ().j || {};
     if (!el || !canOrder()) { if (el) el.innerHTML = ''; return; }
     var paid = !!(GIFT && GIFT.usable);   // a card: already paid for (2026-10-13: the form asked a card holder to pay)
-    var price = paid ? 'covered by your card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
+    var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
     var jan = januaryGift() || (SETTLE && canOrder()), print = id !== 'digital';
     var whenIn = januaryGift() ? 'In January, once the full year is in' : 'Once the full year is in';
     var steps = !print ? (paid
@@ -4847,7 +4847,7 @@
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
     var can = canOrder(), gift = !!(GIFT && GIFT.usable), p = pickPrice(PICK);
     // what the picker above it doesn't say: when it comes (and that a gift card covers it)
-    if (can) list.push(['When', esc((gift ? 'Covered by your card. ' : '') + whenWords(PICK) + ' ' + MADE_BY[PICK === 'digital' ? 'file' : 'print'])]);
+    if (can) list.push(['When', esc((gift ? 'Covered by your gift card. ' : '') + whenWords(PICK) + ' ' + MADE_BY[PICK === 'digital' ? 'file' : 'print'])]);
     $('rp-proof-sum').innerHTML = list.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
     // the one action: pay for what is shown, as picked
