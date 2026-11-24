@@ -148,6 +148,7 @@ window.__fsRead = function (FSX) {
       setTimeout(function(){ var w=document.getElementById('fs-insight-wrap'); if(w && w.getBoundingClientRect().top>window.innerHeight-160){ try{ w.scrollIntoView({ block:'end', behavior:'smooth' }); }catch(e){ w.scrollIntoView(false); } } }, 450);
     }
     var shb=document.getElementById('fs-share'); if(shb) shb.addEventListener('click', sharePicture);
+    var txb=document.getElementById('fs-text'); if(txb) txb.addEventListener('click', textField);
     var pcb=document.getElementById('fs-pic'); if(pcb) pcb.addEventListener('click', savePicture);
     var rb=document.getElementById('fs-report'); if(rb) rb.addEventListener('click', generateReport);
     var gjb=document.getElementById('fs-export-geojson'); if(gjb) gjb.addEventListener('click', exportGeoJSON);
@@ -188,6 +189,7 @@ window.__fsRead = function (FSX) {
         '<div class="fs-fh-btns">'+
         '<button class="fs-save-btn" id="fs-save" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8L3.5 9.7l5.9-.9z"/></svg>Save field</button>'+
         '<button class="fs-save-btn" id="fs-share" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Share</button>'+
+        '<button class="fs-save-btn" id="fs-text" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Text it</button>'+
         '<button class="fs-save-btn" id="fs-pic" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-7 7"/></svg>Save picture</button>'+
         '<button class="fs-save-btn" id="fs-report" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>Field report</button>'+
         '<button class="fs-save-btn" id="fs-newfield" type="button"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg>Draw a different field</button>'+
@@ -2433,6 +2435,16 @@ window.__fsRead = function (FSX) {
     var done=function(){ flashHint('Field link copied'+(cardModel()?' and the picture saved':'')+': anyone who opens the link sees this exact field', 6000); saved(); };
     if(nav.clipboard && nav.clipboard.writeText) nav.clipboard.writeText(url).then(done, function(){ window.prompt('Copy this field link:', url); saved(); });
     else { window.prompt('Copy this field link:', url); saved(); }
+  }
+  // Text it: the phone's text app with the field's line and its link (the outline in the #hash),
+  // in one tap. One count per tap, nothing about the field.
+  function textField(){
+    if(!FSX.activePoly) return;
+    writeHash(FSX.activePoly);
+    var m=cardModel();
+    ga('field_share', { via:'text' });
+    var a=document.createElement('a'); a.href='sms:?&body='+encodeURIComponent((m?shareText(m)+' ':'')+location.href);
+    document.body.appendChild(a); a.click(); a.remove();
   }
   function savePicture(){
     if(!cardModel()){ flashHint('The picture is ready once the read finishes.', 4000); return; }
