@@ -3773,6 +3773,761 @@
       "quote": "A loss ratio of 1.0 means that crop insurance payments equal the total premium. ... The Illinois loss ratio was .28 in 2020, .13 in 2021, and .10 in 2022. ... From 1989 to 2023, the loss ratio for Illinois averaged .62 compared to .94 for the U.S.",
       "note": "Loss ratios .62, .94 and .10 are written as cents paid per premium dollar.",
       "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-corn-26-to-178",
+      "category": "farm history",
+      "fact": "Nebraska corn averaged 26 bushels an acre in the early 1900s. In 2009 it set a record of 178.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop & Plant Science Facts",
+      "url": "https://cropwatch.unl.edu/youth/crop-plant-science-facts/",
+      "checked": "2026-11-24",
+      "quote": "Corn production in terms of bushels/acre has increased dramatically over the years –from 26 bushels/acre produced in Nebraska in the 1900s to 178 bushels per acre (a new record) produced in 2009.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-roots-6-half-feet",
+      "category": "agronomy",
+      "fact": "A corn plant averages about 8 feet tall by midsummer, and a healthy plant's roots can reach 6 1/2 feet into the ground.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop & Plant Science Facts",
+      "url": "https://cropwatch.unl.edu/youth/crop-plant-science-facts/",
+      "checked": "2026-11-24",
+      "quote": "A corn plant can be anywhere from 5 to 12 feet tall, on average 8 ft tall by midsummer and a healthy corn's roots can reach 6 ½ feet into the ground!",
+      "note": "6 ½ is written as 6 1/2.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-soy-14-to-54",
+      "category": "farm history",
+      "fact": "Nebraska soybeans averaged 14 bushels an acre in the 1920s and more than 54 in 2009.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop & Plant Science Facts",
+      "url": "https://cropwatch.unl.edu/youth/crop-plant-science-facts/",
+      "checked": "2026-11-24",
+      "quote": "Nebraska soybean yields in 2009 averaged more than 54 bushels per acre; in the 1920's average yield was 14 bushels/acre.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soybean-60-80-pods",
+      "category": "agronomy",
+      "fact": "A soybean plant flowers in summer and makes 60 to 80 pods, each usually holding three beans.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop & Plant Science Facts",
+      "url": "https://cropwatch.unl.edu/youth/crop-plant-science-facts/",
+      "checked": "2026-11-24",
+      "quote": "During the summer, soybeans flower and produce 60-80 pods, each holding three pea-sized beans.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-30000-varieties",
+      "category": "agronomy",
+      "fact": "About 30 thousand wheat varieties are sorted into just six market classes.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop & Plant Science Facts",
+      "url": "https://cropwatch.unl.edu/youth/crop-plant-science-facts/",
+      "checked": "2026-11-24",
+      "quote": "Six classes bring order to about 30 thousand varieties of wheat.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-bushel-42-loaves",
+      "category": "food and the consumer",
+      "fact": "A 60-pound bushel of wheat makes about 42 pounds of white flour, or 42 loaves of white bread at a pound and a half each.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop & Plant Science Facts",
+      "url": "https://cropwatch.unl.edu/youth/crop-plant-science-facts/",
+      "checked": "2026-11-24",
+      "quote": "One bushel of wheat weighs approximately 60 pounds. One bushel of wheat yields approximately 42 pounds of white flour. ... A bushel of wheat yields 42 commercial loaves of white bread (one-and-a-half pound loaves).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "farmer-feeds-155",
+      "category": "food and the consumer",
+      "fact": "Each U.S. farmer produces food and fiber for 155 people at home and abroad, by the University of Nebraska's count.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop & Plant Science Facts",
+      "url": "https://cropwatch.unl.edu/youth/crop-plant-science-facts/",
+      "checked": "2026-11-24",
+      "quote": "Today, each U.S. farmer produces food and fiber for 155 people in the United States and abroad.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "ohio-line-fence-10-feet",
+      "category": "land and rent",
+      "fact": "Ohio's line fence law lets a landowner go up to 10 feet onto a neighbor's land to build or keep up a boundary fence, but they are liable for damage.",
+      "source": "Ohio State University Agricultural and Resource Law Program, Farm Office blog",
+      "url": "https://farmoffice.osu.edu/blog-tags/line-fence-law",
+      "checked": "2026-11-24",
+      "quote": "Also, Ohio’s line fence law in ORC 971.08 allows you to access up to 10 feet of the neighbor’s property to build the fence, although you can be liable if you damage the property in doing so.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "ohio-cauv-10-acres-2500",
+      "category": "policy and programs",
+      "fact": "For Ohio's farm use property tax value, a parcel must be 10 acres or more in commercial farming, or gross $2,500 a year from it if smaller.",
+      "source": "Ohio State University Agricultural and Resource Law Program, Farm Office blog",
+      "url": "https://farmoffice.osu.edu/blog-tags/line-fence-law",
+      "checked": "2026-11-24",
+      "quote": "The definition of a “farm” is the same as the CAUV eligibility—a parcel devoted to commercial agricultural production that is either 10 acres or more or, if under 10 acres, grosses $2500 annually from agricultural production.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "alfalfa-digestibility-75-60",
+      "category": "livestock",
+      "fact": "Alfalfa digestibility falls from about 75% at bud stage to below 60% at full bloom.",
+      "source": "University of Nebraska-Lincoln CropWatch, Evaluating Alfalfa Stands Part II: Renovation Options (2020)",
+      "url": "https://cropwatch.unl.edu/2020/evaluating-alfalfa-stands-part-ii-renovation-options/",
+      "checked": "2026-11-24",
+      "quote": "Following the same maturity stage, digestibility steadily decreases from 75% to below 60% when going from the bud stage to the full bloom stage, respectively.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soy-n-credit-20-years-ars",
+      "category": "soil",
+      "fact": "Twenty years of USDA research in Nebraska put the nitrogen credit from a soybean crop to the next corn crop at about 55 pounds an acre dryland and 65 irrigated.",
+      "source": "University of Nebraska-Lincoln CropWatch, Giving Proper Nitrogen Credit for Legumes in Corn and Milo Rotations",
+      "url": "https://cropwatch.unl.edu/giving-proper-nitrogen-credit-legumes-corn-and-milo-rotations/",
+      "checked": "2026-11-24",
+      "quote": "The result of 20 years of research in Nebraska by USDA-ARS finds the mean soybean nitrogen credit to be about 55 lb/acre for dryland and 65 lb/acre for irrigated production.",
+      "note": "Twenty is written out at the start of the sentence for 20.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "cow-protein-doubles-calving",
+      "category": "livestock",
+      "fact": "After calving, a beef cow's energy needs rise about 30% and her protein needs nearly double.",
+      "source": "University of Nebraska-Lincoln CropWatch, Pasture and Forage Minute: Understanding ADF and NDF, Hay Quality After Calving (2023)",
+      "url": "https://cropwatch.unl.edu/2023/pasture-and-forage-minute-understanding-adf-and-ndf-hay-quality-after-calving/",
+      "checked": "2026-11-24",
+      "quote": "Energy requirements increase about 30% and protein needs nearly double after calving.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "straw-ndf-80",
+      "category": "livestock",
+      "fact": "Fiber in feed, measured as NDF, runs as high as 80% in straw and under 40% in early-bloom alfalfa.",
+      "source": "University of Nebraska-Lincoln CropWatch, Pasture and Forage Minute: Understanding ADF and NDF, Hay Quality After Calving (2023)",
+      "url": "https://cropwatch.unl.edu/2023/pasture-and-forage-minute-understanding-adf-and-ndf-hay-quality-after-calving/",
+      "checked": "2026-11-24",
+      "quote": "NDF levels can vary from 80% in straw to less than 40% in early blooming alfalfa.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "well-450-gpm-acre-inch",
+      "category": "agronomy",
+      "fact": "A well pumping 450 gallons a minute puts down 1 acre-inch of water every hour.",
+      "source": "University of Nebraska-Lincoln CropWatch, How Does Hot, Dry, Windy Weather Affect Corn Plants Now?",
+      "url": "https://cropwatch.unl.edu/how-does-hot-dry-windy-weather-affect-corn-plants-now/",
+      "checked": "2026-11-24",
+      "quote": "When figuring your well's capacity, a good conversion factor to remember is that 450 gallons per minute applies 1 acre-inch of water every hour.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "drought-ear-rows-12-14",
+      "category": "weather and climate",
+      "fact": "Drought-stressed corn at the 6 to 8 leaf stage may set ears of 12 to 14 rows, where the same hybrid with good moisture sets 16 to 20.",
+      "source": "University of Nebraska-Lincoln CropWatch, How Does Hot, Dry, Windy Weather Affect Corn Plants Now?",
+      "url": "https://cropwatch.unl.edu/how-does-hot-dry-windy-weather-affect-corn-plants-now/",
+      "checked": "2026-11-24",
+      "quote": "(This usually occurs at about the 6- to 8-leaf stage). ... These stressed plants will likely produce ears with 12-14 rows, while the same hybrid with better moisture will produce 16-20 rows—a yield constraint by the time it is knee high.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-growing-point-5-leaf",
+      "category": "agronomy",
+      "fact": "Through the 5-leaf stage, a corn plant's growing point is still below ground. A plant that loses five leaves then can still reach 19 to 21 leaves at tassel.",
+      "source": "University of Nebraska-Lincoln CropWatch, Assessing Early-season Hail Damage on Corn",
+      "url": "https://cropwatch.unl.edu/assessing-early-season-hail-damage-corn",
+      "checked": "2026-11-24",
+      "quote": "Up through the 5-leaf stage of growth, the growing point of corn is below the soil surface. ... If the plant loses five of those leaves early on, it will still have the potential to have 19 to 21 leaves at tasseling.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-kernels-per-row-v17",
+      "category": "agronomy",
+      "fact": "Corn sets its ear row number by the 12-leaf stage, but kernels per row are not set until about V17, just before tassel.",
+      "source": "University of Nebraska-Lincoln CropWatch, Assessing Early-season Hail Damage on Corn",
+      "url": "https://cropwatch.unl.edu/assessing-early-season-hail-damage-corn",
+      "checked": "2026-11-24",
+      "quote": "The number of rows that will be in the ear is established by the 12-leaf stage. ... The number of kernels per row is not determined until about V17, just before tasseling.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-acres-100m-pre-hybrid",
+      "category": "farm history",
+      "fact": "Before hybrid corn spread in the 1930s, US farmers planted over 100 million acres of corn. Since 2007 it has averaged about 91 million.",
+      "source": "University of Illinois farmdoc daily, Fringe Acres and US Average Corn Yield (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/04/fringe-acres-and-us-average-corn-yield.html",
+      "checked": "2026-11-24",
+      "quote": "Prior to the adoption of hybrid corn beginning in the 1930s, the US planted over 100 million acres of corn. ... Since 2007, corn acres have trended up slightly around an average level of about 91 million acres.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "fringe-acres-3pct",
+      "category": "agronomy",
+      "fact": "Extra corn acres do not drag down the national yield much: how far acres stray from normal explains only about 3% of yield swings from trend.",
+      "source": "University of Illinois farmdoc daily, Fringe Acres and US Average Corn Yield (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/04/fringe-acres-and-us-average-corn-yield.html",
+      "checked": "2026-11-24",
+      "quote": "Acreage deviations explain only about 3 percent of observed year-to-year variation in yield deviations from trend.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "barley-acres-down-65",
+      "category": "agronomy",
+      "fact": "From 1995-1997 to 2024-2026, US barley acres fell 65%, from 7 million to 2 million. Oats fell 56%.",
+      "source": "University of Illinois farmdoc daily, Yield Increases of Grains and Major Crops in the United States (2026)",
+      "url": "https://farmdocdaily.illinois.edu/2026/04/yield-increases-of-grains-and-major-crops-in-the-united-states.html",
+      "checked": "2026-11-24",
+      "quote": "A summary of acreage changes from 1995-1997 to 2024-2026 is: ... Barley acres decreased from 7 million to 2 million, a decrease of 65%. ... Oat acres decreased from 5 million to 2 million, a decrease of 56%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-acres-71-to-45",
+      "category": "agronomy",
+      "fact": "US wheat acres dropped from 71 million in 1995-1997 to 45 million in 2024-2026, while soybeans grew from 66 million to 84 million.",
+      "source": "University of Illinois farmdoc daily, Yield Increases of Grains and Major Crops in the United States (2026)",
+      "url": "https://farmdocdaily.illinois.edu/2026/04/yield-increases-of-grains-and-major-crops-in-the-united-states.html",
+      "checked": "2026-11-24",
+      "quote": "A summary of acreage changes from 1995-1997 to 2024-2026 is: ... Soybean acres increased from 66 million to 84 million, an increase of 29%. Wheat acres decreased from 71 million to 45 million, a decrease of 37%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "food-inflation-114-aug-2022",
+      "category": "food and the consumer",
+      "fact": "US food inflation hit 11.4% in August 2022, the biggest yearly rise since May 1979.",
+      "source": "University of Illinois farmdoc daily, Inflation and Food Price Update: May 2025",
+      "url": "https://farmdocdaily.illinois.edu/2025/05/inflation-and-food-price-update-may-2025.html",
+      "checked": "2026-11-24",
+      "quote": "In August 2022, the rate of inflation for food reached 11.4%, the largest annual increase since May 1979.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "food-away-319-since-2019",
+      "category": "food and the consumer",
+      "fact": "From December 2019 to April 2025, restaurant and other food away from home rose 31.9% in price, against 28.2% for groceries.",
+      "source": "University of Illinois farmdoc daily, Inflation and Food Price Update: May 2025",
+      "url": "https://farmdocdaily.illinois.edu/2025/05/inflation-and-food-price-update-may-2025.html",
+      "checked": "2026-11-24",
+      "quote": "Since December 2019, prices for food away from home have risen 31.9% compared to 28.2% for food at home. In April, prices for food away from home rose 0.4% from last month",
+      "note": "April 2025 is the month of the CPI data the article reports (May 2025 update).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "bird-flu-2015-iowa-29m",
+      "category": "pests and disease",
+      "fact": "The 2014-2015 bird flu outbreak hit 45 million US birds by June 2015. Iowa alone culled 29.2 million.",
+      "source": "University of Illinois farmdoc daily, Economic Implications of the 2014-2015 Bird Flu (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/06/economic-implications-of-the-2014-2015-bird-flu.html",
+      "checked": "2026-11-24",
+      "quote": "The total number of U.S. birds affected stands at 45 million, and includes 37.5 million chickens and 7.4 million turkeys. ... States hit hardest by the bird flu include Iowa with 29.2 million birds culled and Minnesota with 8.4 million birds culled.",
+      "note": "June 2015 is the article's date.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-land-57pct-2020-2023",
+      "category": "land and rent",
+      "fact": "Excellent Illinois farmland rose from $10,695 an acre in 2020 to $16,779 in 2023, up 57%.",
+      "source": "University of Illinois farmdoc daily, Farmland Prices and Government Programs (2026)",
+      "url": "https://farmdocdaily.illinois.edu/2026/07/farmland-prices-and-government-programs.html",
+      "checked": "2026-11-24",
+      "quote": "It increased from $10,695 per acre in 2020 to $16,779 in 2023, an increase of $6,084 per acre, or 57%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "rent-to-value-8pct-1985",
+      "category": "land and rent",
+      "fact": "In 1985, Illinois cash rent averaged 8.0% of land value, when 10-year Treasury notes paid 10.62%. By 2015 notes paid 2.14%.",
+      "source": "University of Illinois farmdoc daily, Cash Rent as a Percent of Farmland Price (2016)",
+      "url": "https://farmdocdaily.illinois.edu/2016/11/cash-rent-as-a-percent-of-farmland-price.html",
+      "checked": "2026-11-24",
+      "quote": "For state-level averages in Illinois, cash rent as a percent of land value averaged 8.0% in 1985. ... Ten-year notes averaged a 10.62% yield in 1985, falling to 2.14% in 2015.",
+      "note": "Ten-year is written as 10-year.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "parity-wheat-84-2008",
+      "category": "markets and prices",
+      "fact": "No crop reached 100% of parity even in the ethanol price era. The closest was wheat, at 84% of parity in March 2008.",
+      "source": "University of Illinois farmdoc daily, Considering Policy Reversion: The Parity Paradox (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/05/considering-policy-reversion-the-parity-paradox.html",
+      "checked": "2026-11-24",
+      "quote": "No commodity reached 100% of parity during the entire RFS-influenced price era. The highest was wheat at 84% of parity in March 2008.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "parity-base-1910-1914",
+      "category": "policy and programs",
+      "fact": "USDA still figures parity prices against a base of 1910-1914. As now calculated, no crop is above 40% of parity.",
+      "source": "University of Illinois farmdoc daily, Considering Policy Reversion: The Parity Paradox (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/05/considering-policy-reversion-the-parity-paradox.html",
+      "checked": "2026-11-24",
+      "quote": "NASS continues to calculate parity prices, using the monthly prices received and converted to the indexes for the parity base period (1910-1914 = 100) to compute the parity prices and ratios ... It is notable that, as currently calculated, not a single commodity is above 40% of the parity price.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "cotton-yield-213-to-517",
+      "category": "farm history",
+      "fact": "US cotton yields were 213 pounds an acre in 1933 and 517 by 1963. Wheat went from 11 or 12 bushels to 25.",
+      "source": "University of Illinois farmdoc daily, Considering Policy Reversion: The Parity Paradox (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/05/considering-policy-reversion-the-parity-paradox.html",
+      "checked": "2026-11-24",
+      "quote": "For example, wheat yields were around 11 or 12 bushels per acre when the parity system was created. By the time wheat farmers rejected supply controls in the 1963 wheat referendum, wheat yields were 25 bushels per acre (179% of the 1926-1933 average). Similarly, cotton yields were 213 pounds per acre in 1933 but had increased to 517 pounds per acre by 1963",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "wheat-referendum-1963",
+      "category": "policy and programs",
+      "fact": "In the 1963 wheat referendum, wheat farmers voted down federal supply controls.",
+      "source": "University of Illinois farmdoc daily, Considering Policy Reversion: The Parity Paradox (2019)",
+      "url": "https://farmdocdaily.illinois.edu/2019/05/considering-policy-reversion-the-parity-paradox.html",
+      "checked": "2026-11-24",
+      "quote": "By the time wheat farmers rejected supply controls in the 1963 wheat referendum",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-trend-26-bu-1956-1969",
+      "category": "farm history",
+      "fact": "US trend corn yields drifted slightly down through 1936, then rose. The fastest gain was 2.6 bushels an acre a year, from 1956 to 1969.",
+      "source": "University of Illinois farmdoc daily, The Role of Weather in the Pattern of Corn Prices over Time (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/role-of-weather-in-the-corn-price-pattern-over-time.html",
+      "checked": "2026-11-24",
+      "quote": "Trend corn yields through 1936 actually had a small tendency to decline, but have risen ever since. The highest annual rate of growth in trend yields, 2.6 bushels per acre, occurred during 1956-1969.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "usda-random-sampling-1960s",
+      "category": "markets and prices",
+      "fact": "USDA did not fully adopt modern random sampling to estimate crop yields until the 1960s.",
+      "source": "University of Illinois farmdoc daily, The Role of Weather in the Pattern of Corn Prices over Time (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/role-of-weather-in-the-corn-price-pattern-over-time.html",
+      "checked": "2026-11-24",
+      "quote": "Modern random sampling methods to estimate yields were not fully adopted by the USDA until the 1960s.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "worst-20yr-weather-1917-1936",
+      "category": "weather and climate",
+      "fact": "In US corn records back to 1895, the worst 20-year run of weather for yields was 1917 to 1936. The best was 1937 to 1956.",
+      "source": "University of Illinois farmdoc daily, The Role of Weather in the Pattern of Corn Prices over Time (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/role-of-weather-in-the-corn-price-pattern-over-time.html",
+      "checked": "2026-11-24",
+      "quote": "The sums of the deviations vary considerably by time period, with the largest cumulative negative deviation occurring in the 20-year period from 1917 to 1936 and the largest cumulative positive deviation occurring in the 20-year window from 1937 to 1956. ... The first window is 1895 through 1914",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "knorr-holden-1912-manure",
+      "category": "soil",
+      "fact": "Nebraska's Knorr-Holden plot has been farmed since 1912. After 71 years of manure, its soil held about 16% more plant-available water and twice the organic carbon.",
+      "source": "University of Nebraska-Lincoln CropWatch, Soil Amendments (2020)",
+      "url": "https://cropwatch.unl.edu/2020/soil-amendments/",
+      "checked": "2026-11-24",
+      "quote": "The Knorr-Holden Plot was started in 1912 and the annual treatment of cattle manure at 27 Mg ha-1 was introduced in 1942. ... Manured plots also retained about 16% more plant available water compared with non-manured plots and had twice as much soil organic carbon concentration ... Overall, 71 years of manure application reduced compactibility and increased water retention in this semiarid soil.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "barta-ranch-6000-acres",
+      "category": "land and rent",
+      "fact": "Brothers Jim and Clifford Barta gave their 6,000-acre Sandhills ranch near Rose to the University of Nebraska in 1996 for research.",
+      "source": "University of Nebraska-Lincoln CropWatch, UNL Study: Nebraska's Sandhills Dunes May Be More Stable Than Thought",
+      "url": "https://cropwatch.unl.edu/unl-study-nebraskas-sandhills-dunes-may-be-more-stable-thought/",
+      "checked": "2026-11-24",
+      "quote": "Wedin's experiments are being conducted on about 30 acres of the former Barta Brothers Ranch near Rose, a 6,000-acre Sandhills ranch donated to UNL in 1996 by brothers Jim and Clifford Barta.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "erosion-down-58pct-1980-2015",
+      "category": "soil",
+      "fact": "From 1980 to 2015, US corn yields rose 61% while soil erosion per unit of corn fell 58%. For soybeans it was 29% and 47%.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop Residue and High-Carbon Char: Potential Soil Conservation Tools (2018)",
+      "url": "https://cropwatch.unl.edu/2018/crop-residue-and-high-carbon-char-potential-soil-conservation-tools/",
+      "checked": "2026-11-24",
+      "quote": "Between 1980 and 2015, corn and soybean yields in the U.S. improved by 61% and 29%, respectively, with corresponding decline in soil erosion by 58% and 47%.",
+      "note": "\"Per unit of corn\": the page's chart is an index of resource use to produce corn and soybean.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "residue-30pct-wind-70pct",
+      "category": "soil",
+      "fact": "Covering 30% of the ground with residue cuts wind erosion about 70%. At 60% cover, the cut is about 90%.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop Residue and High-Carbon Char: Potential Soil Conservation Tools (2018)",
+      "url": "https://cropwatch.unl.edu/2018/crop-residue-and-high-carbon-char-potential-soil-conservation-tools/",
+      "checked": "2026-11-24",
+      "quote": "Ground covers of 30% and 60% are estimated to reduce wind erosion by 70% and 90% percent, respectively",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "residue-2-tons-50pct-cover",
+      "category": "soil",
+      "fact": "Keeping soil organic matter steady takes an estimated 2 to 3 tons of crop residue an acre each year. Two tons of corn residue usually covers about 50% of the ground.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop Residue and High-Carbon Char: Potential Soil Conservation Tools (2018)",
+      "url": "https://cropwatch.unl.edu/2018/crop-residue-and-high-carbon-char-potential-soil-conservation-tools/",
+      "checked": "2026-11-24",
+      "quote": "Our best estimate of the minimum amount of residue that is needed to maintain soil organic matter is 2 or 3 ton/acre/year. (Two tons of corn residue usually gives about 50% cover.)",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "seed-imbibition-24-hours",
+      "category": "agronomy",
+      "fact": "A seed soaks up most of its water in the first 24 hours after planting, the time soil must stay near 50°F. After that, seedlings tolerate soil as cold as 35 to 40°F.",
+      "source": "University of Nebraska-Lincoln CropWatch, Early Planting: Using Soil Temperature Windows for Corn and Soybean",
+      "url": "https://cropwatch.unl.edu/early-planting-using-soil-temperature-windows-corn-and-soybean/",
+      "checked": "2026-11-24",
+      "quote": "corn and soybean are safe to plant at 50°F or greater soil temperature ... Soil temperature above the thresholds during the first 24 hours after planting is critical for adequate water uptake (imbibition phase) to ensure good germination. ... During the osmotic phase, water uptake slows, and seedlings in this phase are quite tolerant of soil temperatures as low as 35-40°F.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soy-planting-8-days-4bu",
+      "category": "agronomy",
+      "fact": "In Nebraska, an eight-day earlier date for half the irrigated soybeans planted has gone with about 4 more bushels an acre. Earlier corn planting showed little such gain.",
+      "source": "University of Nebraska-Lincoln CropWatch, Early Planting: Using Soil Temperature Windows for Corn and Soybean",
+      "url": "https://cropwatch.unl.edu/early-planting-using-soil-temperature-windows-corn-and-soybean/",
+      "checked": "2026-11-24",
+      "quote": "An eight-day advance in the Nebraska irrigated soybean 50% planting progress date was associated with a historic 4 bu/ac increase in irrigated soybean fields and a 2 bu/ac increase in rainfed fields. Delays in the Nebraska irrigated corn 50% planting progress date did not have much impact on corn yields.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soil-carbon-1g-water-4-9g",
+      "category": "soil",
+      "fact": "Across studies, each extra gram of soil organic carbon raised water the soil can supply to plants by 1 to 4.9 grams per 100 grams of soil.",
+      "source": "University of Nebraska-Lincoln CropWatch, The Water-Soil Health Connection (2017)",
+      "url": "https://cropwatch.unl.edu/2017/water-soil-health-connection/",
+      "checked": "2026-11-24",
+      "quote": "A review of several studies conducted across a range of soil textures reported that a 1 gram increase in soil organic carbon increased available water by 1 to 4.9 grams for every 100 grams of soil.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "cover-crops-nitrate-70pct",
+      "category": "soil",
+      "fact": "A review of 69 US studies found cover crops cut nitrate leaching by an average of 70%.",
+      "source": "University of Nebraska-Lincoln CropWatch, The Water-Soil Health Connection (2017)",
+      "url": "https://cropwatch.unl.edu/2017/water-soil-health-connection/",
+      "checked": "2026-11-24",
+      "quote": "Indeed,a meta-analysis of 69 separate studies from across the U.S. showed that cover crops reduced nitrate leaching losses by an average of 70%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "residue-removal-water-121",
+      "category": "soil",
+      "fact": "After six years of removing about 60% of corn residue in south central Nebraska, plant-available water fell from 1.61 to 1.21 inches per 4 inches of soil.",
+      "source": "University of Nebraska-Lincoln CropWatch, Cover Crop and Crop Residue Management: How Does it Affect Soil Water? (2018)",
+      "url": "https://cropwatch.unl.edu/2018/cover-crop-and-crop-residue-management-how-does-it-affect-soil-water-short-and-long-term/",
+      "checked": "2026-11-24",
+      "quote": "Additionally, after removing approximately 60% of the corn residue for six years, plant available water decreased from 1.61 inches to 1.21 inches per 4 inches of soil in south central Nebraska.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "soil-carbon-10-years",
+      "category": "soil",
+      "fact": "Building soil organic carbon enough to raise plant-available water takes more than 10 years. Long cover crop trials in Kansas, Maryland and Iowa needed 12.",
+      "source": "University of Nebraska-Lincoln CropWatch, Cover Crop and Crop Residue Management: How Does it Affect Soil Water? (2018)",
+      "url": "https://cropwatch.unl.edu/2018/cover-crop-and-crop-residue-management-how-does-it-affect-soil-water-short-and-long-term/",
+      "checked": "2026-11-24",
+      "quote": "Long-term, 12-year experiments in Kansas and Maryland have found that cover crops do increase water infiltration. Cover crops were found to increase plant available water after 12 years in an experiment in Iowa using cereal rye ... However, it takes time (more than 10 years) to increase soil organic carbon in the soil and improve the soil structure to increase plant available water.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "ear-leaf-70pct-yield",
+      "category": "pests and disease",
+      "fact": "The ear leaf and the leaves above it supply about 70% of a corn plant's yield, which is why leaf disease reaching the ear leaf early matters.",
+      "source": "University of Nebraska-Lincoln CropWatch, Gray Leaf Spot Severity Increasing Rapidly (2009)",
+      "url": "https://cropwatch.unl.edu/gray-leaf-spot-severity-increasing-rapidly/",
+      "checked": "2026-11-24",
+      "quote": "Since the ear leaf and those above it contribute the most to yield (approximately 70%), it is especially concerning that the disease has already progressed to them this early in the season.",
+      "note": "approximately 70% is written as about 70%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "gray-leaf-spot-12-hours",
+      "category": "pests and disease",
+      "fact": "Gray leaf spot spores infect corn after 12 or more hours of wet leaves or canopy humidity over 90%, best at 70 to 90°F. Lesions take 14 to 28 days to show.",
+      "source": "University of Nebraska-Lincoln CropWatch, Gray Leaf Spot Severity Increasing Rapidly (2009)",
+      "url": "https://cropwatch.unl.edu/gray-leaf-spot-severity-increasing-rapidly/",
+      "checked": "2026-11-24",
+      "quote": "If rain or irrigation water is available or there is high canopy humidity (>90%) for at least 12 hours, these spores may germinate and infect the plant. The optimal temperature range for infection is 70-90°F ... After infection, lesion development and further spore production on the leaf takes 14-28 days, depending on conditions and hybrid resistance.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "goss-wilt-65-bushels",
+      "category": "pests and disease",
+      "fact": "In southwest Nebraska, yields of corn hybrids susceptible and resistant to Goss's wilt have differed by as much as 65 bushels an acre.",
+      "source": "University of Nebraska-Lincoln CropWatch, Goss's Wilt in Corn (2009)",
+      "url": "https://cropwatch.unl.edu/8-21-09-gosss-wilt-corn/",
+      "checked": "2026-11-24",
+      "quote": "Differences in yield between susceptible and resistant hybrids with the leaf blight phase of the disease have reportedly been as high as 65 bushels per acre in southwest Nebraska in recent years.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "southern-rust-45-counties",
+      "category": "pests and disease",
+      "fact": "Southern rust of corn was confirmed in 45 Nebraska counties in 2020. It thrives near 80°F in moist weather.",
+      "source": "University of Nebraska-Lincoln CropWatch, Crop Diseases Spreading and Increasing (2020)",
+      "url": "https://cropwatch.unl.edu/2020/crop-diseases-spreading-and-increasing/",
+      "checked": "2026-11-24",
+      "quote": "Southern rust has been confirmed in 45 Nebraska counties. ... Warm temperatures, especially around 80 F and moist conditions favor southern rust development and spread.",
+      "note": "2020 is the year of the article.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "sds-nebraska-2004",
+      "category": "pests and disease",
+      "fact": "Sudden death syndrome of soybeans was first seen in Nebraska in 2004, in Nemaha and Pierce counties.",
+      "source": "University of Nebraska-Lincoln CropWatch, ILeVO Seed Treatment Shows Promise for Sudden Death Syndrome (2016)",
+      "url": "https://cropwatch.unl.edu/2016/ilevo%25C2%25AE-seed-treatment-shows-promise-sudden-death-syndrome/",
+      "checked": "2026-11-24",
+      "quote": "Sudden death syndrome was first observed in Nebraska in 2004 in Nemaha and Pierce counties in eastern Nebraska.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "scn-15-billion",
+      "category": "pests and disease",
+      "fact": "Soybean cyst nematode is the top biological threat to soybeans in North America, costing US growers an estimated $1.5 billion a year.",
+      "source": "University of Nebraska-Lincoln CropWatch, Participate in Free Soybean Cyst Nematode Soil Testing This Fall",
+      "url": "https://cropwatch.unl.edu/participate-free-soybean-cyst-nematode-soil-testing-fall/",
+      "checked": "2026-11-24",
+      "quote": "Soybean cyst nematode (SCN) (Figures 1 and 2) is the leading yield-limiting biological threat to soybean in North America and is estimated to cost U.S. producers $1.5 billion annually.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "scn-58-counties-93pct",
+      "category": "pests and disease",
+      "fact": "By 2016, soybean cyst nematode had been found in 58 Nebraska counties that grow 93% of the state's soybeans.",
+      "source": "University of Nebraska-Lincoln CropWatch, Test for SCN This Fall & Select Seed Accordingly (2016)",
+      "url": "https://cropwatch.unl.edu/2016/identify-scn-impact-fall-select-seed-accordingly/",
+      "checked": "2026-11-24",
+      "quote": "SCN has been identified in 58 Nebraska counties which produce 93% of the state's soybeans.",
+      "note": "2016 is the year of the article.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "scn-samples-30pct-positive",
+      "category": "pests and disease",
+      "fact": "Of more than 7,600 Nebraska soil samples tested for soybean cyst nematode since 2005, over 30% came back positive.",
+      "source": "University of Nebraska-Lincoln CropWatch, Test for SCN This Fall & Select Seed Accordingly (2016)",
+      "url": "https://cropwatch.unl.edu/2016/identify-scn-impact-fall-select-seed-accordingly/",
+      "checked": "2026-11-24",
+      "quote": "Since 2005, more than 7,600 soil samples have been processed through this program for SCN and over 30% of them came back positive.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "tractor-price-index-21pct",
+      "category": "machinery and safety",
+      "fact": "US tractor prices rose 14% over the nine years from 2011 to 2020, then 21% in just three years from 2020 to 2023.",
+      "source": "University of Illinois farmdoc daily, Large Increase in Machinery Costs Suggests Need to Reconsider Machinery Purchase Decisions (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/10/large-increase-in-machinery-costs-suggests-need-to-reconsider-machinery-purchase-decisions.html",
+      "checked": "2026-11-24",
+      "quote": "The index increased to 114 in 2020, representing a 14% rise over the nine years from 2011 to 2020. ... From 2020 to 2023, tractor prices increased by 21%",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "combine-3000-acres",
+      "category": "machinery and safety",
+      "fact": "New farm equipment prices rose over 20% from 2021 to 2023. Running a combine over 3,000 acres a year is one way to bring the cost per acre down.",
+      "source": "University of Illinois farmdoc daily, Large Increase in Machinery Costs Suggests Need to Reconsider Machinery Purchase Decisions (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/10/large-increase-in-machinery-costs-suggests-need-to-reconsider-machinery-purchase-decisions.html",
+      "checked": "2026-11-24",
+      "quote": "Between 2021 and 2023, prices of new agricultural equipment increased by over 20%, resulting in similar increases in machinery costs on farms. ... Harvesting over 3,000 acres per combine will lower costs.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "tractor-310hp-623657",
+      "category": "machinery and safety",
+      "fact": "The list price of a 310 horsepower tractor rose from $579,945 in 2023 to $623,657 in 2025. It burns an estimated 13.6 gallons of diesel an hour.",
+      "source": "University of Illinois farmdoc daily, Machinery Cost Estimates for 2025",
+      "url": "https://farmdocdaily.illinois.edu/2025/09/machinery-cost-estimates-for-2025.html",
+      "checked": "2026-11-24",
+      "quote": "Between 2023 and 2025, the list price of a 310 HP tractor increased by 7.5%, from $579,945 in 2023 to $623,657 in 2025 ... Fuel use on a 310 HP tractor is estimated at 13.6 gallons per hour.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-dries-1pct-day",
+      "category": "agronomy",
+      "fact": "In warm, breezy fall weather, standing corn can lose as much as 1% grain moisture a day. The target at harvest is 15%, and 13% for soybeans.",
+      "source": "University of Illinois farmdoc daily, Cost Management: Harvest Operations (2020)",
+      "url": "https://farmdocdaily.illinois.edu/2020/09/cost-management-harvest-operations.html",
+      "checked": "2026-11-24",
+      "quote": "For corn, once the crop has reached maturity the desirable moisture level for grain at harvest is 15%. Elevated autumn temperatures can lead to rapid grain moisture loss, with losses as great as 1% per day when temperatures are high and particularly when also breezy ... The desirable moisture level for harvested soybeans is 13% moisture.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "yield-monitor-68pct-45pct",
+      "category": "machinery and safety",
+      "fact": "Yield monitors have been around since the mid-1990s. Over 68% of US farmers have one, but only 45% of the area gets yield mapped.",
+      "source": "University of Nebraska-Lincoln CropWatch, Top Five Digital Agriculture Technologies Used in Nebraska",
+      "url": "https://cropwatch.unl.edu/top-five-digital-agriculture-technologies-used-nebraska/",
+      "checked": "2026-11-24",
+      "quote": "Yield monitors and yield maps have been around since the mid-1990s. ... It was reported that many farmers in the U.S. have a yield monitor (+68%), but only 45% of the area was yield mapped (Lowenberg-DeBoer and Erickson, 2019).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-precision-ag-41pct",
+      "category": "machinery and safety",
+      "fact": "41% of Nebraska farms used precision ag practices in 2025, down from 55% in 2023. 85% used smartphones.",
+      "source": "University of Nebraska-Lincoln CropWatch, Technology Use on Nebraska Farms in 2025",
+      "url": "https://cropwatch.unl.edu/news/technology-use-nebraska-farms-2025/",
+      "checked": "2026-11-24",
+      "quote": "Other forms of technology used on Nebraska farms includes smartphones, 85%, and tablets, 39%. ... Forty-one percent of Nebraska farms were using precision ag practices to manage crops or livestock in 2025, compared to 55% in 2023.",
+      "note": "Forty-one percent is written as 41%.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "nebraska-farm-internet-87",
+      "category": "machinery and safety",
+      "fact": "87% of Nebraska farms had internet in 2025. 74% got it by cell signal and 28% by satellite; 5% still used dial-up.",
+      "source": "University of Nebraska-Lincoln CropWatch, Technology Use on Nebraska Farms in 2025",
+      "url": "https://cropwatch.unl.edu/news/technology-use-nebraska-farms-2025/",
+      "checked": "2026-11-24",
+      "quote": "In Nebraska, 87% of farms in Nebraska had internet access, down 3% from 2023. Methods used in Nebraska to access the internet included: cellular, 74%; broadband, 54%; satellite, 28%; dialup, 5%; other, 1%.",
+      "note": "2025 is the year of the USDA survey named in the page title.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "calf-crop-2023-lowest-1940",
+      "category": "livestock",
+      "fact": "The 2023 US calf crop, 33.6 million head, was the smallest since 1940.",
+      "source": "University of Illinois farmdoc daily, Records are Made to be Broken! (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/02/records-are-made-to-be-broken.html",
+      "checked": "2026-11-24",
+      "quote": "The calf crop at 33.6 million head or 2% below the prior year is, as expected, the lowest since 1940",
+      "note": "The report is USDA's January 1, 2024 inventory, so the calf crop is the 2023 crop.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "feedlots-1000-head-827",
+      "category": "livestock",
+      "fact": "About 82.7% of US cattle on feed are in feedlots that hold more than 1,000 head.",
+      "source": "University of Illinois farmdoc daily, Extending the Cattle Cycle with Still Lower Inventories (2026)",
+      "url": "https://farmdocdaily.illinois.edu/2026/02/extending-the-cattle-cycle-with-still-lower-inventories.html",
+      "checked": "2026-11-24",
+      "quote": "About 82.7% of those animals or over 11.5 million head are in feedlots with capacity exceeding 1,000 head",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "cattle-seventh-year-2026",
+      "category": "livestock",
+      "fact": "On January 1, 2026, the US had 86.7 million cattle. It was the seventh straight year of herd decline, with the fewest beef cows since 1960.",
+      "source": "University of Illinois farmdoc daily, Extending the Cattle Cycle with Still Lower Inventories (2026)",
+      "url": "https://farmdocdaily.illinois.edu/2026/02/extending-the-cattle-cycle-with-still-lower-inventories.html",
+      "checked": "2026-11-24",
+      "quote": "The USDA’s cattle inventory report places the total number of cattle and calves on January 1 at 86.7 million head ... as the industry continues into a seventh consecutive year of contraction within the cattle cycle. ... Like last year, the report again confirms anticipated year over year drops across most inventory categories with fewer beef cows than any time since 1960",
+      "note": "2026 is the year of the report (February 2026 article).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "illinois-60pct-unsold-dec",
+      "category": "markets and prices",
+      "fact": "Roughly 60% of the corn and soybeans grown in Illinois are still unsold at the end of the calendar year.",
+      "source": "University of Illinois farmdoc daily, Post-harvest Grain Marketing: Do Farmers Reap the Benefits? (2024)",
+      "url": "https://farmdocdaily.illinois.edu/2024/01/post-harvest-grain-marketing-do-farmers-reap-the-benefits.html",
+      "checked": "2026-11-24",
+      "quote": "Roughly 60% of corn and soybeans produced in Illinois remain to be sold at the end of the calendar year, but this aggregate number hides much variation across farmers.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-cash-peak-113-june",
+      "category": "markets and prices",
+      "fact": "Since 1973, the average US cash corn price has peaked in June at 113% of the October harvest low.",
+      "source": "University of Illinois farmdoc daily, Net Return to Storing US Corn and Soybeans Since 1973 (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/10/net-return-to-storing-us-corn-and-soybeans-since-1973.html",
+      "checked": "2026-11-24",
+      "quote": "Although US cash corn price since 1973 has averaged nearly the same in October ($2.992) and November ($2.993), October is used as the harvest low price month. ... (corn’s peak was 113% in June).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "storage-after-june-one-third",
+      "category": "markets and prices",
+      "fact": "Since 1973, the US cash corn price in July beat June in only 39% of years. September beat June in 32%.",
+      "source": "University of Illinois farmdoc daily, Net Return to Storing US Corn and Soybeans Since 1973 (2025)",
+      "url": "https://farmdocdaily.illinois.edu/2025/10/net-return-to-storing-us-corn-and-soybeans-since-1973.html",
+      "checked": "2026-11-24",
+      "quote": "Although US cash corn price since 1973 has averaged nearly the same in October ($2.992) and November ($2.993) ... US cash price was higher in roughly one-third of the years after June, specifically, 39%, 32%, and 32% of the years for July, August, and September, respectively.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "corn-price-eras-242-457",
+      "category": "markets and prices",
+      "fact": "Illinois corn averaged $2.42 a bushel from 1973 to 2006. In the ethanol era that followed, it averaged $4.57 through April 2017.",
+      "source": "University of Illinois farmdoc daily, Are There Predictable Crop Price Cycles? (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/are-there-predictable-crop-price-cycles.html",
+      "checked": "2026-11-24",
+      "quote": "the second era encompassed 1973 through November 2006 ... The average price of corn in the era was $2.42 per bushel. ... Through April 2017, the monthly average price of corn in Illinois in the current era is $4.57 per bushel",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "freeze-1974-price-jump",
+      "category": "weather and climate",
+      "fact": "The early freeze of 1974 and the droughts of 1983, 1988 and 1995 each sent corn prices jumping for long stretches before they fell back.",
+      "source": "University of Illinois farmdoc daily, Are There Predictable Crop Price Cycles? (2017)",
+      "url": "https://farmdocdaily.illinois.edu/2017/06/are-there-predictable-crop-price-cycles.html",
+      "checked": "2026-11-24",
+      "quote": "The early freeze of 1974 and the drought years 1983, 1988, and 1995, in particular, are reflected in price jumps during the era and are associated with extended periods of above average prices that eventually return to the mean.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "snap-250-per-meal-2022",
+      "category": "food and the consumer",
+      "fact": "In FY2022 the average SNAP benefit was just over $230 a person a month, less than $8 a day or about $2.50 a meal, for 41.2 million people.",
+      "source": "University of Illinois farmdoc daily, A View of the Farm Bill Through Policy Design, Part 3: SNAP (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/06/a-view-of-the-farm-bill-through-policy-design-part-3-snap.html",
+      "checked": "2026-11-24",
+      "quote": "to provide assistance to a monthly average of 41.2 million Americans ... USDA FNS reported that the average benefit per participating person each month was just over $230 in FY 2022—that would amount to less than $8 per day, or about $2.50 per meal.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "snap-85pct-farm-bill",
+      "category": "policy and programs",
+      "fact": "SNAP makes up nearly 85% of projected farm bill spending, and serves more than 20 times as many people as farm programs or crop insurance.",
+      "source": "University of Illinois farmdoc daily, A View of the Farm Bill Through Policy Design, Part 3: SNAP (2023)",
+      "url": "https://farmdocdaily.illinois.edu/2023/06/a-view-of-the-farm-bill-through-policy-design-part-3-snap.html",
+      "checked": "2026-11-24",
+      "quote": "It constitutes nearly 85% of the projected spending or baseline, while also serving a constituency that is more than 20 times that of farm programs or crop insurance.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "snap-30-cents-per-dollar",
+      "category": "policy and programs",
+      "fact": "A household's SNAP benefit is the maximum minus 30 percent of net income, so it drops 30 cents for each extra dollar earned. More than 30% of SNAP households have earnings.",
+      "source": "University of Illinois farmdoc daily, The Farm Bill Stalemate, Part 2: The SNAP Question (2018)",
+      "url": "https://farmdocdaily.illinois.edu/2018/10/the-farm-bill-stalemate-part-2-the-snap-question.html",
+      "checked": "2026-11-24",
+      "quote": "More than 30% of all SNAP households had earned income and are considered “working poor” (Oliveira et al., 2018). ... In general, a household’s SNAP benefit is equal to the maximum available ($649 for a household of four in FY2016) minus 30 percent of net income, meaning that benefits are reduced $0.30 for every $1.00 of net income.",
+      "note": "$0.30 is written as 30 cents.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "bacon-sausage-18pct-hog",
+      "category": "food and the consumer",
+      "fact": "Bacon and breakfast sausage normally come from only about 18% of a hog's carcass weight.",
+      "source": "University of Illinois farmdoc daily, What Happens When Food Marketers Require Restrictive Farming Practices? (2015)",
+      "url": "https://farmdocdaily.illinois.edu/2015/09/what-happens-when-food-marketers-require.html",
+      "checked": "2026-11-24",
+      "quote": "may require only that portion of the hog used to produce bacon and breakfast sausage–normally about 18% of the carcass weight of a hog.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "plant-based-meat-14pct",
+      "category": "food and the consumer",
+      "fact": "Plant-based meat made up an estimated 1.4% of total US meat sales around 2020.",
+      "source": "University of Illinois farmdoc daily, Overview of the Meatless Meat Industry (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/07/overview-of-the-meatless-meat-industry.html",
+      "checked": "2026-11-24",
+      "quote": "The Good Food Institute estimates that meatless meat sales comprise 1.4% of total meat sales in the U.S.",
+      "note": "Around 2020: the article is from July 2021 and cites estimates from 2019 to 2021.",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "singapore-lab-chicken-first",
+      "category": "food and the consumer",
+      "fact": "Singapore was the first country to approve the commercial sale of lab-grown meat, a chicken product, as reported in 2021.",
+      "source": "University of Illinois farmdoc daily, Overview of the Meatless Meat Industry (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/07/overview-of-the-meatless-meat-industry.html",
+      "checked": "2026-11-24",
+      "quote": "Singapore is the first country to certify commercial sale of the product, with a lab-grown chicken product made by the American company Eat Just (Gilchrist 2021).",
+      "added": "2026-11-25"
+    },
+    {
+      "id": "meatless-25-30pct-switch",
+      "category": "food and the consumer",
+      "fact": "Studies put the share of consumers who would swap meat for a plant-based version at 25 to 30%, if both cost the same.",
+      "source": "University of Illinois farmdoc daily, Consumer Preferences and the Meatless Meat Industry (2021)",
+      "url": "https://farmdocdaily.illinois.edu/2021/07/consumer-preferences-and-the-meatless-meat-industry.html",
+      "checked": "2026-11-24",
+      "quote": "Current studies indicate that 25-30% of consumers would be willing to substitute meatless meat for animal meat if both products were priced the same.",
+      "added": "2026-11-25"
     }
   ]
 }
