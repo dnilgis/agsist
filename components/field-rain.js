@@ -131,7 +131,7 @@
   }
   function same(a, b) { return Math.abs(a.lat - b.lat) < 1e-4 && Math.abs(a.lon - b.lon) < 1e-4; }
   function add(list, f, id) {
-    if (list.length >= MAX) throw new Error('You have ' + MAX + ' fields saved, the most this page keeps. Remove one first.');
+    if (list.length >= MAX) throw new Error('You have ' + MAX + ' fields saved, the most this tab keeps. Remove one first.');
     if (!okPoint(+f.lat, +f.lon)) throw new Error('That spot is not a point in the US.');
     var o = { id: id || 'f' + Date.now().toString(36), n: cleanName(f.n) || 'Field ' + (list.length + 1), lat: Math.round(f.lat * 1e4) / 1e4, lon: Math.round(f.lon * 1e4) / 1e4 };
     if (okDate(f.p)) o.p = f.p;

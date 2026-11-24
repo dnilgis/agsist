@@ -36,7 +36,7 @@ d.documentElement.style.setProperty('--frn',String(Math.max(n,1)));d.documentEle
       </form>
       <p class="fr-note">Saved on this device only, up to 20 fields, free. What leaves this device:</p>
       <ul class="fr-note">
-        <li>Our site sees which state radar files and ZIP code tables the page fetches. That is the field's state, plus its neighbors near a state line, never the point.</li>
+        <li>Our site sees which state radar files and ZIP code tables this tab fetches. That is the field's state, plus its neighbors near a state line, never the point.</li>
         <li>PRISM (through RCC-ACIS) is asked for the point itself, to read its rain there.</li>
         <li>"Pick on a map" loads USGS map tiles around the spot you look at.</li>
         <li>A field's link keeps its place after the # sign, which browsers never send to a server.</li>
