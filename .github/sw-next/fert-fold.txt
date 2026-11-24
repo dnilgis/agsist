@@ -1,0 +1,1 @@
+fertilizer.html loads the new components/fert-usda.js?v=1; components/fert-prices.js is deleted with the /fertilizer-prices pages (now forwards).
