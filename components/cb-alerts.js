@@ -35,11 +35,50 @@
   var RADII = [10, 25, 50, 75, 100];
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats'];
   var NAMES = { corn:'Corn', soybeans:'Soybeans', wheat:'Wheat', sorghum:'Sorghum', oats:'Oats' };
+  /* A board's own commodity words as an alert prints them (scripts/send_elevator_watch.py wheat_words, the same
+     rule; both are run over one list of cases): no BOM, control character, emoji or colon; the vendor's
+     price-feed boilerplate gone ("Price Delayed 10 minutes", "Delayed", "Protein Premium Not Included"); the class
+     and protein kept; cut at 40 characters at a word boundary, never inside a bracket. */
+  var WW_SPACE = /[\t\n\r\u000b\u000c\u001c-\u001f\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000:]/gu;
+  var WW_DROP = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\u20e3\ufe00-\ufe0f\ufeff\ud800-\udfff\u00a9\u00ae\u2122\u203c\u2049\u2190-\u21ff\u2300-\u23ff\u25a0-\u27bf\u2900-\u297f\u2b00-\u2bff\u3030\u303d\u3297\u3299\u{1f000}-\u{1faff}\u{e0000}-\u{e007f}]/gu;
+  var WW_SEP = '[ ,;\\-\\u2013\\u2014/]*';
+  /* no u flag: ASCII-only matching, as re.ASCII in the Python twin. "Delayed Price" is a contract term and stays. */
+  var WW_NOISE = [new RegExp(WW_SEP + '\\bprice +delayed\\b(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'gi'),
+                  new RegExp(WW_SEP + '\\bdelayed\\b(?! +price\\b)(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'gi'),
+                  new RegExp(WW_SEP + '(?:\\b(?:protein|premium|price|freight|fees?|dockage)\\b *)*\\bnot +included\\b', 'gi')];
+  var WW_PUNCT = /^[ ,;\-\u2013\u2014/&.]+|[ ,;\-\u2013\u2014/&.]+$/gu;
+  function wwTidy(s){
+    return s.replace(/ +/g, ' ').replace(/[(\[] *[)\]]/g, '').replace(/([(\[])[ ,;\-\u2013\u2014/]+/g, '$1')
+      .replace(/[ ,;\-\u2013\u2014/]+([)\]])/g, '$1').replace(/ +/g, ' ');
+  }
+  function wwClose(chars){
+    var pair = { ')': '(', ']': '[' }, stack = [], out = [];
+    chars.forEach(function(ch){
+      if(ch === '(' || ch === '['){ stack.push(out.length); out.push(ch); }
+      else if(ch === ')' || ch === ']'){ if(stack.length && out[stack[stack.length - 1]] === pair[ch]){ stack.pop(); out.push(ch); } }
+      else out.push(ch);
+    });
+    return (stack.length ? out.slice(0, stack[0]) : out).join('');
+  }
+  function wheatWords(raw){
+    var s = String(raw == null ? '' : raw).replace(WW_SPACE, ' ').replace(WW_DROP, '');
+    s = wwTidy(s);
+    WW_NOISE.forEach(function(rx){ s = wwTidy(s.replace(rx, '')); });
+    s = wwTidy(s).replace(WW_PUNCT, '');
+    var cps = Array.from(s), wrapped = /^wheat \((.+)\)$/i.exec(s);
+    if(cps.length > 40 && wrapped && wrapped[1].indexOf('(') < 0 && wrapped[1].indexOf(')') < 0){ s = wrapped[1]; cps = Array.from(s); }
+    if(cps.length > 40){
+      var head = cps.slice(0, 40);
+      if(cps[40] !== ' ' && head.indexOf(' ') >= 0) head = head.slice(0, head.lastIndexOf(' '));
+      cps = head;
+    }
+    return wwTidy(wwClose(cps)).replace(WW_PUNCT, '');
+  }
   /* The crop as an alert names it (scripts/send_elevator_watch.py crop_words): a wheat row that is not
      plain "Wheat" carries the board's own words, so a board posting DNS and HRW for one month says which
      one the alert watches: "Wheat (DNS 14%)", or the words alone when they say wheat. */
   function cropWords(r, lower){
-    var base = NAMES[r.crop] || r.crop, w = String(r.cword || '').replace(/:/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
+    var base = NAMES[r.crop] || r.crop, w = wheatWords(r.cword);
     if(lower) base = base.toLowerCase();
     if(r.crop !== 'wheat' || !w || w.toLowerCase() === 'wheat') return base;
     return /wheat/i.test(w) ? w : base + ' (' + w + ')';
