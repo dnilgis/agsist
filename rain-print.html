@@ -1043,7 +1043,7 @@
             <label class="rp-prod" data-choice="framed12x18"><input type="radio" name="rp-product" value="framed12x18" checked><span class="rp-prod-b"><span class="rp-prod-t">Framed</span><span class="rp-prod-s" id="rp-sub-framed12x18">13 x 19 frame in oak wood or black, acid-free white mat, 2 mm tempered glass.</span></span><span class="rp-price" data-price="framed12x18">$89</span></label>
             <label class="rp-prod" data-choice="print12x18"><input type="radio" name="rp-product" value="print12x18"><span class="rp-prod-b"><span class="rp-prod-t">Print</span><span class="rp-prod-s" id="rp-sub-print12x18">13 x 19 paper, ships flat.</span></span><span class="rp-price" data-price="print12x18">$45</span></label>
             <label class="rp-prod" data-choice="digital"><input type="radio" name="rp-product" value="digital"><span class="rp-prod-b"><span class="rp-prod-t">Digital file</span><span class="rp-prod-s" id="rp-sub-digital">A PDF, a PNG and a JPG by email within minutes of your OK on the proof.</span></span><span class="rp-price" data-price="digital">$19</span></label>
-            <script>/* past the framed cutoff a plain visit opens on the Christmas pick (the early words above set it) */(function(){var c=document.documentElement.getAttribute('data-rp-early-pick'),r=c&&document.querySelector('input[name="rp-product"][value="'+c+'"]');if(r)r.checked=true;})();</script>
+            <script>/* past the framed cutoff a plain visit opens on the Christmas pick (the early words above set it), marked as a default (data-rp-early: rain-print.js startPick keeps it open to the outside-US switch to the file) */(function(){var c=document.documentElement.getAttribute('data-rp-early-pick'),r=c&&document.querySelector('input[name="rp-product"][value="'+c+'"]');if(r){r.checked=true;r.setAttribute('data-rp-early','');}})();</script>
           </fieldset>
           <fieldset class="rp-fcolor" id="rp-fcolor"><legend id="rp-fcolor-l">Frame</legend>
             <label class="rp-fc"><input type="radio" name="rp-frame" value="oak" checked><span class="rp-fc-sw rp-fc-oak" aria-hidden="true"></span><span class="rp-fc-t">Oak</span></label>
@@ -1367,7 +1367,7 @@
   <script src="/components/rp-short.js?v=7" defer></script>
   <script src="/components/rp-canada.js?v=5" defer></script>
   <script src="/components/rain-print-art.js?v=24" defer></script>
-  <script src="/components/rain-print.js?v=95" defer></script>
+  <script src="/components/rain-print.js?v=96" defer></script>
   <script src="/components/rain-print-draw.js?v=5" defer></script>
   <script src="/components/loader.js?v=23" defer></script>
   <script src="/components/rp-gift.js?v=11" defer></script>
