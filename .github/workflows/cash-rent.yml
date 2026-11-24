@@ -70,6 +70,7 @@ jobs:
         with:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
+        id: engine
 
       - uses: actions/setup-python@v5
         with:
@@ -152,7 +153,7 @@ jobs:
           python3 scripts/send_custom_rates_notice.py --send
 
       - name: Lease notice reminder emails
-        if: (vars.LEASE_NOTICE_LIVE == '1' && github.event_name != 'workflow_dispatch') || (github.event_name == 'workflow_dispatch' && (inputs.lease_send == 'yes' || inputs.lease_send == 'dry'))
+        if: "!cancelled() && steps.engine.outcome == 'success' && ((vars.LEASE_NOTICE_LIVE == '1' && github.event_name != 'workflow_dispatch') || (github.event_name == 'workflow_dispatch' && (inputs.lease_send == 'yes' || inputs.lease_send == 'dry')))"
         env:
           LEASE_NOTICE_LIVE: ${{ vars.LEASE_NOTICE_LIVE }}
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.lease_send == 'dry' && '1' || '' }}
