@@ -417,6 +417,10 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
+  "cash-bids/iowa/boone.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
+  },
   "cash-bids/iowa/booneville.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -441,10 +445,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
   },
-  "cash-bids/iowa/collins.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/colo.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
@@ -456,6 +456,10 @@
   "cash-bids/iowa/dallas-center.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
+  },
+  "cash-bids/iowa/dawson.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/iowa/dexter.html": {
    "to": "/cash-bids/iowa/",
@@ -502,12 +506,8 @@
    "since": "2026-10-20"
   },
   "cash-bids/iowa/grant.html": {
-   "to": "/cash-bids/iowa/",
+   "to": "/cash-bids/iowa/paton",
    "since": "2026-10-20"
-  },
-  "cash-bids/iowa/greene.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
   },
   "cash-bids/iowa/griswold.html": {
    "to": "/cash-bids/iowa/",
@@ -621,10 +621,6 @@
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
   },
-  "cash-bids/iowa/paton.html": {
-   "to": "/cash-bids/iowa/",
-   "since": "2026-11-23"
-  },
   "cash-bids/iowa/plover.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-21"
@@ -692,6 +688,10 @@
   "cash-bids/iowa/stanhope.html": {
    "to": "/cash-bids/iowa/",
    "since": "2026-11-23"
+  },
+  "cash-bids/iowa/storm-lake.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-24"
   },
   "cash-bids/iowa/terril.html": {
    "to": "/cash-bids/iowa/",
