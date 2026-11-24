@@ -2,7 +2,7 @@
  "id": "2026-11-24-elevator-alerts-wheat-classes",
  "date": "2026-11-24",
  "title": "Elevator alerts: spring and white wheat boards",
- "line": "A cash or basis target on a spring wheat, DNS, durum or white wheat board now fires on that board's current bid, as it does on plain wheat.",
+ "line": "A cash or basis target on a spring wheat, DNS or white wheat board now fires on that board's current bid, and the alert names the board's own wheat.",
  "link": "/",
  "rank": 4
 }
