@@ -1162,7 +1162,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 <main id="main" class="ptab-main" tabindex="-1">
 <div class="ptabs" data-ptabs="spray urea fall-nitrogen" data-default="spray">
   <div class="ptab-bar" role="tablist" aria-label="Spray, urea and fall anhydrous"><a role="tab" id="spray" href="#p-spray" data-tab="spray" aria-controls="p-spray" aria-selected="true">Spray now</a><a role="tab" id="urea" href="#p-urea" data-tab="urea" aria-controls="p-urea">Urea loss</a><a role="tab" id="fall-nitrogen" href="#p-fall-nitrogen" data-tab="fall-nitrogen" aria-controls="p-fall-nitrogen">Fall anhydrous</a></div>
-  <script>(function(s){var c=s.parentNode,i=c.getAttribute('data-ptabs').split(' '),h=decodeURIComponent((location.hash||'').slice(1)).replace(/^p-/,''),o=i.indexOf(h)>=0?h:c.getAttribute('data-default');c.setAttribute('data-on',o);[].forEach.call(c.querySelectorAll('[role=tab]'),function(t){var y=t.getAttribute('data-tab')===o;t.setAttribute('aria-selected',y?'true':'false');t.setAttribute('tabindex',y?'0':'-1');});})(document.currentScript);</script>
+  <script>(function(s){var c=s.parentNode,i=c.getAttribute('data-ptabs').split(' '),h=decodeURIComponent((location.hash||'').slice(1)).replace(/^p-/,'').split('&')[0],o=i.indexOf(h)>=0?h:c.getAttribute('data-default');c.setAttribute('data-on',o);[].forEach.call(c.querySelectorAll('[role=tab]'),function(t){var y=t.getAttribute('data-tab')===o;t.setAttribute('aria-selected',y?'true':'false');t.setAttribute('tabindex',y?'0':'-1');});})(document.currentScript);</script>
 <section class="ptab" id="p-spray" role="tabpanel" aria-labelledby="spray">
 <section class="hero page-head">
   <div class="hero-inner">
@@ -2519,6 +2519,6 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 })();
 </script>
   <script src="/components/next-links.js?v=4" defer></script>
-<script src="/components/page-tabs.js?v=2" defer></script>
+<script src="/components/page-tabs.js?v=3" defer></script>
 </body>
 </html>

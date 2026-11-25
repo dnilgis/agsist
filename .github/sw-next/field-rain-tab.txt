@@ -1,0 +1,1 @@
+Rain: your saved fields are now a My fields tab on the rain page, and the old address forwards to it

@@ -1,4 +1,6 @@
-/* field-rain.js: rain at a reader's saved fields, /field-rain (Nov 20, 2026).
+/* field-rain.js: rain at a reader's saved fields, the My fields tab of /rain (Nov 20, 2026; a page of its own, /field-rain,
+   until Nov 24, 2026; the tab's markup is components/fold/fields.part and its style components/fold/fields.css, and this code,
+   radar-rain.js and prism.js load when the tab opens, components/page-tabs.js).
 
    WHY. Farmers pay for apps that show rain at several fields; the complaints are that estimates disagree with gauges,
    nobody says when the number last updated, history disappears on a plan change, and a pin lands two towns away.
@@ -34,7 +36,7 @@
   }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  var MAX = 20;             // field-rain.html's head script holds room for at most this many cards
+  var MAX = 20;             // the head script in components/fold/fields.part holds room for at most this many cards
   var KEY = 'agsist-fields';
   var STALE_H = 9;          // the radar job runs four times a day: older than this missed a run or two
   var GAUGE_MI = 30;
@@ -111,7 +113,7 @@
     return f;
   }
   function linkFor(f, origin) {
-    var s = '/field-rain#f=' + (+f.lat).toFixed(4) + ',' + (+f.lon).toFixed(4) + '&n=' + encodeURIComponent(cleanName(f.n) || 'Field');
+    var s = '/rain#fields&f=' + (+f.lat).toFixed(4) + ',' + (+f.lon).toFixed(4) + '&n=' + encodeURIComponent(cleanName(f.n) || 'Field');
     if (okDate(f.p)) s += '&p=' + f.p;
     return (origin || '') + s;
   }
@@ -129,7 +131,7 @@
   }
   function same(a, b) { return Math.abs(a.lat - b.lat) < 1e-4 && Math.abs(a.lon - b.lon) < 1e-4; }
   function add(list, f, id) {
-    if (list.length >= MAX) throw new Error('You have ' + MAX + ' fields saved, the most this page keeps. Remove one first.');
+    if (list.length >= MAX) throw new Error('You have ' + MAX + ' fields saved, the most this tab keeps. Remove one first.');
     if (!okPoint(+f.lat, +f.lon)) throw new Error('That spot is not a point in the US.');
     var o = { id: id || 'f' + Date.now().toString(36), n: cleanName(f.n) || 'Field ' + (list.length + 1), lat: Math.round(f.lat * 1e4) / 1e4, lon: Math.round(f.lon * 1e4) / 1e4 };
     if (okDate(f.p)) o.p = f.p;
@@ -440,7 +442,14 @@
   }
 
   /* ---------- the page ---------- */
+  /* the tab's style loads with the tab (data-css on #p-fields): draw once it is there, so no card shows unstyled and shrinks */
   function boot(w) {
+    var panel = w.document.getElementById('p-fields');
+    if (!panel || !panel.hasAttribute('data-css') || panel.hasAttribute('data-ready') || !w.MutationObserver) return start(w);
+    var mo = new w.MutationObserver(function () { if (panel.hasAttribute('data-ready')) { mo.disconnect(); start(w); } });
+    mo.observe(panel, { attributes: true, attributeFilter: ['data-ready'] });
+  }
+  function start(w) {
     var d = w.document, $ = function (id) { return d.getElementById(id); };
     var app = $('fr-app');
     if (!app) return;
@@ -571,7 +580,7 @@
       if (lk) html = hit >= 0 ? card(list[hit], hit, false) : card(lk, 'L', true);
       else list.forEach(function (f, i) { html += card(f, i, false); });
       app.innerHTML = html || '<p class="fr-empty">No fields saved on this device yet. Add one below: a ZIP, a point pasted from a map, or your location.</p>';
-      $('fr-count').innerHTML = lk ? (list.length ? '<a href="/field-rain">All ' + list.length + ' of your saved fields</a>' : '') :
+      $('fr-count').innerHTML = lk ? (list.length ? '<a href="#fields" data-all="1">All ' + list.length + ' of your saved fields</a>' : '') :
         (list.length ? list.length + ' of ' + MAX + ' fields saved on this device' : '');
       S.open = lk ? { f: hit >= 0 ? list[hit] : lk } : null;
       $('fr-hist').classList.toggle('fr-off', !lk);
@@ -741,6 +750,22 @@
       }
     });
     w.addEventListener('hashchange', function () { S.link = parseLink(w.location.hash); S.year = null; draw(); });
+    /* "All your saved fields" and a tap on the tab itself clear the field link without a hashchange (the tab bar sets the
+       address with replaceState), so the card list is drawn again here */
+    function resync() {
+      var lk = parseLink(w.location.hash);
+      if (JSON.stringify(lk) === JSON.stringify(S.link)) return;
+      S.link = lk; S.year = null; draw();
+    }
+    $('fr-count').addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[data-all]') : null;
+      if (!a) return;
+      e.preventDefault(); e.stopPropagation();
+      try { w.history.replaceState(w.history.state, '', w.location.pathname + w.location.search + '#fields'); } catch (er) { w.location.hash = 'fields'; }
+      resync();
+    });
+    var pane = d.getElementById('p-fields');
+    if (pane) pane.addEventListener('ptab:show', function () { w.setTimeout(resync, 0); });
   }
 
   return { MAX: MAX, KEY: KEY, SRC: SRC, ZSH: ZSH, parseLink: parseLink, linkFor: linkFor, readList: readList, add: add, edit: edit, remove: remove,

@@ -281,7 +281,7 @@
         var ms = idx.windows && idx.windows.month && idx.windows.month.start;
         fill({ id: 'rain', k: 'Rain, last 24 hours', n: r.v / 100, dp: 2, suf: ' in', s: rainPointText(r, p.town, ms ? ctDay(ms) : ''),
           g: bars([{ k: '24 h', v: (w[0] || 0) / top }, { k: '3 days', v: (w[1] || 0) / top }, { k: '7 days', v: (w[2] || 0) / top }, { k: ms ? MON[+ctDay(ms).slice(5, 7) - 1] : 'Month', v: (w[3] || 0) / top }], 'Rain at this place by window'),
-          src: 'NOAA radar with gauges, to ' + ctStamp(idx.data_end), href: '/field-rain', a: 'Rain at your fields →' });
+          src: 'NOAA radar with gauges, to ' + ctStamp(idx.data_end), href: '/rain#fields', a: 'Rain at your fields →' });
       });
     });
   }
