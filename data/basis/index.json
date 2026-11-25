@@ -3,6 +3,7 @@
  "units":"integer cents per bushel",
  "note":"Basis history by elevator, commodity and delivery month.",
  "publicFrom":"2026-10-12",
+ "windowDays":90,
  "states":{
   "AL":{
    "rows":10,
@@ -17,7 +18,7 @@
   "CO":{
    "rows":220,
    "facilities":21,
-   "kb":10.2
+   "kb":10.3
   },
   "FL":{
    "rows":2,
@@ -32,7 +33,7 @@
   "IA":{
    "rows":7782,
    "facilities":508,
-   "kb":364.4
+   "kb":364.5
   },
   "ID":{
    "rows":1,
@@ -40,9 +41,9 @@
    "kb":0.3
   },
   "IL":{
-   "rows":10462,
+   "rows":10464,
    "facilities":249,
-   "kb":475.5
+   "kb":475.6
   },
   "IN":{
    "rows":1223,
@@ -50,7 +51,7 @@
    "kb":55.6
   },
   "KS":{
-   "rows":5887,
+   "rows":5888,
    "facilities":263,
    "kb":261.1
   },
@@ -100,12 +101,12 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4724,
+   "rows":4725,
    "facilities":91,
-   "kb":202.4
+   "kb":202.5
   },
   "OK":{
-   "rows":3336,
+   "rows":3337,
    "facilities":81,
    "kb":140.2
   },
