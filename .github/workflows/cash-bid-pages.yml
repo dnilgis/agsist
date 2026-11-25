@@ -91,6 +91,24 @@ jobs:
         continue-on-error: true
         run: python scripts/generated_sets.py dependents cash-bids rain farmland-atlas --stage
 
+      - name: Kept score of our state basis against USDA's (private)
+        continue-on-error: true
+        timeout-minutes: 6
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: |
+          day=$(python3 scripts/kept_score.py due) || { echo "::warning::kept score: due check failed"; exit 0; }
+          [ -n "$day" ] || { echo "kept score: not in the window (weekdays from 15:00 CT)"; exit 0; }
+          f="private/ledger/kept-score/${day:0:4}/${day}.csv"
+          bash scripts/fetch_private.sh private-data || { echo "::warning::kept score: the private record was not read; nothing kept for $day"; exit 0; }
+          python3 scripts/dev/quiet.py kept-score -- python3 scripts/kept_score.py append --day "$day" --ref origin/private-data \
+            || { echo "::warning::kept score for $day not written (the pages are unaffected)"; exit 0; }
+          [ -f "$f" ] || { echo "kept score: nothing new for $day"; exit 0; }
+          RAW_KEEP=1 bash scripts/push_raw.sh "kept score $day" "$f" \
+            || echo "::warning::kept score for $day not saved; the next run today retries (the pages are unaffected)"
+
       - name: Share image
         continue-on-error: true
         run: |
