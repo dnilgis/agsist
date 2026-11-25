@@ -17,6 +17,11 @@
   var BD = root.BasisDrive || (typeof require === 'function' ? require('./basis-drive.js') : null);
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var STRAY = 30;
+  // the public log keeps its last windowDays days: once it is that old, say so instead of a start day (as cb-basis-hist.js)
+  function winOf(data) {
+    var wd = +(data && data.windowDays) || 0, run = String((data && data.generated) || '').slice(0, 10), from = String((data && data.publicFrom) || '');
+    return wd > 0 && /^\d{4}-\d{2}-\d{2}$/.test(run) && /^\d{4}-\d{2}-\d{2}$/.test(from) && (Date.parse(run) - Date.parse(from)) / 864e5 >= wd - 1 ? wd : 0;
+  }
   var ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' };
   var FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   /* "Jan '27" -> "January" */
@@ -299,7 +304,7 @@
         ((m.breaks || []).length ? 'Breaks in the line: no bid logged, ' + m.breaks.map(function (g) { return g.from === g.to ? dd(g.from) : dd(g.from) + ' to ' + dd(g.to); }).join('; ') + '. ' : '') +
         (m.strays.length ? 'Kept out of the band, far from the others: ' + m.strays.join('; ') + '. ' : '') +
         (stt ? 'Bracket: ' + stt.name + ' today, ' + stt.n + ' bids against ' + stt.label + ' futures, middle ' + word(stt.median) + '. ' : '') +
-        'Source: posted elevator bids, logged by AGSIST since ' + dd(m.first) + ', ' + m.first.slice(0, 4) + '.');
+        'Source: posted elevator bids, logged by AGSIST ' + (m.win ? 'over the last ' + m.win + ' days' : 'since ' + dd(m.first) + ', ' + m.first.slice(0, 4)) + '.');
   }
   function readout(m, d, held, show) {
     var x = m.days.filter(function (z) { return z.d === d; })[0];
@@ -339,6 +344,7 @@
       var td = o.today ? o.today(cur, ctDay(data.generated)) : null;
       if (td && td.rows) td.terms = termsOf(c.all, boards, td.rows, town);
       m = model(c, H.heldOn, town, data.publicFrom, td);
+      m.win = winOf(data);
       o.head.textContent = BD.hy(m.head); o.take.textContent = BD.hy(m.take);
       if (o.picture) o.picture(!m.short);   // no picture to save under the one sentence (round 7)
       // a log of fewer than three days: the one sentence, no chart
@@ -375,6 +381,6 @@
     return api;
   }
 
-  var api = { model: model, svg: svg, readout: readout, noteText: noteText, mount: mount, ctDay: ctDay, termsOf: termsOf };
+  var api = { winOf: winOf, model: model, svg: svg, readout: readout, noteText: noteText, mount: mount, ctDay: ctDay, termsOf: termsOf };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BasisMonth = api;
 })(typeof window !== 'undefined' ? window : globalThis);

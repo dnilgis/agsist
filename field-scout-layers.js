@@ -334,13 +334,13 @@
       if (!fl.mapped) o.flood = { v: 'No digital FEMA flood map here', m: 'FEMA has not put this spot on its digital map. The paper map at the county may still apply.' };
       else if (fl.sfhaPct == null) o.flood = null;
       else o.flood = { v: (fl.sfhaPct ? 'About ' + fl.sfhaPct + '% in the 1% flood zone' : 'None in the 1% flood zone') + (fl.x02Pct ? ', ' + fl.x02Pct + '% in 0.2% (shaded X)' : '') + (fl.floodwayPct ? ', ' + fl.floodwayPct + '% floodway' : ''),
-        m: fl.sfhaPct ? 'Zone A or AE: a 1% chance of a flood any year. A lender will want flood insurance on buildings there.' : 'No part of the field is mapped in the 100-year floodplain.' };
+        m: fl.sfhaPct ? 'Zone A or AE: a 1% chance of a flood any year.' : 'No part of the field is mapped in the 100-year floodplain.' };
     }
     var w = R.wet;
     if (w) o.wet = w.acres == null ? null : (w.acres > 0 || w.touching ? { v: w.acres > 0 ? 'About ' + f1(w.acres) + ' ac mapped (' + w.types.slice(0, 3).map(function (t) { return t.type.replace(/^Freshwater /, '').toLowerCase(); }).join(', ') + ')' : 'Touches the edge, none inside', m: 'Mapped from aerial photos by USFWS. Not a wetland determination; for farm programs NRCS makes that call.' } : { v: 'None mapped', m: 'No wetland in the National Wetlands Inventory inside the field.' });
     var sl = R.slope;
     if (sl) o.slope = { v: f1(sl.mean) + '% average, ' + (sl.over6Pct ? sl.over6Pct + '% of the field' : 'none of the field') + ' over 6%, ' + (sl.hiFt - sl.loFt) + ' ft of fall (' + sl.loFt.toLocaleString() + ' to ' + sl.hiFt.toLocaleString() + ' ft)',
-      m: 'Ground over 6% usually needs residue or contour work to hold soil. Read from USGS elevation every ' + sl.spacingFt + ' ft across the field.' };
+      m: 'Read from USGS elevation every ' + sl.spacingFt + ' ft across the field.' };
     var e = [];
     if (R.wind) e.push(R.wind.n ? R.wind.n + ' wind turbine' + (R.wind.n === 1 ? '' : 's') + ' within ' + R.wind.within + ' mi, nearest ' + mi(R.wind.nearestMi) : 'no wind turbines within ' + R.wind.within + ' mi');
     if (R.solar) e.push(R.solar.n ? R.solar.n + ' large solar site' + (R.solar.n === 1 ? '' : 's') + ' within ' + R.solar.within + ' mi, nearest ' + mi(R.solar.nearestMi) + (R.solar.nearestMw ? ' (' + f1(R.solar.nearestMw) + ' MW)' : '') : 'no large solar within ' + R.solar.within + ' mi');
@@ -364,7 +364,7 @@
   L.summary = function (o) {
     var bits = [];
     function cut(k, re) { if (o[k] && o[k].v) { var m = o[k].v.match(re); if (m) bits.push(m[0]); } }
-    cut('soil', /NCCPI corn [0-9.]+|mostly class \d/);
+    // the soil is the Soil section's (one clean read, Nov 20, 2026): the card no longer repeats it
     if (o.flood) bits.push(/^About/.test(o.flood.v) ? o.flood.v.replace(/^About /, '').replace(/,.*$/, '') : /^None/.test(o.flood.v) ? 'no 1% flood zone' : 'no FEMA map');
     if (o.wet) bits.push(/^About/.test(o.wet.v) ? o.wet.v.replace(/^About /, '').replace(/ mapped.*$/, ' wetland') : 'no wetland inside');
     cut('slope', /^[0-9.]+% average/);
@@ -385,7 +385,6 @@
     '.fsl-v{color:var(--text);font-size:.92rem;font-weight:600;margin:.15rem 0;overflow-wrap:anywhere}.fsl-v.fsl-off{font-weight:400;color:var(--text-dim)}' +
     '.fsl-m{font-size:.8rem;color:var(--text-dim);line-height:1.5;margin:0}.fsl-s{font-size:.74rem;color:var(--text-muted);margin-top:.2rem}.fsl-s a{color:var(--text-muted)}';
   var ITEMS = [
-    ['soil', 'Soil productivity', 'USDA SSURGO (Soil Data Access)'],
     ['flood', 'Flood', 'FEMA National Flood Hazard Layer'],
     ['wet', 'Wetlands', 'USFWS National Wetlands Inventory'],
     ['slope', 'Slope', 'USGS 3DEP elevation'],
@@ -475,9 +474,7 @@
       var pts = L.gridIn(ring, 400);
       paint();
 
-      // 1. soil: the soil card's read (same worker answer), so the cards agree
-      job('soil', waitFor(function () { return FSX.FIELD && FSX.FIELD.soil; }, 45000).then(function (s) { if (!s) throw new Error('no soil'); return L.soilSummary(s); }),
-        function (v) { R.soil = v; });
+      // (the soil is not repeated here: it is the Soil section's, Nov 20, 2026)
 
       // 2. flood + the FIRM panel date at the field center
       job('flood', cached('flood:' + key, function () {

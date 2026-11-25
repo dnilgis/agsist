@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <script>/* lp-saved: before first paint, a reader with a lease pick or a saved place gets the county card's reserved height (components/lease-plus.js fills it from those); a first visit renders the card at its natural height */try{var _l=JSON.parse(localStorage.getItem('agsist-lease-plus')||'null'),_p=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'),_z=/^\d{5}$/;if((_l&&/^[A-Z]{2}$/.test(_l.st||''))||(_p&&(/^[A-Z]{2}$/.test(_p.state||'')||_z.test(String(_p.zip||''))))||_z.test(localStorage.getItem('agsist_zip')||'')||_z.test(localStorage.getItem('agsist_user_zip')||''))document.documentElement.classList.add('lp-saved');}catch(e){}</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
   <!-- static-nav:fonts -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=29" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="preload" href="/components/styles.css?v=31" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=31">
   <script src="/components/util.js?v=21"></script>
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -18,7 +19,7 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>Farm Cash Lease: Free Fillable &amp; Printable Form | AGSIST</title>
-  <meta name="description" content="Free fillable, printable cash farm lease with state termination deadlines, plus every lease type explained, with who carries the risk.">
+  <meta name="description" content="Free fillable, printable cash farm lease with your county's rent, a flex lease calculator and state termination deadlines, plus every lease type explained.">
   <link rel="canonical" href="https://agsist.com/cash-lease">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
@@ -162,6 +163,8 @@
     .cl-nwhen strong{color:var(--gold)}
     .cl-nwhen .cl-ndate{font-family:var(--font-display);font-size:1.5rem;color:var(--text,#e6ebe9);display:block;margin:2px 0}
     .cl-nwhen ul{margin:6px 0 0;padding-left:20px}
+    .cl-nask{margin:0 0 14px}
+    .cl-nask[hidden]{display:none}
     .notice-paper{background:#fff;color:#111;border-radius:var(--r-md);padding:28px 30px;line-height:1.6;font-size:.95rem;max-width:720px;margin:6px auto 0}
     .notice-paper h2{text-align:center;font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;margin:0 0 18px;color:#111}
     .notice-paper p{margin:0 0 12px}
@@ -177,7 +180,7 @@
       body.cl-printing-notice main > *:not(.cl-notice-panel){display:none !important}
       body.cl-printing-notice .cl-notice-panel{display:block !important}
       body.cl-printing-notice .cl-notice-panel .cl-notice-lede,body.cl-printing-notice .cl-ngrid,
-      body.cl-printing-notice #cl-n-fill,body.cl-printing-notice .cl-nwhen,body.cl-printing-notice .cl-actions{display:none !important}
+      body.cl-printing-notice #cl-n-fill,body.cl-printing-notice .cl-nwhen,body.cl-printing-notice .cl-nask,body.cl-printing-notice .cl-actions{display:none !important}
       body.cl-printing-notice .notice-paper{padding:0;max-width:none;font-size:11.5pt;line-height:1.55}
     }
     .lease-print-foot,.lease-pg-foot,.lease-pg-head{display:none}
@@ -235,6 +238,50 @@ html[data-theme="light"] main [style*="border:1px solid #2a3133"],html[data-them
 html[data-theme="light"] .cl-warn strong{color:#a33b25}
 html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
 
+/* ---- first screen: county rent, soil tier, flex lease (components/lease-plus.js) ---- */
+.lp-panel{margin-top:14px}
+.lp-go{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}.lp-go .cl-btn{text-decoration:none;display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box}
+.lp-all{margin:10px 0 0;font-size:.88rem}.lp-all a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+.lp-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lp-pick label{display:flex;flex-direction:column;gap:4px;font-size:.72rem;color:var(--text-dim)}
+.lp-pick select{font:inherit;font-size:16px;color:var(--text);background:transparent;border:1px solid var(--border-2);border-radius:var(--r-md);padding:8px 10px;min-height:44px}
+.lp-pick select option{color:#000}
+/* reserved: the tallest county read fits (measured Nov 20, 2026 over every county of the survey states, with the rent page
+   link and the notice line: 762 px at 390, 558 px at 1280; test/cash-lease-plus.test.mjs holds it), only when the head script found a saved pick or place
+   (html.lp-saved); a first visit has nothing to fill in, so the card keeps its natural height */
+.lp-out{margin-top:12px}
+html.lp-saved .lp-out{min-height:48rem}
+@media(min-width:700px){html.lp-saved .lp-out{min-height:35rem}}
+.lp-where{font-family:var(--font-display);font-size:1.15rem;margin:0 0 4px;color:var(--text)}
+.lp-big{line-height:1.05}.lp-v{font-family:var(--font-display);font-size:2.6rem;font-weight:800;color:var(--text)}.lp-u{font-size:.95rem;color:var(--text-muted)}
+.lp-k{margin:2px 0 6px;font-size:.92rem;color:var(--text-dim)}
+.lp-s{margin:4px 0;font-size:.88rem;line-height:1.55;color:var(--text-muted)}
+.lp-src{margin:6px 0 0;font-size:.76rem;line-height:1.55;color:var(--text-muted)}
+.lp-msg{margin:6px 0;font-size:.9rem;line-height:1.6;color:var(--text-muted)}
+.lp-sv{border-top:1px solid var(--border);margin-top:12px;padding-top:10px}
+.lp-sv h3{font-size:.9rem;margin:0 0 6px;color:var(--text);font-family:var(--font-body);font-weight:700}
+.lp-m{margin:2px 0 6px;font-size:.92rem;color:var(--text-dim)}.lp-m b{font-family:var(--font-display);font-size:1.35rem;color:var(--text);margin-right:4px}
+.lp-tiers{list-style:none;margin:4px 0;padding:0}
+.lp-tiers li{display:flex;justify-content:space-between;gap:10px;padding:5px 8px;border-radius:var(--r-md);font-size:.88rem;color:var(--text-dim)}
+.lp-tiers li i{font-style:normal;color:var(--text-muted);font-size:.8rem;margin-left:4px}
+.lp-tiers li b{font-family:var(--font-display);color:var(--text);white-space:nowrap}
+.lp-tiers li.lp-hit{background:var(--surface2);outline:1px solid var(--gold)}
+.lp-notice{margin:12px 0 0;font-size:.86rem;line-height:1.6;color:var(--text-dim)}.lp-notice a,.lp-how a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+.lp-pl{margin:8px 0;font-size:.92rem;line-height:1.6;color:var(--text-dim)}
+/* your field's NCCPI against the county's farmland (fx/soil-everywhere): its room held for the longest message */
+.lp-nc{border-top:1px solid var(--border);margin-top:12px;padding-top:10px}
+.lp-nc-out{min-height:6.6em}.lp-nc-out a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+.lp-grid{width:100%;border-collapse:collapse;margin:10px 0;font-size:.86rem;table-layout:fixed}
+.lp-grid caption{text-align:left;font-size:.76rem;color:var(--text-muted);padding-bottom:6px;caption-side:top}
+.lp-grid th,.lp-grid td{border:1px solid var(--border);padding:6px 4px;text-align:center;color:var(--text-dim)}
+.lp-grid td b{display:block;font-family:var(--font-display);color:var(--text);font-size:1rem}
+.lp-grid td small{display:block;font-size:.72rem;color:var(--text-muted)}
+.lp-grid td.lp-mid{outline:2px solid var(--gold);outline-offset:-2px}
+.lp-how{margin-top:10px;font-size:.84rem;line-height:1.6;color:var(--text-muted)}
+.lp-how summary{cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center}
+.lp-check{margin:0;padding-left:18px;font-size:.9rem;line-height:1.6;color:var(--text-muted)}
+.lp-check li{margin:6px 0}.lp-check b{color:var(--text-dim)}
+#lp-f-proj{margin:4px 0 0}
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){#cl-state-sel{min-height:40px;font-size:16px}.lf,.lf-area{font-size:16px}}
 /* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
@@ -266,12 +313,87 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
 
 <main class="cl-wrap" id="main">
   <header class="cl-hero">
-    <p class="cl-kicker page-kicker">Lease paperwork &middot; Keep it simple</p>
+    <p class="cl-kicker page-kicker">Cash rent, flex terms and lease paperwork</p>
     <h1>A farm lease you can actually read</h1>
+    <p class="lp-go"><a class="cl-btn" href="#lease-form">Fill in the lease</a> <a class="cl-btn cl-btn--ghost" href="#lp-flex">Flex calculator</a> <a class="cl-btn cl-btn--ghost" href="#notice">Notice deadline</a></p>
+  </header>
+
+  <section class="cl-panel lp-panel no-print" id="lp-county" aria-labelledby="lp-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="lp-t">Your county&rsquo;s rent</span></div>
+    <div class="cl-panel-b">
+      <div class="lp-pick">
+        <label>State<select id="lp-st" aria-label="State"><option value="">Pick a state</option></select></label>
+        <label>County<select id="lp-co" aria-label="County" disabled><option value="">Pick a county</option></select></label>
+      </div>
+      <div class="lp-out" id="lp-out" aria-live="polite"><p class="lp-msg">Pick a state and a county. A place you saved on AGSIST fills them in.</p></div>
+    </div>
+  </section>
+
+  <section class="cl-panel lp-panel no-print" id="lp-soil" aria-labelledby="lp-soil-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="lp-soil-t">Where your ground sits in the survey&rsquo;s land quality tiers</span></div>
+    <div class="cl-panel-b">
+      <div class="cl-ngrid lp-in">
+        <label data-how="corn" hidden>Typical corn yield, bu an acre<input id="lp-corn" inputmode="decimal" autocomplete="off" placeholder="your field&rsquo;s usual yield"></label>
+        <label data-how="pi" hidden>Field P/I (Bulletin 811)<input id="lp-pi" inputmode="decimal" autocomplete="off" placeholder="from your soil map"></label>
+      </div>
+      <div id="lp-soil-out" aria-live="polite"><p class="lp-msg">Pick a county above first.</p></div>
+      <div class="lp-nc" id="lp-nc">
+        <div class="cl-ngrid lp-in"><label>Your field&rsquo;s NCCPI, 0 to 1<input id="lp-nccpi" inputmode="decimal" autocomplete="off" placeholder="from the Field Scout soil card"></label></div>
+        <div class="lp-nc-out" id="lp-nc-out" aria-live="polite"><p class="lp-msg">Pick a county above first.</p></div>
+      </div>
+      <p class="cl-src">We place a field in rent tiers only where the survey ties its tiers to a number. In Iowa that is the corn yield of each quality third. In Illinois it is ISPFMRA&rsquo;s productivity index ranges. In Indiana and western Ohio it is the corn yield respondents gave for each land class. Anywhere else we do not place a field in rent tiers. We print Iowa State&rsquo;s rent per CSR2 point as it prints it and never turn a CSR2 or an NCCPI into a rent. Your field&rsquo;s NCCPI is placed among the county&rsquo;s rated farmland acres in the USDA soil survey (SSURGO): a soil fact, not a rent. The county file updates monthly. What you type here is not kept.</p>
+    </div>
+  </section>
+
+  <section class="cl-panel lp-panel no-print" id="lp-flex" aria-labelledby="lp-flex-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="lp-flex-t">Flex lease: the rent at nine price and yield outcomes</span></div>
+    <div class="cl-panel-b">
+      <div class="cl-ngrid lp-in">
+        <label>Lease form<select id="lp-f-mode"><option value="bonus">Base rent plus a bonus</option><option value="pct">Share of gross revenue</option></select></label>
+        <label>Crop<select id="lp-f-crop"><option value="corn">Corn</option><option value="soybeans">Soybeans</option></select></label>
+        <label data-mode="bonus">Base rent, $ an acre<input id="lp-f-base" inputmode="decimal" autocomplete="off"></label>
+        <label data-mode="bonus">Bonus, % of gross above the trigger<input id="lp-f-share" inputmode="decimal" autocomplete="off"></label>
+        <label data-mode="bonus">Trigger, gross $ an acre<input id="lp-f-trigger" inputmode="decimal" autocomplete="off"></label>
+        <label data-mode="pct" hidden>Rent, % of gross<input id="lp-f-pct" inputmode="decimal" autocomplete="off"></label>
+        <label data-mode="pct" hidden>Floor, $ an acre (our option, if your lease has one)<input id="lp-f-floor" inputmode="decimal" autocomplete="off"></label>
+        <label data-mode="pct" hidden>Cap, $ an acre (our option, if your lease has one)<input id="lp-f-cap" inputmode="decimal" autocomplete="off"></label>
+        <label>Your yield, bu an acre<input id="lp-f-yield" inputmode="decimal" autocomplete="off"></label>
+        <label>Price, $ a bushel<input id="lp-f-price" inputmode="decimal" autocomplete="off"></label>
+      </div>
+      <p class="cl-src" id="lp-f-hint"></p>
+      <button class="cl-btn cl-btn--ghost" id="lp-f-proj" type="button" hidden></button>
+      <div id="lp-f-out" aria-live="polite"><p class="lp-msg">Enter your lease terms, a yield and a price to see the rent at nine outcomes.</p></div>
+      <details class="lp-how"><summary>How the rent is figured, and where the forms come from</summary>
+        <p>Gross is your yield times the price, per acre. <b>Base plus bonus:</b> rent is the base, plus your bonus percent of the gross above the trigger when gross is above it. <b>Share of gross:</b> rent is your percent of the gross. The floor and cap are our option, for a lease that sets them; the rent is held between them. The center cell is your yield and price; the others move yield 15% and price 20% either way.</p>
+        <p>The two forms come from the regional reports in the 2026 Illinois Farmland Values and Lease Trends (March 2026). That report is by the Illinois Society of Professional Farm Managers and Rural Appraisers. The forms are a base cash rent with a bonus tied to revenue, and rent as a percentage of the crop&rsquo;s gross proceeds. AGSIST does not suggest a base, a percent or a trigger; those are yours to agree.</p>
+        <p>The projected price is the one RMA sets for crop insurance in its February price discovery window. It is the same figure as on the <a href="/harvest-price-tracker">harvest price tracker</a>. The button names the crop year it comes from; a lease for a later year uses that year&rsquo;s price once RMA sets it.</p>
+      </details>
+    </div>
+  </section>
+
+  <header class="cl-hero cl-hero-2">
     <p class="cl-sub page-lede"><!--BAKE:rent-answer-->Before you sign, check the rent: the USDA NASS 2026 Cash Rents Survey has rates for 2,359 counties in 45 states (read Oct 6, 2026), on the <a href="/rent/">county cash rent pages</a>.<!--/BAKE--> Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree, and a terrible way to remember. Below: <strong>every lease type explained</strong>, and a <strong>fillable, printable two-page cash lease</strong> that says what it means. It takes about five minutes, and you both sign it.</p>
     <p class="cl-jump"><a href="#lease-form">Fill in the lease</a> &middot; <a href="#notice">Notice to end a lease, and the date to serve it by</a></p>
-    <p class="cl-by">State notice rules rechecked Oct 15, 2026</p>
+    <p class="cl-by">State notice rules rechecked Oct 15, 2026; Iowa, Kansas and Ohio read against the statute text saved Oct 16, 2026</p>
   </header>
+
+  <section class="cl-panel cl-check-panel no-print" aria-labelledby="cl-check-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-check-t">Before you sign: the terms to settle in writing</span></div>
+    <div class="cl-panel-b">
+      <ul class="lp-check">
+        <li><b>Who, what land, how many acres:</b> names, addresses, county, FSA farm number, and whether rent is per tillable or per total acre.</li>
+        <li><b>Term and renewal:</b> start and end dates, and whether it rolls over. In Iowa and Kansas a farm tenancy ended by notice ends March 1, by law.</li>
+        <li><b>Notice to end it:</b> your state&rsquo;s deadline where the law sets one (below), or a number of days you both write in.</li>
+        <li><b>Rent and when it is paid:</b> the rate, the payment dates and split, late interest.</li>
+        <li><b>For a flex lease:</b> the base, the bonus formula and the date the bonus is paid. Name the yield source: scale tickets, yield monitor or insurance records. Name the price: an elevator, a futures contract on a date, or RMA&rsquo;s harvest price.</li>
+        <li><b>Program payments and insurance:</b> who gets ARC, PLC and other payments; who insures crops and liability.</li>
+        <li><b>Fertility and practices:</b> lime and phosphorus and potash built up or drawn down, manure, tillage, cover crops, conservation plan.</li>
+        <li><b>Improvements:</b> tile, fence, waterways and who pays and owns them, and what happens to them if the lease ends early.</li>
+        <li><b>Entry and hunting:</b> when the owner may enter and who holds hunting rights.</li>
+        <li><b>Ending early:</b> what each side owes for fall work, fertilizer applied or a crop in the ground.</li>
+      </ul>
+    </div>
+  </section>
 
 
   <section class="cl-panel cl-types-panel" aria-labelledby="cl-types-t">
@@ -438,6 +560,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
       </div>
       <button class="cl-btn cl-btn--ghost" id="cl-n-fill" type="button">Use the names from the lease above</button>
       <div class="cl-nwhen" id="cl-n-when" role="status" aria-live="polite"><strong>Pick a state and the day the lease ends</strong> to see the serve-by date.</div>
+      <div class="cl-nask" id="cl-n-ask" hidden></div>
       <div class="notice-paper" id="cl-notice-paper" aria-label="Notice preview"></div>
       <div class="cl-actions"><button class="cl-btn" id="cl-n-print" type="button">Print the notice</button></div>
     </div>
@@ -456,8 +579,8 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
       <details><summary>What&rsquo;s a fair rate for my county?</summary><p>USDA NASS publishes county cash rent annually. <a href="/rent/" style="color:var(--gold)">AGSIST cash rent by state</a> shows every published county, its history, and rent as a share of realistic gross, the number that decides whether a lease actually cash-flows.</p></details>
       <details><summary>Why is this lease so short?</summary><p>Because leases fail at the coffee shop, not in court. A lease both parties have actually read beats a 20-page one neither has. The additional-terms box is there for what your situation genuinely needs; your attorney can tell you what your state requires beyond it.</p></details>
       <details><summary>Can I mail the notice to end an Iowa farm lease, and when does it have to go out?</summary><p>Yes, by certified mail, but it has to be mailed before September 1, not on it. If you hand it over instead, the other party signs an acceptance of service on or before September 1 (Iowa Code 562.7).</p></details>
-      <details><summary>In Kansas, what happens to the wheat if I give notice after my tenant already planted it?</summary><p>Kansas law protects that crop. When notice comes after a fall seeded grain crop is planted on ground prepared the normal way, the tenancy on that part ends the day after harvest is done or August 1, whichever comes first. The rest of the farm still ends March 1 (<a href="https://www.ksrevisor.org/statutes/chapters/ch58/058_025_0006.html" rel="noopener">K.S.A. 58-2506</a>).</p></details>
-      <details><summary>How much notice does Wisconsin want to end a year-to-year farm lease?</summary><p>Wisconsin law says a year-to-year farm tenancy needs at least 90 days' written notice, and it ends at the end of the rental year, even if rent is paid more often than once a year (<a href="https://docs.legis.wisconsin.gov/statutes/statutes/704/19" rel="noopener">Wis. Stat. 704.19</a>).</p></details>
+      <details><summary>In Kansas, what happens to the wheat if I give notice after my tenant already planted it?</summary><p>Kansas law protects that crop. When notice comes after a fall seeded grain crop is planted on ground prepared the normal way, the tenancy on that part ends the day after harvest is done or August 1, whichever comes first. The rest of the farm still ends March 1 (K.S.A. 58-2506).</p></details>
+      <details><summary>How much notice does Wisconsin want to end a year-to-year farm lease?</summary><p>Wisconsin law says a year-to-year farm tenancy needs at least 90 days' written notice, and it ends at the end of the rental year, even if rent is paid more often than once a year (Wis. Stat. 704.19).</p></details>
     </div>
   </section>
 
@@ -489,7 +612,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=21"></script>
+<script src="/components/loader.js?v=24"></script>
 <script>
 (function(){
   'use strict';
@@ -524,10 +647,27 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     NY:{n:'New York',t:'cited',d:'Commonly cited: written notice about 90 DAYS before expiration, certified mail.'},
     TN:{n:'Tennessee',t:'cited',s:'Smith v. Holt (Tenn. 1945), a court ruling',d:'Written notice at least 6 MONTHS before a year-to-year lease ends: by JUNE 30 for a lease that ends December 31, so mail it well before. This comes from a court ruling (Smith v. Holt, 1945, not a farm case), not a statute, and UT Extension says the rule for oral farm leases is unclear. A written lease that states its end date needs no notice. Check with a Tennessee attorney.'},
     MI:{n:'Michigan',t:'none',d:'No single farm deadline widely cited; the lease’s own terms control; industry guides suggest written notice by ~September 30.'},
-    OH:{n:'Ohio',t:'firm',s:'Ohio Rev. Code 5301.71',u:'https://codes.ohio.gov/ohio-revised-code/section-5301.71',d:'ORC 5301.71: for ANY farm lease, written OR oral, that carries no termination date and no notice deadline of its own, written notice is due ON OR BEFORE SEPTEMBER 1. A lease that spells out its own termination controls; one that does not falls under the statute.'},
+    OH:{n:'Ohio',t:'firm',s:'Ohio Rev. Code 5301.71',u:'https://codes.ohio.gov/ohio-revised-code/section-5301.71',d:'ORC 5301.71 (in force July 21, 2022) covers CROP leases, written or oral, that set no end date and no way to give notice. Pasture, timber and farm buildings are left out. The landlord gives the tenant written notice ON OR BEFORE SEPTEMBER 1 of the year the lease is to end, by personal delivery, fax or email. The lease then ends when harvest is done or December 31, whichever comes first, unless both sign a different date. A lease that sets its own end date or notice method controls.'},
     CA:{n:'California',t:'cited',d:'Leases over one year must be WRITTEN to be enforceable; put the termination deadline in the lease itself (industry guides suggest ~July 1).'},
     TX:{n:'Texas',t:'none',d:'Practices vary too much to summarize here; put the deadline in the lease and confirm with a local attorney.'}
   };
+  /* v: the day the statute text the deadline was read against was saved (the copies on the references branch:
+     refs/statute-ia-562-6, -562-7, -ks-58-2506, -oh-5301-71); short: the first screen's line. Only states whose tier
+     is 'firm' carry a v (Wisconsin and Missouri stay "commonly cited"); the first screen (components/lease-plus.js)
+     prints a deadline only where v is set. */
+  var VERIFIED={
+    IA:['2026-10-16','written notice served on or before September 1, or mailed by certified mail before September 1; the tenancy then ends March 1'],
+    KS:['2026-10-16','written notice at least 30 days before March 1, naming March 1 as the end of the tenancy; a written lease signed by both can set other terms'],
+    OH:['2026-10-16','for a crop lease that sets no end date or notice method, the landlord’s written notice on or before September 1, by personal delivery, fax or email']};
+  /* How each state's statute lets notice be delivered (the same copies; Wisconsin from 704.21). A state without a
+     line here is one whose statute text we could not read: it keeps the general advice. */
+  var DELIVERY={
+    IA:'Deliver it before September 1 one of three ways (Iowa Code 562.7): hand it over and have the other party sign an acceptance of service, serve it personally, or send it by certified mail mailed before September 1.',
+    KS:'Put it in writing, at least 30 days before March 1 (K.S.A. 58-2506). The statute names no delivery method, so keep proof of the day the other party got it.',
+    OH:'The landlord delivers it on or before September 1 by personal delivery, fax or email (Ohio Rev. Code 5301.71). Certified mail is not on the statute’s list.',
+    WI:'Wisconsin lists the ways to give notice in Wis. Stat. 704.21, among them giving it personally or sending it by registered or certified mail.'};
+  Object.keys(VERIFIED).forEach(function(ab){ RULES[ab].v=VERIFIED[ab][0]; RULES[ab].short=VERIFIED[ab][1]; });
+  if(typeof window!=='undefined') window.AgLeaseRules=RULES;
   var STATES='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
   var NAMES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
   function stName(ab){ return NAMES[ab]||ab; }
@@ -691,7 +831,44 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   function nval(k){ var f=document.querySelector('[data-n="'+k+'"]'); return f?String(f.value||'').trim():''; }
   function blank(v,w){ return v?'<span class="np-b">'+esc(v)+'</span>':'<span class="np-b">'+'&nbsp;'.repeat(w||24)+'</span>'; }
   function nsave(){ var d={}; nf.forEach(function(f){ if(f.value) d[f.dataset.n]=f.value; }); try{ localStorage.setItem(NKEY,JSON.stringify(d)); }catch(e){} }
+  /* leaseAsk:start (test/lease-notice.test.mjs evaluates this block)
+     One reminder email about two weeks before the state's next notice deadline, for the three states
+     whose deadline was read against the statute text: Iowa and Ohio September 1, Kansas 30 days before
+     March 1 (January 30, January 31 in a leap year). This season's deadline is offered while it is more
+     than 14 days off, then next season's. */
+  var LEASE_ASK={IA:1,KS:1,OH:1};
+  function leaseDeadline(ab,y){
+    if(ab==='IA'||ab==='OH') return new Date(Date.UTC(y,8,1));
+    if(ab==='KS') return new Date(Date.UTC(y,2,1)-30*864e5);
+    return null;
+  }
+  function leaseAskDeadline(ab,now){
+    if(!LEASE_ASK[ab]) return null;
+    var t=new Date(now), today=Date.UTC(t.getFullYear(),t.getMonth(),t.getDate());
+    for(var y=t.getFullYear(); y<=t.getFullYear()+1; y++){ var d=leaseDeadline(ab,y); if(d&&(d.getTime()-today)/864e5>14) return d; }
+    return null;
+  }
+  /* leaseAsk:end */
+  var askBox=document.getElementById('cl-n-ask'), askFor=null;
+  function nask(){
+    if(!askBox) return;
+    var ab=nval('st'), d=leaseAskDeadline(ab,Date.now()), topic=d?'lease:'+ab.toLowerCase()+':'+isoOf(d):'';
+    if(topic===askFor) return;
+    askFor=topic; askBox.innerHTML=''; askBox.hidden=!topic;
+    if(!topic) return;
+    var day=MON[d.getUTCMonth()]+' '+d.getUTCDate()+', '+d.getUTCFullYear();
+    var el=document.createElement('div');
+    el.setAttribute('data-signup-ask','Email me once, about two weeks before the '+stName(ab)+' notice deadline of '+day+'.');
+    el.setAttribute('data-topic',topic);
+    el.setAttribute('data-source','page:cash-lease');
+    el.setAttribute('data-btn','Remind me');
+    el.setAttribute('data-ok','Done. One email about two weeks before '+day+'.');
+    el.setAttribute('data-stack','');
+    askBox.appendChild(el);
+    if(window.AgsistSignup&&window.AgsistSignup.mount) window.AgsistSignup.mount(el);
+  }
   function nrender(){
+    nask();
     var ab=nval('st'), end=nval('end'), owner=nval('dir')!=='tenant';
     var ld=numOf('notice_days',3650).v;
     var when=document.getElementById('cl-n-when'), r=RULES[ab], sb=ab?serveBy(ab,end,ld):null;
@@ -705,13 +882,14 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
           h+='<span class="cl-ndate">Serve by '+longDate(sb.iso)+'</span>'
            +'The lease ends '+longDate(end)+'; this is '+esc(sb.how)+'. Aim to have it in their hands by '+longDate(sb.early)+': some states count the day it arrives, not the day you mail it.';
           if(sb.oral) h+=' <br>This deadline is for <b>oral</b> leases. A written lease runs on its own terms.';
+          if(ab==='OH'&&!owner) h+=' <br>Ohio’s statute is written for the landlord’s notice to the tenant.';
           if(sb.mar1) h+=' <br>Kansas notice has to name March 1 as the end of the tenancy. Your end date is not March 1.';
           if(sb.lease) h+=' <br>No state farm deadline we can point to, so this uses the notice days written in your lease.';
         } else {
           h+='<span class="cl-ndate">No date we can count for you</span>No farm notice deadline we can point to for this state. Your lease&rsquo;s own notice terms rule: put the number of days in section 11 above and this will count it.';
         }
         if(r&&r.s) h+=' <br>Law: '+(r.u?'<a href="'+r.u+'" rel="noopener">'+esc(r.s)+'</a>':esc(r.s))+'.';
-        h+='<ul><li>Put it in writing and sign it.</li><li>Deliver it in hand and have them sign and date the receipt line, or send it certified mail with a return receipt.'+(ab==='IA'?' Iowa Code 562.7 lists the ways notice can be served.':'')+'</li><li>Keep a copy and the receipt.</li></ul>'
+        h+='<ul><li>Put it in writing and sign it.</li><li>'+(DELIVERY[ab]?esc(DELIVERY[ab]):'Deliver it in hand and have them sign and date the receipt line, or send it certified mail with a return receipt.')+'</li><li>Keep a copy and the receipt.</li></ul>'
          +'<span style="font-size:.8em;opacity:.85">Educational, not legal advice. Statutes change, and a written lease can set its own terms. Check with an attorney before a deadline you cannot miss.</span>';
         when.innerHTML=h;
       }
@@ -728,7 +906,11 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
       +(owner?'Possession of the land returns to the Owner at the end of that day.':'I will give up possession of the land at the end of that day.')+'</p>'
       +'<div class="np-sig"><div><div class="np-line"></div><div class="np-lbl">'+who.toUpperCase()+' &middot; SIGNATURE</div></div>'
       +'<div><div class="np-line"></div><div class="np-lbl">PRINTED NAME</div></div></div>'
-      +'<div class="np-box"><b>How this was delivered</b> (check one)<br>&#9744; In hand on '+blank('',14)+' &nbsp; &#9744; Certified mail, return receipt, no. '+blank('',20)+' mailed on '+blank('',12)
+      +'<div class="np-box"><b>How this was delivered</b> (check one)<br>'+(ab==='OH'
+        ?'&#9744; Personal delivery on '+blank('',12)+' &nbsp; &#9744; Fax on '+blank('',12)+' &nbsp; &#9744; Email on '+blank('',12)
+        :ab==='IA'
+        ?'&#9744; In hand, acceptance signed below, on '+blank('',12)+' &nbsp; &#9744; Served personally on '+blank('',12)+' &nbsp; &#9744; Certified mail, return receipt, no. '+blank('',16)+' mailed on '+blank('',12)
+        :'&#9744; In hand on '+blank('',14)+' &nbsp; &#9744; Certified mail, return receipt, no. '+blank('',20)+' mailed on '+blank('',12))
       +'<div class="np-sig" style="margin-top:20px"><div><div class="np-line"></div><div class="np-lbl">RECEIVED BY ('+other.toUpperCase()+')</div></div><div><div class="np-line"></div><div class="np-lbl">DATE RECEIVED</div></div></div></div>'
       +'<p class="np-foot">agsist.com/cash-lease &middot; educational sample, not legal advice &middot; keep a copy</p>';
   }
@@ -760,6 +942,8 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   nrender();
 })();
 </script>
+  <script src="/components/saved-place.js?v=1" defer></script>
+  <script src="/components/lease-plus.js?v=4" defer></script>
   <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

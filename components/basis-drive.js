@@ -653,7 +653,7 @@
     [].slice.call(box.querySelectorAll('.bd-crop button')).forEach(function (b, i, all) {
       b.addEventListener('click', function () {
         cur = b.getAttribute('data-crop'); all.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
-        sel = -1; draw(true); if (box.classList.contains('bd-on-hist')) month(); ga('basis_drive_crop');
+        sel = -1; draw(true); if (MONTH_V2 && box.classList.contains('bd-on-hist')) month(); ga('basis_drive_crop');
         try { var u = new URL(root.location.href); if (cur === (cfg.crops || [])[0]) u.searchParams.delete('crop'); else u.searchParams.set('crop', cur); root.history.replaceState(null, '', u.toString()); } catch (e) {}
       });
       b.setAttribute('aria-pressed', String(b.getAttribute('data-crop') === cur));
@@ -680,7 +680,7 @@
       var today = function (crop, d) { var pp = pick(docs, cfg, crop); return todayOf(pp, d); };
       var go = function () { if (root.BasisMonth) { monthApi = monthApi || root.BasisMonth.mount(hist, { cfg: cfg, crop: cur, head: head, take: take, bs: bsDoc, today: today, picture: savable }); monthApi.crop(cur); } };
       if (root.BasisMonth) return go();
-      if (!monthLoading) monthLoading = new Promise(function (ok) { var sc = root.document.createElement('script'); sc.src = '/components/basis-month.js?v=1'; sc.onload = ok; sc.onerror = ok; root.document.head.appendChild(sc); });
+      if (!monthLoading) monthLoading = new Promise(function (ok) { var sc = root.document.createElement('script'); sc.src = '/components/basis-month.js?v=2'; sc.onload = ok; sc.onerror = ok; root.document.head.appendChild(sc); });
       monthLoading.then(go);
     };
     var tools = q('.bd-tools');

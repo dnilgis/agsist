@@ -1,6 +1,83 @@
 {
   "briefings": [
     {
+      "date": "2026-11-25",
+      "date_display": "Wednesday, November 25, 2026",
+      "headline": "Ohio soybeans basis firmed 5 cents in a week",
+      "teaser": "Ohio soybean basis firmed 5 cents on the week; January soybeans are down 8½ cents overnight.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-11-25",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-24",
+      "date_display": "Tuesday, November 24, 2026",
+      "headline": "Corn harvest reaches 94%; the five-year average is 96%",
+      "teaser": "A duty could cut Indian rice exports and shift buying toward other suppliers, including US rice.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 2,
+      "url": "/daily/2026-11-24",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-23",
+      "date_display": "Monday, November 23, 2026",
+      "headline": "Cattle on Feed shows placements below last year; corn up 3¾¢",
+      "teaser": "Cattle on Feed shows fewer placements; corn and beans edge up overnight before Crop Progress.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-23",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-22",
+      "date_display": "Sunday, November 22, 2026",
+      "headline": "Monday Crop Progress opens a holiday week; hogs near $52",
+      "teaser": "Crop Progress is Monday, Export Sales moves to Friday for Thanksgiving, and December hogs settled Friday at $52.60.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-22",
+      "market_closed": true
+    },
+    {
+      "date": "2026-11-21",
+      "date_display": "Saturday, November 21, 2026",
+      "headline": "Funds sold corn for a ninth straight week",
+      "teaser": "USDA systems hit by a breach; December corn ended the week down 11 cents at $4.34½.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-21",
+      "market_closed": true
+    },
+    {
+      "date": "2026-11-20",
+      "date_display": "Friday, November 20, 2026",
+      "headline": "Cash hogs fell to $36.70 in the Nov. 19 report",
+      "teaser": "Cash hogs fall $2.05 to $36.70 while December hog futures settled at $52.43.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-20",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-19",
+      "date_display": "Thursday, November 19, 2026",
+      "headline": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due",
+      "teaser": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-19",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-18",
       "date_display": "Wednesday, November 18, 2026",
       "headline": "December lean hogs fell $2.25 Tuesday to $53.10",
@@ -2855,5 +2932,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-18T12:03:47.142571+00:00"
+  "updated": "2026-11-25T13:49:16.585639+00:00"
 }

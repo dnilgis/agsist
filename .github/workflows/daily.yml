@@ -687,6 +687,25 @@ jobs:
             [ "$i" = "3" ] && { git rebase --abort 2>/dev/null || true; exit 1; }
           done
 
+      - name: Daily scorecard, private
+        if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.send_email == true) && inputs.test_to_sig != true }}
+        continue-on-error: true
+        timeout-minutes: 8
+        env:
+          DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          OWNER_TO:     ${{ secrets.SIG_TO }}
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+        run: |
+          python scripts/daily_scorecard.py write
+          if [ "$(TZ=America/Chicago date +%u)" = "1" ]; then
+            python scripts/daily_scorecard.py rollup --once --mail
+          fi
+
       - name: A dry run does not mark the day done
         if: ${{ !cancelled() && steps.commit.outcome == 'success' && github.event_name != 'schedule' && inputs.send_email != true && inputs.test_to_sig != true }}
         continue-on-error: true

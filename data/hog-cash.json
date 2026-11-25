@@ -1,69 +1,54 @@
 {
  "hogs": {
-  "report_date": "2026-11-17",
+  "report_date": "2026-11-20",
   "slaughter_dates": [
-   "2026-11-16"
+   "2026-11-19"
   ],
   "negotiated": {
-   "head": 4795,
-   "base": 40.04,
-   "net": 39.92,
-   "carcass_wt": 222.59
+   "head": 4760,
+   "base": 39.02,
+   "net": 38.79,
+   "carcass_wt": 217.28
   },
   "total": {
-   "head": 245123,
-   "base": 60.65,
-   "net": 61.77,
-   "carcass_wt": 218.42
+   "head": 240023,
+   "base": 59.23,
+   "net": 60.44,
+   "carcass_wt": 220.05
   },
   "source": "USDA AMS, National Daily Direct Hog Prior Day Report - Slaughtered Swine (LM_HG201)"
  },
  "status": {
   "hogs": {
-   "ok": true,
-   "note": "",
-   "checked": "2026-11-17T21:54:28Z"
+   "ok": false,
+   "note": "base 33.29 is over 30% from nearby lean hog futures 49.92",
+   "checked": "2026-11-25T21:54:42Z"
   },
   "cutout": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-17T21:54:28Z"
+   "checked": "2026-11-25T21:54:42Z"
   }
  },
  "cutout": {
-  "date": "2026-11-17",
-  "carcass": 68.44,
-  "loads": 300.76,
-  "change": -2.8,
+  "date": "2026-11-25",
+  "carcass": 66.98,
+  "loads": 349.26,
+  "change": 0.74,
   "primals": {
-   "loin": 66.96,
-   "butt": 95.4,
-   "picnic": 57.47,
-   "rib": 124.32,
-   "ham": 63.84,
-   "belly": 64.16
+   "loin": 67.73,
+   "butt": 97.45,
+   "picnic": 54.88,
+   "rib": 129.16,
+   "ham": 62.06,
+   "belly": 56.65
   },
   "source": "USDA AMS, National Daily Pork Report FOB Plant - Negotiated Sales - Afternoon (LM_PK602)"
  },
- "daily_line": "National negotiated cash hogs $40.04/cwt carcass base on 4,795 head (killed Nov 16); pork cutout $68.44/cwt on Nov 17. USDA AMS.",
- "updated": "2026-11-17T21:54:28Z",
+ "daily_line": "National negotiated cash hogs $39.02/cwt carcass base on 4,760 head (killed Nov 19); pork cutout $66.98/cwt on Nov 25. USDA AMS.",
+ "updated": "2026-11-25T21:54:42Z",
  "history": {
   "hogs": [
-   {
-    "d": "2026-08-10",
-    "base": 100.42,
-    "head": 5500
-   },
-   {
-    "d": "2026-08-11",
-    "base": 99.15,
-    "head": 5516
-   },
-   {
-    "d": "2026-08-12",
-    "base": 99.61,
-    "head": 4831
-   },
    {
     "d": "2026-08-13",
     "base": 98.67,
@@ -403,33 +388,24 @@
     "d": "2026-11-17",
     "base": 40.04,
     "head": 4795
+   },
+   {
+    "d": "2026-11-18",
+    "base": 38.75,
+    "head": 3049
+   },
+   {
+    "d": "2026-11-19",
+    "base": 36.7,
+    "head": 2863
+   },
+   {
+    "d": "2026-11-20",
+    "base": 39.02,
+    "head": 4760
    }
   ],
   "cutout": [
-   {
-    "d": "2026-08-10",
-    "carcass": 101.81
-   },
-   {
-    "d": "2026-08-11",
-    "carcass": 101.48
-   },
-   {
-    "d": "2026-08-12",
-    "carcass": 100.15
-   },
-   {
-    "d": "2026-08-13",
-    "carcass": 98.92
-   },
-   {
-    "d": "2026-08-14",
-    "carcass": 99.9
-   },
-   {
-    "d": "2026-08-17",
-    "carcass": 98.75
-   },
    {
     "d": "2026-08-18",
     "carcass": 99.12
@@ -689,29 +665,33 @@
    {
     "d": "2026-11-17",
     "carcass": 68.44
+   },
+   {
+    "d": "2026-11-18",
+    "carcass": 69.48
+   },
+   {
+    "d": "2026-11-19",
+    "carcass": 68.66
+   },
+   {
+    "d": "2026-11-20",
+    "carcass": 67.88
+   },
+   {
+    "d": "2026-11-23",
+    "carcass": 70.63
+   },
+   {
+    "d": "2026-11-24",
+    "carcass": 66.24
+   },
+   {
+    "d": "2026-11-25",
+    "carcass": 66.98
    }
   ],
   "hogs_ly": [
-   {
-    "d": "2025-08-11",
-    "base": 111.98
-   },
-   {
-    "d": "2025-08-12",
-    "base": 112.19
-   },
-   {
-    "d": "2025-08-13",
-    "base": 112.82
-   },
-   {
-    "d": "2025-08-14",
-    "base": 111.46
-   },
-   {
-    "d": "2025-08-15",
-    "base": 113.13
-   },
    {
     "d": "2025-08-18",
     "base": 113.0
@@ -959,6 +939,30 @@
    {
     "d": "2025-11-12",
     "base": 84.87
+   },
+   {
+    "d": "2025-11-13",
+    "base": 84.45
+   },
+   {
+    "d": "2025-11-14",
+    "base": 85.62
+   },
+   {
+    "d": "2025-11-17",
+    "base": 84.62
+   },
+   {
+    "d": "2025-11-18",
+    "base": 82.16
+   },
+   {
+    "d": "2025-11-19",
+    "base": 80.44
+   },
+   {
+    "d": "2025-11-20",
+    "base": 81.56
    }
   ]
  }

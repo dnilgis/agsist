@@ -46,22 +46,28 @@
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
   function mdy(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
   function md(iso) { return mdy(iso).replace(/, \d{4}$/, ''); }
+  /* every read gives up after 10 s (Nov 18, 2026: on a slow or dead connection a box must never wait forever). A read
+     that timed out, failed on the network or got a server error is LOST (a missing file is not): it is not kept, so
+     Try again reads it afresh */
+  var LOST = {};
   function getJSON(u, ms) {
     if (memo[u]) return memo[u];
     memo[u] = new Promise(function (ok) {
-      var done = false, t = setTimeout(function () { if (!done) { done = true; ok(null); } }, ms || 12000);
-      fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
-        .then(function (j) { if (!done) { done = true; clearTimeout(t); ok(j); } });
+      var done = false, c = window.AbortController ? new AbortController() : null;
+      function end(j, lost) { if (done) return; done = true; clearTimeout(t); if (lost) { LOST[u] = 1; delete memo[u]; } else delete LOST[u]; ok(j); }
+      var t = setTimeout(function () { if (c) c.abort(); end(null, true); }, ms || 10000);
+      fetch(u, c ? { signal: c.signal } : {}).then(function (r) { return r.ok ? r.json() : (r.status >= 500 ? Promise.reject(r.status) : null); })
+        .then(function (j) { end(j, false); }, function () { end(null, true); });
     });
     return memo[u];
   }
   function loadScript(src, ready) {
     if (ready()) return Promise.resolve(true);
     return new Promise(function (ok) {
-      var el = document.createElement('script');
+      var el = document.createElement('script'), t = setTimeout(function () { el.onload = el.onerror = null; ok(false); }, 10000);
       el.src = src; el.async = true;
-      el.onload = function () { ok(ready()); };
-      el.onerror = function () { ok(false); };
+      el.onload = function () { clearTimeout(t); ok(ready()); };
+      el.onerror = function () { clearTimeout(t); ok(false); };
       document.head.appendChild(el);
     });
   }
@@ -249,7 +255,7 @@
   /* ── weather and the season */
   var DNAME = ['abnormally dry', 'moderate drought', 'severe drought', 'extreme drought', 'exceptional drought'];
   function droughtRow(d) {
-    var src = ['U.S. Drought Monitor', '/rain#drought'];
+    var src = ['U.S. Drought Monitor', '/farmland-atlas#l=drought'];
     if (!d || d.status !== 'ok') return { label: 'Drought this week', value: null, why: d && d.why ? d.why : 'no Drought Monitor row', src: src };
     if (d.worst < 0) return { label: 'Drought this week', value: 'None', date: d.valid, ctx: 'No part of the county dry or in drought.', src: src };
     var k = d.now[1] > 0 ? 1 : 0;
@@ -293,12 +299,12 @@
     });
   }
   /* ── this week here: the Daily's Thursday block, from components/change-lines.js */
-  var CL_JS = '/components/change-lines.js?v=5';
+  var CL_JS = '/components/change-lines.js?v=6';
   function week() {
     var sec = document.getElementById('c-week'), net = window.AGSIST_BIDS_NET;
     if (!sec || cLat == null || cLng == null) return;
     loadScript(CL_JS, function () { return !!window.AgChangeLines; }).then(function (ok) {
-      if (!ok) return;
+      if (!ok) { weekLost(sec); return; }
       var L = window.AgChangeLines, idxP = net && net.index ? net.index().then(null, function () { return null; }) : Promise.resolve(null);
       var ss = L.SALES_STATES[st];
       var prevP = idxP.then(function (idx) {
@@ -314,6 +320,7 @@
         var name = D.name || 'This county', stName = (P && P.STATES && P.STATES[st]) || st;
         var blk = L.weekBlock(L.weekLines({ fips: fips, st: st, stName: stName, name: name, lat: cLat, lng: cLng, today: centralDay() },
           { drought: a[0], index: a[1], prev: a[2], states: a[3], prices: a[4], sales: a[5] }));
+        if (WEEK_FILES.some(function (u) { return LOST[u]; })) { weekLost(sec); return; }
         if (!blk) return;
         var h = '<h2 id="c-week-h">This week here <small>bids within ' + L.WEEK_MI + ' mi</small></h2>' +
           '<p class="cw-lead">' + esc(blk.lead) + '</p><ul>';
@@ -326,15 +333,28 @@
       });
     });
   }
+  /* "This week here" when its files did not come: one line, the day the figures above are from, and Try again */
+  var WEEK_FILES = ['/data/drought/county-week.json', '/data/basis-states.json', '/data/prices.json'];
+  function weekLost(sec) {
+    var asOf = (((document.querySelector('main') || document.body).textContent.match(/Figures as of ([A-Z][a-z]{2} \d{1,2}, \d{4})/)) || [])[1] || '';
+    sec.innerHTML = '<p class="cw-lost">This week\u2019s lines did not load.' + (asOf ? ' The figures above are from ' + esc(asOf) + '.' : '') +
+      ' <button type="button" class="cw-retry">Try again</button></p>';
+    sec.hidden = false;
+    sec.querySelector('.cw-retry').addEventListener('click', function () { sec.innerHTML = '<p class="cw-lost">Loading this week\u2019s lines.</p>'; week(); });
+  }
   function centralDay() { try { return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { return new Date().toISOString().slice(0, 10); } }
   function arc() { getJSON('/data/arc-plc.json').then(function (f) { fill('arc', P.factArcPlc(f, centralDay(), D.arc || '/arc-plc')); }); }
 
+  /* Nov 20, 2026: the one rule for a best bid (components/bid-filter.js) loads before place.js,
+     so the county page's Best corn is never white corn, Plenish or a Harvest 2027 contract. */
   function start() {
-    loadScript('/components/place.js?v=16', function () { return !!window.AgPlace; }).then(function (ok) {
+    loadScript('/components/bid-filter.js?v=3', function () { return !!(window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey); }).then(function () {
+      return loadScript('/components/place.js?v=22', function () { return !!window.AgPlace; });
+    }).then(function (ok) {
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;
       if (lat == null || lng == null) fail(['corn-bid', 'soy-bid', 'lf-bid'], 'no county middle on file to measure from');
-      var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=9', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
+      var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=10', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
       basis(b.then(null, function () { return null; }));
       futures(); hay(); weather(); crops(); arc();
       b.then(week, week);

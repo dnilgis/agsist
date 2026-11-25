@@ -168,9 +168,9 @@ window.__fsExtras = function (FSX) {
         return '<tr><td>'+esc(c.name)+'</td><td>class '+(c.nicc||'?')+'</td><td class="r-num">'+(hasArea?c.ac.toFixed(1)+' ac':'n/a')+'</td><td class="r-num">'+(pct!=null?pct+'%':'n/a')+'</td></tr>';
       }).join('')+'</table>';
       var bits=[];
-      if(s.csr2!=null) bits.push('CSR2 '+s.csr2.toFixed(1));
+      if(s.csr2!=null) bits.push('CSR2 '+(+s.csr2).toFixed(0));
       if(soilShare(s)) bits.push(soilShare(s));
-      if(s.nccpi!=null) bits.push('soil productivity '+Math.round(s.nccpi*100)+'/100 (USDA NCCPI '+s.nccpi.toFixed(2)+')');
+      if(s.nccpi!=null) bits.push('USDA NCCPI '+s.nccpi.toFixed(2)+' (soil productivity, 0 to 1)');
       if(s.slope!=null) bits.push(s.slope+'% average slope'+(s.maxSlope>s.slope?' (up to '+s.maxSlope+'%)':''));
       if(bits.length) soilHtml+='<p class="r-note">'+bits.join(' &middot; ')+'</p>';
     }
@@ -230,15 +230,16 @@ window.__fsExtras = function (FSX) {
     var fCells='';
     function fcell(k,v,n){ fCells+='<div class="r-st r-st-f"><div class="r-stk">'+esc(k)+'</div><div class="r-stv">'+v+'</div>'+(n?'<div class="r-stn">'+esc(n)+'</div>':'')+'</div>'; }
     fcell('Acres', d.acres.toFixed(1), null);
-    if(s&&s.csr2!=null) fcell('CSR2', s.csr2.toFixed(1), 'Iowa corn suitability, of 100');
-    else if(s&&s.nccpi!=null) fcell('Soil productivity', Math.round(s.nccpi*100)+'<span class="r-stu">/100</span>', 'USDA NCCPI');
+    // the answer's figures, in its own rounding: NCCPI to two places, CSR2 whole
+    if(s&&s.nccpi!=null) fcell('Soil productivity', s.nccpi.toFixed(2), 'USDA NCCPI, 0 to 1');
+    if(s&&s.csr2!=null) fcell('CSR2', (+s.csr2).toFixed(0), 'Iowa corn suitability, of 100');
     if(s&&(s.farmPct!=null||s.primePct!=null)) fcell('Prime farmland', (s.farmPct!=null?s.farmPct:s.primePct)+'%', s.farmIfPct?('+'+s.farmIfPct+'% if drained'):'of the field');
     if(FSX.FIELD.thisYear&&FSX.FIELD.thisYear.code!=null) fcell((r&&r.nextYear)||'This year', FSX.FIELD.thisYear.code===1?'Corn':FSX.FIELD.thisYear.code===5?'Soybeans':'Other', FSX.FIELD.thisYear.src==='you'?'as told':'likely, from the pattern');
     if(d.indices&&d.indices.series&&d.indices.series.length){
       var fx=d.indices.latest||d.indices.series[d.indices.series.length-1], fn=d.indices.normal;
       if(fx.ndvi!=null) fcell('Vigor (NDVI)', fx.ndvi.toFixed(2), fn&&fn.ndvi!=null?('normal '+fn.ndvi.toFixed(2)+' for the date'):fx.date);
     }
-    if(se&&se.pNow!=null) fcell('Season rain', se.pNow.toFixed(1)+'<span class="r-stu">\u2033</span>', se.pDep!=null ? (se.pDep>=0?'+':'\u2212')+Math.abs(se.pDep).toFixed(1)+'\u2033 vs normal' : 'no normal for this gauge');
+    if(se&&se.pNow!=null) fcell('Rain since Jan 1', se.pNow.toFixed(1)+'<span class="r-stu"> in</span>', se.pDep!=null ? (se.pct!=null?Math.round(se.pct)+'% of normal, ':'')+(se.pDep>=0?'+':'\u2212')+Math.abs(se.pDep).toFixed(1)+' in' : 'no normal for this gauge');
     var fieldBand = '<div class="r-band r-band-f">'+fCells+'</div>';
 
     // The field's outline, drawn to scale, so the page shows which field it is about.
@@ -295,7 +296,7 @@ window.__fsExtras = function (FSX) {
       +'.r-kv th{text-align:left;font-weight:600;color:#555;padding:4px 10px 4px 0;width:40%;vertical-align:top}.r-kv td{padding:4px 0}'
       +'.r-rot{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}.r-rot b{color:#6b5a13}.r-note{font-size:12px;color:#777;margin:6px 0 0}'
       +'.r-band{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 6px}'
-      +'@media(max-width:640px){.r-band{grid-template-columns:repeat(2,1fr)}}'
+      +'@media screen and (max-width:640px){html:not(.pm) .r-band{grid-template-columns:repeat(2,1fr)}}'
       +'.r-st{border:1px solid #e5e0cf;border-radius:8px;padding:8px 10px}'
       +'.r-stk{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#9a8a4a;font-weight:800}'
       +'.r-stv{font-family:ui-monospace,Menlo,monospace;font-size:19px;font-weight:800;margin-top:2px}'
@@ -306,21 +307,23 @@ window.__fsExtras = function (FSX) {
       +'.r-actions{margin-bottom:16px}.r-actions button{background:#c9a227;color:#1a1206;border:none;border-radius:7px;font-weight:700;padding:9px 16px;font-size:14px;cursor:pointer}'
       +'.r-top{display:flex;gap:16px;align-items:flex-start}.r-top-t{flex:1;min-width:0}.r-outline{width:118px;height:132px;flex:none}'
       +'.r-band-f{grid-template-columns:repeat(auto-fit,minmax(96px,1fr));margin:6px 0 10px}.r-st-f{border-color:#d9c88a;background:#fdfaf0}.r-st-f .r-stv{font-size:17px}'
-      +'@media(max-width:640px){.r-outline{width:84px;height:94px}}'
+      +'@media screen and (max-width:640px){html:not(.pm) .r-outline{width:84px;height:94px}}'
       +'.r-sec,.r-band,.r-verdict,.r-kv tr,.r-tbl tr{break-inside:avoid;page-break-inside:avoid}h2{break-after:avoid;page-break-after:avoid}'
       +'.r-cols{columns:2;column-gap:24px}.r-cols .r-sec{break-inside:avoid;page-break-inside:avoid}.r-cols .r-kv th{width:52%}.r-cols h2:first-child{margin-top:4px}'
-      +'@media(max-width:640px){.r-cols{columns:1}}'
+      +'@media screen and (max-width:640px){html:not(.pm) .r-cols{columns:1}}'
       +'.r-notes-txt{white-space:pre-wrap}.r-photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}'
       +'.r-photo{width:108px;height:108px;object-fit:cover;border-radius:6px;border:1px solid #e5e0cf}'
       +'@page{size:letter;margin:.5in}'
-      +'@media print{.no-print{display:none}body{padding:0;max-width:none;font-size:11.5px;line-height:1.4}h2{margin:12px 0 5px}.r-p{margin:.15em 0}.r-kv,.r-tbl{font-size:11.5px}.r-kv th,.r-kv td,.r-tbl td{padding:2px 6px 2px 0}.r-foot{margin-top:12px}}';
+      // the printed sheet is one page: tight print sizes, written once for print and once under
+      // html.pm, where fitOnePage measures the sheet at the page's width before it prints
+      +'@media print{'+PRINT_CSS.replace(/PM /g,'')+'}'+PRINT_CSS.replace(/PM /g,'html.pm ');
 
     var html='<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
       +'<title>Field Report: '+d.acres.toFixed(0)+' acres | AGSIST</title><style>'+css+'</style></head><body>'
       +'<div class="r-actions no-print"><button type="button" onclick="window.print()">\u2399 Print / Save as PDF</button></div>'
       +'<div class="r-head"><div class="r-brand">AGSIST \u00b7 Field Scout</div><div class="r-date">'+esc(dateStr)+'</div></div>'
       +'<div class="r-top">'+outline+'<div class="r-top-t"><h1>'+d.acres.toFixed(1)+'-acre field'+(cy&&cy.name?', '+esc(cy.name)+' County, '+esc(cy.st):'')+'</h1><div class="r-loc">Center '+d.lat.toFixed(4)+', '+d.lng.toFixed(4)+'</div>'
-      +verdictHtml+'</div></div>'+fieldBand+lead+flagsHtml+notesHtml+bandHtml
+      +verdictHtml+'</div><!--QR--></div>'+fieldBand+lead+flagsHtml+notesHtml+bandHtml
       +sect('Soil & productivity', soilHtml)
       +'<div class="r-cols">'
       +sect('Crop vigor & moisture (satellite)', vigorHtml)
@@ -338,8 +341,51 @@ window.__fsExtras = function (FSX) {
 
     var w=window.open('','_blank');
     if(!w){ flashHint('Allow pop-ups to open the printable field report.'); return; }
-    w.document.open(); w.document.write(html); w.document.close();
-    ga('field_report', { acres: Math.round(d.acres) });
+    ga('field_report', {});
+    // the printed sheet carries a QR that opens this field in Field Scout: the share link, the
+    // outline in its #hash, drawn here by components/qr.js (no outside QR service)
+    if(FSX.activePoly) FSX.writeHash(FSX.activePoly);
+    var link=location.href;
+    w.document.open(); w.document.write('<!DOCTYPE html><title>Field Report | AGSIST</title><p style="font:15px system-ui,sans-serif;padding:24px">Preparing the field report.</p>'); w.document.close();
+    qrLib().then(function(){
+      return window.AgPrintQR ? { css:window.AgPrintQR.CSS, html:window.AgPrintQR.html(link, 'agsist.com/field-scout', { screen:true }).replace('Scan to open this report on agsist.com', 'Scan to open this field in Field Scout') } : null;
+    }, function(){ return null; }).then(function(q){
+      var out = q ? html.replace('</style>', q.css+'.r-top .agpq{flex:none}</style>').replace('<!--QR-->', q.html) : html;
+      try{ w.document.open(); w.document.write(out); w.document.close(); fitOnePage(w.document); }catch(e){}
+    });
+  }
+  // print sizes for the field report (PM marks each selector; see the css above)
+  var PRINT_CSS='PM .no-print{display:none}PM body{padding:0;margin:0;max-width:none;font-size:10.5px;line-height:1.35}'
+    +'PM h1{font-size:19px}PM h2{font-size:11px;margin:8px 0 3px;padding-bottom:2px}PM .r-head{padding-bottom:4px;margin-bottom:8px}'
+    +'PM .r-loc{margin-bottom:6px;font-size:10px}PM .r-top{gap:12px}PM .r-outline{width:84px;height:94px}'
+    +'PM .r-band{gap:6px;margin:0 0 4px}PM .r-band-f{margin:4px 0 6px}PM .r-st{padding:4px 7px;border-radius:6px}'
+    +'PM .r-stv,PM .r-st-f .r-stv{font-size:14px}PM .r-stk{font-size:8px}PM .r-stn{font-size:9px}PM .r-p{margin:.15em 0}'
+    +'PM .r-kv,PM .r-tbl{font-size:10.5px}PM .r-kv th,PM .r-kv td,PM .r-tbl td{padding:1px 6px 1px 0}PM .r-rot{font-size:10.5px;gap:3px 12px}'
+    +'PM .r-note{font-size:9.5px;margin-top:3px}PM .r-foot{margin-top:8px;padding-top:6px;font-size:8.5px;line-height:1.35}PM .r-photo{width:80px;height:80px}';
+  // One printed page: the sheet laid out at the page's width (letter, half-inch margins: 7.5 by 10
+  // inches) and, when it runs long, the smallest step down in size that fits, never below 72%;
+  // a sheet that will not fit at 72% prints at full size on two pages.
+  var PAGE_W=720, PAGE_H=960;
+  function fitScale(heightAt){
+    for(var z=1; z>=0.72-1e-9; z-=0.03){ if(heightAt(PAGE_W/z)*z<=PAGE_H*0.98) return Math.round(z*100)/100; }
+    return 1;
+  }
+  function fitOnePage(doc){
+    var root=doc.documentElement, b=doc.body; if(!b) return 1;
+    root.classList.add('pm');
+    var z=fitScale(function(w){ b.style.width=w+'px'; return b.offsetHeight; });
+    root.classList.remove('pm'); b.style.width='';
+    if(z<1){ var st=doc.createElement('style'); st.textContent='@media print{html{zoom:'+z+'}}'; doc.head.appendChild(st); }
+    root.setAttribute('data-print-scale', String(z));
+    return z;
+  }
+  var _qrP=null;
+  function qrLib(){
+    if(window.AgPrintQR && window.AgQR) return Promise.resolve();
+    if(!_qrP) _qrP=['/components/qr.js?v=11', '/components/print-qr.js?v=1'].reduce(function(p, src){
+      return p.then(function(){ return new Promise(function(ok, no){ var s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=function(){ _qrP=null; no(new Error(src)); }; document.head.appendChild(s); }); });
+    }, Promise.resolve());
+    return _qrP;
   }
 
   return { handlePhotoFile:handlePhotoFile, deletePhoto:deletePhoto, exportGeoJSON:exportGeoJSON, exportKML:exportKML, generateReport:generateReport };

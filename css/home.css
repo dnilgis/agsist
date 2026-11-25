@@ -1280,7 +1280,7 @@ details>summary:hover{color:var(--text)}
 @media(max-width:900px){
 #bids-list-area>a,main a[href="/contact"],.land-links a,a[href="/usda-calendar#priced-in"]:not(.wr-c),.tip-b,.signup-disc a,#f1>.bidnet-note,.main a[href^="tel:"],.main a[href^="mailto:"],.main a[href="/privacy"],.signup-disc a{min-height:44px!important;display:inline-flex!important;align-items:center}
 .idx1-extras-field input{min-height:44px!important;font-size:1rem!important}
-.ticker-track .t-link{min-height:44px;display:inline-flex!important;align-items:center}
+.ticker-track .t-link{min-height:28px;display:inline-flex!important;align-items:center}
 .crop-full-link,.export-full-link,.cot-full-link,.ratio-link,.wx-chart-toggle,.wx-hourly-toggle,.faq-a a{display:inline-flex!important;align-items:center;min-height:44px}
 }
 /* ===== block 13 of 23 id="ui-r8" ===== */
@@ -1608,17 +1608,13 @@ html.ticker-paused .ticker-track{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){
 .ticker-pause{display:none}
 }
-/* Phone tap target, 2026-10-09: the ticker is 38px tall on a phone, so the
-   button's hit area reaches 1px above and below it (40px) through a
-   transparent ::after. The strip and the ticker row clip sideways only (both
-   hold nothing taller than the row), so the scrolling track is still cut off
-   at the edges. Browsers without overflow:clip keep the 38px button. */
+/* Phone, 2026-10-09: the strip and the ticker row clip sideways only (both hold nothing taller than the row), so
+   the scrolling track is still cut off at the edges. Nov 19, 2026: the ticker is the sticky bar's 28px second line;
+   the pause button is the row's full 28px, inside the 24px tap floor, and no longer reaches over the bar or the page. */
 @media(max-width:600px){
 @supports (overflow:clip){
 .prices-strip,.prices-strip .ticker-outer{overflow-x:clip;overflow-y:visible}
 }
-.ticker-pause{position:relative}
-.ticker-pause::after{content:"";position:absolute;left:0;right:0;top:min(0px,calc(50% - 20px));bottom:min(0px,calc(50% - 20px))}
 }
 /* ===== WAVE2-F: "What do you raise?" picker */
 .pk-btn{cursor:pointer}
@@ -2222,8 +2218,11 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
       Held to the live nav's height sitewide now, in components/styles.css.
    2. The ticker status opened as one "..." and became two short lines, and
       the whole ticker slid 30px right. Hold two lines of seven characters
-      ("Delayed" over "15 min", "Settle" over "Oct 16"). */
-.ticker-live #ticker-age{min-width:calc(7ch + .28em);min-height:2.2em}
+      ("Delayed" over "15 min", "Settle" over "Oct 16").
+      Nov 23, 2026 (rule 75b): seven characters no longer hold every line home-yield.js writes: "1:20 pm CT" after the
+      close moved the ticker 7px right at 1280 in the overnight hours (0.011). The badge now holds the widest it can
+      write, "Close" over "Dec 31, 2027" (6.6em at its own size). */
+.ticker-live #ticker-age{min-width:6.8em;min-height:2.2em}
 /* 3. A saved state's middle-bid line holds its space until the numbers come
       (components/price-local.js reserve()); unseen until filled. */
 .pl-line.pl-wait{visibility:hidden}
@@ -2370,6 +2369,11 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
 .wl-rp>aside{display:flex;flex:1 1 auto;min-height:0}
 .wl .rp-card{flex:1 1 auto;align-items:flex-start;gap:12px;margin:0;padding:0;border:0;border-radius:0;background:none}
 .wl .rp-card-i{width:88px}
+/* Nov 19: the picture's box is the thumbnail's own shape whether or not the file arrives. A picture that fails (a
+   dropped connection, a checkout without img/) drew its alt text wrapped at 88px, and the card grew
+   from 180 to 413px at 390 after the strip had settled. */
+.wl .rp-card-i{aspect-ratio:360/247;overflow:hidden}
+.wl .rp-card-i img{height:100%;object-fit:cover}
 .wl .rp-card-b{display:flex;flex-direction:column;align-self:stretch}
 .wl .rp-card-x{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 /* one title, one line, one action, like the cards beside it: the price stays on /rain-print */
@@ -2503,11 +2507,18 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 /* COT at a glance (2026-11-04): three plain lines, the email ask and the ranges behind a tap */
 .cot-gl-asof{font-size:.765rem;color:var(--text-muted);line-height:1.45;margin:0 0 .35rem}
 .cot-glance{list-style:none;margin:0 0 .45rem;padding:0;display:flex;flex-direction:column;gap:0}
-.cot-gl-line{font-size:.82rem;line-height:1.3;color:var(--text);min-height:44px;border-bottom:1px solid var(--border)}
+.cot-gl-line{font-size:.82rem;line-height:1.3;color:var(--text);min-height:48px;border-bottom:1px solid var(--border)}
 .cot-gl-line b{font-weight:800}
-.cot-gl-a{display:grid;grid-template-columns:7.9em minmax(0,1fr) 4.4em;gap:.45rem;align-items:center;min-height:44px;color:inherit;text-decoration:none;white-space:nowrap;font-variant-numeric:tabular-nums}
-.cot-gl-a>span:nth-child(2){white-space:normal;line-height:1.2}
-.cot-gl-r{text-align:right}
+/* Nov 19 (owner, 390 px): the change cell was cut off ("−31,423 con..."). One column grid for the
+   header row and the rows: market | funds' net position | change in the week. Every cell wraps
+   inside its column (no nowrap), so nothing runs past the card at 320 to 430 px. */
+.cot-gl-hd,.cot-gl-a{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr) minmax(0,.9fr);gap:.5rem;align-items:center}
+.cot-gl-hd{font-size:.72rem;line-height:1.25;color:var(--text-muted);font-weight:700;padding:0 0 .3rem;border-bottom:1px solid var(--border);align-items:end;min-height:2.5em}
+.cot-gl-hd>span:last-child,.cot-gl-r{text-align:right}
+.cot-gl-a{min-height:47px;padding:.3rem 0;color:inherit;text-decoration:none;font-variant-numeric:tabular-nums;line-height:1.2}
+.cot-gl-a>*{min-width:0;overflow-wrap:anywhere}
+.cot-gl-v{display:block;font-weight:700}
+.cot-gl-a small{display:block;font-size:.72rem;line-height:1.25;color:var(--text-muted)}
 .cot-gl-a b{text-decoration:underline;text-decoration-color:var(--border-g);text-underline-offset:3px}
 .cot-gl-a:hover b{text-decoration-color:var(--gold)}
 .cot-glance[aria-busy="true"] .cot-gl-line{opacity:.5}
@@ -2520,8 +2531,22 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 .cot-ask:has(>[data-signup-ask][hidden]){display:none}
 .cot-detail[open]>.cot-caption{margin-top:.2rem}
 /* held up front (cls-reserved): three lines of about three rows each, and the two-row date line */
-#cot-glance{min-height:132px}
+#cot-glance{min-height:144px}
+/* the full chart, after the table: a plain button, not a band (Nov 19) */
+.cot-full{display:inline-flex;align-self:flex-start;width:fit-content;align-items:center;min-height:44px;padding:0 14px;margin:.15rem 0 .35rem;border:1px solid var(--border-g,var(--border));border-radius:var(--r-md);color:var(--text);font-size:.82rem;font-weight:700;text-decoration:none}
+.cot-full::after{content:"\00a0\2192";color:var(--gold)}
+.cot-full:hover{border-color:var(--gold)}
+@media(max-width:900px){.m-fold>summary.m-fold-sum~#f-cot-intel>.sec-head{display:none}}
+/* Yield nowcast (Nov 19): one plain line when withheld; the heading, the crop boxes and the source line
+   (.nc-in) only with an estimate. The line holds room for five lines (the longest reason at 320 px). */
+#nowcast-widget .nc-in[hidden]{display:none!important}
+.nc-foot{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.2rem .75rem}
+.nc-week{flex:1 1 15rem;font-size:.8rem;line-height:1.45;color:var(--text-muted)}
+#nowcast-widget:not(.nc-on) .nc-week{min-height:7.25em}
 #cot-gl-asof{min-height:2.3em}
+/* Nov 19: the date line under the table holds its two lines (it read "CFTC · Updated weekly" on one line
+   until cot.json landed, then two); the crowding badge in the head is hidden from the start (never shown on home since Nov 6) */
+#cot-date{display:block;line-height:1.6;min-height:3.2em}
 
 /* ===== 2026-11-06: "Today and
    this week" (components/happening.js, baked by scripts/seed_static.py happening_seed). Phone and tablet: a full-width
@@ -2588,14 +2613,15 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 .hero-band{margin-left:0;margin-right:0}
 }
 
-/* The sitewide sponsor line on phones (Nov 11, 2026): the three jobs keep the first screen, so on the homepage
-   the line sits right under them in #sw-home instead of under the menu (components/loader.js). The header
-   placeholder holds no room for it here; #sw-home holds its own. */
-.sw-home{display:none}
-@media (max-width:520px){
-  :root{--sw-h:0px}
-  .sw-home{display:block;height:54px;margin:.6rem 0 .2rem}
-  .sw-home .sw-line{height:54px;padding:4px 0}
-}
+/* The sitewide sponsor line (Nov 11, 2026; every width since Nov 19): the three jobs keep the first screen, so on the
+   homepage the line sits right under them in #sw-slot (components/styles.css holds its room, loader.js fills it). */
+#hb-jobs + #sw-slot{margin:.6rem 0 .2rem}
+/* Nov 19, 2026: "What do you raise?" moved from above the ticker to the foot of Today near me, after the answer:
+   one plain line on the card's hairline, not a band of its own. */
+.job-near .idx1-subbar{width:auto;margin:0;padding:.25rem 0 0!important;background:none;border:0;border-top:1px solid var(--border);row-gap:0}
+.job-near .idx1-subbar>.pk-btn{order:-1}
+/* the month fills in after load ("Season" to "September" at most): hold its width so the line wraps at first paint */
+.job-near #s7-jump-m{display:inline-block;min-width:9ch}
+.job-near .pk-panel{padding:12px 0 14px}
 /* Nov 13: one style for every home section title: body font, sentence case, plain text colour, no family colour */
 html[data-theme][data-look] body #main :is(.sec-title,.m-fold>summary.m-fold-sum>span,.wr-k){color:var(--text)!important;font-family:var(--font-body)!important;text-transform:none!important;letter-spacing:0!important}

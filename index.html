@@ -9,14 +9,15 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="stylesheet" href="/components/styles.css?v=31">
   <link rel="stylesheet" href="/components/asof.css?v=2">
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
   <script src="/components/price-local.js?v=16"></script>
+  <script src="/components/bid-age.js?v=3"></script>
 <link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=4">
-<link rel="stylesheet" href="/css/home.css?v=48">
+<link rel="stylesheet" href="/css/home.css?v=52">
 <!-- Nov 7: no first paint until the three jobs and the Farmland sales block are parsed whole (Chrome lifts the block
      when the expected element opens, so it names the first one after them, under the Futures heading). A paint between two parser
      chunks drew the block half built, and its chevrons (centred over rows still arriving) jumped 3 to 50px when the rest
@@ -45,17 +46,17 @@
 <meta property="og:title"        content="Corn, Soybean &amp; Wheat Prices &amp; Cash Grain Bids Today | AGSIST">
 <meta property="og:description"  content="Cash grain bids near your ZIP, grain futures (delayed 10 to 25 min), the AGSIST Daily briefing and the USDA report calendar. Free for working farmers.">
 <meta property="og:url"          content="https://agsist.com/">
-<meta property="og:image"        content="https://dnilgis.github.io/agsist-data/data/social/card-2026-11-18.jpg">
+<meta property="og:image"        content="https://dnilgis.github.io/agsist-data/data/social/card-2026-11-25.jpg">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt"    content="AGSIST Daily, Wednesday, November 18, 2026: December lean hogs fell $2.25 Tuesday to $53.10. The number: $40.04 cash hogs, carcass base per cwt.">
+<meta property="og:image:alt"    content="AGSIST Daily, Wednesday, November 25, 2026: Ohio soybeans basis firmed 5 cents in a week. The number: 5 cents Ohio soybean basis gain on the week.">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
 <meta name="twitter:title"       content="Corn, Soybean &amp; Wheat Prices &amp; Cash Grain Bids Today | AGSIST">
 <meta name="twitter:description" content="Cash grain bids near your ZIP, grain futures (delayed 10 to 25 min), the AGSIST Daily briefing and the USDA report calendar. Free for farmers.">
-<meta name="twitter:image"       content="https://dnilgis.github.io/agsist-data/data/social/card-2026-11-18.jpg">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST", "alternateName": ["AGSIST Farm Dashboard", "AGSIST Agricultural Intelligence"], "description": "Free cash grain bids, futures, a daily briefing and farm tools for working farmers.", "publisher": {"@id": "https://agsist.com/#organization"}, "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://agsist.com/cash-bids?zip={search_term_string}"}, "query-input": "required name=search_term_string"}}, {"@type": "Organization", "@id": "https://agsist.com/#organization", "name": "AGSIST", "url": "https://agsist.com/", "foundingDate": "2022", "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/icon-512.png", "width": 512, "height": 512}, "description": "Grain prices, cash bids, weather and farm tools for US corn, soybean and grain producers. Free for non-commercial use.", "founder": {"@id":"https://agsist.com/#organization"}, "contactPoint": {"@type": "ContactPoint", "telephone": "+1-715-797-2428", "contactType": "customer service", "areaServed": "US", "availableLanguage": "English"}, "address": {"@type": "PostalAddress", "addressRegion": "WI", "addressCountry": "US"}}, {"@type": "WebPage", "@id": "https://agsist.com/#webpage", "url": "https://agsist.com/", "name": "Corn, Soybean & Wheat Prices & Cash Grain Bids Today | AGSIST", "description": "Cash grain bids from elevators near your ZIP, corn, soybean and wheat futures (delayed 10 to 25 min), the AGSIST Daily morning briefing and the USDA report calendar. Free.", "isPartOf": {"@id": "https://agsist.com/#website"}, "about": {"@id": "https://agsist.com/#organization"}, "dateModified": "2026-11-18", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".sec-title"]}}, {"@type": "SoftwareApplication", "name": "AGSIST Agricultural Dashboard", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "url": "https://agsist.com/"}, {"@type": "ItemList", "name": "Free Agricultural Tools on AGSIST", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Corn Futures Prices Today", "url": "https://agsist.com/corn-futures-prices"}, {"@type": "ListItem", "position": 2, "name": "Soybean Futures Prices Today", "url": "https://agsist.com/soybean-futures-prices"}, {"@type": "ListItem", "name": "Live & Feeder Cattle Futures Prices", "url": "https://agsist.com/cattle-futures-prices", "position": 3}, {"@type": "ListItem", "position": 4, "name": "Cash Grain Bids Near Me", "url": "https://agsist.com/cash-bids"}, {"@type": "ListItem", "position": 5, "name": "Spray Advisory", "url": "https://agsist.com/spray"}, {"@type": "ListItem", "position": 6, "name": "Urea Volatilization Risk Monitor", "url": "https://agsist.com/spray#urea"}, {"@type": "ListItem", "position": 7, "name": "Farm Break-Even Calculator", "url": "https://agsist.com/breakeven"}, {"@type": "ListItem", "position": 8, "name": "Grain Bin Calculator", "url": "https://agsist.com/grain-bin-calculator"}, {"@type": "ListItem", "position": 9, "name": "AGSIST Daily Ag Briefing", "url": "https://agsist.com/daily"}, {"@type": "ListItem", "position": 10, "name": "Wheat Futures Prices Today", "url": "https://agsist.com/wheat-futures-prices"}, {"@type": "ListItem", "position": 11, "name": "Farmland Atlas", "url": "https://agsist.com/farmland-atlas"}, {"@type": "ListItem", "position": 12, "name": "Hail Map", "url": "https://agsist.com/hail-map"}, {"@type": "ListItem", "position": 13, "name": "Cash Rent by State", "url": "https://agsist.com/rent/"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What are corn futures prices today?", "acceptedAnswer": {"@type": "Answer", "text": "AGSIST shows CBOT corn futures from Yahoo Finance, delayed 10 to 25 min (read about every 15 minutes), so a price is about 10 to 25 minutes old while markets trade. You get the front month and the next December, each labeled with its contract month (for example Dec ’26), with net change, percent change, and 52-week range. Prices are in dollars per bushel."}}, {"@type": "Question", "name": "How do I find cash grain bids near me?", "acceptedAnswer": {"@type": "Answer", "text": "Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location."}}, {"@type": "Question", "name": "Is AGSIST free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. You don't need an account or a subscription. The spray advisory, urea risk monitor, break-even and grain bin calculators, cash bids and the AGSIST Daily briefing are free for non-commercial use."}}, {"@type": "Question", "name": "How often are grain prices updated on AGSIST?", "acceptedAnswer": {"@type": "Answer", "text": "Grain futures prices on AGSIST are updated about every 15 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every morning, weekends included, with overnight market analysis."}}, {"@type": "Question", "name": "What is urea volatilization risk?", "acceptedAnswer": {"@type": "Answer", "text": "Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50°F, humidity is high, and no rain is forecast within 2–4 days. The AGSIST urea risk monitor scores your local conditions right now from 0–100."}}, {"@type": "Question", "name": "What is grain basis and why does it matter?", "acceptedAnswer": {"@type": "Answer", "text": "Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. A stronger (less negative) basis means local buyers want grain. The cash bids page shows each elevator’s posted basis next to its cash price."}}, {"@type": "Question", "name": "When is the WASDE report released?", "acceptedAnswer": {"@type": "Answer", "text": "The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. The AGSIST USDA calendar lists every report date and how much each one tends to move the market."}}, {"@type": "Question", "name": "What is the soybean-to-corn price ratio and how do farmers use it?", "acceptedAnswer": {"@type": "Answer", "text": "The soybean-to-corn price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 15 minutes on AGSIST’s corn and soybean futures pages."}}]}]}</script>
+<meta name="twitter:image"       content="https://dnilgis.github.io/agsist-data/data/social/card-2026-11-25.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST", "alternateName": ["AGSIST Farm Dashboard", "AGSIST Agricultural Intelligence"], "description": "Free cash grain bids, futures, a daily briefing and farm tools for working farmers.", "publisher": {"@id": "https://agsist.com/#organization"}, "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": "https://agsist.com/cash-bids?zip={search_term_string}"}, "query-input": "required name=search_term_string"}}, {"@type": "Organization", "@id": "https://agsist.com/#organization", "name": "AGSIST", "url": "https://agsist.com/", "foundingDate": "2022", "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/icon-512.png", "width": 512, "height": 512}, "description": "Grain prices, cash bids, weather and farm tools for US corn, soybean and grain producers. Free for non-commercial use.", "founder": {"@id":"https://agsist.com/#organization"}, "contactPoint": {"@type": "ContactPoint", "telephone": "+1-715-797-2428", "contactType": "customer service", "areaServed": "US", "availableLanguage": "English"}, "address": {"@type": "PostalAddress", "addressRegion": "WI", "addressCountry": "US"}}, {"@type": "WebPage", "@id": "https://agsist.com/#webpage", "url": "https://agsist.com/", "name": "Corn, Soybean & Wheat Prices & Cash Grain Bids Today | AGSIST", "description": "Cash grain bids from elevators near your ZIP, corn, soybean and wheat futures (delayed 10 to 25 min), the AGSIST Daily morning briefing and the USDA report calendar. Free.", "isPartOf": {"@id": "https://agsist.com/#website"}, "about": {"@id": "https://agsist.com/#organization"}, "dateModified": "2026-11-25", "speakable": {"@type": "SpeakableSpecification", "cssSelector": [".sec-title"]}}, {"@type": "SoftwareApplication", "name": "AGSIST Agricultural Dashboard", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "url": "https://agsist.com/"}, {"@type": "ItemList", "name": "Free Agricultural Tools on AGSIST", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Corn Futures Prices Today", "url": "https://agsist.com/corn-futures-prices"}, {"@type": "ListItem", "position": 2, "name": "Soybean Futures Prices Today", "url": "https://agsist.com/soybean-futures-prices"}, {"@type": "ListItem", "name": "Live & Feeder Cattle Futures Prices", "url": "https://agsist.com/cattle-futures-prices", "position": 3}, {"@type": "ListItem", "position": 4, "name": "Cash Grain Bids Near Me", "url": "https://agsist.com/cash-bids"}, {"@type": "ListItem", "position": 5, "name": "Spray Advisory", "url": "https://agsist.com/spray"}, {"@type": "ListItem", "position": 6, "name": "Urea Volatilization Risk Monitor", "url": "https://agsist.com/spray#urea"}, {"@type": "ListItem", "position": 7, "name": "Farm Break-Even Calculator", "url": "https://agsist.com/breakeven"}, {"@type": "ListItem", "position": 8, "name": "Grain Bin Calculator", "url": "https://agsist.com/grain-bin-calculator"}, {"@type": "ListItem", "position": 9, "name": "AGSIST Daily Ag Briefing", "url": "https://agsist.com/daily"}, {"@type": "ListItem", "position": 10, "name": "Wheat Futures Prices Today", "url": "https://agsist.com/wheat-futures-prices"}, {"@type": "ListItem", "position": 11, "name": "Farmland Atlas", "url": "https://agsist.com/farmland-atlas"}, {"@type": "ListItem", "position": 12, "name": "Hail Map", "url": "https://agsist.com/hail-map"}, {"@type": "ListItem", "position": 13, "name": "Cash Rent by State", "url": "https://agsist.com/rent/"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What are corn futures prices today?", "acceptedAnswer": {"@type": "Answer", "text": "AGSIST shows CBOT corn futures from Yahoo Finance, delayed 10 to 25 min (read about every 15 minutes), so a price is about 10 to 25 minutes old while markets trade. You get the front month and the next December, each labeled with its contract month (for example Dec ’26), with net change, percent change, and 52-week range. Prices are in dollars per bushel."}}, {"@type": "Question", "name": "How do I find cash grain bids near me?", "acceptedAnswer": {"@type": "Answer", "text": "Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location."}}, {"@type": "Question", "name": "Is AGSIST free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. You don't need an account or a subscription. The spray advisory, urea risk monitor, break-even and grain bin calculators, cash bids and the AGSIST Daily briefing are free for non-commercial use."}}, {"@type": "Question", "name": "How often are grain prices updated on AGSIST?", "acceptedAnswer": {"@type": "Answer", "text": "Grain futures prices on AGSIST are updated about every 15 minutes while futures markets trade, from Sunday evening to Friday afternoon, Central time. The AGSIST Daily briefing is published every morning, weekends included, with overnight market analysis."}}, {"@type": "Question", "name": "What is urea volatilization risk?", "acceptedAnswer": {"@type": "Answer", "text": "Urea volatilization is the loss of nitrogen fertilizer as ammonia gas when urea is surface-applied without incorporation. Risk is highest when soil temperatures exceed 50°F, humidity is high, and no rain is forecast within 2–4 days. The AGSIST urea risk monitor scores your local conditions right now from 0–100."}}, {"@type": "Question", "name": "What is grain basis and why does it matter?", "acceptedAnswer": {"@type": "Answer", "text": "Grain basis is the difference between your local cash elevator price and the futures contract it is quoted against. A basis of −30 cents means the elevator pays 30 cents below futures. A stronger (less negative) basis means local buyers want grain. The cash bids page shows each elevator’s posted basis next to its cash price."}}, {"@type": "Question", "name": "When is the WASDE report released?", "acceptedAnswer": {"@type": "Answer", "text": "The USDA WASDE (World Agricultural Supply and Demand Estimates) report is released monthly, typically around the 10th of each month at 12:00 PM Eastern Time. The AGSIST USDA calendar lists every report date and how much each one tends to move the market."}}, {"@type": "Question", "name": "What is the soybean-to-corn price ratio and how do farmers use it?", "acceptedAnswer": {"@type": "Answer", "text": "The soybean-to-corn price ratio is November soybean futures divided by December corn futures. A higher ratio leans toward soybeans and a lower one toward corn, but where the line falls depends on your own yields, input costs, and basis, so run break-even math on your own numbers. Both contract prices update every 15 minutes on AGSIST’s corn and soybean futures pages."}}]}]}</script>
 <script>
 (function(){
   try{
@@ -128,73 +129,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </header>
 <!-- /static-nav:header -->
 </div>
-<div class="idx1-subbar">
-  <button type="button" id="idx1-zip-chip" class="idx1-zip-chip" aria-label="Change your ZIP" hidden>
-    <span class="idx1-zip-label">ZIP</span>
-    <span class="idx1-zip-val" id="idx1-zip-val">Not set</span>
-    <span class="idx1-zip-change" id="idx1-zip-change"><span class="idx1-zip-dot" aria-hidden="true">&middot; </span>Change<span class="idx1-zip-word"> ZIP</span></span>
-  </button>
-  <a href="#market-intel" class="idx1-zip-chip" style="text-decoration:none">
-    <span class="idx1-zip-label">Market outlook</span>
-    <span class="idx1-zip-change">Positioning and yield &darr;</span>
-  </a>
-  <a href="#s7-month" class="idx1-zip-chip" style="text-decoration:none" data-track="season">
-    <span class="idx1-zip-label">This month</span>
-    <span class="idx1-zip-change" id="s7-jump-m">Season</span><span class="idx1-zip-change" aria-hidden="true">&darr;</span>
-  </a>
-  <button type="button" id="pk-btn" class="idx1-zip-chip pk-btn" aria-expanded="false" aria-controls="pk-panel">
-    <span class="idx1-zip-label" id="pk-lead">What do you raise?</span>
-    <span class="idx1-zip-val" id="pk-val"></span>
-    <span class="idx1-zip-change" id="pk-chg">Sort the page</span>
-  </button>
-</div>
-<div class="pk-panel" id="pk-panel" hidden></div>
-<div class="visually-hidden" id="pk-say" role="status" aria-live="polite"></div>
-<script src="/components/raise-picker.js?v=1" defer></script>
-<script>
-/* Real behavior, no fabricated data: reads the same ZIP the Cash Bids
-   widget already stores (bids-homepage.js's own localStorage key, if any)
-   only to DISPLAY it here; clicking always scrolls to and focuses the
-   real #bids-zip field rather than opening a second, parallel ZIP flow. */
-(function(){
-  function paint(){
-    var out = document.getElementById('idx1-zip-val');
-    if(!out) return;
-    var z = '';
-    /* 2026-10-01: the homepage stores its ZIP in agsist-wx-loc (geo.js), not
-       agsist_zip, so the chip read "Not set" beside a card showing bids for
-       a ZIP. Read the homepage key first, then the /cash-bids one. */
-    try { var wl = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); z = (wl && /^\d{5}$/.test(wl.zip || '')) ? wl.zip : ''; } catch(e){}
-    if(!z){ try { z = localStorage.getItem('agsist_zip') || ''; } catch(e){} }
-    out.textContent = z ? z : 'Not set';
-    /* 2026-10-11 polish: with no ZIP the hero band right below asks for it,
-       so the chip steps aside instead of asking a second time. */
-    var c = document.getElementById('idx1-zip-chip');
-    if(c){ c.hidden = !z; c.setAttribute('aria-label', z ? 'ZIP ' + z + ', change it' : 'Set your ZIP'); }
-  }
-  var chip = document.getElementById('idx1-zip-chip');
-  if(chip){
-    chip.addEventListener('click', function(){
-      /* 2026-10-11 polish: the one ZIP box is in the hero band. */
-      if(typeof window.agsistOpenZip === 'function'){ window.agsistOpenZip(); return; }
-      var field = document.getElementById('bids-zip');
-      /* With a ZIP saved the ZIP row is hidden; open it before scrolling to it. */
-      var row = document.getElementById('bids-zip-row');
-      if(row && row.style.display === 'none'){ var ez = document.getElementById('bids-enter-zip-btn'); if(ez) ez.click(); else row.style.display = 'block'; }
-      var target = field || document.getElementById('dash-grid');
-      if(target && target.scrollIntoView){ target.scrollIntoView({behavior:'smooth', block:'center'}); }
-      if(field && field.focus){ setTimeout(function(){ field.focus(); }, 350); }
-    });
-  }
-  paint();
-  window.addEventListener('storage', paint);
-  /* Same tab: the storage event never fires in the tab that wrote. */
-  window.addEventListener('agsist:bids', paint);
-  window._AGSIST_GEO_CALLBACKS = window._AGSIST_GEO_CALLBACKS || [];
-  window._AGSIST_GEO_CALLBACKS.push(function(){ setTimeout(paint, 0); });
-})();
-</script>
 <div class="prices-strip" aria-label="Delayed commodity prices" role="region">
+  <style>/* the ticker row shows whole: its prices and contract names land after the first paint, so it stays unseen until
+    geo.js marks the strip t-ready (components/geo.js tickerReady), at most 5 s by this rule alone */
+  .prices-strip:not(.t-ready) .ticker-track-wrap{visibility:hidden;animation:t-hold 0s 5s forwards}@keyframes t-hold{to{visibility:visible}}</style>
   <div class="ticker-outer">
     <div class="ticker-live stale"><div class="live-dot" aria-hidden="true"></div><span id="ticker-age">&hellip;</span></div>
     <div class="ticker-track-wrap">
@@ -246,9 +184,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <main id="main" class="main" role="main" tabindex="-1">
-  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
+  <style>/* 2026-11-19: on a phone (under 560 px) with a ZIP, the overnight move sits in each bid's own cell (.hb-ovc, the same words per crop), not as a two-line row above the grid, and Sell grain and My field sit side by side at every hour, as they do from 521 px: the My field heading stays on the first screen at 390x844, with a long place name and a two-line basis too. Each bid cell holds seven lines then: four for the bid (its month and basis take two at 390) and three for the move ("Jan soybeans trading overnight (7:01 pm), settle not posted yet."). *//* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}#hero-band .hb-asof.hb-asof-ok{font-weight:400;color:var(--text-dim)}#hero-band .hb-asof-ok .hb-asof-t{color:var(--text)}#hero-band .hb-date.hb-sol::before{content:none}#hero-band .hb-sep.hb-sepw{display:none}#hero-band .hb-ovn{display:none;margin:0 0 4px}html.has-zip #hero-band.hb-ovnl .hb-ovn{display:block;font-size:.824rem;line-height:1.3;min-height:1.3em;color:var(--text-dim)}html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:43px;align-content:flex-start}@container hero (max-width:559px){html.has-zip #hero-band:is(.hb-preopen,.hb-ovnl) .hb-where{min-height:66px}html.has-zip #hero-band.hb-ovnl #hb-ovn{display:none}html.has-zip #hero-band.hb-ovnl .hb-bid .hb-ovc{display:block}html.has-zip #hero-band.hb-preopen .hb-bid .hb-s{min-height:5.6em}html.has-zip #hero-band.hb-ovnl .hb-bid .hb-s{min-height:9.8em}html.has-zip #hero-band .jobs{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}html.has-zip #hero-band :is(.job-sell,.job-field){grid-column:auto}html.has-zip #hero-band .job-sell{padding-right:12px}html.has-zip #hero-band .job-field{padding-left:12px;border-left:1px solid var(--border-2)}}#hero-band .hb-ovc{display:none}/* 2026-11-19 (rule 75b): from 560 px the row holds the longest words it can be given, two lines at every width (measured 424 to 990 px wide: the evening line before the settle, and two read times with front months, never three) */html.has-zip #hero-band.hb-ovnl #hb-ovn{min-height:2.6em}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
-    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
+    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}try{if(window.AgBidAge&&AgBidAge.between(new Date()))hb.classList.add('hb-preopen');if(window.AgBidAge&&AgBidAge.ovnLive(new Date()))hb.classList.add('hb-ovnl');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
     <h2 class="visually-hidden" id="hb-h">Today</h2>
     <!-- 2026-11-02 (go): the first screen is three jobs, near me, sell grain, my field.
@@ -260,6 +198,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <span class="hb-where"><span class="hb-place" id="hb-place"><span class="hb-pz">Your area</span><span class="hb-pn">Set your ZIP to see local cash bids</span></span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
           <button type="button" class="hb-change" id="hb-change" aria-controls="hb-zip-form" aria-expanded="false">Change</button>
         </div>
+        <p class="hb-ovn" id="hb-ovn"></p>
         <form class="hb-zip" id="hb-zip-form" novalidate>
           <label class="visually-hidden" for="hb-zip">Your ZIP code</label>
           <input type="text" id="hb-zip" name="zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go">
@@ -283,7 +222,74 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <span class="hb-s" id="hb-wx-s"></span>
           </a>
         </div>
-        <a class="job-daily" href="#daily-hero" data-track="jobs"><span class="job-daily-k" id="job-daily-k">The Daily &middot; Nov 18</span> <span class="job-daily-t" id="job-daily-t">December lean hogs fell $2.25 Tuesday to $53.10</span></a>
+        <a class="job-daily" href="#daily-hero" data-track="jobs"><span class="job-daily-k" id="job-daily-k">The Daily &middot; Nov 25</span> <span class="job-daily-t" id="job-daily-t">Ohio soybeans basis firmed 5 cents in a week</span></a>
+        <!-- Nov 19, 2026: the raise picker sits under Today near me, after the answer, not above it -->
+        <div class="idx1-subbar">
+          <button type="button" id="idx1-zip-chip" class="idx1-zip-chip" aria-label="Change your ZIP" hidden>
+            <span class="idx1-zip-label">ZIP</span>
+            <span class="idx1-zip-val" id="idx1-zip-val">Not set</span>
+            <span class="idx1-zip-change" id="idx1-zip-change"><span class="idx1-zip-dot" aria-hidden="true">&middot; </span>Change<span class="idx1-zip-word"> ZIP</span></span>
+          </button>
+          <a href="#market-intel" class="idx1-zip-chip" style="text-decoration:none">
+            <span class="idx1-zip-label">Market outlook</span>
+            <span class="idx1-zip-change">Positioning and yield &darr;</span>
+          </a>
+          <a href="#s7-month" class="idx1-zip-chip" style="text-decoration:none" data-track="season">
+            <span class="idx1-zip-label">This month</span>
+            <span class="idx1-zip-change" id="s7-jump-m">Season</span><span class="idx1-zip-change" aria-hidden="true">&darr;</span>
+          </a>
+          <button type="button" id="pk-btn" class="idx1-zip-chip pk-btn" aria-expanded="false" aria-controls="pk-panel">
+            <span class="idx1-zip-label" id="pk-lead">What do you raise?</span>
+            <span class="idx1-zip-val" id="pk-val"></span>
+            <span class="idx1-zip-change" id="pk-chg">Sort the page</span>
+          </button>
+        </div>
+        <div class="pk-panel" id="pk-panel" hidden></div>
+        <div class="visually-hidden" id="pk-say" role="status" aria-live="polite"></div>
+        <script src="/components/raise-picker.js?v=1" defer></script>
+        <script>
+        /* Real behavior, no fabricated data: reads the same ZIP the Cash Bids
+           widget already stores (bids-homepage.js's own localStorage key, if any)
+           only to DISPLAY it here; clicking always scrolls to and focuses the
+           real #bids-zip field rather than opening a second, parallel ZIP flow. */
+        (function(){
+          function paint(){
+            var out = document.getElementById('idx1-zip-val');
+            if(!out) return;
+            var z = '';
+            /* 2026-10-01: the homepage stores its ZIP in agsist-wx-loc (geo.js), not
+               agsist_zip, so the chip read "Not set" beside a card showing bids for
+               a ZIP. Read the homepage key first, then the /cash-bids one. */
+            try { var wl = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); z = (wl && /^\d{5}$/.test(wl.zip || '')) ? wl.zip : ''; } catch(e){}
+            if(!z){ try { z = localStorage.getItem('agsist_zip') || ''; } catch(e){} }
+            out.textContent = z ? z : 'Not set';
+            /* 2026-10-11 polish: with no ZIP the hero band right below asks for it,
+               so the chip steps aside instead of asking a second time. */
+            var c = document.getElementById('idx1-zip-chip');
+            if(c){ c.hidden = !z; c.setAttribute('aria-label', z ? 'ZIP ' + z + ', change it' : 'Set your ZIP'); }
+          }
+          var chip = document.getElementById('idx1-zip-chip');
+          if(chip){
+            chip.addEventListener('click', function(){
+              /* 2026-10-11 polish: the one ZIP box is in the hero band. */
+              if(typeof window.agsistOpenZip === 'function'){ window.agsistOpenZip(); return; }
+              var field = document.getElementById('bids-zip');
+              /* With a ZIP saved the ZIP row is hidden; open it before scrolling to it. */
+              var row = document.getElementById('bids-zip-row');
+              if(row && row.style.display === 'none'){ var ez = document.getElementById('bids-enter-zip-btn'); if(ez) ez.click(); else row.style.display = 'block'; }
+              var target = field || document.getElementById('dash-grid');
+              if(target && target.scrollIntoView){ target.scrollIntoView({behavior:'smooth', block:'center'}); }
+              if(field && field.focus){ setTimeout(function(){ field.focus(); }, 350); }
+            });
+          }
+          paint();
+          window.addEventListener('storage', paint);
+          /* Same tab: the storage event never fires in the tab that wrote. */
+          window.addEventListener('agsist:bids', paint);
+          window._AGSIST_GEO_CALLBACKS = window._AGSIST_GEO_CALLBACKS || [];
+          window._AGSIST_GEO_CALLBACKS.push(function(){ setTimeout(paint, 0); });
+        })();
+        </script>
       </div>
       <nav class="job job-sell" aria-labelledby="job-sell-h">
         <h3 class="job-h" id="job-sell-h">Sell grain</h3>
@@ -318,7 +324,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </ul>
       </div>
     </div>
-    <div class="sw-home" id="sw-home"></div>
+    <div class="sw-slot" id="sw-slot"></div>
     <script>try{(function(){var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'),c=l&&/^\d{5}$/.test(String(l.zip||''))?String(l.county||'').trim():'';if(c&&c.length<40){if(!/county|parish|borough/i.test(c))c+=' County';var e=document.getElementById('job-ff');if(e)e.textContent='Fast Facts for '+c;}})();}catch(e){}</script>
     <h3 class="hb-futh">Futures</h3>
     <p class="hb-plain" id="hb-plain">These are Chicago futures. Your local elevator pays a different price, called a cash bid. Type your ZIP in Today near me to see it.</p>
@@ -328,10 +334,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 --><!--SEED:hp:fc-k-->Dec ’26 corn futures<!--/SEED--><!--
 --></span>
         <span class="hb-v hb-v2" id="hb-fc-v"><!--
---><!--SEED:hp:fc--><span class="hb-n">$4.43<span class="hb-frac"> 3/4</span></span><!--/SEED--><!--
+--><!--SEED:hp:fc--><span class="hb-n">$4.39<span class="hb-frac"> 1/2</span></span><!--/SEED--><!--
 --></span>
         <span class="hb-s" id="hb-fc-s"><!--
---><!--SEED:hp:fc-s--><span class="hb-l"><span class="hb-n hb-chg dn"><span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>−3¢</span></span><span class="hb-l hb-age">Overnight trade Nov 18, 7:01 a.m. CT</span><!--/SEED--><!--
+--><!--SEED:hp:fc-s--><span class="hb-l"><span class="hb-n hb-chg up"><span aria-hidden="true">▲ </span><span class="visually-hidden">up </span>+5 1/2¢</span></span><span class="hb-l hb-age">Last trade Nov 25, 1:20 p.m. CT</span><!--/SEED--><!--
 --></span>
       </a>
       <a class="hb-cell hb-fut" id="hb-fs" href="#f-prices" data-track="hero">
@@ -339,10 +345,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 --><!--SEED:hp:fs-k-->Jan ’27 bean futures<!--/SEED--><!--
 --></span>
         <span class="hb-v hb-v2" id="hb-fs-v"><!--
---><!--SEED:hp:fs--><span class="hb-n">$12.20<span class="hb-frac"> 1/2</span></span><!--/SEED--><!--
+--><!--SEED:hp:fs--><span class="hb-n">$12.43<span class="hb-frac"> 1/4</span></span><!--/SEED--><!--
 --></span>
         <span class="hb-s" id="hb-fs-s"><!--
---><!--SEED:hp:fs-s--><span class="hb-l"><span class="hb-n hb-chg dn"><span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>−5¢</span></span><span class="hb-l hb-age">Overnight trade Nov 18, 7:01 a.m. CT</span><!--/SEED--><!--
+--><!--SEED:hp:fs-s--><span class="hb-l"><span class="hb-n hb-chg up"><span aria-hidden="true">▲ </span><span class="visually-hidden">up </span>+9 1/4¢</span></span><span class="hb-l hb-age">Last trade Nov 25, 1:20 p.m. CT</span><!--/SEED--><!--
 --></span>
       </a>
       <!-- 2026-11-06: the next release with a countdown and one
@@ -352,7 +358,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="hap" id="hap" role="group" aria-labelledby="hap-h">
         <h3 class="hap-h" id="hap-h">Today and this week</h3>
         <ol class="hap-list" id="hap-list"><!--
---><!--SEED:hp:hap--><li class="hap-i hap-top" data-state="next"><a class="hap-a" href="/cattle-futures-prices" data-track="happening"><span class="hap-t">Cattle on Feed and Milk Production</span><span class="hap-w"><span class="hap-wt">Fri Nov 20, 3:00 PM ET</span><span class="hap-cd"></span></span><span class="hap-x"></span></a></li><li class="hap-i" data-state="next"><a class="hap-a" href="/cot" data-track="happening"><span class="hap-w">Fri Nov 20, 3:30 PM ET</span><span class="hap-t">Funds report (COT)</span></a></li><li class="hap-i" data-state="next"><a class="hap-a" href="/conditions" data-track="happening"><span class="hap-w">Mon Nov 23, 4:00 PM ET</span><span class="hap-t">Crop Progress</span></a></li><!--/SEED--><!--
+--><!--SEED:hp:hap--><li class="hap-i hap-top hap-asks" data-state="next"><a class="hap-a" href="/cot" data-track="happening"><span class="hap-t">Funds report (COT)</span><span class="hap-w"><span class="hap-wt">Mon Nov 30, 3:30 PM ET, holiday week</span><span class="hap-cd"></span></span><span class="hap-x"></span></a><a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a></li><li class="hap-i" data-state="next"><a class="hap-a" href="/conditions" data-track="happening"><span class="hap-w">Mon Nov 30, 4:00 PM ET</span><span class="hap-t">Crop Progress</span></a></li><li class="hap-i hap-all"><a class="hap-a" href="/usda-calendar" data-track="happening"><span class="hap-w">Every report date</span><span class="hap-t">USDA report calendar</span></a></li><!--/SEED--><!--
 --></ol>
         <span class="visually-hidden" id="hap-say" role="status" aria-live="polite"></span>
       </div>
@@ -373,8 +379,14 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   </section>
   <script src="/components/home-worth.js?v=1" defer></script>
-<!-- price-answer:price-home --><section class="qa-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-18T15:17:31Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.42 a bushel as of Nov 18, 9:17 a.m. CT. January 2027 soybean futures last traded at $12.19½ a bushel as of Nov 18, 9:17 a.m. CT. December 2026 wheat futures last traded at $5.82¼ a bushel as of Nov 18, 9:17 a.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
-<section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-11-18" aria-label="AGSIST Daily Briefing" aria-expanded="false">
+  <!-- Friday Chart (Nov 20, 2026): the newest Friday Chart from /infographic/latest.json (components/home-friday-chart.js), under the first screen; baked hidden, shown only while its spot is below the screen, its room fixed here -->
+  <style>.fc{margin:0 0 16px}.fc[hidden]{display:none}.fc-a{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:10px 0;border-top:1px solid var(--border-2);color:inherit;text-decoration:none}.fc-a:hover .fc-t{color:var(--gold)}.fc-a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}.fc-img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface)}.fc-b{display:flex;flex-direction:column;min-width:0}.fc-k{font-size:.8rem;font-weight:700;line-height:1.3;color:var(--text-dim)}.fc-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.6em;margin-top:3px;font-weight:700;font-size:1.02rem;line-height:1.3;color:var(--text)}.fc-d{display:block;height:1.3em;margin-top:3px;font-size:.86rem;line-height:1.3;color:var(--text-dim)}.fc-m{display:block;height:1.3em;margin-top:6px;font-size:.86rem;font-weight:700;line-height:1.3;color:var(--gold)}@media(min-width:760px){.fc-a{grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:16px;align-items:center;padding:12px 14px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface)}}</style>
+  <section class="fc" id="fc" aria-labelledby="fc-k" hidden>
+    <a class="fc-a" id="fc-a" href="/infographic/" data-track="friday-chart"><img class="fc-img" id="fc-img" width="1200" height="630" alt="" decoding="async"><span class="fc-b"><span class="fc-k" id="fc-k">Friday Chart &middot; Infographic of the Week</span><span class="fc-t" id="fc-t"></span><time class="fc-d" id="fc-d"></time><span class="fc-m">See this week&rsquo;s chart &rarr;</span></span></a>
+  </section>
+  <script src="/components/home-friday-chart.js?v=1" defer></script>
+<!-- price-answer:price-home --><section class="qa-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-25T19:48:42Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.39½ a bushel as of Nov 25, 1:20 p.m. CT. January 2027 soybean futures last traded at $12.43¼ a bushel as of Nov 25, 1:20 p.m. CT. December 2026 wheat futures last traded at $5.64 a bushel as of Nov 25, 1:20 p.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
+<section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-11-25" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date">AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today’s ag market briefing. Click to read</span>
@@ -385,13 +397,13 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="daily-grid">
         <div class="daily-left">
           <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem"><div class="daily-eyebrow"><span class="daily-eyebrow-dot"></span> AGSIST DAILY</div><span id="daily-mood" class="daily-mood" style="display:none"></span></div>
-          <div id="daily-date" class="daily-date">Wednesday, November 18, 2026</div>
+          <div id="daily-date" class="daily-date">Wednesday, November 25, 2026</div>
           <div class="daily-snapshot-note" aria-label="Briefing snapshot context" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:.824rem;color:var(--text-muted);letter-spacing:.02em;margin:-.4rem 0 .8rem;line-height:1.5"><span id="daily-published">Snapshot at briefing publish</span> &middot; <span style="color:var(--gold)">ticker above shows delayed prices</span></div>
           <div id="site-greeting" class="daily-greeting">Good Morning</div>
           <div id="daily-thread-marker" class="daily-thread-marker" style="display:none"><span class="dtm-day">Day <span id="daily-thread-day"></span>/5</span><span class="dtm-q" id="daily-thread-q"></span></div>
-          <h2 id="daily-headline" class="daily-headline">December lean hogs fell $2.25 Tuesday to $53.10</h2>
+          <h2 id="daily-headline" class="daily-headline">Ohio soybeans basis firmed 5 cents in a week</h2>
           <p id="daily-subheadline" style="font-size:.824rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em"></p>
-          <p id="daily-lead" class="daily-lead">December lean hogs settled down $2.25 Tuesday at $53.10, a 4.1% drop. It was the biggest one-day drop since Nov. 5.</p>
+          <p id="daily-lead" class="daily-lead">Local bids improved this week even though futures slipped. Ohio soybean basis firmed 5 cents, with North Dakota and Ohio corn up the same. That gain softens the overnight drop in January soybeans.</p>
           <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today’s action" style="display:none">
             <span class="daily-takeaway-label">THE ACTION</span>
             <p id="daily-takeaway-text" class="daily-takeaway-text"></p>
@@ -401,9 +413,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <a class="daily-more-alt" href="/daily">Every Briefing</a>
           </div>
           <div class="daily-sections">
-            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">Hogs fall, cattle ease</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-1-catalyst-text"></span></div><div id="daily-section-1-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>December hog futures settled down 4.1% at <strong>$53.10</strong>, and the pork cutout fell $2.80 to $68.44.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Hog slaughter was estimated at 494,000 head Tuesday, near last week's 495,000, so kill pace did not change.</li></ul></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">Grains slip overnight</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-2-vs-text"></span></div><div id="daily-section-2-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-2-catalyst-text"></span></div><div id="daily-section-2-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>December corn is at <strong>$4.43¾</strong> overnight, down 3 cents from Tuesday's $4.46¾ settle; January beans are down 3¾ cents at $12.21¾.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Farmdoc says Illinois yields fell short of expectations, and November NASS forecasts also point below trend.</li></ul></div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label"></div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-3-vs-text"></span></div><div id="daily-section-3-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-3-catalyst-text"></span></div><div id="daily-section-3-body" class="daily-sec-text"></div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">Basis firms in the Eastern Corn Belt</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-1-catalyst-text"></span></div><div id="daily-section-1-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Corn basis firmed 5 cents in North Dakota (20 of 37 bids moved) and in Ohio (19 of 36 bids).</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>December corn is <strong>$4.34</strong> overnight, unchanged from Tuesday's settle, down ¼ cent on Tuesday.</li></ul></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">Beans slip, meal holds</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-2-vs-text"></span></div><div id="daily-section-2-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-2-catalyst-text"></span></div><div id="daily-section-2-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>January soybeans are at <strong>$12.25½</strong> overnight, down 8½ cents after Tuesday's 5¼ cent gain to $12.34.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Soybean meal is steady at $353.10 and soybean oil is down 1.1% to $57.49.</li></ul></div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label">Cattle firm, hogs soft</div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-3-vs-text"></span></div><div id="daily-section-3-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-3-catalyst-text"></span></div><div id="daily-section-3-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>December live cattle settled Tuesday at <strong>$225.90</strong>, up 0.6%, while January feeders settled at $332.90, down 0.4%.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>December lean hog futures settled at $51.80, down 1.2%; the pork cutout fell $4.39 to $66.24 per cwt, USDA AMS said.</li></ul></div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
             <div id="daily-sec-4" class="daily-sec" style="position:relative"><span id="daily-section-4-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-4-title" class="daily-sec-label"></div><span id="daily-section-4-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-4-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-4-vs-text"></span></div><div id="daily-section-4-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-4-catalyst-text"></span></div><div id="daily-section-4-body" class="daily-sec-text"></div><div id="daily-section-4-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-4-action" class="daily-sec-action"></div></div></div>
           </div>
           <div id="daily-spread" class="daily-spread">
@@ -622,12 +634,30 @@ try {
     function paintPlace(){
       var l=loc(),p=placeFromBids||(l&&l.label)||'',nz=noZip();
       var hb=$('hero-band');if(hb)hb.classList.toggle('hb-nozip',nz);
-      var el=$('hb-place');if(el)el.textContent=looking?'Looking up ZIP '+looking:(nz?'Set your ZIP to see local cash bids':(p||'Set your ZIP'));
+      var el=$('hb-place');if(el)el.textContent=looking?'Looking up ZIP '+looking:(nz?'Set your ZIP to see local cash bids':(p||'Set your ZIP'));if(typeof sepFit==='function')sepFit();
       var b=$('hb-change');if(b){b.textContent=(p&&!nz)?'Change':'Set ZIP';b.setAttribute('aria-label',(p&&!nz)?'Change location ('+p+')':'Set your ZIP');}
       if(!nz&&!looking){var f=$('hb-zip-form');if(f&&!f.classList.contains('is-open')){var i=$('hb-zip');if(i&&l&&/^\d{5}$/.test(String(l.zip||''))&&document.activeElement!==i)i.value=l.zip;}}
     }
     var dt=$('hb-date');
     if(dt){try{dt.textContent=new Intl.DateTimeFormat('en-US',{timeZone:TZ,weekday:'short',month:'short',day:'numeric'}).format(new Date()).replace(',','');}catch(e){}}
+    /* 2026-11-18: no line in the band opens or ends with a separator dot. The date's dot goes when the date starts
+       its own line (a long place at 390); a card's " · " between two parts that land on two lines ("Harvest ·" over
+       "74¢ under Jan '27") becomes a line break (a <br> in its place). Measured with the marks off, so the answer does not depend on
+       itself; the line count is the same either way (no shift). Rechecked when the place, fonts, width or a cell change. */
+    function topOf(n){if(!n)return null;if(n.nodeType===1)return n.getBoundingClientRect().top;var r=document.createRange();r.selectNodeContents(n);var b=r.getClientRects();return b.length?b[b.length-1].top:null;}
+    function sepFit(){
+      var hb=$('hero-band'),p=$('hb-place');if(!hb)return;
+      var seps=hb.querySelectorAll('.hb-sep');
+      if(dt)dt.classList.remove('hb-sol');
+      var olds=hb.querySelectorAll('br.hb-sepbr');for(var i=0;i<olds.length;i++)olds[i].parentNode.removeChild(olds[i]);
+      for(i=0;i<seps.length;i++)seps[i].classList.remove('hb-sepw');
+      var sol=!!(dt&&p&&dt.textContent&&dt.offsetTop>p.offsetTop+2),brk=[];
+      for(i=0;i<seps.length;i++){var s=seps[i],a=topOf(s.previousSibling),c=topOf(s.nextSibling),r=s.getClientRects(),t=r.length?r[0].top:null;
+        if(t!=null&&((a!=null&&Math.abs(t-a)>2)||(c!=null&&Math.abs(c-t)>2)||r.length>1))brk.push(s);}
+      if(sol)dt.classList.add('hb-sol');
+      for(i=0;i<brk.length;i++){var br=document.createElement('br');br.className='hb-sepbr';brk[i].parentNode.insertBefore(br,brk[i]);brk[i].classList.add('hb-sepw');}
+    }
+    sepFit();try{if(window.ResizeObserver&&dt){var sro=new ResizeObserver(function(){sepFit();});sro.observe(dt.parentNode);sro.observe($('hb-place'));var hbx=$('hero-band');if(hbx)sro.observe(hbx);}}catch(e){}
     /* ---- the one ZIP box (2026-10-11 polish) ----
        Every "Set ZIP", "Change ZIP" and "Enter ZIP" on the page opens this box
        (window.agsistOpenZip). A ZIP typed here goes to window.agsistSetZip in
@@ -683,7 +713,37 @@ try {
       if(status==='pending'){set(id+'-v','<span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span>');}
       else set(id+'-v',DASH);
       set(id+'-s','<span class="hb-l">'+esc(STATE[status]||('No '+word+' bid '+ring))+'</span>');
+      paintOvn();
     }
+    /* The time line over the bids: before the 8:30 am open (or on a weekend or holiday) a bid posted after the
+       last close says so (components/bid-age.js); otherwise the site's Updated stamp with its old-bid note
+       (components/asof.js). Under it, in the overnight hours of a trading session, the overnight
+       move of each bid's futures contract with the quote's time (AgBidAge.ovnLine, the futures pages' overnight
+       read and clock). .hb-preopen and .hb-ovnl, set at the top of the band from the same rules, hold both
+       lines' room from first paint: no gap and no shift when the bids and the price file land. Repainted each
+       minute and when bids or prices land. */
+    var oldestBid=null,agePrices=null,bidSyms={ZC:null,ZS:null};
+    function paintOvn(){
+      var el=$('hb-ovn'),hb=$('hero-band');if(!el||!window.AgBidAge)return;
+      var o=agePrices?AgBidAge.ovnLine(agePrices,bidSyms,new Date()):null,on=!!AgBidAge.ovnLive(new Date());
+      if(hb)hb.classList.toggle('hb-ovnl',on);
+      el.textContent=on&&o?o.text:'';
+      /* the same words, each crop in its own bid cell: shown under 560 px, where the row above is not */
+      [['hb-corn','ZC'],['hb-soy','ZS']].forEach(function(a){
+        var s=$(a[0]+'-s');if(!s)return;
+        var c=s.querySelector('.hb-ovc');if(!c){c=document.createElement('span');c.className='hb-l hb-ovc';s.appendChild(c);}
+        c.textContent=on&&o&&o.parts?o.parts[a[1]]:'';
+      });
+    }
+    function paintAge(){
+      paintOvn();
+      var ao=$('hb-asof');if(!ao)return;
+      var x=oldestBid,a=x&&window.AgBidAge?AgBidAge.ageLine(x.posted,new Date()):null;
+      ao.classList.toggle('hb-asof-ok',!!a);
+      if(a){ao.innerHTML=a.html;ao.hidden=false;return;}
+      if(window.AgAsOf)AgAsOf.set(ao,x&&x.posted?new Date(x.posted):null,'bids');else{ao.textContent='';ao.hidden=true;}
+    }
+    setInterval(function(){if(oldestBid)paintAge();else paintOvn();},60000);
     function paintBids(d){
       if(!d||typeof d!=='object')return;
       bidsSeen=true;
@@ -704,7 +764,9 @@ try {
       }
       /* The stamp names the OLDEST bid shown, so a fresh corn bid never vouches for an old bean bid. */
       var oldest=null;shown.forEach(function(x){var t=x.posted?Date.parse(x.posted):NaN;if(!isNaN(t)&&(oldest==null||t<oldest))oldest=t;});
-      var ao=$('hb-asof');if(ao){if(window.AgAsOf)AgAsOf.set(ao,oldest!=null?new Date(oldest):null,'bids');else{ao.textContent=asof?'Bids as of '+asof:'';ao.hidden=!asof;}}
+      oldestBid=null;shown.forEach(function(x){if(x.posted&&Date.parse(x.posted)===oldest)oldestBid=oldestBid||x;});
+      bidSyms={ZC:d.corn&&d.corn.sym||null,ZS:d.soybeans&&d.soybeans.sym||null};
+      paintAge();
       var today=ctKey(new Date());
       Object.keys(CROP).forEach(function(k){
         var id=CROP[k][0],word=CROP[k][1],x=d[k];
@@ -728,14 +790,18 @@ try {
         if(x.town)where.push(esc(x.town));
         if(num(x.mi))where.push('<span class="hb-nw"><span class="hb-n">'+Math.round(Number(x.mi))+'</span>&nbsp;mi</span>');
         if(where.length)lines.push('<span class="hb-l">'+where.join(SEP)+'</span>');
+        /* Nov 18: "Harvest · 74¢ under Jan '27", the town pages' words (components/bid-age.js) */
+        var wl=window.AgBidAge?AgBidAge.whatLine(x.month,num(x.basis)?Number(x.basis):null,x.ref):{month:x.month||'',basis:''};
         var what=[];
-        if(x.month)what.push(esc(x.month));
-        if(num(x.basis))what.push('<span class="hb-n">'+qc(Number(x.basis)*100)+'</span> basis'+(x.ref?' <span class="hb-nw">'+esc(x.ref)+'</span>':''));
+        if(wl.month)what.push(esc(wl.month));
+        if(wl.basis)what.push('<span class="hb-nw">'+esc(wl.basis)+'</span>');
         if(what.length)lines.push('<span class="hb-l">'+what.join(SEP)+'</span>');
         var ho=x.higherOlder;
         if(ho&&num(ho.cash)){var hd=ctDay(ho.posted);lines.push('<span class="hb-l hb-ho">Higher older bid <span class="hb-nw">'+qd(ho.cash)+(hd?SEP+hd:'')+'</span></span>');}
         set(id+'-s',lines.join(''));
       });
+      paintOvn();
+      if(typeof sepFit==='function')sepFit();
     }
     /* A tap opens that elevator's row in the card when the card can; else it
        scrolls to the card. With no ZIP it opens the ZIP field. */
@@ -765,6 +831,7 @@ try {
     var futParsed=false;
     function label(q,fallback){var m=/^Z[CS]([FGHJKMNQUVXZ])(\d{2})/.exec((q&&q.ticker)||'');return m?MCODE[m[1]]+' ’'+m[2]:fallback;}
     function paintFut(data){
+      if(data&&data.quotes&&data!==agePrices){agePrices=data;paintAge();}
       var q=data&&data.quotes;if(!q)return;
       /* chaos-1: expired contracts roll off; corn-dec on Jan 2 is the next live Dec (components/price-local.js roll) */
       if(window.AgPxStamp&&AgPxStamp.roll)q=AgPxStamp.roll(q);
@@ -1022,15 +1089,15 @@ try {
     <h3 class="pc-section-lbl idx1-sub-h">Key grain contracts</h3>
     <div class="price-cards-grid">
       <div class="pc pc--highlight" data-spark="corn"><div class="pc-head"><span class="pc-name">Corn</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-near"><!--
---><!--SEED:hp:corn-->$4.43 3/4<!--/SEED--><!--
+--><!--SEED:hp:corn-->$4.39 1/2<!--/SEED--><!--
 --></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-near"></span></div><div class="pc-prev" id="pcprev-corn-near"><!--
---><!--SEED:hp:corn-when-->Overnight trade Nov 18, 7:01 a.m. CT &middot; Yahoo Finance, delayed<!--/SEED--><!--
+--><!--SEED:hp:corn-when-->Last trade Nov 25, 1:20 p.m. CT &middot; Yahoo Finance, delayed<!--/SEED--><!--
 --></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-lo"></span><span>52-week range</span><span id="pcrl-corn-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn"></div><div class="pc-range-dot" id="pcrd-corn"></div></div></div></div>
       <div class="pc pc--highlight" data-spark="corn-dec"><div class="pc-head"><span class="pc-name">Corn deferred</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-dec"></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-corn-dec"></span></div><div class="pc-prev" id="pcprev-corn-dec"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-corn-dec-lo"></span><span>52-week range</span><span id="pcrl-corn-dec-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-corn-dec"></div><div class="pc-range-dot" id="pcrd-corn-dec"></div></div></div></div>
       <div class="pc pc--highlight" data-spark="beans"><div class="pc-head"><span class="pc-name">Soybeans</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-bean-near"><!--
---><!--SEED:hp:beans-->$12.20 1/2<!--/SEED--><!--
+--><!--SEED:hp:beans-->$12.43 1/4<!--/SEED--><!--
 --></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-bean-near"></span></div><div class="pc-prev" id="pcprev-bean-near"><!--
---><!--SEED:hp:beans-when-->Overnight trade Nov 18, 7:01 a.m. CT &middot; Yahoo Finance, delayed<!--/SEED--><!--
+--><!--SEED:hp:beans-when-->Last trade Nov 25, 1:20 p.m. CT &middot; Yahoo Finance, delayed<!--/SEED--><!--
 --></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-beans-lo"></span><span>52-week range</span><span id="pcrl-beans-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-beans"></div><div class="pc-range-dot" id="pcrd-beans"></div></div></div></div>
       <div class="pc pc--highlight" data-spark="beans-nov"><div class="pc-head"><span class="pc-name">Soybeans deferred</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-bean-nov"></div><span class="r7-unit">per bu</span></div><div class="pc-change"><span class="pc-chg-val nc" id="pcc-bean-nov"></span></div><div class="pc-prev" id="pcprev-bean-nov"></div><div class="pc-range"><div class="pc-range-labels"><span id="pcrl-beans-nov-lo"></span><span>52-week range</span><span id="pcrl-beans-nov-hi"></span></div><div class="pc-range-track"><div class="pc-range-fill" id="pcrf-beans-nov"></div><div class="pc-range-dot" id="pcrd-beans-nov"></div></div></div></div>
     </div>
@@ -1237,12 +1304,14 @@ try {
   </div>
 <details class="m-fold m-fold--cot" open><summary class="m-fold-sum"><span>Positioning and yield <small>COT positioning &middot; yield nowcast</small></span></summary>
 <div class="fade-up" id="f-cot-intel">
-    <div class="sec-head"><h2 class="sec-title">Positioning and yield</h2><a href="/cot" class="sec-all">Full COT chart</a></div>
+    <div class="sec-head"><h2 class="sec-title">Positioning and yield</h2></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
-        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h">CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></span></div>
+        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h">CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict" hidden>Loading&hellip;</span></span></div>
         <p class="cot-gl-asof" id="cot-gl-asof">CFTC managed money, weekly.</p>
+        <div class="cot-gl-hd" aria-hidden="true"><span>Market</span><span>Funds&rsquo; net position, contracts</span><span>Change in the week</span></div>
         <ul class="cot-glance" id="cot-glance" aria-busy="true"><li class="cot-gl-line"></li><li class="cot-gl-line"></li><li class="cot-gl-line"></li></ul>
+        <a href="/cot" class="cot-full">Full COT chart</a>
         <details class="cot-ask" id="cot-ask"><summary>Get this every Friday by email</summary><div data-signup-ask="Funds this week by email" data-topic="cot" data-source="cot-weekly:home" data-btn="Email me" data-stack data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Every market in one short email after each weekly CFTC report. Free, its own list."></div></details>
         <details class="cot-detail" id="cot-detail"><summary>Ranges, price since the report, all markets</summary>
           <div class="cot-caption">Net position and the week&rsquo;s change, in futures contracts. Rank: net as a share of open interest, against every week since 2010. Bar: where the net sits in its 52-week range.</div>
@@ -1259,8 +1328,13 @@ try {
         </div>
       </div>
       <div class="ratio-widget" id="nowcast-widget">
-        <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict"></span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
+        <!-- Nov 19 (owner): out of season the estimate is withheld, and the card was a heading, two dashes and
+             "Withheld" three times. The page now starts as one plain line (#nc-week, its room held for the longest
+             reason at 320 px); components/home-yield.js fills it with the reason and the date, from the file's own
+             held_back reason when it is for the week on file. The heading, the two crop boxes and the source line
+             (.nc-in) show only when there is an estimate. -->
+        <div class="ratio-widget-head nc-in" hidden><h3 class="ratio-widget-title idx1-sub-h">Yield nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict"></span></div>
+        <div id="nc-grid" class="nc-in" hidden style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
           <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-lg)">
             <div style="font-size:.765rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn"></div>
@@ -1274,9 +1348,9 @@ try {
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
           </div>
         </div>
-        <div style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings.</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
-          <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week"></span>
+        <div class="nc-in" hidden style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings.</div>
+        <div class="nc-foot">
+          <span class="nc-week" id="nc-week">Yield nowcast: loading&hellip;</span>
           <a href="/conditions#crop-size" class="ratio-link">How it&rsquo;s computed</a>
         </div>
       </div>
@@ -1435,7 +1509,7 @@ try {
       <li><a href="/field-scout" data-track="land">Field Scout</a></li>
       <li><a href="/rain#radar" data-track="land">Rain on your field</a></li>
       <li><a href="/rain" data-track="land">Rain by county</a></li>
-      <li><a href="/rain#drought" data-track="land">Drought monitor</a></li>
+      <li><a href="/farmland-atlas#l=drought" data-track="land">Drought monitor</a></li>
       <li>NOAA outlooks</li>
       <li><a href="/spray" data-track="land">Spray advisory</a></li>
       <li><a href="/spray#fall-nitrogen" data-track="land">Soil temp (fall anhydrous)</a></li>
@@ -1473,7 +1547,7 @@ try {
     </ul>
     </details>
     </nav>
-    <script src="/components/rain-print-promo.js?v=7" defer></script>
+    <script src="/components/rain-print-promo.js?v=8" defer></script>
   </section>
   <script>
   /* Land band. Every number comes from a file in /data or the Atlas build,
@@ -1630,7 +1704,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 })();
 </script>
 </div>
-<!-- WHATSNEW:link (scripts/build_whats_new.py from data/whats-new.json; do not edit by hand) --><p class="wn-link" style="font-size:.84rem;color:var(--text-dim);margin:1.2rem 0 0"><a href="/changelog">What&rsquo;s new</a> &middot; latest: <a href="/sponsor">Sponsor numbers follow late corrections</a>, Nov 18</p><!-- /WHATSNEW:link -->
+<!-- WHATSNEW:link (scripts/build_whats_new.py from data/whats-new.json; do not edit by hand) --><p class="wn-link" style="font-size:.84rem;color:var(--text-dim);margin:1.2rem 0 0"><a href="/changelog">What&rsquo;s new</a> &middot; latest: <a href="/daily">The Daily: market moves read by what each sentence is about</a>, Nov 25</p><!-- /WHATSNEW:link -->
 </main>
 <div class="main" style="padding:0 1rem 1rem;max-width:1400px;margin:0 auto">
   <div style="font-size:.824rem;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center">
@@ -1679,19 +1753,20 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
        the real rule. Do not add a second counter here. */
   })();
   </script>
-<script src="/components/loader.js?v=21" defer></script>
+<script src="/components/loader.js?v=24" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
-<script src="/components/geo.js?v=41" defer></script>
+<script src="/components/geo.js?v=42" defer></script>
 <script src="/components/elev-names.js?v=2" defer></script>
 <script src="/components/bids-fallback.js?v=1" defer></script>
-<script src="/components/bids-homepage.js?v=52" defer></script>
+<script src="/components/bid-filter.js?v=3" defer></script>
+<script src="/components/bids-homepage.js?v=56" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=3">
-<script src="/components/cb-myelev.js?v=10" defer></script>
+<script src="/components/cb-myelev.js?v=13" defer></script>
 <script src="/components/homepage-extras.js?v=20" defer></script>
-<script src="/components/home-yield.js?v=14" defer></script>
+<script src="/components/home-yield.js?v=15" defer></script>
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/cot-glance.js?v=6"></script>
-<script src="/components/home.js?v=30"></script>
+<script src="/components/home.js?v=32"></script>
 <script src="/components/home-land.js?v=4" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
 <script src="/components/home-planting.js?v=8" defer></script>

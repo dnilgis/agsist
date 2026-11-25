@@ -20,7 +20,7 @@
 (function(){
   'use strict';
 
-  var NET_SCRIPT = '/components/bids-network.js?v=9';
+  var NET_SCRIPT = '/components/bids-network.js?v=10';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
@@ -32,7 +32,7 @@
   function notPerBushel(b){ return NOT_PER_BUSHEL.test(String(b && b.commodity || '')); }
   // White, non-GMO, organic, feed, durum and spring wheat are different products
   // from the commodity the futures price. Words are the ones the feed carries.
-  var SPECIAL_GRADE = /non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
+  var SPECIAL_GRADE = /non[- ]?gmo|nongmo|organic|plenish|\bip\b|identity[- ]?pres|high[- ]?oleic|food[- ]?grade|\bfood\b|waxy|popcorn|conventional|vistive|clear hilum|tofu|natto|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
   /* WAVE1-A: a labelled HRS or DNS wheat row is a wheat class (shown as
      "Wheat · HRS"), not a special grade. Everything else is unchanged. */
   function isSpecialGrade(b){
@@ -712,8 +712,13 @@
   function shortMon(k){ var m = /^(\d{4})-(\d{2})$/.exec(k || ''); return m ? MON[+m[2] - 1] + ' \'' + m[1].slice(2) : ''; }
   function monthsApart(a, b){ var x = /^(\d{4})-(\d{2})$/.exec(a), y = /^(\d{4})-(\d{2})$/.exec(b); return (x && y) ? (+y[1] - +x[1]) * 12 + (+y[2] - +x[2]) : null; }
   function quarterCents(c){ return AG.px.move(c, { style: 'slash', cent: false }); }
+  /* Nov 20, 2026: a carry is between two plain bids of one commodity. bids-network.js
+     gives bestCash only for the same commodity; a premium row here (Plenish, white corn)
+     never carries, and without the rule loaded nothing does. */
   function boardCarry(b){
     if(b.source !== 'network' || b.bestCash == null || b.cashPrice == null) return null;
+    var BR = bidRule();
+    if(!BR || !BR.gradeOk(b, { wheatClasses: true })) return null;
     var s0 = periodStart(b.deliveryStart), e0 = periodEnd(b.deliveryStart), s1 = periodStart(b.bestPeriod);
     if(!s0 || !s1 || s1 <= e0) return null;
     /* A later period in the NEXT crop year (wheat from June, corn and
@@ -1609,20 +1614,28 @@
      it (D1). When the pick came from the fresh pool and a stale board bids
      more for the same month, that bid is returned as `higherOlder`, so a
      lone fresh board's lower bid is never called "Top" without saying so. */
+  /* Nov 20, 2026: ONE RULE FOR "TOP" (components/bid-filter.js isCurrent and
+     windowKey; scripts/bid_rule.py in the Daily). A row is a candidate only in
+     the current delivery window: Adell WI's newcrop-2027 corn and any month 3+
+     out never are. Inside the pool, the earliest window any row has, then the
+     highest cash. Without the rule loaded there is no pick, never an
+     unfiltered one. */
+  function bidRule(){ return (window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey) ? window.AG.bidFilter : null; }
   function topPick(elevators, cat){
-    var nowKey = thisMonth(), fresh = [], old = [];
+    var BR = bidRule(), now = new Date(), fresh = [], old = [];
+    if(!BR) return null;
     elevators.forEach(function(e){
       var fr = freshness(e);
       (e.commodities[cat] || []).forEach(function(b){
-        if(notPerBushel(b) || isSpecialGrade(b) || basisOdd(b) || ppu(b.cashPrice) == null || rowExpired(b)) return;
-        (fr.stale ? old : fresh).push({ e: e, b: b, stale: fr.stale, fr: fr });
+        /* the one rule decides grade and delivery; a labelled HRS wheat row is a class here (WAVE1-A), not a grade */
+        if(basisOdd(b) || ppu(b.cashPrice) == null || rowExpired(b) ||
+           !BR.isPlainCurrent(b, now, { wheatClasses: b.category === 'wheat' && wheatClass(b) === 'HRS' })) return;
+        (fr.stale ? old : fresh).push({ e: e, b: b, stale: fr.stale, fr: fr, wk: BR.windowKey(b, now) });
       });
     });
     function narrow(list){
-      var keyed = list.filter(function(x){ var k = rowMonthKey(x.b); return k && k >= nowKey; });
-      if(!keyed.length) return { pool: list, mk: '' };
-      var mk = keyed.reduce(function(m, x){ var k = rowMonthKey(x.b); return !m || k < m ? k : m; }, '');
-      return { pool: keyed.filter(function(x){ return rowMonthKey(x.b) === mk; }), mk: mk };
+      var mk = list.reduce(function(m, x){ return !m || x.wk === 'now' || (m !== 'now' && x.wk < m) ? x.wk : m; }, '');
+      return { pool: list.filter(function(x){ return x.wk === mk; }), mk: mk };
     }
     function highest(list){ var best = null; list.forEach(function(x){ if(!best || ppu(x.b.cashPrice) > ppu(best.b.cashPrice)) best = x; }); return best; }
     var src = fresh.length ? fresh : old;
@@ -1630,8 +1643,8 @@
     var n = narrow(src), best = highest(n.pool);
     var higherOlder = null;
     if(fresh.length && old.length){
-      var mk = rowMonthKey(best.b);
-      var hi = highest(old.filter(function(x){ return rowMonthKey(x.b) === mk; }));
+      var mk = best.wk;
+      var hi = highest(old.filter(function(x){ return x.wk === mk; }));
       if(hi && ppu(hi.b.cashPrice) > ppu(best.b.cashPrice)) higherOlder = hi;
     }
     return { best: best, pool: n.pool, higherOlder: higherOlder };
@@ -1642,6 +1655,8 @@
     var best = tp.best;
     var b = best.b, e = best.e, pp = ppu(b.cashPrice), bc = basisCents(b.basis);
     var ref = null, rm = refMonth(b.symbol), br = boardRef(b, cat);
+    /* Nov 18: the contract itself (ZSF27), for the home card's overnight line; only a named one */
+    var own = shardSym(b && b.shard, shardRowKey(b)), sym = rm ? normSym(b.symbol, cat) : (br && own ? own : '');
     if(!rm && br) rm = br;
     if(rm) ref = rm.replace(/ (corn|soybeans)$/, '');
     else if(br === undefined && bc != null && refCropFor(b, cat) && pricesData){
@@ -1656,6 +1671,7 @@
       cash: Math.round(pp * 10000) / 10000,
       basis: bc == null ? null : Math.round(bc * 100) / 10000,
       ref: ref,
+      sym: sym || null,
       name: displayName(e.facility),
       town: townOf(e) + (townOf(e) && e.state ? ', ' : '') + (e.state || ''),
       mi: e.distance == null ? null : Math.round(e.distance * 10) / 10,

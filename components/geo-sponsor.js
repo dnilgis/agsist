@@ -18,8 +18,8 @@
  * [data-state-spot] box each page builder writes directly below the main answer.
  * The box holds its height from the first paint (components/styles.css), so the
  * card lands without moving anything. With no live sponsor for that state the
- * spot shows that it is open: the state's engaged visits and page views from
- * data/sponsor-spots.json (engaged visits from the state, views of its pages) and its price from data/rate-card.json. Two sponsor
+ * spot shows that it is open, with no figure and no price (Nov 19, 2026: reader figures are on /sponsor only;
+ * data/rate-card.json says whether the state opens soon). Two sponsor
  * names never share a screen: when the sitewide line is sold and the spot is in
  * the first screen, a sold state card goes to the first place below the fold.
  *
@@ -143,34 +143,17 @@
     var t = card && (card.tiers || []).filter(function (x) { return x.id === 'state'; })[0];
     return !!(t && (t.opens_soon || []).indexOf(st) >= 0);
   }
-  function num(n) { return Number(n).toLocaleString('en-US'); }
-  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  function dayTxt(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
-  /* The open state spot sells itself (decided Nov 13): what the buyer gets (the card on that state's pages and for its
-     readers), that STATE's own engaged visits over GA4's own window (data/sponsor-spots.json proof.states) with its
-     dates, and the sitewide totals labelled as all of AGSIST (Bing named on its figure). A state with no figure of its
-     own shows none; under SMALL visits the sitewide totals come first and the state's own figure follows, named as the
-     state's. One button to /sponsor with the state picked. No price. */
-  var SMALL = 100;
-  function openHtml(st, card, spots) {
+  /* The open state spot (Nov 19, 2026: the site's reader figures are shown on /sponsor only): what the buyer gets
+     (the card on that state's pages and for its readers), that the spot is open (or opens soon), where to see who
+     reads AGSIST and the price, and one button to /sponsor with the state picked. No figure and no price. */
+  function openHtml(st, card) {
     var name = NAMES[st];
     if (!name) return '';
-    var pr = (spots && spots.proof) || {}, ls = (spots && spots.lists) || {}, ps = pr.states || {};
-    var e = ps.engaged && ps.engaged[st];
-    var has = typeof e === 'number' && e > 0 && ps.start && ps.end && ps.days > 0;
-    var soon = held(card, st), nm = esc(name);
-    var gets = 'Your card on every ' + nm + ' page and for ' + nm + ' readers. ';
-    var stTxt = has ? nm + ' readers: <b>' + num(e) + '</b> engaged visits, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '. ' : '';
-    var site = [];
-    if (pr.engaged && pr.engaged.total > 0) site.push('<b>' + num(pr.engaged.total) + '</b> engaged visits');
-    if (pr.ai && pr.ai.total > 0) site.push('<b>' + num(pr.ai.total) + '</b> Bing AI citations');
-    var lst = ls.people > 0 ? '<b>' + num(ls.people) + '</b> on our email lists' : ls.daily > 0 ? '<b>' + num(ls.daily) + '</b> on the Daily email' : '';
-    if (lst && ls.asOf) lst += ' (' + dayTxt(ls.asOf) + ')';
-    var siteTxt = site.length ? 'All of AGSIST, 30 days: ' + site.join(', ') + (lst ? '; ' + lst : '') + '. ' : (lst ? 'All of AGSIST: ' + lst + '. ' : '');
-    var body = gets + (has && e >= SMALL ? stTxt + siteTxt : siteTxt + stTxt);
+    var nm = esc(name), soon = held(card, st);
     return '<div class="ss-box ss-open"><p class="ss-tag">' + nm + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
-      '<p class="ss-txt">' + body.replace(/\s+$/, '') + '</p>' +
-      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + ' <span class="ss-go-x">on AGSIST</span></a></div>';
+      '<p class="ss-txt">Your card on every ' + nm + ' page and for ' + nm + ' readers. See who reads AGSIST and the price on the sponsor page.</p>' +
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + ' <span class="ss-go-x">on AGSIST</span></a>' +
+      '<a class="ss-rep" href="/sponsor#sell-for-us">Or sell ads for AGSIST on commission.</a></div>';
   }
   /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the
      sitewide sponsor is on the same screen) keeps its room and says so, with no sponsor name: never an empty box,
@@ -209,17 +192,12 @@
     }, function () { return '-'; });
   }
   function shown(el) { try { return el.getClientRects().length > 0; } catch (e) { return false; } }
+  /* A PRF state sponsor's block (components/prf-sponsor.js, slot prf-<kind>:<st>) is not a page sponsor: the State
+     Sponsor's card is sold for every page about its state, PRF pages included, so it never yields to that block. */
   function soldOnPage() {
-    var l = doc.querySelectorAll('[data-sponsor-slot]:not(#ag-sw)');
+    var l = doc.querySelectorAll('[data-sponsor-slot]:not(#ag-sw):not([data-sponsor-slot^="prf-"])');
     for (var i = 0; i < l.length; i++) if (shown(l[i])) return true;
     return false;
-  }
-  function prfSold(st, day) {
-    if (!/^\/prf\//.test(root.location.pathname)) return Promise.resolve(false);
-    return getJSON('/data/prf-sponsors.json', 4000, { cache: 'no-cache' }).then(function (d) {
-      var e = d && d[st];
-      return !!(e && e.name && e.url && (!e.through || e.through >= day));
-    }, function () { return false; });
   }
   function need(tag, attr, url, test) {
     return new Promise(function (ok) {
@@ -259,7 +237,7 @@
   function spot() { return doc.querySelector('[data-state-spot]'); }
   function firstScreen(el) { try { return el.getBoundingClientRect().top < (root.innerHeight || doc.documentElement.clientHeight); } catch (x) { return false; } }
   function sitewideSold() { var l = doc.getElementById('ag-sw'); return !!(l && /sw-line--sold/.test(l.className) && shown(l)); }
-  var CSS = '/components/geo-sponsor.css?v=4';
+  var CSS = '/components/geo-sponsor.css?v=5';
   function css() { return need('link', 'href', CSS, function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }); }
   function hold(lower) {
     var sp = spot(), st = sp && sp.getAttribute('data-state-spot');
@@ -270,7 +248,7 @@
     var onSpot = surface === 'state-page' || surface === 'preview-state';
     Promise.all([
       need('link', 'href', '/components/sponsor-ad.css?v=4', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
-      need('link', 'href', '/components/geo-sponsor.css?v=4', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
+      need('link', 'href', '/components/geo-sponsor.css?v=5', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
       need('script', 'src', '/components/sponsor-ad.js?v=4', function () { return !!root.AgsistAd; })
     ]).then(function () {
       if (!root.AgsistAd || (!preview && soldOnPage())) { if (onSpot) hold(false); return; }
@@ -299,9 +277,8 @@
     var sp = spot();
     if (!sp) return;
     Promise.all([getJSON('/data/rate-card.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
-                 getJSON('/data/sponsor-spots.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
                  css()]).then(function (r) {
-      var html = openHtml(st, r[0], r[1]);
+      var html = openHtml(st, r[0]);
       if (html) sp.innerHTML = html;
     });
   }
@@ -334,7 +311,7 @@
         : lookup().then(function (rc) { var x = choose(data, rc, day, false); return x && { e: x, st: rc, s: 'reader-state' }; });
       return go.then(function (r) {
         if (!r) return;
-        return prfSold(ps || r.st, day).then(function (sold) { if (!sold) draw(r.e, r.s, rib, false); else if (r.s === 'state-page') hold(false); });
+        draw(r.e, r.s, rib, false);
       });
     }).catch(function () { if (ps && spot()) drawOpen(ps); });
   }

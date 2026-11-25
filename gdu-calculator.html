@@ -7,8 +7,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=29" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="preload" href="/components/styles.css?v=31" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=31">
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -127,6 +127,10 @@
 /* ── GAUGE ────────────────────────────────────────────────────────────── */
 html.gdu-late .gdu-results{display:flex;flex-direction:column}
 html.gdu-late #gdu-mat-card{order:-1}
+/* Nov 24 2026: a paint can land while the results are half read (the gauge in, the card not yet): the card then came in
+   above the gauge and pushed it 450 px down (CI: 0.07 to 0.10 at 1280). September to November the column stays unseen
+   until the script after it has put every part in place, then shows whole. */
+html.gdu-late #gdu-results:not(.gdu-set){visibility:hidden}
 .gauge-wrap { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:var(--card-r); padding:1.25rem 1.3rem; margin-bottom:1.1rem; }
 .gauge-center { display:flex; flex-direction:column; align-items:center; }
 .gauge-arc { position:relative; width:200px; height:108px; overflow:hidden; }
@@ -476,6 +480,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
    and frost on its first lines, comes before the season gauge, and the lede
    says so. The rest of the year the page is as written. */
 (function(){
+  try{
   var m=new Date().getMonth(); if(m<8||m>10) return;
   var card=document.getElementById('gdu-mat-card'), gauge=document.querySelector('.gauge-wrap');
   if(card&&gauge&&gauge.parentNode===card.parentNode) gauge.parentNode.insertBefore(card,gauge);
@@ -483,6 +488,10 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   if(grid&&mat&&fr){ card.insertBefore(mat,grid); card.insertBefore(fr,grid); mat.style.marginTop='0'; fr.style.marginBottom='.6rem'; }
   var ld=document.querySelector('.gdu-hero .page-lede');
   if(ld) ld.textContent='Is it at black layer, and will frost beat it? Black layer date and frost risk first, then heat units since planting and crop stage, from real daily weather at your ZIP.';
+  }finally{
+    /* every part is in place: the column shows (held unseen until now, September to November) */
+    var res=document.getElementById('gdu-results'); if(res) res.classList.add('gdu-set');
+  }
 })();
 </script>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="gdu"></aside>
@@ -641,7 +650,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=21" defer></script>
+<script src="/components/loader.js?v=24" defer></script>
 <script src="/components/gdu-stages.js?v=1"></script>
 <script src="/components/prism.js?v=1"></script>
 <script>

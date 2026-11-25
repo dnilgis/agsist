@@ -1,15 +1,15 @@
 {
- "checked": "2026-11-16",
+ "checked": "2026-11-23",
  "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
  "credit_url": "https://www.schraderauction.com/auctions/recent_auctions",
  "last_run": {
-  "captured": "2026-11-16",
+  "captured": "2026-11-23",
   "dropped_future_date": 0,
   "dropped_no_county": 1,
-  "dropped_not_farmland": 2,
-  "kept": 3,
+  "dropped_not_farmland": 1,
+  "kept": 6,
   "no_result": 0,
-  "pages": 6
+  "pages": 8
  },
  "records": [
   {
@@ -8301,6 +8301,171 @@
     }
    ],
    "url": "https://www.schraderauction.com/auctions/9642"
+  },
+  {
+   "auction_id": "9648",
+   "county": "Noble",
+   "county_fips": "18113",
+   "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
+   "date": "2026-11-16",
+   "headline_acres": 401,
+   "kind": "auction",
+   "source": "schrader",
+   "state": "IN",
+   "total_sold": 6000660,
+   "tracts": [
+    {
+     "per_acre": 15985,
+     "sold": 535500,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 12240,
+     "sold": 367200,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 18700,
+     "sold": 224400,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 5315,
+     "sold": 428400,
+     "tracts": "4+9+11"
+    },
+    {
+     "per_acre": 16248,
+     "sold": 367200,
+     "tracts": "5+8"
+    },
+    {
+     "per_acre": 14976,
+     "sold": 188700,
+     "tracts": "6"
+    },
+    {
+     "per_acre": 21690,
+     "sold": 377400,
+     "tracts": "7"
+    },
+    {
+     "per_acre": 311,
+     "sold": 18360,
+     "tracts": "10"
+    },
+    {
+     "per_acre": 13408,
+     "sold": 1065900,
+     "tracts": "12"
+    },
+    {
+     "per_acre": 17340,
+     "sold": 173400,
+     "tracts": "13"
+    },
+    {
+     "per_acre": 12666,
+     "sold": 1152600,
+     "tracts": "14"
+    },
+    {
+     "per_acre": 15587,
+     "sold": 693600,
+     "tracts": "15+16"
+    },
+    {
+     "per_acre": 15692,
+     "sold": 408000,
+     "tracts": "17"
+    }
+   ],
+   "url": "https://www.schraderauction.com/auctions/9648"
+  },
+  {
+   "auction_id": "9654",
+   "county": "Wayne",
+   "county_fips": "18177",
+   "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
+   "date": "2026-11-17",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "schrader",
+   "state": "IN",
+   "total_sold": 1000000,
+   "tracts": [
+    {
+     "per_acre": 12500,
+     "sold": 1000000,
+     "tracts": "1-4"
+    }
+   ],
+   "url": "https://www.schraderauction.com/auctions/9654"
+  },
+  {
+   "auction_id": "9637",
+   "county": "Madison",
+   "county_fips": "18095",
+   "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
+   "date": "2026-11-18",
+   "headline_acres": 269.6,
+   "kind": "auction",
+   "source": "schrader",
+   "state": "IN",
+   "total_sold": 5650000,
+   "tracts": [
+    {
+     "per_acre": 20965,
+     "sold": 5650000,
+     "tracts": "1-5"
+    }
+   ],
+   "url": "https://www.schraderauction.com/auctions/9637"
+  },
+  {
+   "auction_id": "9563",
+   "county": "Marshall",
+   "county_fips": "18099",
+   "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
+   "date": "2026-11-19",
+   "headline_acres": 249.5,
+   "kind": "auction",
+   "source": "schrader",
+   "state": "IN",
+   "total_sold": 2616000,
+   "tracts": [
+    {
+     "per_acre": 10833,
+     "sold": 975000,
+     "tracts": "1+2"
+    },
+    {
+     "per_acre": 14298,
+     "sold": 331000,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 13333,
+     "sold": 200000,
+     "tracts": "4"
+    },
+    {
+     "per_acre": 9615,
+     "sold": 250000,
+     "tracts": "5"
+    },
+    {
+     "per_acre": 7831,
+     "sold": 600000,
+     "tracts": "6+7+9"
+    },
+    {
+     "per_acre": 13911,
+     "sold": 260000,
+     "tracts": "8"
+    }
+   ],
+   "url": "https://www.schraderauction.com/auctions/9563"
   }
  ],
  "source": "schrader"

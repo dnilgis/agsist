@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 98,
- "with_known_cadence": 98,
+ "count": 97,
+ "with_known_cadence": 97,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -97,6 +97,7 @@
     "county rain",
     "Fetch Crop Progress",
     "Dairy prices",
+    "Drought county week",
     "Bake farm-bill page",
     "farmland-atlas-pages",
     "Hail state pages \u2014 generate from monthly data",
@@ -257,6 +258,7 @@
     "Cash Bid Index",
     "cash-bid-pages",
     "county rain",
+    "Drought county week",
     "farmland-atlas-pages",
     "Fetch Grain Bids",
     "Hail state pages \u2014 generate from monthly data",
@@ -430,6 +432,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",
@@ -472,6 +476,7 @@
     "COT Release Watch",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "Friday Chart spec",
     "Rebuild Call Scorecard",
     "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
@@ -511,6 +516,7 @@
    "touched_by": [
     "COT Release Watch",
     "Fetch COT Data",
+    "Friday Chart spec",
     "Rebuild Feed Manifest"
    ],
    "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
@@ -653,6 +659,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Build State Stats (USDA NASS)",
@@ -732,6 +740,7 @@
     "Fertilizer co-op posted prices",
     "fetch-fsa-arcplc",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Friday Chart spec",
     "Hail data refresh",
     "Hail state pages \u2014 generate from monthly data",
     "Harvest price tracker",
@@ -767,6 +776,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Build State Stats (USDA NASS)",
@@ -838,6 +849,7 @@
     "Daily site check",
     "Generate Daily Briefing",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Friday Chart spec",
     "Morning report"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
@@ -1428,6 +1440,7 @@
    "written_by": [],
    "touched_by": [
     "Bid change ledger (dispatch only)",
+    "Cron health",
     "Fetch Grain Bids",
     "Morning report",
     "Rebuild Feed Manifest"
@@ -2193,6 +2206,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",
@@ -2255,13 +2270,14 @@
     "prf",
     "seasonal models"
    ],
-   "cadence": "1 launch on a fixed schedule at about 5am Central",
+   "cadence": "2 launches on a fixed schedule at about 5am, 11am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "23 10 * * 3"
+    "23 10 * * 3",
+    "37 16 2 12 *"
    ],
    "max_gap_hours": 168.0,
    "quiet": null,
@@ -2282,7 +2298,7 @@
     "prf",
     "seasonal models"
    ],
-   "cadence": "3 launches on a fixed schedule at about 5am, 9am, 10am Central",
+   "cadence": "4 launches on a fixed schedule at about 5am, 9am, 10am, 11am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2290,6 +2306,7 @@
    "crons": [
     "37 14 9 * *",
     "23 10 * * 3",
+    "37 16 2 12 *",
     "41 15 15 11,12 *"
    ],
    "max_gap_hours": 168.0,
@@ -2312,7 +2329,7 @@
     "prf",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "3 launches on a fixed schedule at about 5am, 6am, 10am Central",
+   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 10am, 11am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2320,7 +2337,8 @@
    "crons": [
     "47 15 * * 4",
     "17 11 * * 5",
-    "23 10 * * 3"
+    "23 10 * * 3",
+    "37 16 2 12 *"
    ],
    "max_gap_hours": 119.1,
    "quiet": "weekly",
@@ -2458,6 +2476,7 @@
     "gifts-for-farmers.html",
     "index.html",
     "rain-gauge.html",
+    "rain-print.html",
     "wedding-year-weather-gift.html"
    ],
    "written_by": [],
@@ -2570,29 +2589,6 @@
    "url": null,
    "crons": [
     "10 22 * * *"
-   ],
-   "max_gap_hours": 24.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/sponsor-spots.json",
-   "pages": [
-    "prf-sponsor.html"
-   ],
-   "written_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "touched_by": [
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "1 launch every day at about 6am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "12 11 * * *"
    ],
    "max_gap_hours": 24.0,
    "quiet": null,
@@ -2714,9 +2710,12 @@
    "touched_by": [
     "Accuracy pass",
     "cash-bid-pages",
+    "county rain",
+    "Drought county week",
     "farmland-atlas-pages",
     "farmland-atlas",
     "Hail data refresh",
+    "Monthly county rain email",
     "tenure"
    ],
    "cadence": "1 launch monthly, on day 15 at about 1am Central",
@@ -2832,11 +2831,12 @@
   {
    "path": "data/us-states.geo.json",
    "pages": [
-    "farmland-atlas.html",
     "hail-map.html",
     "list-your-elevator.html"
    ],
-   "written_by": [],
+   "written_by": [
+    "Fertilizer USDA AMS series"
+   ],
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
@@ -2845,6 +2845,7 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
+    "Fertilizer USDA AMS series",
     "Harvest price tracker",
     "lrp",
     "Build Price Stats (5-year percentile)",
@@ -2854,13 +2855,17 @@
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "maintained by hand, not on a schedule",
+   "cadence": "3 launches on a fixed schedule at about 10am, 3pm, 8pm Central",
    "curated": true,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "23 20 * * 5",
+    "23 1 * * 6",
+    "23 15 * * 1"
+   ],
+   "max_gap_hours": 101.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -3071,6 +3076,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",

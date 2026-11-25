@@ -259,11 +259,13 @@
   function bhNorm(v){ return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ' '); }
 
   /* The day's change: bids-homepage.js fillChanges(), same file, same rule. */
-  function dayChange(prev, place, crop, period, cash, on){
+  /* com: the row's commodity. Nov 20, 2026: an entry of another commodity (the file's 4th field, written by
+     scripts/build_bids_prev.py) is never the day before: a plain-to-Plenish flip read as a 125-cent move. */
+  function dayChange(prev, place, crop, period, cash, on, com){
     var hist = prev && prev.rows && prev.rows[fnv(place + '|' + crop + '|' + period)];
     if(!Array.isArray(hist) || !on || cash == null) return null;
-    var p = null;
-    for(var h = 0; h < hist.length; h++){ if(hist[h] && hist[h][0] < on && hist[h][1] != null) p = hist[h]; }
+    var p = null, tag = String(com || '').toLowerCase().split(/\s+/).filter(Boolean).join(' ');
+    for(var h = 0; h < hist.length; h++){ if(hist[h] && hist[h][0] < on && hist[h][1] != null && (hist[h].length < 4 || com == null || hist[h][3] === tag)) p = hist[h]; }
     if(!p) return null;
     var d = (cash - p[1]) * 100, gap = p[0] < prevWeekday(on) || on !== lastWeekday(ctToday());
     var flat = Math.abs(d) < 0.125;
@@ -310,7 +312,7 @@
     return Promise.all([prevShard(st), basisShard(st), p.shard ? shard(p.shard) : null]).then(function(a){
       var prev = a[0], bm = basisMap(a[1]), sh = a[2], stale = false, facts = [];
       crops.forEach(function(c){
-        c.chg = dayChange(prev, p.place, c.crop, c.period, c.cash, on);
+        c.chg = dayChange(prev, p.place, c.crop, c.period, c.cash, on, c.commodity);
         /* The shard row this `now` came from: its contract and its read flag. */
         var row = null;
         if(sh && Array.isArray(sh.bids)) sh.bids.forEach(function(b){
@@ -456,7 +458,7 @@
   function loadAlerts(){
     if(document.querySelector('script[src*="cb-alerts.js"]')) return;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=3'; document.head.appendChild(l);
-    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=6'; s.defer = true;
+    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=9'; s.defer = true;
     s.onload = function(){ mounts.forEach(function(m){ m.force = true; draw(m); }); }; document.head.appendChild(s);
   }
   window.addEventListener('storage', function(e){ if(e.key === KEY) changed(); });

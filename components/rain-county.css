@@ -62,8 +62,11 @@
 .rc-faq summary { cursor: pointer; font-weight: 600; }
 .rc-faq p { margin: .45rem 0 0; color: var(--text-dim); }
 .rc-next { max-width: 48rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
-.rc-next a.rc-nb { display: block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
+/* a chip has no class of its own (Nov 19, 2026: 66 bytes a page); .rc and [href] outrank styles.css's underline on a classless link in a list */
+.rc .rc-next a[href] { display: block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
 .rc-next small { display: block; color: var(--text-muted); font-size: 14px; line-height: 1.35; }
+/* the Farm tools row (scripts/cross_links.py tools_row(False), Nov 19, 2026): ROW_STYLE here, once, not on every page */
+.xl-tools { font-size: .85rem; line-height: 1.8; margin: 18px 0; }
 .rc-states { columns: 3 14em; padding: 0; list-style: none; }
 .rc-states li { break-inside: avoid; padding: .3rem 0; }
 .rc-states small { color: var(--text-muted); }
@@ -230,3 +233,11 @@
   .rc-print-top.rc-print-off figcaption > span[hidden] { display: block !important; visibility: hidden; }
 }
 @media (min-width: 561px) { .rc-print-top.rc-print-on > .rce-top { display: none; } }
+/* Lately: the radar's last 24 hours and 7 days over the county (scripts/build_county_rain.py recent_box), one line. An
+   estimate looks like one: a dashed box with no fill and the word "estimate", above the solid observed figures. The numbers
+   are fixed width, so components/rain-recent.js can rewrite them and the time in place without moving the line. */
+.rc-now { border: 1px dashed var(--border-2, var(--border)); border-radius: var(--r-md); padding: .5rem .8rem; margin: 0 0 1rem; max-width: 40em; font-size: var(--fs-sm); line-height: 1.7; color: var(--text-muted); }
+.rc-now > b:first-child { color: var(--text); margin-right: .45rem; }
+.rc-now > i { display: inline-block; font-style: normal; font-size: var(--fs-xs); line-height: 1.4; border: 1px dashed currentColor; border-radius: var(--r-pill); padding: 0 .45rem; margin-right: .6rem; }
+.rc-now > b + b, .rc-now > i ~ b { display: inline-block; min-width: 5ch; text-align: right; font-family: var(--font-mono, monospace); font-size: 1.12rem; color: var(--text); }
+.rc-now time { white-space: nowrap; }

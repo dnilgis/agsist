@@ -46,6 +46,8 @@
     var s = stSlug(place.st), f = place.flags || '', out = [];
     var has = place.lat != null && place.lng != null && isFinite(+place.lat) && isFinite(+place.lng);
     var lat = has ? (+place.lat).toFixed(4) : '', lng = has ? (+place.lng).toFixed(4) : '';
+    var own = has ? fieldSoil(place.fields, place.lat, place.lng) : null;
+    if (own) out.push(own);
     if (has) out.push({ id: 'scout', href: '/field-scout?at=' + lat + ',' + lng + '&fips=' + place.fips, text: 'Field Scout at this spot' });
     if (has && place.sales) out.push({ id: 'comps', href: '/comp-report?lat=' + lat + '&lon=' + lng + (place.point ? '' : '&at=town') + '&fips=' + place.fips, text: 'Comparable sales report' });
     out.push(place.zip ? { id: 'bids', href: '/cash-bids?zip=' + place.zip, text: 'Cash bids near here' }
@@ -56,10 +58,34 @@
     /* 'l': the county has its own page on /land-sales/ (scripts/build_place_pct.py checks the file; Oct 29, 2026) */
     if (f.indexOf('l') >= 0) out.push({ id: 'sales', href: '/land-sales/' + s + '/' + place.slug, text: 'Land sales in this county' });
     if (f.indexOf('c') >= 0) out.push({ id: 'arcplc', href: '/arc-plc/' + s + '/' + place.slug, text: 'ARC or PLC for this county' });
-    if (f.indexOf('p') >= 0) out.push({ id: 'prf', href: '/prf/' + s + '/' + place.slug, text: 'PRF pasture insurance' });
+    if (f.indexOf('p') >= 0) out.push({ id: 'prf', href: '/prf/' + s + '#county=' + place.slug, text: 'PRF pasture insurance' });
     if (f.indexOf('r') >= 0) out.push({ id: 'rain', href: '/rain/' + s + '/' + place.slug, text: 'Rain this year, county page' });
     out.push({ id: 'rent', href: '/rent/' + s, text: STATES[place.st] + ' cash rent' });
     return out;
+  }
+
+  /* "Soil of your field" (fx/soil-everywhere, Nov 20, 2026): the newest field saved in Field Scout on this device
+     (agsist-fs-fields; place.fields) whose middle is within FIELD_MILES of the place, as one link that opens that
+     field in Field Scout with its soil card brought into view (?soil=1, the #f= outline Field Scout's share link
+     uses). The outline stays in the link on this device; nothing is sent until the reader taps. null without one. */
+  var FIELD_MILES = 30;
+  function fieldSoil(fields, la0, ln0) {
+    if (!Array.isArray(fields) || la0 == null || ln0 == null || !isFinite(+la0) || !isFinite(+ln0)) return null;
+    var best = null;
+    fields.forEach(function (f) {
+      if (!f || !Array.isArray(f.pts) || f.pts.length < 3 || f.pts.length > 80) return;
+      var pts = f.pts.filter(function (p) { return p && isFinite(+p[0]) && isFinite(+p[1]) && Math.abs(+p[0]) <= 90 && Math.abs(+p[1]) <= 180; });
+      if (pts.length !== f.pts.length) return;
+      var la = 0, ln = 0;
+      pts.forEach(function (p) { la += +p[0]; ln += +p[1]; });
+      if (miles(+la0, +ln0, la / pts.length, ln / pts.length) > FIELD_MILES) return;
+      var t = +f.editedAt || +f.id || 0;
+      if (!best || t > best.t) best = { t: t, f: f, pts: pts };
+    });
+    if (!best) return null;
+    var nm = String(best.f.name || '').replace(/[\u0000-\u001f]/g, '').trim().slice(0, 40);
+    return { id: 'soil', href: '/field-scout?soil=1#f=' + best.pts.map(function (p) { return (+p[0]).toFixed(5) + ',' + (+p[1]).toFixed(5); }).join('~'),
+      text: nm && nm !== 'Untitled' ? 'Soil of your field “' + nm + '”' : 'Soil of your field' };
   }
 
   /* &print=week,long,more,rain: the parts a shared link prints. Unknown words are dropped; no
@@ -380,13 +406,21 @@
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
   }
 
+  /* The nearest county with a station, in words: the file's own name for it ("Franklin County, Iowa"), else the name a
+     same-state county carries in the file, else nothing. Never its FIPS code (Nov 18: "the nearest county with one is
+     19069" reached readers). */
+  function nearWords(file, none) {
+    var n = none && none.near_name, c = none && none.near && file.counties && file.counties[none.near], st = String(file.state || '').toUpperCase();
+    if (!n && c && c.name && STATES[st]) n = c.name + ', ' + STATES[st];
+    return n && !/\d{5}/.test(n) ? '; the nearest county with one is ' + n : '';
+  }
   /* County rain since Jan 1 from data/rain/<st>.json. */
   function rainSoFar(file, fips) {
     if (!file || !file.counties) return { status: 'missing', why: 'the county rain file did not load' };
     var c = file.counties[fips];
     if (!c) {
       var none = file.none && file.none[fips];
-      return { status: 'none', why: none ? 'no weather station with a full record in this county; the nearest county with one is ' + none.near : 'no county rain figure for this county' };
+      return { status: 'none', why: none ? 'no weather station with a full record in this county' + nearWords(file, none) : 'no county rain figure for this county' };
     }
     var cum = c.cum || [], last = cum[cum.length - 1];
     if (!last || last[1] == null) return { status: 'none', why: 'no rain total this year yet' };
@@ -447,38 +481,48 @@
 
   /* Best and nearest bid per crop from a bids snapshot ({ bids: [...] } rows with cashPrice, distance, lat/lon).
      Rows marked verified:false, or with no price, never count. Distances from (lat, lng) when given. */
-  /* components/bid-filter.js is the one test for "may this row be a best bid" (no
-     organic / non-GMO / white / feed / durum / spring wheat, no meal or cwt quote,
-     price inside the crop's band). Fast Facts loads it; the county pages load
-     place.js on their own and do not yet (county-home.js is pinned by hash in
-     every atlas page), so there the rows pass as they always did. */
+  /* components/bid-filter.js is the one rule for "may this row be a best bid"
+     (isPlainCurrent: no special grade such as Plenish, IP, white corn or non-GMO,
+     no meal or cwt quote, price inside the crop's band, and a CURRENT delivery).
+     Fast Facts loads it, and since Nov 20, 2026 county-home.js loads it before
+     this file: the Atlas county page had no grade filter at all (ADM Ledbetter KY
+     white corn $5.05 could be Best corn), and Adell WI's Harvest 2027 corn was
+     the best corn on both. Without the rule there is no best, never an
+     unfiltered one. The best is the highest price in the earliest delivery
+     window any row has (windowKey: "now", then a month 1-2 out). */
   function bidFilter() {
-    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* not found: unfiltered */ }
-    return (typeof window !== 'undefined' && window.AG && window.AG.bidFilter) || null;
+    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* not found */ }
+    var w = (typeof window !== 'undefined' && window.AG && window.AG.bidFilter) || null;
+    return w && w.windowKey ? w : null;
   }
   var OUTLIER_BASIS = 0.75;   // a bid whose basis sits this far from the crop's median nearby never counts as best
-  function bestBids(snap, lat, lng, radius) {
+  function bestBids(snap, lat, lng, radius, now) {
     radius = radius || BID_MILES;
+    now = now || new Date();
     var by = {}, out = {}, BF = bidFilter();
-    if (!snap || !snap.bids) return out;
+    if (!snap || !snap.bids || !BF) return out;
     snap.bids.forEach(function (b) {
       var crop = String(b.crop || b.category || b.commodity || '').toLowerCase();
       if (/^soy/.test(crop)) crop = 'soybeans'; else if (/^corn/.test(crop)) crop = 'corn'; else if (/wheat/.test(crop)) crop = 'wheat'; else return;
       if (b.verified === false || typeof b.cashPrice !== 'number' || !isFinite(b.cashPrice) || b.cashPrice <= 0) return;
-      if (BF && !BF.canSetBest(b)) return;
+      var rb = b.crop || b.category ? b : Object.assign({}, b, { crop: crop });
+      if (!BF.isPlainCurrent(rb, now)) return;
       var d = lat != null && lng != null && b.lat != null && b.lon != null ? miles(lat, lng, b.lat, b.lon) : b.distance;
       if (d == null || d > radius) return;
       (by[crop] = by[crop] || []).push({ crop: crop, price: b.cashPrice, basis: typeof b.basis === 'number' ? b.basis : null,
         facility: b.facility || '', town: b.town || b.city || '', st: b.state || '', mi: Math.round(d),
-        delivery: b.delivery || b.period || '', start: b.deliveryStart || null, pricedAt: b.pricedAt || null });
+        delivery: b.delivery || b.period || '', start: b.deliveryStart || null, pricedAt: b.pricedAt || null,
+        wk: BF.windowKey(rb, now), period: BF.periodOf(rb) });
     });
     Object.keys(by).forEach(function (crop) {
       var rows = by[crop], bs = rows.map(function (r) { return r.basis; }).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; });
       var med = bs.length ? (bs.length % 2 ? bs[(bs.length - 1) / 2] : (bs[bs.length / 2 - 1] + bs[bs.length / 2]) / 2) : null;
       var o = out[crop] = { n: rows.length, left_out: 0, best: null, nearest: null, medianBasis: med, nBasis: bs.length };
+      function odd(r) { return bs.length >= 5 && r.basis != null && Math.abs(r.basis - med) > OUTLIER_BASIS; }
+      var mk = rows.reduce(function (m, r) { return odd(r) ? m : (!m || r.wk === 'now' || (m !== 'now' && r.wk < m) ? r.wk : m); }, '');
       rows.forEach(function (r) {
-        if (bs.length >= 5 && r.basis != null && Math.abs(r.basis - med) > OUTLIER_BASIS) { o.left_out++; return; }
-        if (!o.best || r.price > o.best.price || (r.price === o.best.price && r.mi < o.best.mi)) o.best = r;
+        if (odd(r)) { o.left_out++; return; }
+        if (r.wk === mk && (!o.best || r.price > o.best.price || (r.price === o.best.price && r.mi < o.best.mi))) o.best = r;
         if (!o.nearest || r.mi < o.nearest.mi) o.nearest = r;
       });
     });
@@ -981,7 +1025,9 @@
     var ok = b && b.status === 'ok', lab = ok ? b.label : 'futures';
     function words(m) { return cents(m * 100) + ' ' + (m < 0 ? 'under' : 'over') + ' ' + lab; }
     if (local && local.n >= 3 && local.median != null) {
-      return { label: label, value: words(local.median), date: isoDay(local.when) || (ok ? isoDay(b.asOf) : ''),
+      /* the label carries the scope beside the price (Nov 18 outside review: "40¢ under" for the county's elevators and
+         "35¢ under" for the bids within 50 miles read as one figure that disagreed) */
+      return { label: label + ', ' + local.n + ' bids within ' + BID_MILES + ' mi', value: words(local.median), date: isoDay(local.when) || (ok ? isoDay(b.asOf) : ''),
         ctx: 'Middle of ' + local.n + ' bids within ' + BID_MILES + ' mi of ' + (from || 'here') + '.' + (ok ? ' ' + STATES[st] + ': ' + words(b.median) + ', ' + medOf(b.n, b.companies) + '.' : '') + usda,
         src: ['Basis', href], paper: 'Posted elevator bids' + (usda ? '; USDA AgTransport' : '') };
     }
@@ -1000,8 +1046,8 @@
      of the county has been in it. A bare count; FSA decides any program. */
   var DNAME = ['abnormally dry', 'moderate drought', 'severe drought', 'extreme drought', 'exceptional drought'];
   function factDrought(d) {
-    if (!d || d.status !== 'ok') return na('Drought', d && d.why ? d.why : 'no Drought Monitor row', ['Drought map', '/rain#drought']);
-    var src = ['U.S. Drought Monitor', '/rain#drought'];
+    if (!d || d.status !== 'ok') return na('Drought', d && d.why ? d.why : 'no Drought Monitor row', ['Drought map', '/farmland-atlas#l=drought']);
+    var src = ['U.S. Drought Monitor', '/farmland-atlas#l=drought'];
     if (d.worst < 0) return { label: 'Drought', value: 'None', date: isoDay(d.valid), ctx: 'No part of the county dry or in drought.', src: src, paper: 'U.S. Drought Monitor' };
     var k = d.now[1] > 0 ? 1 : 0;
     for (var i = 4; i >= 1; i--) if (d.now[i] >= 50) { k = i; break; }
@@ -1229,7 +1275,7 @@
     basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, basisMonth: basisMonth, basisStitch: basisStitch, basisSeries: basisSeries, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },
     milesFrom: milesFrom,
     SECTIONS: SECTIONS, PRINT_PARTS: PRINT_PARTS, STATES: STATES, FIPS_ST: FIPS_ST, MIN_RANK_N: MIN_RANK_N,
-    deeper: deeper, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
+    deeper: deeper, fieldSoil: fieldSoil, FIELD_MILES: FIELD_MILES, parsePrint: parsePrint, printParam: printParam, printCode: printCode, printFromCode: printFromCode, qrLink: qrLink, parseQuery: parseQuery, parsePoint: parsePoint, classify: classify,
     splitState: splitState, normName: normName, stateFromName: stateFromName, findCounty: findCounty,
     countyInState: countyInState, countyAt: countyAt, stateOf: stateOf, rankIn: rankIn, profile: profile,
     sentence: sentence, fmt: fmt, fmtShort: fmtShort, lossWorst: lossWorst, ordinal: ordinal, miles: miles, rainSoFar: rainSoFar,

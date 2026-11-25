@@ -1,0 +1,655 @@
+{
+ "about": "Purdue's six Indiana regions: the average estimated value (June 2026) and cash rent (2026) of tillable bare land, top, average and poor quality, from a survey of farmland professionals. A region's figure, not a county's.",
+ "counties": {
+  "18001": {
+   "name": "Adams",
+   "region": "Northeast"
+  },
+  "18003": {
+   "name": "Allen",
+   "region": "Northeast"
+  },
+  "18005": {
+   "name": "Bartholomew",
+   "region": "Central"
+  },
+  "18007": {
+   "name": "Benton",
+   "region": "West Central"
+  },
+  "18009": {
+   "name": "Blackford",
+   "region": "Northeast"
+  },
+  "18011": {
+   "name": "Boone",
+   "region": "Central"
+  },
+  "18013": {
+   "name": "Brown",
+   "region": "Southeast"
+  },
+  "18015": {
+   "name": "Carroll",
+   "region": "West Central"
+  },
+  "18017": {
+   "name": "Cass",
+   "region": "North"
+  },
+  "18019": {
+   "name": "Clark",
+   "region": "Southeast"
+  },
+  "18021": {
+   "name": "Clay",
+   "region": "Southwest"
+  },
+  "18023": {
+   "name": "Clinton",
+   "region": "Central"
+  },
+  "18025": {
+   "name": "Crawford",
+   "region": "Southeast"
+  },
+  "18027": {
+   "name": "Daviess",
+   "region": "Southwest"
+  },
+  "18029": {
+   "name": "Dearborn",
+   "region": "Southeast"
+  },
+  "18031": {
+   "name": "Decatur",
+   "region": "Central"
+  },
+  "18033": {
+   "name": "DeKalb",
+   "region": "Northeast"
+  },
+  "18035": {
+   "name": "Delaware",
+   "region": "Northeast"
+  },
+  "18037": {
+   "name": "Dubois",
+   "region": "Southwest"
+  },
+  "18039": {
+   "name": "Elkhart",
+   "region": "North"
+  },
+  "18041": {
+   "name": "Fayette",
+   "region": "Central"
+  },
+  "18043": {
+   "name": "Floyd",
+   "region": "Southeast"
+  },
+  "18045": {
+   "name": "Fountain",
+   "region": "West Central"
+  },
+  "18047": {
+   "name": "Franklin",
+   "region": "Central"
+  },
+  "18049": {
+   "name": "Fulton",
+   "region": "North"
+  },
+  "18051": {
+   "name": "Gibson",
+   "region": "Southwest"
+  },
+  "18053": {
+   "name": "Grant",
+   "region": "Northeast"
+  },
+  "18055": {
+   "name": "Greene",
+   "region": "Southwest"
+  },
+  "18057": {
+   "name": "Hamilton",
+   "region": "Central"
+  },
+  "18059": {
+   "name": "Hancock",
+   "region": "Central"
+  },
+  "18061": {
+   "name": "Harrison",
+   "region": "Southeast"
+  },
+  "18063": {
+   "name": "Hendricks",
+   "region": "Central"
+  },
+  "18065": {
+   "name": "Henry",
+   "region": "Central"
+  },
+  "18067": {
+   "name": "Howard",
+   "region": "Central"
+  },
+  "18069": {
+   "name": "Huntington",
+   "region": "Northeast"
+  },
+  "18071": {
+   "name": "Jackson",
+   "region": "Southeast"
+  },
+  "18073": {
+   "name": "Jasper",
+   "region": "North"
+  },
+  "18075": {
+   "name": "Jay",
+   "region": "Northeast"
+  },
+  "18077": {
+   "name": "Jefferson",
+   "region": "Southeast"
+  },
+  "18079": {
+   "name": "Jennings",
+   "region": "Southeast"
+  },
+  "18081": {
+   "name": "Johnson",
+   "region": "Central"
+  },
+  "18083": {
+   "name": "Knox",
+   "region": "Southwest"
+  },
+  "18085": {
+   "name": "Kosciusko",
+   "region": "North"
+  },
+  "18087": {
+   "name": "LaGrange",
+   "region": "Northeast"
+  },
+  "18089": {
+   "name": "Lake",
+   "region": "North"
+  },
+  "18091": {
+   "name": "LaPorte",
+   "region": "North"
+  },
+  "18093": {
+   "name": "Lawrence",
+   "region": "Southeast"
+  },
+  "18095": {
+   "name": "Madison",
+   "region": "Central"
+  },
+  "18097": {
+   "name": "Marion",
+   "region": "Central"
+  },
+  "18099": {
+   "name": "Marshall",
+   "region": "North"
+  },
+  "18101": {
+   "name": "Martin",
+   "region": "Southwest"
+  },
+  "18103": {
+   "name": "Miami",
+   "region": "North"
+  },
+  "18105": {
+   "name": "Monroe",
+   "region": "Southeast"
+  },
+  "18107": {
+   "name": "Montgomery",
+   "region": "West Central"
+  },
+  "18109": {
+   "name": "Morgan",
+   "region": "Southeast"
+  },
+  "18111": {
+   "name": "Newton",
+   "region": "North"
+  },
+  "18113": {
+   "name": "Noble",
+   "region": "Northeast"
+  },
+  "18115": {
+   "name": "Ohio",
+   "region": "Southeast"
+  },
+  "18117": {
+   "name": "Orange",
+   "region": "Southeast"
+  },
+  "18119": {
+   "name": "Owen",
+   "region": "Southwest"
+  },
+  "18121": {
+   "name": "Parke",
+   "region": "West Central"
+  },
+  "18123": {
+   "name": "Perry",
+   "region": "Southwest"
+  },
+  "18125": {
+   "name": "Pike",
+   "region": "Southwest"
+  },
+  "18127": {
+   "name": "Porter",
+   "region": "North"
+  },
+  "18129": {
+   "name": "Posey",
+   "region": "Southwest"
+  },
+  "18131": {
+   "name": "Pulaski",
+   "region": "North"
+  },
+  "18133": {
+   "name": "Putnam",
+   "region": "West Central"
+  },
+  "18135": {
+   "name": "Randolph",
+   "region": "Northeast"
+  },
+  "18137": {
+   "name": "Ripley",
+   "region": "Southeast"
+  },
+  "18139": {
+   "name": "Rush",
+   "region": "Central"
+  },
+  "18141": {
+   "name": "St. Joseph",
+   "region": "North"
+  },
+  "18143": {
+   "name": "Scott",
+   "region": "Southeast"
+  },
+  "18145": {
+   "name": "Shelby",
+   "region": "Central"
+  },
+  "18147": {
+   "name": "Spencer",
+   "region": "Southwest"
+  },
+  "18149": {
+   "name": "Starke",
+   "region": "North"
+  },
+  "18151": {
+   "name": "Steuben",
+   "region": "Northeast"
+  },
+  "18153": {
+   "name": "Sullivan",
+   "region": "Southwest"
+  },
+  "18155": {
+   "name": "Switzerland",
+   "region": "Southeast"
+  },
+  "18157": {
+   "name": "Tippecanoe",
+   "region": "West Central"
+  },
+  "18159": {
+   "name": "Tipton",
+   "region": "Central"
+  },
+  "18161": {
+   "name": "Union",
+   "region": "Central"
+  },
+  "18163": {
+   "name": "Vanderburgh",
+   "region": "Southwest"
+  },
+  "18165": {
+   "name": "Vermillion",
+   "region": "West Central"
+  },
+  "18167": {
+   "name": "Vigo",
+   "region": "Southwest"
+  },
+  "18169": {
+   "name": "Wabash",
+   "region": "Northeast"
+  },
+  "18171": {
+   "name": "Warren",
+   "region": "West Central"
+  },
+  "18173": {
+   "name": "Warrick",
+   "region": "Southwest"
+  },
+  "18175": {
+   "name": "Washington",
+   "region": "Southeast"
+  },
+  "18177": {
+   "name": "Wayne",
+   "region": "Central"
+  },
+  "18179": {
+   "name": "Wells",
+   "region": "Northeast"
+  },
+  "18181": {
+   "name": "White",
+   "region": "West Central"
+  },
+  "18183": {
+   "name": "Whitley",
+   "region": "Northeast"
+  }
+ },
+ "evidence": "opinion survey of farmland professionals, region averages",
+ "not_mapped": {},
+ "notes": {
+  "limited": "Limited responses; Interpret with caution",
+  "modest": "the number of responses in each region is modest, so these values should be interpreted with caution",
+  "parcel": "Determining the value for a specific property requires more information than is contained in this report"
+ },
+ "regions": {
+  "Central": {
+   "corn": {
+    "average": 207,
+    "poor": 178,
+    "top": 236
+   },
+   "counties": [
+    "18005",
+    "18011",
+    "18023",
+    "18031",
+    "18041",
+    "18047",
+    "18057",
+    "18059",
+    "18063",
+    "18065",
+    "18067",
+    "18081",
+    "18095",
+    "18097",
+    "18139",
+    "18145",
+    "18159",
+    "18161",
+    "18177"
+   ],
+   "rent": {
+    "average": 260,
+    "poor": 214,
+    "top": 301
+   },
+   "responses": 38,
+   "value": {
+    "average": 13432,
+    "poor": 10476,
+    "top": 15730
+   },
+   "value_prior": {
+    "average": 13192,
+    "poor": 10567,
+    "top": 15548
+   }
+  },
+  "North": {
+   "corn": {
+    "average": 213,
+    "poor": 183,
+    "top": 246
+   },
+   "counties": [
+    "18017",
+    "18039",
+    "18049",
+    "18073",
+    "18085",
+    "18089",
+    "18091",
+    "18099",
+    "18103",
+    "18111",
+    "18127",
+    "18131",
+    "18141",
+    "18149"
+   ],
+   "limited": true,
+   "rent": {
+    "average": 254,
+    "poor": 202,
+    "top": 301
+   },
+   "responses": 14,
+   "value": {
+    "average": 10900,
+    "poor": 8417,
+    "top": 14400
+   },
+   "value_prior": {
+    "average": 12333,
+    "poor": 9222,
+    "top": 15389
+   }
+  },
+  "Northeast": {
+   "corn": {
+    "average": 207,
+    "poor": 179,
+    "top": 234
+   },
+   "counties": [
+    "18001",
+    "18003",
+    "18009",
+    "18033",
+    "18035",
+    "18053",
+    "18069",
+    "18075",
+    "18087",
+    "18113",
+    "18135",
+    "18151",
+    "18169",
+    "18179",
+    "18183"
+   ],
+   "rent": {
+    "average": 257,
+    "poor": 212,
+    "top": 304
+   },
+   "responses": 33,
+   "value": {
+    "average": 11436,
+    "poor": 9277,
+    "top": 13696
+   },
+   "value_prior": {
+    "average": 13791,
+    "poor": 11032,
+    "top": 15909
+   }
+  },
+  "Southeast": {
+   "corn": {
+    "average": null,
+    "poor": null,
+    "top": null
+   },
+   "counties": [
+    "18013",
+    "18019",
+    "18025",
+    "18029",
+    "18043",
+    "18061",
+    "18071",
+    "18077",
+    "18079",
+    "18093",
+    "18105",
+    "18109",
+    "18115",
+    "18117",
+    "18137",
+    "18143",
+    "18155",
+    "18175"
+   ],
+   "limited": true,
+   "rent": {
+    "average": 208,
+    "poor": 175,
+    "top": 250
+   },
+   "responses": 2,
+   "value": {
+    "average": 8500,
+    "poor": 8000,
+    "top": 10500
+   },
+   "value_prior": {
+    "average": 8167,
+    "poor": 6083,
+    "top": 10417
+   }
+  },
+  "Southwest": {
+   "corn": {
+    "average": 192,
+    "poor": 159,
+    "top": 224
+   },
+   "counties": [
+    "18021",
+    "18027",
+    "18037",
+    "18051",
+    "18055",
+    "18083",
+    "18101",
+    "18119",
+    "18123",
+    "18125",
+    "18129",
+    "18147",
+    "18153",
+    "18163",
+    "18167",
+    "18173"
+   ],
+   "limited": true,
+   "rent": {
+    "average": 226,
+    "poor": 184,
+    "top": 272
+   },
+   "responses": 13,
+   "value": {
+    "average": 10875,
+    "poor": 7250,
+    "top": 15750
+   },
+   "value_prior": {
+    "average": 10825,
+    "poor": 7488,
+    "top": 14233
+   }
+  },
+  "West Central": {
+   "corn": {
+    "average": 214,
+    "poor": 185,
+    "top": 242
+   },
+   "counties": [
+    "18007",
+    "18015",
+    "18045",
+    "18107",
+    "18121",
+    "18133",
+    "18157",
+    "18165",
+    "18171",
+    "18181"
+   ],
+   "rent": {
+    "average": 289,
+    "poor": 240,
+    "top": 333
+   },
+   "responses": 27,
+   "value": {
+    "average": 12458,
+    "poor": 10025,
+    "top": 14975
+   },
+   "value_prior": {
+    "average": 11731,
+    "poor": 10135,
+    "top": 14388
+   }
+  }
+ },
+ "regions_from": "Figure 1, County clusters used in Purdue Land Values survey to create geographic regions (read by laying the county outlines over the figure)",
+ "respondents": 127,
+ "source": {
+  "authors": "Todd Kuethe",
+  "issue": "Purdue Agricultural Economics Report, August 2026 (PAER-2026-24)",
+  "org": "Purdue University, Department of Agricultural Economics",
+  "ref": "purdue-paer-2026-24-pdf",
+  "released": "August 2026",
+  "sha256": "4e7938f338a163bd8fbb95e4b27e70c914e64c6dd9d3446cc81f5f2f49a51ba8",
+  "title": "Purdue Farmland Values and Cash Rent Survey",
+  "url": "https://ag.purdue.edu/commercialag/home/paer-publication/2026-08-paer-purdue-farmland-values-and-cash-rent-survey-results/"
+ },
+ "state": "IN",
+ "tiers": {
+  "average": "Average",
+  "poor": "Poor",
+  "top": "Top"
+ },
+ "unit": "region",
+ "what": {
+  "corn": "the respondents' corn yield for the land class, bu/acre (-- in the table: none)",
+  "limited": "Purdue's mark: Limited responses; Interpret with caution",
+  "rent": "average estimated cash rent per acre, 2026",
+  "responses": "responses for the region",
+  "value": "average estimated land value per acre, June 2026 (tillable, bare land)",
+  "value_prior": "June 2025, same table"
+ },
+ "year": 2026
+}

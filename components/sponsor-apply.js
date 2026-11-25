@@ -81,7 +81,7 @@
       : '';
     var p = statePrice(c);
     el.innerHTML = '<b>' + s.name + ':</b> ' + nums +
-      (soon(c) ? 'This state opens soon.' : S.taken[c] ? 'Taken right now.' : p ? '$' + n(p) + ' a month or $' + n(p * months()) + ' a year.' : '');
+      (soon(c) ? 'This state opens soon' + (p ? ', at $' + n(p) + ' a month or $' + n(p * months()) + ' a year.' : '.') : S.taken[c] ? 'Taken right now.' : p ? '$' + n(p) + ' a month or $' + n(p * months()) + ' a year.' : '');
   }
 
   function setButtons(spot, open, c) {

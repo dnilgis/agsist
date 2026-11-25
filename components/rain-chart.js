@@ -523,8 +523,18 @@
     // nothing here reads document.fonts.ready)
     if (doc.fonts && doc.fonts.addEventListener) doc.fonts.addEventListener('loadingdone', redrawAll);
   }
+  // a county page's "Lately" line (Nov 19, 2026) takes the radar's newer numbers through components/rain-recent.js, loaded
+  // from here so the county pages carry no second script tag (the rain set sits at its folder budget)
+  function recent() {
+    var doc = root.document;
+    if (!doc.querySelector('.rc-now[data-f]') || root.AgRainRecent || doc.querySelector('script[data-rain-recent]')) return;
+    var s = doc.createElement('script');
+    s.src = '/components/rain-recent.js?v=1'; s.defer = true; s.setAttribute('data-rain-recent', '');
+    (doc.head || doc.documentElement).appendChild(s);
+  }
   if (root.document) {
-    if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', auto); else auto();
+    if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', function () { auto(); recent(); });
+    else { auto(); recent(); }
   }
 
   return { build: build, splitVerdict: splitVerdict, verdictOf: verdictOf, fromData: fromData, describe: describe, mount: mount, draw: draw,

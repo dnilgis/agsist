@@ -1,0 +1,186 @@
+/* css/home-front.css: the front page on /index1 (components/home-front.js; Nov 20, 2026, fx/index1-bold).
+   One answer for the reader's place, then one card per topic. Three card sizes share one anatomy (topic and place, one
+   number, one line on what it means, a dated source, a tap): feature cards carry a picture (bids, rain, markets), compact
+   cards carry none (land, fertilizer, ARC/PLC, funds).
+   RULES: every box holds a fixed height from here before its data comes, and the copy is written to fit it (nothing is
+   clamped or cut); colour carries meaning only (green up, red down, gold the reader's own or the best); motion runs once
+   and never with reduced motion. Replaces css/home.css on index1: the header and price strip rules it carried are at the end. */
+
+/* the warm pages: light paper, dark soil */
+html[data-theme="light"]{--bg:#f6f2e8;--bg2:#efe9dc;--surface:#fffdf7;--surface2:#f4efe3;--surface3:#ebe4d4;--border:#e4dccb;--border-2:#cdc1a9}
+html[data-theme="dark"]{--bg:#100f0c;--bg2:#13120e;--surface:#1a1813;--surface2:#211e18;--surface3:#2a261e;--border:#2f2c25;--border-2:#47423a}
+.fp{--fp-num:'Inter','Inter Fallback',system-ui,sans-serif;--fp-r:var(--r-lg,4px);--fp-up:var(--green);--fp-dn:var(--red);--fp-acc:var(--gold);
+  max-width:1180px;margin:0 auto;padding:0 16px 8px!important;font-feature-settings:"tnum" 1}
+.fp *{min-width:0}
+.idx1-skip-rail{display:none}
+.fp-sk{display:block;width:58%;height:.6em;margin-top:.24em;border-radius:3px;background:var(--surface3)}
+.up{color:var(--fp-up)}.dn{color:var(--fp-dn)}.nc{color:var(--text-muted)}
+
+/* ---------------------------------------------------------------- the answer */
+.fp-hero{padding:16px 0 4px}
+.fp-top{display:flex;align-items:center;justify-content:space-between;gap:12px;height:36px}
+.fp-live{display:flex;align-items:center;gap:8px;margin:0;font:500 13px/1 var(--font-body);color:var(--text-muted);white-space:nowrap}
+.fp-dot{flex:none;width:7px;height:7px;border-radius:50%;background:var(--text-muted);opacity:.5}
+.fp-live.is-fresh .fp-dot{background:var(--green);opacity:1}
+.fp-set{flex:none;min-height:44px;margin:-4px 0;padding:0 14px;border:1px solid var(--border-2);border-radius:var(--fp-r);background:transparent;color:var(--text-dim);font:600 14px/1 var(--font-body)}
+.fp-set:hover,.fp-set:focus-visible{border-color:var(--fp-acc);color:var(--text)}
+.fp-set:focus-visible,.fp-tile:focus-visible,.fp-card:focus-visible,.fp-zip-go:focus-visible,.fp-dt:focus-visible{outline:2px solid var(--fp-acc);outline-offset:2px}
+.fp-h{margin:12px 0 14px;font-family:var(--fp-num);font-size:clamp(25px,7.2vw,56px);font-weight:760;line-height:1.1;letter-spacing:-.032em;color:var(--text)}
+/* one line, always: the site's heading rule (text-wrap: balance) would let it wrap; the script sizes it down to fit */
+#main #fp-h{white-space:nowrap;text-wrap-mode:nowrap;margin:12px 0 14px;font-family:var(--fp-num);font-size:clamp(25px,7.2vw,56px);font-weight:760;line-height:1.2;letter-spacing:-.032em}
+@media (min-width:760px){#main #fp-h{margin:16px 0 20px}}
+.fp-day{font-weight:500;color:var(--text-muted)}
+.fp-zip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:-2px 0 14px}
+.fp-zip[hidden]{display:none}
+.fp-zip-l{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.fp-zip input{width:9.5rem;height:44px;padding:0 12px;border:1px solid var(--border-2);border-radius:var(--fp-r);background:var(--surface);color:var(--text);font:600 18px/1 var(--fp-num);letter-spacing:.04em}
+.fp-zip input:focus{outline:2px solid var(--fp-acc);outline-offset:1px}
+.fp-zip-go{height:44px;padding:0 16px;border:0;border-radius:var(--fp-r);background:#d4a23f;color:#0a0c0d;font:700 15px/1 var(--font-body)}
+html[data-theme="light"] .fp-zip-go{background:#8a6514;color:#fff}
+.fp-zip-msg{flex-basis:100%;min-height:1.3em;font-size:13px;color:var(--text-muted)}
+
+.fp-big{display:grid;grid-template-columns:1fr;gap:10px}
+.fp-tile{display:flex;flex-direction:column;height:172px;padding:14px 16px 13px;border:1px solid var(--border);border-radius:var(--fp-r);background:var(--surface);color:var(--text);transition:border-color .15s}
+.fp-tile:hover{border-color:var(--border-2)}
+.fp-tile>*{flex-shrink:0}
+.fp-k{height:16px;font:600 13px/16px var(--font-body);color:var(--text-muted);white-space:nowrap}
+.fp-vrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;height:54px;margin:5px 0 5px}
+.fp-v{font-family:var(--fp-num);font-size:clamp(40px,11vw,72px);font-weight:760;line-height:50px;letter-spacing:-.04em;white-space:nowrap}
+.fp-v .fp-u{font-size:15px;font-weight:600;letter-spacing:0;color:var(--text-muted);margin-left:.4em}
+.fp-v .fp-fr{font-size:.62em;letter-spacing:-.02em}
+.fp-m{flex:none;font:650 15px/20px var(--fp-num);color:var(--text-dim);white-space:nowrap}
+.fp-w{height:20px;font-size:14px;line-height:20px;color:var(--text-muted);white-space:nowrap}
+.fp-w b{color:var(--text);font-weight:650}
+.fp-age{height:18px;margin-top:2px;font-size:12.5px;line-height:18px;color:var(--text-muted);white-space:nowrap}
+.fp-none{font-size:20px;font-weight:600;letter-spacing:0;color:var(--text-muted)}
+.fp-line{height:22px;margin:10px 0 0;font-size:13.5px;line-height:22px;color:var(--text-dim);white-space:nowrap}
+.fp-line b{font-weight:650;color:var(--text)}
+#fp-hero + #fp-end + #sw-slot{margin:14px 0 4px}
+/* the house ad, while the spot is open: quiet, same room */
+#sw-slot .sw-open{background:transparent!important;border:1px dashed var(--border-2)!important;box-shadow:none!important;color:var(--text-muted)!important;min-height:44px;display:flex!important;align-items:center;gap:.6rem;padding:4px 12px!important;font-size:13px!important}
+#sw-slot .sw-open b,#sw-slot .sw-open strong{color:var(--text-dim)!important;font-weight:600!important}
+#sw-slot .sw-open .sw-cta,#sw-slot .sw-open a{background:none!important;border:0!important;color:var(--text-muted)!important;padding:0!important;font-weight:500!important;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex!important;align-items:center;margin-left:auto}
+
+/* ---------------------------------------------------------------- the world */
+.fp-world{margin-top:26px}
+.fp-wh{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:700 15px/1 var(--fp-num);letter-spacing:-.01em;color:var(--text)}
+.fp-wh::after{content:"";flex:1;height:1px;background:var(--border)}
+.fp-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.fp-grid--2{grid-template-columns:1fr 1fr;margin-top:10px}
+.fp-card{display:grid;grid-template-rows:16px 46px 40px 140px 18px;row-gap:9px;height:324px;padding:16px 16px 15px;border:1px solid var(--border);border-radius:var(--fp-r);background:var(--surface);color:var(--text);transition:border-color .15s;overflow:hidden}
+.fp-card:hover{border-color:var(--border-2)}
+.fp-card[hidden]{display:none}
+.fp-card--mkt{grid-template-rows:16px 46px 40px 96px 18px;height:280px}
+.fp-card--pic{grid-template-rows:16px 159px 40px 18px;height:280px}
+.fp-card--c{grid-template-rows:16px 36px 72px 36px;row-gap:8px;height:212px;padding:14px 13px 12px}
+.fp-card--c .fp-cg,.fp-card--c .fp-ca{display:none}
+.fp-ck{font:600 13px/16px var(--font-body);color:var(--text-muted);white-space:nowrap}
+.fp-ck b{color:var(--fp-acc);font-weight:600}
+.fp-cv{font-family:var(--fp-num);font-size:38px;font-weight:760;line-height:44px;letter-spacing:-.04em;white-space:nowrap}
+.fp-cv,.fp-v{display:flex;align-items:baseline}
+.fp-cv .fp-u,.fp-v .fp-u{line-height:1;flex:none}
+/* a figure's line is 1.2 of its size, the room its glyphs take, so nothing in it spills */
+.fp-cv,.fp-v,.fp-cv .fp-n,.fp-v .fp-n{line-height:1.2!important}
+.fp-cv .fp-u{font-size:15px;font-weight:600;letter-spacing:0;color:var(--text-muted);margin-left:.35em}
+.fp-cv .fp-fr{font-size:.65em}
+.fp-fr{line-height:1}
+.fp-cv .fp-sk{width:46%;height:26px;margin-top:9px}
+.fp-card--c .fp-cv{font-size:29px;line-height:34px}
+.fp-card--c .fp-cv .fp-sk{height:20px;margin-top:7px}
+.fp-cs{font-size:14px;line-height:20px;color:var(--text-dim)}
+.fp-card--c .fp-cs{font-size:13px;line-height:18px}
+.fp-cs b{color:var(--text);font-weight:650}
+.fp-cg{display:block}
+.fp-cg svg{display:block;width:100%;height:100%;overflow:visible}
+.fp-cf{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:12px;line-height:18px}
+.fp-csrc{color:var(--text-muted)}
+.fp-card--c .fp-csrc{font-size:12px;line-height:18px}
+.fp-card:not(.fp-card--c) .fp-csrc{white-space:nowrap}
+.fp-ca{flex:none;font-weight:650;color:var(--fp-acc);white-space:nowrap}
+.fp-card:hover .fp-ca{text-decoration:underline;text-underline-offset:3px}
+.fp-pic{width:100%;height:157px;object-fit:cover;object-position:top;border-radius:4px;background:var(--surface2)}
+.fp-card.is-off .fp-cv{font-size:19px;font-weight:600;letter-spacing:0;color:var(--text-muted)}
+
+/* the pictures: the chart kit's colours */
+.fp-g-line{fill:none;stroke:var(--chart-1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.fp-g-area{fill:var(--chart-1);opacity:.1}
+html[data-theme="dark"] .fp-g-area{opacity:.16}
+.fp-g-zero{stroke:var(--chart-zero);stroke-width:1;stroke-dasharray:3 3;fill:none}
+.fp-g-end{fill:var(--surface);stroke:var(--chart-1);stroke-width:2}
+.fp-g-bar{fill:var(--chart-2);opacity:.55}
+.fp-g-bar.is-me{fill:var(--chart-1);opacity:1}
+.fp-g-rng{stroke:var(--chart-2);stroke-width:7;stroke-linecap:round;opacity:.35}
+.fp-g-med{fill:var(--chart-1)}
+.fp-g-pt{fill:var(--chart-2)}
+.fp-g-pt.is-me{fill:var(--chart-1);stroke:var(--surface);stroke-width:2}
+.fp-g-you{fill:var(--text);stroke:var(--surface);stroke-width:2}
+.fp-g-t{font:500 11px/1 var(--font-body);fill:var(--text-muted);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.fp-g-t.is-me{fill:var(--text);font-weight:650}
+.fp-draw .fp-g-line{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:fp-draw .9s ease-out .1s forwards}
+@keyframes fp-draw{to{stroke-dashoffset:0}}
+
+/* ---------------------------------------------------------------- the Daily, once */
+.fp-daily{display:grid;gap:14px;margin:28px 0 6px;padding:20px 18px;border:1px solid var(--border);border-radius:var(--fp-r);background:var(--surface)}
+.fp-dk{margin:0 0 6px;font:600 13px/16px var(--font-body);color:var(--text-muted)}
+.fp-dt{display:block;font-family:var(--fp-num);font-size:clamp(20px,4.6vw,26px);font-weight:720;line-height:1.22;letter-spacing:-.02em;color:var(--text);min-height:2.44em}
+.fp-dt:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.fp-dask{min-height:128px}
+.fp-dask.sa-ask--page{margin:0;padding:0;background:none;border:0}
+/* one Daily ask on the page: the band above is it, so the footer's copy steps aside here */
+.footer-band-ask{display:none}
+
+@media (min-width:760px){
+  .fp{padding:0 24px 12px!important}
+  .fp-hero{padding:26px 0 6px}
+  .fp-h{margin:16px 0 20px}
+  .fp-big{grid-template-columns:1fr 1fr;gap:14px}
+  .fp-tile{height:224px;padding:20px 22px 18px}
+  .fp-k{font-size:14px}
+  .fp-vrow{height:88px;margin:8px 0 8px;align-items:flex-end}
+  .fp-m{font-size:17px;line-height:24px;padding-bottom:12px}
+  .fp-w{font-size:15px;height:22px;line-height:22px}
+  .fp-line{font-size:15px;line-height:24px;height:24px;margin-top:14px}
+  .fp-world{margin-top:34px}
+  .fp-grid{grid-template-columns:1fr 1fr;gap:14px}
+  .fp-grid--2{gap:14px;margin-top:14px}
+  .fp-card{padding:18px 20px 16px;grid-template-rows:16px 56px 40px 140px 18px;height:334px}
+  .fp-card--mkt{grid-template-rows:16px 56px 40px 96px 18px;height:290px}
+  .fp-card--pic{grid-template-rows:16px 169px 40px 18px;height:290px}
+  .fp-card--c{grid-template-rows:16px 42px 72px 36px;height:220px;padding:16px 16px 14px}
+  .fp-cv{font-size:46px;line-height:52px}
+  .fp-card--c .fp-cv{font-size:34px;line-height:40px}
+  /* an odd card out runs the full width, so no row is left half empty */
+  .fp-card.fp-wide{grid-column:1/-1}
+  .fp-daily{grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:32px;align-items:center;padding:26px 28px}
+}
+@media (min-width:1000px){
+  .fp-grid--2{grid-template-columns:repeat(4,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  .fp-draw .fp-g-line{animation:none;stroke-dashoffset:0}
+  .fp-tile,.fp-card{transition:none}
+}
+
+/* ---------------------------------------------------------------- header and price strip (from css/home.css) */
+.skip,.skip-link,.nav-btn,.nav-panel a,.nav-panel a.all,.t-label,.t-price,.t-chg{font-size:.824rem}
+.t-sep,.ticker-live span{font-size:.765rem}
+.ticker-live{padding:0 .5rem;gap:.3rem}
+.ticker-live #ticker-age{font-size:.6rem;line-height:1.1;letter-spacing:.04em;white-space:nowrap;display:inline-block;min-width:calc(7ch + .28em);min-height:2.2em;font-family:var(--font-body)}
+.ticker-live.stale .live-dot{animation:none;background:var(--text-muted)}
+.ticker-track:focus-within{animation-play-state:paused}
+.t-link:hover .t-label{text-decoration:underline}
+.prices-strip .t-unit{font:500 .765rem/1 "JetBrains Mono",monospace;color:var(--text-muted);margin-left:-.15rem}
+.prices-strip .t-price:empty+.t-unit{display:none}
+.prices-strip .t-price,.prices-strip .t-chg{font-variant-numeric:tabular-nums}
+.t-item .r7-frac{font-size:.765rem!important}
+.t-item.stale-tile .t-unit::after{content:" \00b7 held"}
+.ticker-pause{flex:none;align-self:stretch;min-width:56px;padding:0 .7rem;background:var(--surface2);color:var(--text-dim);border:0;border-left:1px solid var(--border);font:600 .765rem/1 "JetBrains Mono",monospace;cursor:pointer}
+.ticker-pause:hover,.ticker-pause:focus-visible{color:var(--text)}
+.ticker-pause:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+html.ticker-paused .ticker-track{animation-play-state:paused!important}
+.prices-strip .t-item.t-noq,.prices-strip .t-item.t-noq+.t-sep{display:none!important}
+.prices-strip.px-off{display:none!important}
+html[data-theme="light"] .skip-link{background:#86600f!important;color:#fff!important}
+@media (max-width:520px){.t-label{font-size:.765rem}}
+@media (max-width:900px){.ticker-track .t-link{min-height:28px;display:inline-flex!important;align-items:center}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none!important}.ticker-pause{display:none}.prices-strip .ticker-track-wrap{overflow-x:auto!important}}

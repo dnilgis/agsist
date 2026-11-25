@@ -117,11 +117,21 @@ try {
     var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data||!G.rows)return;
     var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
     var rs=G.rows(data,COT_CX,keys);if(!rs.length)return;
-    /* The right cell is the week's change; it says so, in contracts,
-       and the side word is the one the rows below use. No "crowded" (Nov 6). */
-    var SW={flat:'About even',long:'Long',short:'Short'};
-    ul.innerHTML=rs.map(function(r){var sd=cotSide(r.key,data[r.key]),f=G.facts?G.facts(r.key,data,COT_CX):null,pos=SW[sd]?SW[sd]+(sd!=='flat'&&f&&!f.flip&&f.weight?', '+f.weight:(sd!=='flat'&&f&&f.flip?', flipped':'')):r.pos.replace(/, crowded$/,'');
-      return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+pos+'</span><span class="cot-gl-r">'+(r.chg?r.chg+' contracts this week':'')+'</span></a></li>';}).join('');
+    /* Nov 19 (owner, a 390 px screenshot): the right cell was clipped ("−31,423 con...") and a
+       reader could not tell what "About even" and the signed figure were. The columns are named in
+       the header row above the list (Funds' net position | Change in the week); the position cell
+       prints the net with its side ("Short 22,628" over "about even"; the header names the unit) and the
+       change cell the signed change over "sold" or "bought". "About even" is the side word for the
+       NET (cotSide: inside the flat band), never for the change. Each row's link reads as one
+       sentence to a screen reader. Every cell wraps inside its column: nothing is cut off at 320 px. */
+    var SW={flat:'about even'},M=G.MINUS||'\u2212';
+    function n0(v){return Math.abs(Math.round(v)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+    ul.innerHTML=rs.map(function(r){var sd=cotSide(r.key,data[r.key]),f=G.facts?G.facts(r.key,data,COT_CX):null;if(!f)return '';
+      var net=f.net,side=net>0?'Long':net<0?'Short':'Even',w=sd==='flat'?SW.flat:f.flip?'flipped':f.weight||'';
+      var pv=net===0?'Even':side+' '+n0(net),ps=w;
+      var c=f.chg,cv=c==null?'':c===0?'0':(c>0?'+':M)+n0(c),cs=c==null?'':c===0?'no change':c>0?'bought':'sold';
+      var say=r.name+': funds net '+(net===0?'even':(net>0?'long ':'short ')+n0(net)+' contracts')+(w&&w!=='flipped'?', '+w:w==='flipped'?', flipped':'')+(c==null?'':c===0?'; no change in the week':'; '+cs+' a net '+n0(c)+' in the week');
+      return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'" aria-label="'+say+'"><b class="cot-gl-n">'+r.name+'</b><span class="cot-gl-p"><span class="cot-gl-v">'+pv+'</span><small>'+ps+'</small></span><span class="cot-gl-r"><span class="cot-gl-v">'+cv+'</span><small>'+cs+'</small></span></a></li>';}).join('');
     ul.removeAttribute('aria-busy');
     var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
   }
@@ -1446,6 +1456,11 @@ var TICK={corn:'Corn',beans:'Soybeans',wheat:'Chicago SRW wheat',kcwheat:'KC HRW
 /* WAVE1-C: the whole prices.json, for the keys geo.js does not hand over
    (absent quotes, withheld_keys, spreads). Null until it loads. */
 var D=null;
+/* Nov 24 2026: the ticker row is held unseen until its words are final (geo.js tickerReady). geo.js fills the prices,
+   then this script names each contract ("Corn Dec '26"), adds the date notes and drops the rows with no quote: two
+   rewrites that slid the row twice after the first paint. This script says when it is done (renderAll, once the
+   price file is in); it runs before geo.js (geo.js is deferred), so the hold is in place before any price lands. */
+if(document.querySelector('.prices-strip'))window.__tickerHold=true;
 /* Why a row has no quote, in words, when the file says nothing more. */
 var NOQ={mplswheat:'No quote: our price source does not carry this contract',
   cotton:'No quote yet: first price run pending',rice:'No quote yet: first price run pending',
@@ -1667,7 +1682,8 @@ function deferredChips(){
     if(chip&&!chip.textContent.trim()){var lb=cmByTicker(Q[p[1]]);if(lb)chip.textContent=lb;}
   });
 }
-function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);noQuoteNote();renderTicker();deferredChips();dress();}
+function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);noQuoteNote();renderTicker();deferredChips();dress();
+  if(D&&window.__tickerHold){window.__tickerHold=false;if(typeof window.tickerReady==='function')window.tickerReady();}}
 function schedule(){clearTimeout(timer);timer=setTimeout(renderAll,80);}
 /* Reader wording on the four key tiles and the ticker, applied after any
    writer. Every rewrite is idempotent, so the observers settle. */

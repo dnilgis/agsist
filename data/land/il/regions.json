@@ -1,0 +1,1449 @@
+{
+ "about": "ISPFMRA's ten Illinois regions: the typical value per acre by land class and the typical cash rent, as each region's committee printed them in its Overall Summary for 2025. A region's figure, not a county's.",
+ "counties": {
+  "17001": {
+   "name": "Adams",
+   "region": "Western"
+  },
+  "17003": {
+   "name": "Alexander",
+   "region": "Southern"
+  },
+  "17005": {
+   "name": "Bond",
+   "region": "Southwest"
+  },
+  "17007": {
+   "name": "Boone",
+   "region": "Northeast"
+  },
+  "17009": {
+   "name": "Brown",
+   "region": "Western"
+  },
+  "17011": {
+   "name": "Bureau",
+   "region": "Northwest"
+  },
+  "17013": {
+   "name": "Calhoun",
+   "region": "West Central"
+  },
+  "17015": {
+   "name": "Carroll",
+   "region": "Northwest"
+  },
+  "17017": {
+   "name": "Cass",
+   "region": "West Central"
+  },
+  "17019": {
+   "name": "Champaign",
+   "region": "Eastern"
+  },
+  "17021": {
+   "name": "Christian",
+   "region": "Central"
+  },
+  "17023": {
+   "name": "Clark",
+   "region": "Southeast"
+  },
+  "17025": {
+   "name": "Clay",
+   "region": "Southeast"
+  },
+  "17027": {
+   "name": "Clinton",
+   "region": "Southwest"
+  },
+  "17029": {
+   "name": "Coles",
+   "region": "Eastern"
+  },
+  "17031": {
+   "name": "Cook",
+   "region": "Northeast"
+  },
+  "17033": {
+   "name": "Crawford",
+   "region": "Southeast"
+  },
+  "17035": {
+   "name": "Cumberland",
+   "region": "Southeast"
+  },
+  "17037": {
+   "name": "DeKalb",
+   "region": "Northeast"
+  },
+  "17039": {
+   "name": "De Witt",
+   "region": "Central"
+  },
+  "17041": {
+   "name": "Douglas",
+   "region": "Eastern"
+  },
+  "17043": {
+   "name": "DuPage",
+   "region": "Northeast"
+  },
+  "17045": {
+   "name": "Edgar",
+   "region": "Eastern"
+  },
+  "17047": {
+   "name": "Edwards",
+   "region": "Southeast"
+  },
+  "17049": {
+   "name": "Effingham",
+   "region": "Southeast"
+  },
+  "17051": {
+   "name": "Fayette",
+   "region": "Southeast"
+  },
+  "17053": {
+   "name": "Ford",
+   "region": "Eastern"
+  },
+  "17055": {
+   "name": "Franklin",
+   "region": "Southern"
+  },
+  "17057": {
+   "name": "Fulton",
+   "region": "Western"
+  },
+  "17059": {
+   "name": "Gallatin",
+   "region": "Southern"
+  },
+  "17061": {
+   "name": "Greene",
+   "region": "West Central"
+  },
+  "17063": {
+   "name": "Grundy",
+   "region": "Northeast"
+  },
+  "17065": {
+   "name": "Hamilton",
+   "region": "Southern"
+  },
+  "17067": {
+   "name": "Hancock",
+   "region": "Western"
+  },
+  "17069": {
+   "name": "Hardin",
+   "region": "Southern"
+  },
+  "17073": {
+   "name": "Henry",
+   "region": "Northwest"
+  },
+  "17075": {
+   "name": "Iroquois",
+   "region": "Eastern"
+  },
+  "17077": {
+   "name": "Jackson",
+   "region": "Southern"
+  },
+  "17079": {
+   "name": "Jasper",
+   "region": "Southeast"
+  },
+  "17081": {
+   "name": "Jefferson",
+   "region": "Southern"
+  },
+  "17083": {
+   "name": "Jersey",
+   "region": "West Central"
+  },
+  "17085": {
+   "name": "Jo Daviess",
+   "region": "Northwest"
+  },
+  "17087": {
+   "name": "Johnson",
+   "region": "Southern"
+  },
+  "17089": {
+   "name": "Kane",
+   "region": "Northeast"
+  },
+  "17091": {
+   "name": "Kankakee",
+   "region": "Northeast"
+  },
+  "17093": {
+   "name": "Kendall",
+   "region": "Northeast"
+  },
+  "17095": {
+   "name": "Knox",
+   "region": "Western"
+  },
+  "17097": {
+   "name": "Lake",
+   "region": "Northeast"
+  },
+  "17099": {
+   "name": "LaSalle",
+   "region": "Northeast"
+  },
+  "17101": {
+   "name": "Lawrence",
+   "region": "Southeast"
+  },
+  "17103": {
+   "name": "Lee",
+   "region": "Northwest"
+  },
+  "17105": {
+   "name": "Livingston",
+   "region": "North Central"
+  },
+  "17107": {
+   "name": "Logan",
+   "region": "Central"
+  },
+  "17109": {
+   "name": "McDonough",
+   "region": "Western"
+  },
+  "17111": {
+   "name": "McHenry",
+   "region": "Northeast"
+  },
+  "17113": {
+   "name": "McLean",
+   "region": "North Central"
+  },
+  "17115": {
+   "name": "Macon",
+   "region": "Central"
+  },
+  "17117": {
+   "name": "Macoupin",
+   "region": "West Central"
+  },
+  "17119": {
+   "name": "Madison",
+   "region": "Southwest"
+  },
+  "17121": {
+   "name": "Marion",
+   "region": "Southeast"
+  },
+  "17123": {
+   "name": "Marshall",
+   "region": "North Central"
+  },
+  "17125": {
+   "name": "Mason",
+   "region": "North Central"
+  },
+  "17127": {
+   "name": "Massac",
+   "region": "Southern"
+  },
+  "17129": {
+   "name": "Menard",
+   "region": "West Central"
+  },
+  "17131": {
+   "name": "Mercer",
+   "region": "Northwest"
+  },
+  "17133": {
+   "name": "Monroe",
+   "region": "Southwest"
+  },
+  "17135": {
+   "name": "Montgomery",
+   "region": "West Central"
+  },
+  "17137": {
+   "name": "Morgan",
+   "region": "West Central"
+  },
+  "17139": {
+   "name": "Moultrie",
+   "region": "Central"
+  },
+  "17141": {
+   "name": "Ogle",
+   "region": "Northwest"
+  },
+  "17143": {
+   "name": "Peoria",
+   "region": "Western"
+  },
+  "17145": {
+   "name": "Perry",
+   "region": "Southern"
+  },
+  "17147": {
+   "name": "Piatt",
+   "region": "Central"
+  },
+  "17149": {
+   "name": "Pike",
+   "region": "Western"
+  },
+  "17151": {
+   "name": "Pope",
+   "region": "Southern"
+  },
+  "17153": {
+   "name": "Pulaski",
+   "region": "Southern"
+  },
+  "17155": {
+   "name": "Putnam",
+   "region": "North Central"
+  },
+  "17157": {
+   "name": "Randolph",
+   "region": "Southwest"
+  },
+  "17159": {
+   "name": "Richland",
+   "region": "Southeast"
+  },
+  "17161": {
+   "name": "Rock Island",
+   "region": "Northwest"
+  },
+  "17163": {
+   "name": "St. Clair",
+   "region": "Southwest"
+  },
+  "17165": {
+   "name": "Saline",
+   "region": "Southern"
+  },
+  "17167": {
+   "name": "Sangamon",
+   "region": "West Central"
+  },
+  "17169": {
+   "name": "Schuyler",
+   "region": "Western"
+  },
+  "17171": {
+   "name": "Scott",
+   "region": "West Central"
+  },
+  "17173": {
+   "name": "Shelby",
+   "region": "Central"
+  },
+  "17175": {
+   "name": "Stark",
+   "region": "Western"
+  },
+  "17177": {
+   "name": "Stephenson",
+   "region": "Northwest"
+  },
+  "17179": {
+   "name": "Tazewell",
+   "region": "North Central"
+  },
+  "17181": {
+   "name": "Union",
+   "region": "Southern"
+  },
+  "17183": {
+   "name": "Vermilion",
+   "region": "Eastern"
+  },
+  "17185": {
+   "name": "Wabash",
+   "region": "Southeast"
+  },
+  "17187": {
+   "name": "Warren",
+   "region": "Western"
+  },
+  "17189": {
+   "name": "Washington",
+   "region": "Southwest"
+  },
+  "17191": {
+   "name": "Wayne",
+   "region": "Southeast"
+  },
+  "17193": {
+   "name": "White",
+   "region": "Southern"
+  },
+  "17195": {
+   "name": "Whiteside",
+   "region": "Northwest"
+  },
+  "17197": {
+   "name": "Will",
+   "region": "Northeast"
+  },
+  "17199": {
+   "name": "Williamson",
+   "region": "Southern"
+  },
+  "17201": {
+   "name": "Winnebago",
+   "region": "Northwest"
+  },
+  "17203": {
+   "name": "Woodford",
+   "region": "North Central"
+  }
+ },
+ "evidence": "regional committees of farm managers and rural appraisers, from verified 2025 sales and leases",
+ "not_mapped": {
+  "17071": {
+   "name": "Henderson",
+   "why": "on its map with Region 3, but not in Region 3's printed list of 11 counties"
+  }
+ },
+ "notes": {
+  "classes": "Productivity indexes based on Bulletin 811 are used in developing these profiles.",
+  "limited": "Limited numbers of sales in some years & special features may affect value"
+ },
+ "pi": {
+  "average": {
+   "high": 116,
+   "low": 100
+  },
+  "excellent": {
+   "high": 147,
+   "low": 133
+  },
+  "fair": {
+   "below": 100
+  },
+  "good": {
+   "high": 132,
+   "low": 117
+  }
+ },
+ "pi_what": "Productivity Indexes (P/I) Ranges as printed: each class is a tract with a significant amount of soils in that range (Farm Property Classifications & Definitions)",
+ "regions": {
+  "Central": {
+   "classes": {
+    "average": {
+     "rent": {
+      "printed": "$295",
+      "value": 295
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "$285",
+      "value": 285
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 14000,
+      "low": 6500,
+      "printed": "$6,500-$14,000"
+     },
+     "value_change": "Down 5% to Steady"
+    },
+    "excellent": {
+     "rent": {
+      "printed": "$425",
+      "value": 425
+     },
+     "rent_change": "-3%",
+     "rent_new": {
+      "printed": "$425",
+      "value": 425
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 18900,
+      "low": 14000,
+      "printed": "$14,000-$18,900"
+     },
+     "value_change": "Down 5% to Steady"
+    },
+    "fair": {
+     "rent": {
+      "printed": "$250",
+      "value": 250
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "$250",
+      "value": 250
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 9500,
+      "low": 6000,
+      "printed": "$6,000-$9,500"
+     },
+     "value_change": "Down 5% to Steady"
+    },
+    "good": {
+     "rent": {
+      "printed": "$350",
+      "value": 350
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "$385",
+      "value": 385
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 16500,
+      "low": 8000,
+      "printed": "$8,000-$16,500"
+     },
+     "value_change": "Down 5% to Steady"
+    },
+    "recreational": {
+     "rent": {
+      "printed": "N/A",
+      "words": true
+     },
+     "rent_change": "N/A",
+     "rent_new": {
+      "printed": "N/A",
+      "words": true
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 8000,
+      "low": 3500,
+      "printed": "$3,500-$8,000"
+     },
+     "value_change": "Down 5% to Steady"
+    }
+   },
+   "counties": [
+    "17021",
+    "17039",
+    "17107",
+    "17115",
+    "17139",
+    "17147",
+    "17173"
+   ],
+   "from": "text list",
+   "num": 6
+  },
+  "Eastern": {
+   "classes": {
+    "average": {
+     "rent": {
+      "high": 280,
+      "low": 240,
+      "printed": "$240-$280"
+     },
+     "rent_change": "steady to down 5%",
+     "rent_new": {
+      "high": 300,
+      "low": 250,
+      "printed": "$250-$300"
+     },
+     "turnover": "down 50%",
+     "value": {
+      "high": 10000,
+      "low": 8000,
+      "printed": "$8,000 - $10,000"
+     },
+     "value_change": "-6%"
+    },
+    "excellent": {
+     "rent": {
+      "high": 420,
+      "low": 320,
+      "printed": "$320-$420"
+     },
+     "rent_change": "steady to down 5%",
+     "rent_new": {
+      "high": 400,
+      "low": 350,
+      "printed": "$350-$400"
+     },
+     "turnover": "up 50%",
+     "value": {
+      "high": 17000,
+      "low": 15000,
+      "printed": "$15,000 - $17,000"
+     },
+     "value_change": "-5%"
+    },
+    "good": {
+     "rent": {
+      "high": 350,
+      "low": 280,
+      "printed": "$280-$350"
+     },
+     "rent_change": "steady to down 5%",
+     "rent_new": {
+      "high": 350,
+      "low": 300,
+      "printed": "$300-$350"
+     },
+     "turnover": "up 20%",
+     "value": {
+      "high": 14000,
+      "low": 11000,
+      "printed": "$11,000 - $14,000"
+     },
+     "value_change": "-8%"
+    },
+    "recreational": {
+     "value": {
+      "high": 8000,
+      "low": 5000,
+      "printed": "$5,000 - $8,000"
+     }
+    },
+    "transitional": {
+     "value": {
+      "high": 100000,
+      "low": 45000,
+      "printed": "$45,000 - $100,000"
+     }
+    }
+   },
+   "counties": [
+    "17019",
+    "17029",
+    "17041",
+    "17045",
+    "17053",
+    "17075",
+    "17183"
+   ],
+   "from": "text list",
+   "num": 5
+  },
+  "North Central": {
+   "classes": {
+    "average": {
+     "rent": {
+      "high": 250,
+      "low": 150,
+      "printed": "$150-$250"
+     },
+     "rent_change": "Down 5-10%",
+     "turnover": "Steady",
+     "value": {
+      "high": 10000,
+      "low": 5000,
+      "printed": "$5,000-$10,000"
+     },
+     "value_change": "Steady"
+    },
+    "excellent": {
+     "rent": {
+      "high": 400,
+      "low": 300,
+      "printed": "$300-$400"
+     },
+     "rent_change": "Down 5-10%",
+     "turnover": "Down 2-3%",
+     "value": {
+      "high": 18000,
+      "low": null,
+      "odd": true,
+      "printed": "$13,00-$18,000"
+     },
+     "value_change": "Lower"
+    },
+    "fair": {
+     "turnover": "Steady",
+     "value": {
+      "printed": "Insufficient Data",
+      "words": true
+     },
+     "value_change": "Insufficient Data"
+    },
+    "good": {
+     "rent": {
+      "high": 300,
+      "low": 200,
+      "printed": "$200-$300"
+     },
+     "rent_change": "Down 5-10%",
+     "turnover": "Down 5-10%",
+     "value": {
+      "high": 14000,
+      "low": 11000,
+      "printed": "$11,000-$14,000"
+     },
+     "value_change": "Slightly Lower"
+    },
+    "recreational": {
+     "turnover": "Up Slightly",
+     "value": {
+      "high": 7000,
+      "low": 3000,
+      "printed": "$3,000-$7,000"
+     },
+     "value_change": "Steady"
+    },
+    "transitional": {
+     "turnover": "Up Slightly",
+     "value": {
+      "high": 45000,
+      "low": 20000,
+      "printed": "$20,000-$45,000"
+     },
+     "value_change": "Steady"
+    }
+   },
+   "counties": [
+    "17105",
+    "17113",
+    "17123",
+    "17125",
+    "17155",
+    "17179",
+    "17203"
+   ],
+   "from": "map, with its sales tables",
+   "num": 4
+  },
+  "Northeast": {
+   "classes": {
+    "average": {
+     "rent": {
+      "printed": "250",
+      "value": 250
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "250",
+      "value": 250
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 10500,
+      "low": 9500,
+      "printed": "$9,500-$10,500"
+     },
+     "value_change": "0%"
+    },
+    "excellent": {
+     "rent": {
+      "printed": "375",
+      "value": 375
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "375",
+      "value": 375
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 16500,
+      "low": 15000,
+      "printed": "$15,000-$16,500"
+     },
+     "value_change": "0%"
+    },
+    "fair": {
+     "rent": {
+      "printed": "180",
+      "value": 180
+     },
+     "rent_change": "-10%",
+     "rent_new": {
+      "printed": "200",
+      "value": 200
+     }
+    },
+    "good": {
+     "rent": {
+      "printed": "340",
+      "value": 340
+     },
+     "rent_change": "-3%",
+     "rent_new": {
+      "printed": "330",
+      "value": 330
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 13500,
+      "low": 11000,
+      "printed": "$11,000-$13,500"
+     },
+     "value_change": "0%"
+    },
+    "recreational": {
+     "rent_new": {
+      "printed": "40",
+      "value": 40
+     },
+     "value": {
+      "high": 7500,
+      "low": 6500,
+      "printed": "$6,500-$7,500"
+     }
+    }
+   },
+   "counties": [
+    "17007",
+    "17031",
+    "17037",
+    "17043",
+    "17063",
+    "17089",
+    "17091",
+    "17093",
+    "17097",
+    "17099",
+    "17111",
+    "17197"
+   ],
+   "from": "text (nine named) and map",
+   "num": 1
+  },
+  "Northwest": {
+   "classes": {
+    "average": {
+     "rent": {
+      "high": 300,
+      "low": 250,
+      "printed": "$250-$300"
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "high": 300,
+      "low": 250,
+      "printed": "$250-$300"
+     },
+     "turnover": "Down",
+     "value": {
+      "high": 10500,
+      "low": 8500,
+      "printed": "$8,500-$10,500"
+     },
+     "value_change": "0%"
+    },
+    "excellent": {
+     "rent": {
+      "high": 425,
+      "low": 350,
+      "printed": "$350-$425"
+     },
+     "rent_change": "0-5% Increase",
+     "rent_new": {
+      "high": 425,
+      "low": 350,
+      "printed": "$350-$425"
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 16000,
+      "low": 14000,
+      "printed": "$14,000 - $16,000"
+     },
+     "value_change": "0-5% Increase"
+    },
+    "fair": {
+     "rent": {
+      "high": 300,
+      "low": 225,
+      "printed": "$225-$300"
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "high": 300,
+      "low": 225,
+      "printed": "$225-$300"
+     },
+     "turnover": "Down",
+     "value": {
+      "high": 10000,
+      "low": 8000,
+      "printed": "$8,000-$10,000"
+     },
+     "value_change": "0-5% Decrease"
+    },
+    "good": {
+     "rent": {
+      "high": 400,
+      "low": 300,
+      "printed": "$300-$400"
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "high": 400,
+      "low": 300,
+      "printed": "$300-$400"
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 14000,
+      "low": 10500,
+      "printed": "$10,500-$14,000"
+     },
+     "value_change": "0-5% Increase"
+    },
+    "recreational": {
+     "rent": {
+      "high": 100,
+      "low": 60,
+      "printed": "$60-$100"
+     },
+     "rent_change": "0-5% Increase",
+     "rent_new": {
+      "high": 100,
+      "low": 60,
+      "printed": "$60-$100"
+     },
+     "turnover": "Steady",
+     "value": {
+      "high": 9000,
+      "low": 6000,
+      "printed": "$6,000-$9,000"
+     },
+     "value_change": "10-15% Increase"
+    }
+   },
+   "counties": [
+    "17011",
+    "17015",
+    "17073",
+    "17085",
+    "17103",
+    "17131",
+    "17141",
+    "17161",
+    "17177",
+    "17195",
+    "17201"
+   ],
+   "from": "map, with its sales tables and edge counties",
+   "num": 2
+  },
+  "Southeast": {
+   "classes": {
+    "average": {
+     "rent": {
+      "printed": "$215",
+      "value": 215
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "$250",
+      "value": 250
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "$10,500",
+      "value": 10500
+     },
+     "value_change": "-4.55%"
+    },
+    "fair": {
+     "rent": {
+      "printed": "$185",
+      "value": 185
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "$225",
+      "value": 225
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "$7,800",
+      "value": 7800
+     },
+     "value_change": "-8.24%"
+    },
+    "good": {
+     "rent": {
+      "printed": "$250",
+      "value": 250
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "$300",
+      "value": 300
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "$12,000",
+      "value": 12000
+     },
+     "value_change": "0%"
+    },
+    "recreational": {
+     "rent": {
+      "printed": "$30",
+      "value": 30
+     },
+     "rent_change": "0%",
+     "rent_new": {
+      "printed": "$40",
+      "value": 40
+     },
+     "turnover": "Up",
+     "value": {
+      "printed": "$5,000",
+      "value": 5000
+     },
+     "value_change": "11.11%"
+    }
+   },
+   "counties": [
+    "17023",
+    "17025",
+    "17033",
+    "17035",
+    "17047",
+    "17049",
+    "17051",
+    "17079",
+    "17101",
+    "17121",
+    "17159",
+    "17185",
+    "17191"
+   ],
+   "from": "text list",
+   "num": 9
+  },
+  "Southern": {
+   "classes": {
+    "average": {
+     "rent": {
+      "high": 210,
+      "low": 150,
+      "printed": "$150-$210"
+     },
+     "turnover": "Steady",
+     "value": {
+      "figures": [
+       9648,
+       6493
+      ],
+      "odd": true,
+      "printed": "$9,648 / $6,493"
+     },
+     "value_change": "Up"
+    },
+    "fair": {
+     "rent": {
+      "high": 150,
+      "low": 100,
+      "printed": "$100-$150"
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "$6,111",
+      "value": 6111
+     },
+     "value_change": "Up"
+    },
+    "good": {
+     "rent": {
+      "high": 300,
+      "low": 210,
+      "printed": "$210-$300"
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "$12,034",
+      "value": 12034
+     },
+     "value_change": "Up"
+    },
+    "recreational": {
+     "rent": {
+      "printed": "$25",
+      "value": 25
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "$4,432",
+      "value": 4432
+     },
+     "value_change": "Up"
+    }
+   },
+   "counties": [
+    "17003",
+    "17055",
+    "17059",
+    "17065",
+    "17069",
+    "17077",
+    "17081",
+    "17087",
+    "17127",
+    "17145",
+    "17151",
+    "17153",
+    "17165",
+    "17181",
+    "17193",
+    "17199"
+   ],
+   "from": "map, with its sales tables",
+   "num": 10
+  },
+  "Southwest": {
+   "classes": {
+    "average": {
+     "rent": {
+      "printed": "$286",
+      "value": 286
+     },
+     "rent_change": "2% Higher",
+     "rent_new": {
+      "printed": "$320",
+      "value": 320
+     },
+     "turnover": "Up 50%",
+     "value": {
+      "high": 25915,
+      "low": 7890,
+      "printed": "$7,890 - $25,915"
+     },
+     "value_change": "21% Lower to 31% Higher"
+    },
+    "excellent": {
+     "rent": {
+      "printed": "$321",
+      "value": 321
+     },
+     "rent_change": "Same",
+     "rent_new": {
+      "printed": "$380",
+      "value": 380
+     },
+     "turnover": "Down 50%",
+     "value": {
+      "high": 23200,
+      "low": 20106,
+      "printed": "$20,106 - $23,200"
+     },
+     "value_change": "12% to 27% Higher"
+    },
+    "fair": {
+     "rent": {
+      "printed": "$221",
+      "value": 221
+     },
+     "rent_change": "2% Higher",
+     "rent_new": {
+      "printed": "$225",
+      "value": 225
+     },
+     "turnover": "Up 56%",
+     "value": {
+      "high": 22072,
+      "low": 6400,
+      "printed": "$6,400 - $22,072"
+     },
+     "value_change": "21% Lower to 22% Higher"
+    },
+    "good": {
+     "rent": {
+      "printed": "$374",
+      "value": 374
+     },
+     "rent_change": "4% Higher",
+     "rent_new": {
+      "printed": "$350",
+      "value": 350
+     },
+     "turnover": "Up 125%",
+     "value": {
+      "high": 25000,
+      "low": 12000,
+      "printed": "$12,000 - $25,000"
+     },
+     "value_change": "38% Lower to 15% Higher"
+    },
+    "recreational": {
+     "rent": {
+      "printed": "$25",
+      "value": 25
+     },
+     "rent_change": "Same",
+     "rent_new": {
+      "printed": "$25",
+      "value": 25
+     },
+     "turnover": "Up 108%",
+     "value": {
+      "high": 9060,
+      "low": 2500,
+      "printed": "$2,500 - $9,060"
+     },
+     "value_change": "11% Lower to 39% Higher"
+    }
+   },
+   "counties": [
+    "17005",
+    "17027",
+    "17119",
+    "17133",
+    "17157",
+    "17163",
+    "17189"
+   ],
+   "from": "text list",
+   "num": 8
+  },
+  "West Central": {
+   "classes": {
+    "average": {
+     "rent": {
+      "printed": "275",
+      "value": 275
+     },
+     "rent_change": "-8%",
+     "rent_new": {
+      "printed": "300",
+      "value": 300
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "9,900",
+      "value": 9900
+     },
+     "value_change": "Steady"
+    },
+    "excellent": {
+     "rent": {
+      "printed": "400",
+      "value": 400
+     },
+     "rent_change": "-4%",
+     "rent_new": {
+      "printed": "425",
+      "value": 425
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "16,200",
+      "value": 16200
+     },
+     "value_change": "-5%"
+    },
+    "fair": {
+     "rent": {
+      "printed": "225",
+      "value": 225
+     },
+     "rent_change": "-5%",
+     "rent_new": {
+      "printed": "250",
+      "value": 250
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "6,600",
+      "value": 6600
+     },
+     "value_change": "Steady"
+    },
+    "good": {
+     "rent": {
+      "printed": "350",
+      "value": 350
+     },
+     "rent_change": "-5%",
+     "rent_new": {
+      "printed": "375",
+      "value": 375
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "13,900",
+      "value": 13900
+     },
+     "value_change": "-2%"
+    },
+    "recreational": {
+     "rent": {
+      "printed": "75",
+      "value": 75
+     },
+     "rent_change": "-",
+     "rent_new": {
+      "printed": "100",
+      "value": 100
+     },
+     "turnover": "Steady",
+     "value": {
+      "printed": "5,600",
+      "value": 5600
+     },
+     "value_change": "Steady"
+    }
+   },
+   "counties": [
+    "17013",
+    "17017",
+    "17061",
+    "17083",
+    "17117",
+    "17129",
+    "17135",
+    "17137",
+    "17167",
+    "17171"
+   ],
+   "from": "map, with its sales tables",
+   "num": 7
+  },
+  "Western": {
+   "classes": {
+    "average": {
+     "rent": {
+      "high": 300,
+      "low": 250,
+      "printed": "$250-$300"
+     },
+     "rent_change": "flat",
+     "rent_new": {
+      "high": 300,
+      "low": 250,
+      "printed": "$250-$300"
+     },
+     "turnover": "steady",
+     "value": {
+      "printed": "$7,900",
+      "value": 7900
+     },
+     "value_change": "similar up 1.3%"
+    },
+    "excellent": {
+     "rent": {
+      "high": 400,
+      "low": 350,
+      "printed": "$350-$400"
+     },
+     "rent_change": "flat",
+     "rent_new": {
+      "high": 400,
+      "low": 350,
+      "printed": "$350-$400"
+     },
+     "turnover": "steady",
+     "value": {
+      "printed": "$15,400",
+      "value": 15400
+     },
+     "value_change": "Down 7%"
+    },
+    "fair": {
+     "rent": {
+      "high": 250,
+      "low": 200,
+      "printed": "$200-$250"
+     },
+     "rent_change": "flat",
+     "rent_new": {
+      "high": 250,
+      "low": 200,
+      "printed": "$200-$250"
+     },
+     "turnover": "steady",
+     "value": {
+      "printed": "$7,100",
+      "value": 7100
+     },
+     "value_change": "UP 8%"
+    },
+    "good": {
+     "rent": {
+      "high": 350,
+      "low": 300,
+      "printed": "$300-$350"
+     },
+     "rent_change": "flat",
+     "rent_new": {
+      "high": 350,
+      "low": 300,
+      "printed": "$300-$350"
+     },
+     "turnover": "steady",
+     "value": {
+      "printed": "$11,300",
+      "value": 11300
+     },
+     "value_change": "Down 6%"
+    },
+    "pasture": {
+     "turnover": "steady",
+     "value": {
+      "printed": "$5,200",
+      "value": 5200
+     }
+    },
+    "recreational": {
+     "turnover": "steady",
+     "value": {
+      "printed": "$7,000",
+      "value": 7000
+     },
+     "value_change": "Up 6%"
+    },
+    "transitional": {
+     "turnover": "steady"
+    }
+   },
+   "counties": [
+    "17001",
+    "17009",
+    "17057",
+    "17067",
+    "17095",
+    "17109",
+    "17143",
+    "17149",
+    "17169",
+    "17175",
+    "17187"
+   ],
+   "from": "text list",
+   "num": 3
+  }
+ },
+ "regions_from": "the report's county lists (Regions 1, 3, 5, 6, 8, 9) and its region map, checked against the counties in each region's sales tables",
+ "sales_year": 2025,
+ "source": {
+  "date_words": "2025 sales and leases, published March 2026",
+  "org": "Illinois Society of Professional Farm Managers and Rural Appraisers",
+  "ref": "ispfmra-2026-land-values-pdf",
+  "released": "March 2026",
+  "sha256": "f7e50656abfa5652de5e480915c46fc4e121708f734c63312ddb0700393ec16d",
+  "title": "2026 Illinois Farmland Values and Lease Trends",
+  "url": "https://ispfmra.org/land-values-archive/"
+ },
+ "state": "IL",
+ "states": [
+  "IL"
+ ],
+ "unit": "region",
+ "what": {
+  "rent": "Avg. Cash Rent Per Acre typical in region, as printed",
+  "rent_new": "Avg. Cash Rent/Ac. on recently negotiated leases, as printed",
+  "turnover": "Change in rate of land turnover, as printed",
+  "value": "Total Value Per Acre (Typical), as printed: one figure, a range, or two figures",
+  "value_change": "% Change in $/Acre from prior year, as printed"
+ },
+ "year": 2026
+}

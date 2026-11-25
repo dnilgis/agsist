@@ -29,7 +29,7 @@
 .lg-l{display:none}
 [data-theme="light"] .lg-l{display:inline-block}
 [data-theme="light"] .lg-d{display:none}
-.srch-btn{display:flex;align-items:center;gap:.45rem;min-height:44px;min-width:44px;padding:0 .7rem;background:none;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text-dim);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.srch-btn{display:flex;align-items:center;gap:.45rem;height:36px;min-width:36px;padding:0 .7rem;background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);font:inherit;font-size:.78rem;font-weight:600;cursor:pointer}
 .srch-btn:hover,.srch-btn:focus-visible{border-color:var(--brand);color:var(--brand)}
 .srch-btn svg{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .srch-btn kbd{font:inherit;font-size:.72rem;line-height:1;padding:.18rem .4rem;border:1px solid var(--border);border-radius:4px;color:var(--text-muted)}
@@ -56,7 +56,7 @@
 .nav-moved-x{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:none;border:0;border-radius:var(--r-sm);color:var(--text-muted);cursor:pointer}
 .nav-moved-x:hover,.nav-moved-x:focus-visible{color:var(--brand)}
 .zip-wrap{position:relative}
-.zip-chip{display:flex;align-items:center;gap:.35rem;min-height:44px;max-width:210px;padding:0 .7rem;background:none;border:1px solid var(--border);border-radius:var(--r-lg);color:var(--text-dim);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
+.zip-chip{display:flex;align-items:center;gap:.35rem;height:36px;max-width:210px;padding:0 .7rem;background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-dim);font:inherit;font-size:.78rem;font-weight:600;cursor:pointer}
 .zip-chip:hover,.zip-chip:focus-visible,.zip-chip[aria-expanded="true"]{border-color:var(--brand);color:var(--brand)}
 .zip-chip svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .zip-chip-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -74,18 +74,19 @@
 .zip-links a{color:var(--brand);font-weight:700;text-decoration:none}
 .zip-clear{flex:0 0 auto;white-space:nowrap;min-height:36px;background:none;border:0;color:var(--text-muted);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
 .zip-note{margin:.45rem 0 0;font-size:.72rem;color:var(--text-muted)}
-.nav-email{min-height:44px;padding:0 .9rem;font:inherit;font-size:.82rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:var(--r-sm);white-space:nowrap;cursor:pointer}
+.nav-email{height:36px;padding:0 .9rem;font:inherit;font-size:.82rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:4px;white-space:nowrap;cursor:pointer}
 .nav-email:hover,.nav-email:focus-visible{filter:brightness(1.08)}
 .nav-email[hidden]{display:none}
-.nav-adv{display:none;align-items:center;min-height:44px;padding:0 .3rem;font-size:.8rem;font-weight:600;color:var(--text-muted);text-decoration:none;white-space:nowrap}
+.nav-adv{display:none;align-items:center;min-height:36px;padding:0 .3rem;font-size:.8rem;font-weight:600;color:var(--text-muted);text-decoration:none;white-space:nowrap}
 .nav-adv:hover,.nav-adv:focus-visible{color:var(--brand)}
 @media (min-width:1200px){.nav-adv{display:inline-flex}}
+a.nav-top{text-decoration:none;white-space:nowrap}
 @media (max-width:1360px){.nav-btn .nav-ic{display:none}.nav-btn{padding:.45rem .6rem}}
 @media (max-width:1100px){.nav-email{display:none}.zip-chip{max-width:150px}}
 @media (max-width:1060px){.nav-btn{padding:.45rem .42rem;font-size:.8rem}.zip-chip{max-width:136px}.zip-chip svg{display:none}.nav-logo{margin-right:.75rem}}
 @media (max-width:60em){.zip-chip{max-width:44vw}}
-@media (max-width:420px){.nav-inner{padding-left:12px;padding-right:12px}.nav-logo{margin-right:8px}.nav-logo img{height:40px}.nav-actions{gap:.35rem}.zip-chip{max-width:40vw;padding:0 .55rem}
-  .zip-pop{position:fixed;top:72px;left:12px;right:12px;width:auto}}
+@media (max-width:420px){.nav-inner{padding-left:10px;padding-right:10px}.nav-logo{margin-right:6px}.zip-chip{max-width:40vw;padding:0 .55rem}
+  .zip-pop{position:fixed;top:58px;left:12px;right:12px;width:auto}}
 @media (max-width:480px){.drawer{width:100vw;border-left:0}}
 .drawer .draw-sec{padding:.35rem 0 .5rem}
 .drawer .draw-lbl{display:flex;align-items:center;gap:.4rem;margin:0;padding:.55rem 1.1rem .15rem}
@@ -130,6 +131,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <img class="lg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148">
     </a>
     <div class="nav-menu">
+      <a href="/cash-bids" class="nav-btn nav-top">Cash bids</a>
       <div class="nav-dd" id="dd-markets">
         <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-markets-panel">Prices<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="dd-markets-panel" class="nav-panel nav-cols nav-cols-3">
@@ -169,7 +171,6 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
             <a href="/hay-prices">Hay</a>
             <a href="/haymow"><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
             <a href="/lrp">LRP</a>
-            <a href="/prf">PRF</a>
           </div>
         </div>
       </div>
@@ -220,6 +221,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
           <div class="nav-col">
             <div class="nav-q">Programs</div>
             <a href="/arc-plc">ARC or PLC</a>
+            <a href="/prf">PRF</a>
             <a href="/farm-bill">Farm bill</a>
           </div>
           <div class="nav-col">
@@ -278,9 +280,9 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
   <section class="draw-place" aria-labelledby="dp-h">
     <h2 class="draw-place-h" id="dp-h">My place <span class="draw-place-z" id="dp-zip"></span></h2>
     <div class="draw-place-row">
-      <a href="/fast-facts" class="draw-pl" id="dp-here">Everything near me</a>
       <a href="/cash-bids" class="draw-pl" id="dp-bids">Bids near me</a>
-      <a href="/rain#radar" class="draw-pl" id="dp-rain">Rain at my field</a>
+      <a href="/fast-facts" class="draw-pl" id="dp-here">Everything near me</a>
+      <a href="/rain#fields" class="draw-pl" id="dp-rain">Rain at my field</a>
       <a href="/rent/" class="draw-pl" id="dp-rent">Rent in my county</a>
     </div>
   </section>
@@ -320,7 +322,6 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <a href="/hay-prices" class="draw-item">Hay</a>
       <a href="/haymow" class="draw-item"><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
       <a href="/lrp" class="draw-item">LRP</a>
-      <a href="/prf" class="draw-item">PRF</a>
     </div>
   </section>
   <section class="draw-sec draw-grp" aria-labelledby="dg-field">
@@ -366,6 +367,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
     <h3 class="draw-sub">Programs</h3>
     <div class="draw-links">
       <a href="/arc-plc" class="draw-item">ARC or PLC</a>
+      <a href="/prf" class="draw-item">PRF</a>
       <a href="/farm-bill" class="draw-item">Farm bill</a>
     </div>
     <h3 class="draw-sub">Selling</h3>

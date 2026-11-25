@@ -67,6 +67,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/generated_sets.py guard --base HEAD^1
+      - name: the engine branch undoes nothing engine-agsist gained
+        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && startsWith(github.ref_name, 'fx/'))
+        env:
+          ENGINE_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: python3 scripts/dev/engine_revert_guard.py "$BRANCH"
       - name: no AI footer in the pull request
         if: github.event_name == 'pull_request'
         env:

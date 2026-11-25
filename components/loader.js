@@ -125,7 +125,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '109';
+  var CV = '113';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -178,7 +178,7 @@
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!a) return;
       var dd = a.closest('.nav-dd');
-      send(a, 'desktop', txt(dd && dd.querySelector('.nav-btn')));
+      send(a, 'desktop', dd ? txt(dd.querySelector('.nav-btn')) : 'Top');   // a link straight on the bar (Cash bids) is group Top
     }, true);   // capture: each panel keeps its own clicks from bubbling (it stays open on a click inside)
     var dr = document.getElementById('drawer');
     if (dr) dr.addEventListener('click', function (e) {
@@ -269,8 +269,6 @@
     var ov  = document.getElementById('draw-ov');
     var dc  = document.getElementById('draw-close');
     if (ham) {
-      ham.style.minHeight = '44px';
-      ham.style.minWidth  = '44px';
       ham.setAttribute('aria-expanded', 'false');
       ham.setAttribute('aria-controls', 'drawer');
       if (!ham.getAttribute('aria-label')) ham.setAttribute('aria-label', 'Open navigation menu');
@@ -584,19 +582,34 @@
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=6';
+    s.src = BASE + '/components/geo-sponsor.js?v=8';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
-  /* Sitewide sponsor line under the nav (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot. */
+  /* Sitewide sponsor line: sold, else the open spot (no reader figure). It fills #sw-slot after the answer; with no
+     slot it goes above the footer. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
-  function swSold(sp) {
-    return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
+  // Sold: on, not the house ad, a name, an https link, and today (Central) in start..end, both days counted in.
+  // Outside them, or a date that does not read: the open strip. day: YYYY-MM-DD, else today.
+  function swSold(sp, day) {
+    if (!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''))) return false;
+    var bad = function (v) {
+      if (v == null || v === '') return false;
+      var t = /^\d{4}-\d{2}-\d{2}$/.test(v) ? Date.parse(v + 'T12:00:00Z') : NaN;
+      return isNaN(t) || new Date(t).toISOString().slice(0, 10) !== v;
+    };
+    if (bad(sp.start) || bad(sp.end)) return false;
+    if (!sp.start && !sp.end) return true;
+    if (!day) {
+      try { day = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
+      catch (e) { day = new Date().toISOString().slice(0, 10); }
+    }
+    return !(sp.start && day < sp.start) && !(sp.end && day > sp.end);
   }
-  function swLine(sp, card, spots, preview) {
+  function swLine(sp, card, spots, preview, day) {
     if (preview) sp = { active: true, advertiser: 'Your Business', headline: 'Your one line here.', cta_url: 'https://agsist.com/sponsor' };
-    if (swSold(sp)) {
+    if (swSold(sp, day)) {
       var href = sp.cta_url + (sp.cta_url.indexOf('?') < 0 ? '?' : '&') + 'utm_source=agsist&utm_medium=sitewide';
       return { sold: true, html: '<span class="sw-in"><span class="sw-tag">Sponsor</span>Supported by <b>' + slotEsc(sp.advertiser) + '</b>' +
         (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
@@ -611,25 +624,29 @@
     line.id = 'ag-sw';
     line.className = 'sw-line';
     line.setAttribute('aria-label', 'Sponsor');
-    var home = document.getElementById('sw-home');
-    var inHome = false;
-    try { inHome = !!home && window.getComputedStyle(home).display !== 'none'; } catch (e) {}
-    var nav = document.getElementById('topnav');
-    if (inHome) home.appendChild(line);
-    else if (nav && nav.parentNode === parent) parent.insertBefore(line, nav.nextSibling);
-    else if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
+    var slot = document.getElementById('sw-slot');
+    // one sponsor ask after the answer: a page whose state card follows its answer holds no slot and shows no line
+    if (!slot && document.querySelector('[data-state-spot]')) return;
+    if (!slot) {
+      var foot = document.getElementById('site-footer') || document.querySelector('footer.footer');
+      if (!foot || !foot.parentNode) return;
+      slot = document.createElement('div');
+      slot.id = 'sw-slot'; slot.className = 'sw-slot sw-slot--wide';
+      foot.parentNode.insertBefore(slot, foot);
+    }
+    slot.appendChild(line);
     var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
-    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json'), swGet('/data/sponsor-spots.json')]).then(function (r) {
-      var o = swLine(r[0], r[1], r[2], preview);
+    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json')]).then(function (r) {
+      var o = swLine(r[0], r[1], null, preview);
       if (o.sold) {
         line.className = 'sw-line sw-line--sold';
         if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
       }
       if (o.sold) { line.innerHTML = o.html; return; }
-      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(r[2], BASE); } catch (e) {} };
+      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(null, BASE); } catch (e) {} };
       if (window.AgsistSwOpen) return f();
       var s = document.createElement('script');
-      s.src = BASE + '/components/sw-open.js?v=2'; s.async = true; s.onload = f;
+      s.src = BASE + '/components/sw-open.js?v=3'; s.async = true; s.onload = f;
       document.head.appendChild(s);
     });
   }
