@@ -116,6 +116,7 @@ jobs:
           python scripts/cash_bid_index.py $args
           python scripts/cash_bid_index.py --check
       - name: Save the folded month files privately
+        if: github.event.inputs.usda_only != 'true'
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_BRANCH: private-data
