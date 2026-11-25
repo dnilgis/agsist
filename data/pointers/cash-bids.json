@@ -1,9 +1,341 @@
 {
  "about": "Pointer pages for retired pages: path, where it sends readers, and the date retired.",
  "pointers": {
+  "cash-bids/company/ag-partners.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/ag-valley.html": {
+   "to": "/cash-bids/company/ag-valley-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/agri-trails.html": {
+   "to": "/cash-bids/company/agri-trails-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/agwrx.html": {
+   "to": "/cash-bids/company/agwrx-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/allied.html": {
+   "to": "/cash-bids/company/allied-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/american-plains.html": {
+   "to": "/cash-bids/company/american-plains-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/andersons.html": {
+   "to": "/cash-bids/company/the-andersons",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/assumption.html": {
+   "to": "/cash-bids/company/assumption-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/aurora.html": {
+   "to": "/cash-bids/company/aurora-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/cedar-county.html": {
+   "to": "/cash-bids/company/cedar-county-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/cendak.html": {
+   "to": "/cash-bids/company/cendak-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/central-farmers.html": {
+   "to": "/cash-bids/company/central-farmers-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/central-ohio-farmers.html": {
+   "to": "/cash-bids/company/central-ohio-farmers-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/central-united.html": {
+   "to": "/cash-bids/company/central-united-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/central.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/chs.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/country-partners.html": {
+   "to": "/cash-bids/company/country-partners-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/country-visions.html": {
+   "to": "/cash-bids/company/country-visions-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/dakota-mill.html": {
+   "to": "/cash-bids/company/dakota-mill-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/danvers-farmers.html": {
+   "to": "/cash-bids/company/danvers-farmers-elevator-co",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/dumas.html": {
+   "to": "/cash-bids/company/dumas-co-op-elevators",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/dunkerton.html": {
+   "to": "/cash-bids/company/dunkerton-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/eastland-feed.html": {
+   "to": "/cash-bids/company/eastland-feed-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/elkhorn-valley.html": {
+   "to": "/cash-bids/company/elkhorn-valley-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/equity.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
   "cash-bids/company/farmers-cooperative-elevator-company.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-28"
+  },
+  "cash-bids/company/farmers-pride.html": {
+   "to": "/cash-bids/company/farmers-pride-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/farmers-win.html": {
+   "to": "/cash-bids/company/farmers-win-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/farmers.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/farmward.html": {
+   "to": "/cash-bids/company/farmward-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/five-star.html": {
+   "to": "/cash-bids/company/five-star-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/franklin.html": {
+   "to": "/cash-bids/company/franklin-elevator",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/frenchman-valley-farmers.html": {
+   "to": "/cash-bids/company/frenchman-valley-farmers-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/frontier.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/garden-city.html": {
+   "to": "/cash-bids/company/garden-city-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/glacial-plains.html": {
+   "to": "/cash-bids/company/glacial-plains-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/gold-eagle.html": {
+   "to": "/cash-bids/company/gold-eagle-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/heartland.html": {
+   "to": "/cash-bids/company/heartland-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/heritage.html": {
+   "to": "/cash-bids/company/heritage-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/hi-plains.html": {
+   "to": "/cash-bids/company/hi-plains-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/hoven-equity.html": {
+   "to": "/cash-bids/company/hoven-equity-exchange",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/james-valley.html": {
+   "to": "/cash-bids/company/james-valley-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/jersey-county.html": {
+   "to": "/cash-bids/company/jersey-county-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/kanza.html": {
+   "to": "/cash-bids/company/kanza-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/key.html": {
+   "to": "/cash-bids/company/key-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/keystone.html": {
+   "to": "/cash-bids/company/keystone-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/kokomo.html": {
+   "to": "/cash-bids/company/kokomo-grain-co",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/landus.html": {
+   "to": "/cash-bids/company/landus-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/legacy-farmers.html": {
+   "to": "/cash-bids/company/legacy-farmers-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/legacy.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/linn-coop-oil.html": {
+   "to": "/cash-bids/company/linn-coop-oil-company",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/maple-river.html": {
+   "to": "/cash-bids/company/maple-river-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/mid-iowa.html": {
+   "to": "/cash-bids/company/mid-iowa-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/minnesota-valley.html": {
+   "to": "/cash-bids/company/minnesota-valley-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/new-coop.html": {
+   "to": "/cash-bids/company/new-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/new-vision.html": {
+   "to": "/cash-bids/company/new-vision-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/new.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/newcoop.html": {
+   "to": "/cash-bids/company/new-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/nexus.html": {
+   "to": "/cash-bids/company/nexus-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/north-iowa.html": {
+   "to": "/cash-bids/company/north-iowa-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/nutrition-service.html": {
+   "to": "/cash-bids/company/nutrition-service-co",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/pearl-city.html": {
+   "to": "/cash-bids/company/pearl-city-elevator",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/poet.html": {
+   "to": "/cash-bids/company/poet-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/premier.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/primient.html": {
+   "to": "/cash-bids/company/primient-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/pro.html": {
+   "to": "/cash-bids/company/pro-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/rcm.html": {
+   "to": "/cash-bids/company/rcm-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/river-country.html": {
+   "to": "/cash-bids/company/river-country-co-op",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/river-valley.html": {
+   "to": "/cash-bids/company/river-valley-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/scott-equity.html": {
+   "to": "/cash-bids/company/scott-equity-exchange",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/scott.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/seatonville.html": {
+   "to": "/cash-bids/company/seatonville-elevator-co",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/smithfield.html": {
+   "to": "/cash-bids/company/smithfield-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/stateline.html": {
+   "to": "/cash-bids/company/stateline-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/stratton-equity.html": {
+   "to": "/cash-bids/company/stratton-equity-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/synergy.html": {
+   "to": "/cash-bids/company/synergy-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/tama-benton.html": {
+   "to": "/cash-bids/company/tama-benton-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/tettens.html": {
+   "to": "/cash-bids/company/tettens-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/tremont.html": {
+   "to": "/cash-bids/company/tremont-co-operative-grain-co",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/two-rivers.html": {
+   "to": "/cash-bids/company/two-rivers-cooperative",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/united.html": {
+   "to": "/cash-bids/company/",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/valley-united.html": {
+   "to": "/cash-bids/company/valley-united-coop",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/wheatfield.html": {
+   "to": "/cash-bids/company/wheatfield-grain",
+   "since": "2026-11-19"
+  },
+  "cash-bids/company/yoder.html": {
+   "to": "/cash-bids/company/yoder-grain",
+   "since": "2026-11-19"
   },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
@@ -11,7 +343,7 @@
   },
   "cash-bids/iowa/emerson.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-11-07"
+   "since": "2026-11-23"
   },
   "cash-bids/iowa/granger.html": {
    "to": "/cash-bids/iowa/cresco",
@@ -23,19 +355,31 @@
   },
   "cash-bids/iowa/griswold.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-11-07"
+   "since": "2026-11-23"
   },
-  "cash-bids/iowa/harcourt.html": {
+  "cash-bids/iowa/knoke.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
+   "since": "2026-11-18"
   },
-  "cash-bids/iowa/moorland.html": {
+  "cash-bids/iowa/langdon.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
+   "since": "2026-11-18"
   },
-  "cash-bids/iowa/spencer.html": {
+  "cash-bids/iowa/lanyon.html": {
    "to": "/cash-bids/iowa/",
-   "since": "2026-10-29"
+   "since": "2026-11-18"
+  },
+  "cash-bids/iowa/morton-mills.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-18"
+  },
+  "cash-bids/iowa/rands.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-18"
+  },
+  "cash-bids/iowa/roelyn.html": {
+   "to": "/cash-bids/iowa/",
+   "since": "2026-11-18"
   },
   "cash-bids/kansas/dodge-city.html": {
    "to": "/cash-bids/kansas/",
@@ -43,7 +387,7 @@
   },
   "cash-bids/kansas/levant.html": {
    "to": "/cash-bids/kansas/",
-   "since": "2026-11-08"
+   "since": "2026-11-23"
   },
   "cash-bids/montana/circle.html": {
    "to": "/cash-bids/montana/",
@@ -51,11 +395,11 @@
   },
   "cash-bids/new-york/buffalo.html": {
    "to": "/cash-bids/new-york/",
-   "since": "2026-11-12"
+   "since": "2026-11-20"
   },
   "cash-bids/north-dakota/forest-river.html": {
    "to": "/cash-bids/north-dakota/",
-   "since": "2026-11-12"
+   "since": "2026-11-23"
   },
   "cash-bids/ohio/saint-marys.html": {
    "to": "/cash-bids/ohio/",

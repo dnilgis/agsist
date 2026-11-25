@@ -11,7 +11,7 @@
  * Phones with the share sheet get it, with the text minus its bare link and the
  * tagged link once in the url field (Nov 3). Otherwise one tap shows "Copy" and, on a
  * phone, "Text it" (an sms: link). The link carries utm_source=share and nothing
- * about the reader. One GA4 event, share_bid, with what was done.
+ * about the reader (added here: the button's own href is the clean address). One GA4 event, share_bid, with what was done.
  * Bump ?v= in SHARE_JS (scripts/build_cash_bid_pages.py) on any change here.
  */
 (function () {
@@ -32,7 +32,10 @@
     var until = Date.parse(btn.getAttribute('data-until') || '');
     var priced = !isNaN(until) && Date.now() < until;
     var text = btn.getAttribute(priced ? 'data-text' : 'data-plain') || '';
-    var url = btn.href;
+    // the button's href is the clean town address (Nov 19, 2026, so crawlers meet no tagged copy of the page);
+    // the tag goes on here, once (a page cached from before still carries it in the href)
+    var url = btn.href.replace(/#.*$/, '');
+    if (!/[?&]utm_source=/.test(url)) url += (url.indexOf('?') < 0 ? '?' : '&') + 'utm_source=share';
     // the copy and the text message carry one link: the tagged one in place of the bare one
     var bare = url.replace(/^https?:\/\/(www\.)?/, '').replace(/^[^/]+/, 'agsist.com').replace(/\?.*$/, '');
     var i = text.lastIndexOf(bare);

@@ -239,12 +239,14 @@
       stats(); natChart(); tables(); interestLine(); hashCounty();
       if(window.AgForeignStates) window.AgForeignStates(county);
       window.addEventListener('hashchange',hashCounty);
+      document.addEventListener('atlas-county',hashCounty);
       return true;
     });
   }
-  /* The county is the one picked on the Atlas map above (#<fips> in the address). */
+  /* The county is the one picked on the Atlas map above: ?c=<fips> in the address since the map was folded into
+     one (Nov 18, 2026), or an old link's #<fips>. */
   function hashCounty(){
-    var m=/(?:^#|&)(\d{5})(?:&|$)/.exec(location.hash||'');
+    var m=/(?:^#|&)(\d{5})(?:&|$)/.exec(location.hash||'')||/[?&]c=(\d{5})(?:&|$)/.exec(location.search||'');
     var d=$('fl-detail');
     if(!m){ if(d) d.classList.remove('on'); var p=$('fl-pick'); if(p) p.hidden=false; return; }
     var p2=$('fl-pick'); if(p2) p2.hidden=true;

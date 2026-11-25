@@ -95,7 +95,8 @@
     function fromHash(scroll) {
       var h = decodeURIComponent((location.hash || '').slice(1));
       if (!h) return false;
-      var id = h.replace(/^p-/, '');
+      // a tab name may carry more after an &: /rain#fields&f=42.03,-93.62 opens the My fields tab and hands the rest to its code
+      var id = h.replace(/^p-/, '').split('&')[0];
       if (ids.indexOf(id) >= 0) { show(id); if (scroll === 'nav') box.scrollIntoView(); return true; }
       var el = document.getElementById(h);
       if (!el || !box.contains(el)) return false;

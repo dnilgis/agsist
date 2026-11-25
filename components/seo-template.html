@@ -39,13 +39,16 @@ Fields to replace:
 <meta name="twitter:description" content="OG_DESCRIPTION">
 <meta name="twitter:image"       content="https://agsist.com/img/og/PAGE_SLUG.jpg">
 
-<!-- Structured Data — choose type below based on page -->
+<!-- Structured Data — choose type below based on page. The block is plain JSON (no comments inside, so it parses):
+     WebPage: use on ALL pages. SoftwareApplication: use on TOOL pages (calculators, spray, urea).
+     Dataset: use on PRICE/DATA pages (corn, bean, wheat futures); no "license" there, since price pages show
+     third-party data (Yahoo Finance etc.); a Dataset license is the site's own terms or nothing.
+     Organization: include on EVERY page. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
 
-    /* ── WebPage — use on ALL pages ── */
     {
       "@type": "WebPage",
       "@id": "https://agsist.com/PAGE_SLUG#webpage",
@@ -62,7 +65,6 @@ Fields to replace:
       }
     },
 
-    /* ── SoftwareApplication — use on TOOL pages (calculators, spray, urea) ── */
     {
       "@type": "SoftwareApplication",
       "name": "PAGE_TITLE",
@@ -72,7 +74,6 @@ Fields to replace:
       "url": "https://agsist.com/PAGE_SLUG"
     },
 
-    /* ── Dataset — use on PRICE/DATA pages (corn, bean, wheat futures) ── */
     {
       "@type": "Dataset",
       "name": "PAGE_TITLE",
@@ -80,11 +81,8 @@ Fields to replace:
       "url": "https://agsist.com/PAGE_SLUG",
       "creator": { "@id": "https://agsist.com/#organization" },
       "temporalCoverage": "2024/.."
-      /* No "license" here: price pages show third-party data (Yahoo Finance etc.) that AGSIST cannot license.
-         Add "license" CC BY 4.0 only to a dataset AGSIST compiled itself (see /terms#licence). */
     },
 
-    /* ── Organization — include on EVERY page ── */
     {
       "@type": "Organization",
       "@id": "https://agsist.com/#organization",

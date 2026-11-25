@@ -1,23 +1,23 @@
 {
- "generated":"2026-11-12",
+ "generated":"2026-11-25",
  "units":"integer cents per bushel",
  "note":"Basis history by elevator, commodity and delivery month.",
  "publicFrom":"2026-10-12",
  "states":{
   "AL":{
-   "rows":9,
+   "rows":10,
    "facilities":1,
-   "kb":0.6
+   "kb":0.7
   },
   "AR":{
    "rows":56,
    "facilities":13,
-   "kb":3.1
+   "kb":3.2
   },
   "CO":{
-   "rows":211,
+   "rows":220,
    "facilities":21,
-   "kb":9.8
+   "kb":10.2
   },
   "FL":{
    "rows":2,
@@ -25,14 +25,14 @@
    "kb":0.4
   },
   "GA":{
-   "rows":21,
+   "rows":22,
    "facilities":8,
-   "kb":1.4
+   "kb":1.5
   },
   "IA":{
-   "rows":7289,
-   "facilities":506,
-   "kb":341.2
+   "rows":7782,
+   "facilities":508,
+   "kb":364.4
   },
   "ID":{
    "rows":1,
@@ -40,24 +40,24 @@
    "kb":0.3
   },
   "IL":{
-   "rows":9438,
+   "rows":10459,
    "facilities":249,
-   "kb":428.0
+   "kb":475.4
   },
   "IN":{
-   "rows":1153,
+   "rows":1223,
    "facilities":83,
-   "kb":52.0
+   "kb":55.6
   },
   "KS":{
-   "rows":5416,
+   "rows":5882,
    "facilities":263,
-   "kb":240.2
+   "kb":260.9
   },
   "KY":{
-   "rows":129,
+   "rows":130,
    "facilities":11,
-   "kb":6.5
+   "kb":6.6
   },
   "LA":{
    "rows":3,
@@ -65,34 +65,34 @@
    "kb":0.4
   },
   "MI":{
-   "rows":367,
+   "rows":416,
    "facilities":25,
-   "kb":16.4
+   "kb":18.5
   },
   "MN":{
-   "rows":5034,
+   "rows":5549,
    "facilities":164,
-   "kb":223.9
+   "kb":247.2
   },
   "MO":{
-   "rows":371,
-   "facilities":41,
-   "kb":17.9
+   "rows":397,
+   "facilities":42,
+   "kb":19.4
   },
   "MT":{
-   "rows":118,
+   "rows":130,
    "facilities":10,
-   "kb":5.5
+   "kb":6.0
   },
   "ND":{
-   "rows":7484,
+   "rows":8224,
    "facilities":68,
-   "kb":310.7
+   "kb":345.3
   },
   "NE":{
-   "rows":9272,
+   "rows":10057,
    "facilities":255,
-   "kb":417.7
+   "kb":456.5
   },
   "NY":{
    "rows":10,
@@ -100,14 +100,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4215,
+   "rows":4723,
    "facilities":91,
-   "kb":179.8
+   "kb":202.4
   },
   "OK":{
-   "rows":3095,
+   "rows":3332,
    "facilities":81,
-   "kb":130.0
+   "kb":140.0
   },
   "OR":{
    "rows":11,
@@ -115,9 +115,9 @@
    "kb":0.8
   },
   "PA":{
-   "rows":18,
+   "rows":21,
    "facilities":3,
-   "kb":1.4
+   "kb":1.6
   },
   "SC":{
    "rows":3,
@@ -125,14 +125,14 @@
    "kb":0.5
   },
   "SD":{
-   "rows":2090,
+   "rows":2123,
    "facilities":116,
-   "kb":91.6
+   "kb":93.0
   },
   "TN":{
    "rows":51,
    "facilities":4,
-   "kb":2.9
+   "kb":3.0
   },
   "TX":{
    "rows":456,
@@ -140,19 +140,19 @@
    "kb":19.9
   },
   "WA":{
-   "rows":90,
+   "rows":124,
    "facilities":9,
-   "kb":4.8
+   "kb":6.4
   },
   "WI":{
-   "rows":2201,
+   "rows":2403,
    "facilities":107,
-   "kb":100.2
+   "kb":109.7
   },
   "WY":{
-   "rows":21,
+   "rows":25,
    "facilities":3,
-   "kb":1.6
+   "kb":1.9
   }
  }
 }

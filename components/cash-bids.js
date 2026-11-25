@@ -482,7 +482,7 @@ function notPerBushel(bid){return NOT_PER_BUSHEL.test(String(bid&&bid.commodity|
    actually carries (read from data/bids.json), nothing invented. If an
    elevator posts ONLY special grades for a crop it still gets a row, and the
    grade name is printed on it. */
-var SPECIAL_GRADE=/non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
+var SPECIAL_GRADE=/non[- ]?gmo|nongmo|organic|plenish|\bip\b|identity[- ]?pres|high[- ]?oleic|food[- ]?grade|\bfood\b|waxy|popcorn|conventional|vistive|clear hilum|tofu|natto|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
 function isSpecialGrade(bid){return SPECIAL_GRADE.test(String(bid&&bid.commodity||''));}
 /* ══ THE FUTURES REFERENCE ═════════════════════════════════════════════════
    Kolton Jackson asked for this first: "every row already knows which contract
@@ -1198,8 +1198,26 @@ function rankCmp(a,b){return window.cbRank?cbRank.compare(a,b):(b.rk.price-a.rk.
 /* One candidate per elevator for corn and soybeans; for wheat one per class
    the elevator posts, because HRW, SRW and a wheat that names no class are
    never ranked against each other. */
+/* ONE RULE FOR "BEST" (Nov 20, 2026; components/bid-filter.js, scripts/bid_rule.py).
+   A ranked candidate is a PLAIN bid: a special grade (Plenish, IP, white corn,
+   non-GMO ...) never ranks, not even as a fallback; a wheat class word (HRS,
+   SWW, durum) is not a grade here, because each class is ranked on its own.
+   With "Any delivery" it is also a CURRENT bid (AG.bidFilter.isCurrent): Adell
+   WI's Harvest 2027 corn was Best corn beside $3.70 to $3.80 for now. With one
+   delivery chosen, every candidate is already that delivery. */
+function bidRule(){return window.AG&&window.AG.bidFilter&&window.AG.bidFilter.windowKey?window.AG.bidFilter:null;}
+function rankGradeOk(b,comm){
+  if(!isSpecialGrade(b))return true;
+  var BR=bidRule();
+  return !!BR&&comm==='wheat'&&BR.gradeOk({commodity:b&&b.commodity,category:'wheat'},{wheatClasses:true});
+}
+function rankCurrentOk(b,now){
+  if(currentDelivery!=='all')return true;
+  var BR=bidRule();
+  return !!BR&&BR.isCurrent(b,now);
+}
 function rankCands(elevs,comm){
-  var out=[];
+  var out=[],now=new Date();
   elevs.forEach(function(elev){
     var classes=[''];
     if(comm==='wheat'){
@@ -1207,17 +1225,25 @@ function rankCands(elevs,comm){
       (elev.commodities.wheat||[]).forEach(function(b){var c=wheatCls(b);if(classes.indexOf(c)<0)classes.push(c);});
     }
     classes.forEach(function(c){
-      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&!basisUnusual(x)&&(comm!=='wheat'||wheatCls(x)===c);});
-      if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:''});
+      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&!basisUnusual(x)&&rankGradeOk(x,comm)&&rankCurrentOk(x,now)&&(comm!=='wheat'||wheatCls(x)===c);});
+      if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:'',
+        wk:currentDelivery==='all'&&bidRule()?bidRule().windowKey(b,now):''});
     });
   });
   return out;
 }
-/* {hrw:[...], srw:[...], '':[...]} -- the plain-grade rule applied inside each. */
+/* {hrw:[...], srw:[...], '':[...]} -- the plain-grade rule applied inside each,
+   and with "Any delivery" one window only: the earliest any candidate has
+   ("now" before a month 1-2 out), so a December bid never outranks spot. */
 function classGroups(cands){
   var g={};
   cands.forEach(function(x){(g[x.cls]=g[x.cls]||[]).push(x);});
-  Object.keys(g).forEach(function(k){g[k]=preferPlain(g[k],function(x){return x.bid;});if(!g[k].length)delete g[k];});
+  Object.keys(g).forEach(function(k){
+    var l=preferPlain(g[k],function(x){return x.bid;});
+    var mk=l.reduce(function(m,x){return !m||x.wk==='now'||(m!=='now'&&x.wk&&x.wk<m)?x.wk:m;},'');
+    if(mk)l=l.filter(function(x){return x.wk===mk;});
+    g[k]=l;if(!g[k].length)delete g[k];
+  });
   return g;
 }
 /* Which wheat a single-answer panel shows: the class most elevators here post;
@@ -1241,7 +1267,7 @@ function placeOf(elev){
   Object.keys(elev.commodities||{}).some(function(k){return(elev.commodities[k]||[]).some(function(b){if(b.zip){z=b.zip;return true;}return false;});});
   return cbRank.placeTown(t,z);
 }
-/* "Mid-Iowa Cooperative — Des Moines (28 mi)" */
+/* "Mid-Iowa Cooperative Des Moines (28 mi)" */
 function bannerName(elev){
   var t=placeOf(elev);
   return elev.facility+(t?', '+t:'')+(elev.distance!=null?' ('+elev.distance.toFixed(0)+' mi)':'');
@@ -2539,14 +2565,24 @@ function doSearch(zip){
      navigating into the results region during a search found nothing at all
      and no way to tell a slow search from a finished empty one. */
   results.setAttribute('aria-busy','true');
-  results.innerHTML='<div class="cb-skeleton"><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>';
+  /* A SAVED ZIP HOLDS ITS ROOM FROM THE FIRST PAINT (Nov 19, 2026): #cb-wait, shown by the head's cb-zip class, sits
+     where the bids appear and runs past the fold, so the first answer moves nothing on screen. A second skeleton
+     under it would only push the page around. */
+  var held=document.getElementById('cb-wait');
+  results.innerHTML=(held&&!hasSearched&&document.documentElement.classList.contains('cb-zip'))?'':
+    '<div class="cb-skeleton"><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>';
   var radius=parseInt(radiusSel.value,10)||50;
   gaEvent('bids_search',{zip:zip,radius:radius});
   announce('Searching for bids near '+zip+'\u2026');
-  fetchBids(zip,radius,function(err,bids,warn,lateInfo){
+  var onBids=function(err,bids,warn,lateInfo){
     var isLate=!!(lateInfo&&lateInfo.late),elevBefore=isLate?currentElevators.length:0,pinsBefore=pinnedKeys.slice();
-    goBtn.disabled=false;
-    results.removeAttribute('aria-busy');
+    /* first: this phone's last look at this ZIP, drawn while the live read runs (below) */
+    var isFirst=!!(lateInfo&&lateInfo.first);
+    if(!isFirst)liveShown=true;
+    var hw=document.getElementById('cb-wait');if(hw&&hw.parentNode)hw.parentNode.removeChild(hw);
+    if(!isFirst){goBtn.disabled=false;results.removeAttribute('aria-busy');}
+    /* the live answer after a last look takes the same room: what the last look drew keeps its height (held below) */
+    if(!isFirst&&lookShown)holdLookRoom();
     renderDegraded(null);
     /* cb-glance: the network failed -- fall back to the last network snapshot this phone saved, dated. */
     if(err&&!bids.length&&window.CBGlance){var _sn=CBGlance.snapshot(zip,radius);if(_sn){err=null;bids=_sn.rows;warn=_sn.note;}}
@@ -2579,6 +2615,8 @@ function doSearch(zip){
       announce('Error: unable to load bids. '+err.message);return;
     }
     if(warn)renderDegraded(warn);
+    else if(!isFirst&&lookShown&&!err){var dg=document.getElementById('cb-degraded');
+      if(dg){dg.textContent='Live bids loaded '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(' AM',' am').replace(' PM',' pm')+'. Each card says when its elevator posted.';dg.style.display='block';}}
     hasSearched=true;
     lastFetchTime=new Date();
     /* A late answer can land inside these 400 ms; its own line then replaces
@@ -2587,7 +2625,7 @@ function doSearch(zip){
     if(!isLate)cbAnnTimer=setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
     /* Nov 4, 2026: both saved-place keys at once (components/saved-place.js), so home, rent and ARC/PLC start at this ZIP too. */
     try{if(window.AgSavedPlace){AgSavedPlace.save(zip);AgSavedPlace.full();}else localStorage.setItem('agsist_zip',zip);}catch(e){}
-    goBtn.textContent='\u21BB Refresh';
+    if(!isFirst)goBtn.textContent='\u21BB Refresh';
     currentBids=bids;pinnedKeys=isLate?pinsBefore:[];if(!isLate){cbPinsHidden=false;cbPinsDropped={};cbPinsQuiet=true;}
     if(window.CBGlance&&!isLate)CBGlance.newSearch();
     /* Built from the bids that just arrived, not from a hardcoded list of
@@ -2662,6 +2700,7 @@ function doSearch(zip){
     syncFilterBar(currentFilter);
     renderBids(currentBids);
     renderBestBids(currentElevators);
+    if(!isFirst&&lookShown)applyLookCards();
     renderEarnings();
     updateCompareBar();
     cbFirstResultsDone();
@@ -2672,9 +2711,63 @@ function doSearch(zip){
       else announce('Live bids loaded. '+bids.length+' elevator listings.');
       return;
     }
+    if(isFirst)return;
     gaEvent('bids_loaded',{zip:zip,radius:radius,elevators:currentElevators.length,bids:bids.length});
     try{var p=new URLSearchParams(window.location.search);p.set('zip',zip);p.set('r',radius);history.replaceState(null,'','?'+p.toString());}catch(e){}
-  });
+  };
+  /* THE LAST LOOK FIRST (Nov 19, 2026). A returning reader's first screen used to be an empty skeleton for the seconds
+     the live read takes. When this phone holds its last network read for this ZIP (CBGlance.snapshot: at most a week
+     old, network rows only), those bids are drawn at once, each card with its own posted time, under one line that
+     says when they were saved; the live read replaces them when it lands. Only on the first search of the visit. */
+  /* Nov 19, 2026 (review): only a last look from the last FIRST_LOOK_MAX_MS draws first; an older one could be read as
+     today's price. It is not drawn: the held room and the live read cover it (the failure path still offers it, dated). */
+  var lookShown=false,liveShown=false;
+  releaseLookRoom();
+  if(!hasSearched&&window.CBGlance){
+    var first=null;try{first=CBGlance.snapshot(zip,radius);}catch(e){first=null;}
+    var age=first?Date.now()-(+first.savedAt||0):-1;
+    if(first&&first.rows&&first.rows.length&&age>=0&&age<=FIRST_LOOK_MAX_MS){
+      /* drawn once the page's other parts (the deferred Watch button, cb-alerts.js) are in, so the status line is the
+         size the live one will be; the held room shows until then. Never over a live answer that came first. */
+      var paintLook=function(){
+        if(liveShown||cbSearchSeq>seq0)return;
+        var fr=first.rows.map(function(b){var o={};for(var k in b)o[k]=b[k];o.stale=false;return o;});
+        /* the status line says what the live one will (every row is a board the network read itself) */
+        var pl={};fr.forEach(function(b){pl[(b.facility||'')+'|'+(b.city||b.town||'')]=1;});
+        cbNetStats={places:Object.keys(pl).length,rows:fr.length,duplicatesResolved:0,nationalPlaces:null};renderNetStats();
+        onBids(null,fr,lastLookNote(first.savedAt,zip),{first:true});
+        lookShown=true;
+      };
+      var seq0=cbSearchSeq+1;   /* fetchBids below takes the next number */
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',paintLook);else paintLook();
+    }
+  }
+  fetchBids(zip,radius,onBids);
+}
+var FIRST_LOOK_MAX_MS=12*3600e3;
+/* THE ROOM THE LAST LOOK TOOK. When the live bids replace it, the status line, the note under it and the best-price
+   cards keep at least the height they had, so the swap moves nothing on screen (site standard: layout shift under
+   0.01). Released when the reader starts the next search (a tap, so any shift then is theirs). */
+var LOOK_ROOM=['cb-status','cb-degraded','best-bids-section'];
+function holdLookRoom(){
+  LOOK_ROOM.forEach(function(id){var e=document.getElementById(id);if(e&&e.offsetHeight)e.style.minHeight=e.offsetHeight+'px';});
+  LOOK_CARDS=Array.prototype.map.call(document.querySelectorAll('#best-bids-grid > *'),function(c){return c.offsetHeight;});
+}
+var LOOK_CARDS=[];
+function applyLookCards(){
+  Array.prototype.forEach.call(document.querySelectorAll('#best-bids-grid > *'),function(c,i){if(LOOK_CARDS[i])c.style.minHeight=LOOK_CARDS[i]+'px';});
+}
+function releaseLookRoom(){
+  LOOK_ROOM.forEach(function(id){var e=document.getElementById(id);if(e)e.style.minHeight='';});
+  LOOK_CARDS=[];
+}
+/* 'Your last look at 51250, saved 9:10 am yesterday. Checking each elevator for newer bids.' */
+function lastLookNote(savedAt,zip){
+  var d=new Date(+savedAt),now=new Date();
+  var t=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(' AM',' am').replace(' PM',' pm');
+  var y=new Date(now);y.setDate(now.getDate()-1);
+  var day=d.toDateString()===now.toDateString()?'today':d.toDateString()===y.toDateString()?'yesterday':d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  return 'Your last look at '+zip+', saved on this phone '+t+' '+day+'. Checking each elevator for newer bids\u2026';
 }
 
 goBtn.addEventListener('click',function(){doSearch();});
@@ -2778,7 +2871,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
   if(z&&/^\d{5}$/.test(z)){
     zipInput.value=z;
     if(r&&['25','50','100','150','250'].indexOf(r)>=0)radiusSel.value=r;
-    setTimeout(function(){doSearch(z);},150);
+    setTimeout(function(){doSearch(z);},0);
   } else {
     try{
       var saved=localStorage.getItem('agsist_zip');
@@ -2786,7 +2879,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
       if(!(saved&&/^\d{5}$/.test(saved))){try{saved=String((JSON.parse(localStorage.getItem('agsist-wx-loc')||'null')||{}).zip||'');}catch(x){saved='';}}
       if(saved&&/^\d{5}$/.test(saved)&&!zipInput.value.trim()){
         zipInput.value=saved;
-        setTimeout(function(){ doSearch(saved); }, 300); // v2 panel: auto-run for returning farmers
+        setTimeout(function(){ doSearch(saved); }, 0); // auto-run for returning farmers, at once: the head held its room (cb-zip)
       }
     }catch(e){}
   }

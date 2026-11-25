@@ -189,7 +189,7 @@
   root.AGSIST_NEAR_COOP = api;
 
   var doc = root.document;
-  var CSS = 'aside.nc{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}aside.nc p{margin:.3rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.nc b{color:var(--text)}aside.nc .nc-k{font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}aside.nc a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.nc .nc-s{font-size:.76rem;color:var(--text-muted)}';
+  var CSS = 'aside.nc{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--r-md);background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}aside.nc p{margin:.3rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.nc b{color:var(--text)}aside.nc .nc-k{font-family:var(--font-body);font-size:.68rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim)}aside.nc a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.nc .nc-s{font-size:.76rem;color:var(--text-muted)}';
   function get(u) { return fetch(u, { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function point(loc) {
     if (loc.lat != null || !loc.zip) return Promise.resolve(loc);

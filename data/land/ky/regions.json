@@ -1,0 +1,1101 @@
+{
+ "about": "UK's eight Kentucky subregions (in three regions): the average land value and cash rent per acre by land use, from a January 2025 survey of county Extension agents. A subregion's average of county estimates, not a county's figure.",
+ "counties": {
+  "21001": {
+   "name": "Adair",
+   "region": "South Central"
+  },
+  "21003": {
+   "name": "Allen",
+   "region": "Near West"
+  },
+  "21005": {
+   "name": "Anderson",
+   "region": "Bluegrass"
+  },
+  "21007": {
+   "name": "Ballard",
+   "region": "Far West"
+  },
+  "21009": {
+   "name": "Barren",
+   "region": "Near West"
+  },
+  "21011": {
+   "name": "Bath",
+   "region": "North East"
+  },
+  "21013": {
+   "name": "Bell",
+   "region": "South East"
+  },
+  "21015": {
+   "name": "Boone",
+   "region": "North Central"
+  },
+  "21017": {
+   "name": "Bourbon",
+   "region": "Bluegrass"
+  },
+  "21019": {
+   "name": "Boyd",
+   "region": "North East"
+  },
+  "21021": {
+   "name": "Boyle",
+   "region": "South Central"
+  },
+  "21023": {
+   "name": "Bracken",
+   "region": "North East"
+  },
+  "21025": {
+   "name": "Breathitt",
+   "region": "South East"
+  },
+  "21027": {
+   "name": "Breckinridge",
+   "region": "Near West"
+  },
+  "21029": {
+   "name": "Bullitt",
+   "region": "North Central"
+  },
+  "21031": {
+   "name": "Butler",
+   "region": "Mid West"
+  },
+  "21033": {
+   "name": "Caldwell",
+   "region": "Mid West"
+  },
+  "21035": {
+   "name": "Calloway",
+   "region": "Far West"
+  },
+  "21037": {
+   "name": "Campbell",
+   "region": "North Central"
+  },
+  "21039": {
+   "name": "Carlisle",
+   "region": "Far West"
+  },
+  "21041": {
+   "name": "Carroll",
+   "region": "North Central"
+  },
+  "21043": {
+   "name": "Carter",
+   "region": "North East"
+  },
+  "21045": {
+   "name": "Casey",
+   "region": "South Central"
+  },
+  "21047": {
+   "name": "Christian",
+   "region": "Mid West"
+  },
+  "21049": {
+   "name": "Clark",
+   "region": "Bluegrass"
+  },
+  "21051": {
+   "name": "Clay",
+   "region": "South East"
+  },
+  "21053": {
+   "name": "Clinton",
+   "region": "South Central"
+  },
+  "21055": {
+   "name": "Crittenden",
+   "region": "Far West"
+  },
+  "21057": {
+   "name": "Cumberland",
+   "region": "South Central"
+  },
+  "21059": {
+   "name": "Daviess",
+   "region": "Mid West"
+  },
+  "21061": {
+   "name": "Edmonson",
+   "region": "Near West"
+  },
+  "21063": {
+   "name": "Elliott",
+   "region": "South East"
+  },
+  "21065": {
+   "name": "Estill",
+   "region": "South East"
+  },
+  "21067": {
+   "name": "Fayette",
+   "region": "Bluegrass"
+  },
+  "21069": {
+   "name": "Fleming",
+   "region": "North East"
+  },
+  "21071": {
+   "name": "Floyd",
+   "region": "South East"
+  },
+  "21073": {
+   "name": "Franklin",
+   "region": "Bluegrass"
+  },
+  "21075": {
+   "name": "Fulton",
+   "region": "Far West"
+  },
+  "21077": {
+   "name": "Gallatin",
+   "region": "North Central"
+  },
+  "21079": {
+   "name": "Garrard",
+   "region": "South Central"
+  },
+  "21081": {
+   "name": "Grant",
+   "region": "North Central"
+  },
+  "21083": {
+   "name": "Graves",
+   "region": "Far West"
+  },
+  "21085": {
+   "name": "Grayson",
+   "region": "Near West"
+  },
+  "21087": {
+   "name": "Green",
+   "region": "South Central"
+  },
+  "21089": {
+   "name": "Greenup",
+   "region": "North East"
+  },
+  "21091": {
+   "name": "Hancock",
+   "region": "Near West"
+  },
+  "21093": {
+   "name": "Hardin",
+   "region": "Near West"
+  },
+  "21095": {
+   "name": "Harlan",
+   "region": "South East"
+  },
+  "21097": {
+   "name": "Harrison",
+   "region": "Bluegrass"
+  },
+  "21099": {
+   "name": "Hart",
+   "region": "Near West"
+  },
+  "21101": {
+   "name": "Henderson",
+   "region": "Mid West"
+  },
+  "21103": {
+   "name": "Henry",
+   "region": "North Central"
+  },
+  "21105": {
+   "name": "Hickman",
+   "region": "Far West"
+  },
+  "21107": {
+   "name": "Hopkins",
+   "region": "Mid West"
+  },
+  "21109": {
+   "name": "Jackson",
+   "region": "South East"
+  },
+  "21111": {
+   "name": "Jefferson",
+   "region": "North Central"
+  },
+  "21113": {
+   "name": "Jessamine",
+   "region": "Bluegrass"
+  },
+  "21115": {
+   "name": "Johnson",
+   "region": "South East"
+  },
+  "21117": {
+   "name": "Kenton",
+   "region": "North Central"
+  },
+  "21119": {
+   "name": "Knott",
+   "region": "South East"
+  },
+  "21121": {
+   "name": "Knox",
+   "region": "South East"
+  },
+  "21123": {
+   "name": "Larue",
+   "region": "Near West"
+  },
+  "21125": {
+   "name": "Laurel",
+   "region": "South East"
+  },
+  "21127": {
+   "name": "Lawrence",
+   "region": "South East"
+  },
+  "21129": {
+   "name": "Lee",
+   "region": "South East"
+  },
+  "21131": {
+   "name": "Leslie",
+   "region": "South East"
+  },
+  "21133": {
+   "name": "Letcher",
+   "region": "South East"
+  },
+  "21135": {
+   "name": "Lewis",
+   "region": "North East"
+  },
+  "21137": {
+   "name": "Lincoln",
+   "region": "South Central"
+  },
+  "21139": {
+   "name": "Livingston",
+   "region": "Far West"
+  },
+  "21141": {
+   "name": "Logan",
+   "region": "Mid West"
+  },
+  "21143": {
+   "name": "Lyon",
+   "region": "Far West"
+  },
+  "21145": {
+   "name": "McCracken",
+   "region": "Far West"
+  },
+  "21147": {
+   "name": "McCreary",
+   "region": "South Central"
+  },
+  "21149": {
+   "name": "McLean",
+   "region": "Mid West"
+  },
+  "21151": {
+   "name": "Madison",
+   "region": "Bluegrass"
+  },
+  "21153": {
+   "name": "Magoffin",
+   "region": "South East"
+  },
+  "21155": {
+   "name": "Marion",
+   "region": "South Central"
+  },
+  "21157": {
+   "name": "Marshall",
+   "region": "Far West"
+  },
+  "21159": {
+   "name": "Martin",
+   "region": "South East"
+  },
+  "21161": {
+   "name": "Mason",
+   "region": "North East"
+  },
+  "21163": {
+   "name": "Meade",
+   "region": "Near West"
+  },
+  "21165": {
+   "name": "Menifee",
+   "region": "South East"
+  },
+  "21167": {
+   "name": "Mercer",
+   "region": "Bluegrass"
+  },
+  "21169": {
+   "name": "Metcalfe",
+   "region": "Near West"
+  },
+  "21171": {
+   "name": "Monroe",
+   "region": "Near West"
+  },
+  "21173": {
+   "name": "Montgomery",
+   "region": "North East"
+  },
+  "21175": {
+   "name": "Morgan",
+   "region": "South East"
+  },
+  "21177": {
+   "name": "Muhlenberg",
+   "region": "Mid West"
+  },
+  "21179": {
+   "name": "Nelson",
+   "region": "South Central"
+  },
+  "21181": {
+   "name": "Nicholas",
+   "region": "North East"
+  },
+  "21183": {
+   "name": "Ohio",
+   "region": "Mid West"
+  },
+  "21185": {
+   "name": "Oldham",
+   "region": "North Central"
+  },
+  "21187": {
+   "name": "Owen",
+   "region": "North Central"
+  },
+  "21189": {
+   "name": "Owsley",
+   "region": "South East"
+  },
+  "21191": {
+   "name": "Pendleton",
+   "region": "North Central"
+  },
+  "21193": {
+   "name": "Perry",
+   "region": "South East"
+  },
+  "21195": {
+   "name": "Pike",
+   "region": "South East"
+  },
+  "21197": {
+   "name": "Powell",
+   "region": "South East"
+  },
+  "21199": {
+   "name": "Pulaski",
+   "region": "South Central"
+  },
+  "21201": {
+   "name": "Robertson",
+   "region": "North East"
+  },
+  "21203": {
+   "name": "Rockcastle",
+   "region": "South East"
+  },
+  "21205": {
+   "name": "Rowan",
+   "region": "North East"
+  },
+  "21207": {
+   "name": "Russell",
+   "region": "South Central"
+  },
+  "21209": {
+   "name": "Scott",
+   "region": "Bluegrass"
+  },
+  "21211": {
+   "name": "Shelby",
+   "region": "North Central"
+  },
+  "21213": {
+   "name": "Simpson",
+   "region": "Mid West"
+  },
+  "21215": {
+   "name": "Spencer",
+   "region": "North Central"
+  },
+  "21217": {
+   "name": "Taylor",
+   "region": "South Central"
+  },
+  "21219": {
+   "name": "Todd",
+   "region": "Mid West"
+  },
+  "21221": {
+   "name": "Trigg",
+   "region": "Far West"
+  },
+  "21223": {
+   "name": "Trimble",
+   "region": "North Central"
+  },
+  "21225": {
+   "name": "Union",
+   "region": "Mid West"
+  },
+  "21227": {
+   "name": "Warren",
+   "region": "Mid West"
+  },
+  "21229": {
+   "name": "Washington",
+   "region": "South Central"
+  },
+  "21231": {
+   "name": "Wayne",
+   "region": "South Central"
+  },
+  "21233": {
+   "name": "Webster",
+   "region": "Mid West"
+  },
+  "21235": {
+   "name": "Whitley",
+   "region": "South East"
+  },
+  "21237": {
+   "name": "Wolfe",
+   "region": "South East"
+  },
+  "21239": {
+   "name": "Woodford",
+   "region": "Bluegrass"
+  }
+ },
+ "evidence": "survey of county Extension (ANR) agents, subregion averages of county estimates",
+ "not_mapped": {},
+ "notes": {
+  "caution": "subregions with few responses should be used with caution",
+  "notcounty": "the reported figures in this document are averages of the county estimates aggregated at the region and subregion level, not at the county level",
+  "rounding": "Dollar values are rounded to the nearest $5-10 for rental rates and $100 for land values.",
+  "urban": "particularly around the urban areas of Lexington and Louisville, where development or amenity value typically have more impact than actual farmland value on prices"
+ },
+ "regions": {
+  "Bluegrass": {
+   "counties": [
+    "21005",
+    "21017",
+    "21049",
+    "21067",
+    "21073",
+    "21097",
+    "21113",
+    "21151",
+    "21167",
+    "21209",
+    "21239"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      190,
+      140
+     ],
+     "hay": [
+      70,
+      40
+     ],
+     "pasture": [
+      60,
+      35
+     ],
+     "tobacco": [
+      380,
+      260
+     ]
+    },
+    "responses": 25,
+    "value": {
+     "crop": 8200,
+     "hay": 6600,
+     "pasture": 5600,
+     "wood": 4100
+    }
+   },
+   "region": "Central",
+   "rent": {
+    "crop": [
+     170,
+     130
+    ],
+    "hay": [
+     70,
+     40
+    ],
+    "pasture": [
+     65,
+     35
+    ],
+    "tobacco": [
+     380,
+     250
+    ]
+   },
+   "responses": 8,
+   "value": {
+    "crop": 8300,
+    "hay": 7600,
+    "pasture": 6800,
+    "wood": 4800
+   },
+   "withheld": {}
+  },
+  "Far West": {
+   "counties": [
+    "21007",
+    "21035",
+    "21039",
+    "21055",
+    "21075",
+    "21083",
+    "21105",
+    "21139",
+    "21143",
+    "21145",
+    "21157",
+    "21221"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      210,
+      160
+     ],
+     "hay": [
+      70,
+      50
+     ],
+     "pasture": [
+      60,
+      45
+     ],
+     "tobacco": [
+      390,
+      300
+     ]
+    },
+    "responses": 28,
+    "value": {
+     "crop": 8000,
+     "hay": 5600,
+     "pasture": 5100,
+     "wood": 4000
+    }
+   },
+   "region": "Western",
+   "rent": {
+    "crop": [
+     180,
+     140
+    ],
+    "hay": [
+     55,
+     40
+    ],
+    "pasture": [
+     65,
+     50
+    ],
+    "tobacco": [
+     390,
+     280
+    ]
+   },
+   "responses": 9,
+   "value": {
+    "crop": 7100,
+    "hay": 4100,
+    "pasture": 3500,
+    "wood": 3500
+   },
+   "withheld": {}
+  },
+  "Mid West": {
+   "counties": [
+    "21031",
+    "21033",
+    "21047",
+    "21059",
+    "21101",
+    "21107",
+    "21141",
+    "21149",
+    "21177",
+    "21183",
+    "21213",
+    "21219",
+    "21225",
+    "21227",
+    "21233"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      210,
+      160
+     ],
+     "hay": [
+      70,
+      50
+     ],
+     "pasture": [
+      60,
+      45
+     ],
+     "tobacco": [
+      390,
+      300
+     ]
+    },
+    "responses": 28,
+    "value": {
+     "crop": 8000,
+     "hay": 5600,
+     "pasture": 5100,
+     "wood": 4000
+    }
+   },
+   "region": "Western",
+   "rent": {
+    "crop": [
+     230,
+     180
+    ],
+    "hay": [
+     80,
+     60
+    ],
+    "pasture": [
+     55,
+     40
+    ],
+    "tobacco": [
+     490,
+     340
+    ]
+   },
+   "responses": 11,
+   "value": {
+    "crop": 8500,
+    "hay": 6100,
+    "pasture": 5400,
+    "wood": 4400
+   },
+   "withheld": {}
+  },
+  "Near West": {
+   "counties": [
+    "21003",
+    "21009",
+    "21027",
+    "21061",
+    "21085",
+    "21091",
+    "21093",
+    "21099",
+    "21123",
+    "21163",
+    "21169",
+    "21171"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      210,
+      160
+     ],
+     "hay": [
+      70,
+      50
+     ],
+     "pasture": [
+      60,
+      45
+     ],
+     "tobacco": [
+      390,
+      300
+     ]
+    },
+    "responses": 28,
+    "value": {
+     "crop": 8000,
+     "hay": 5600,
+     "pasture": 5100,
+     "wood": 4000
+    }
+   },
+   "region": "Western",
+   "rent": {
+    "crop": [
+     210,
+     140
+    ],
+    "hay": [
+     70,
+     50
+    ],
+    "pasture": [
+     60,
+     45
+    ],
+    "tobacco": [
+     310,
+     250
+    ]
+   },
+   "responses": 8,
+   "value": {
+    "crop": 8500,
+    "hay": 6500,
+    "pasture": 6000,
+    "wood": 4100
+   },
+   "withheld": {}
+  },
+  "North Central": {
+   "counties": [
+    "21015",
+    "21029",
+    "21037",
+    "21041",
+    "21077",
+    "21081",
+    "21103",
+    "21111",
+    "21117",
+    "21185",
+    "21187",
+    "21191",
+    "21211",
+    "21215",
+    "21223"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      190,
+      140
+     ],
+     "hay": [
+      70,
+      40
+     ],
+     "pasture": [
+      60,
+      35
+     ],
+     "tobacco": [
+      380,
+      260
+     ]
+    },
+    "responses": 25,
+    "value": {
+     "crop": 8200,
+     "hay": 6600,
+     "pasture": 5600,
+     "wood": 4100
+    }
+   },
+   "region": "Central",
+   "rent": {
+    "crop": [
+     180,
+     140
+    ],
+    "hay": [
+     75,
+     50
+    ],
+    "pasture": [
+     60,
+     40
+    ],
+    "tobacco": [
+     400,
+     290
+    ]
+   },
+   "responses": 7,
+   "value": {
+    "crop": 8700,
+    "hay": 6600,
+    "pasture": 6100,
+    "wood": 5200
+   },
+   "withheld": {}
+  },
+  "North East": {
+   "counties": [
+    "21011",
+    "21019",
+    "21023",
+    "21043",
+    "21069",
+    "21089",
+    "21135",
+    "21161",
+    "21173",
+    "21181",
+    "21201",
+    "21205"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      130,
+      90
+     ],
+     "hay": [
+      50,
+      35
+     ],
+     "pasture": [
+      40,
+      25
+     ],
+     "tobacco": [
+      360,
+      240
+     ]
+    },
+    "responses": 17,
+    "value": {
+     "crop": 3400,
+     "hay": 2900,
+     "pasture": 2400,
+     "wood": 1600
+    }
+   },
+   "region": "Eastern",
+   "rent": {
+    "crop": [
+     160,
+     120
+    ],
+    "hay": [
+     65,
+     50
+    ],
+    "pasture": [
+     50,
+     35
+    ],
+    "tobacco": [
+     360,
+     240
+    ]
+   },
+   "responses": 7,
+   "value": {
+    "crop": 3600,
+    "hay": 3000,
+    "pasture": 2400,
+    "wood": 1700
+   },
+   "withheld": {}
+  },
+  "South Central": {
+   "counties": [
+    "21001",
+    "21021",
+    "21045",
+    "21053",
+    "21057",
+    "21079",
+    "21087",
+    "21137",
+    "21147",
+    "21155",
+    "21179",
+    "21199",
+    "21207",
+    "21217",
+    "21229",
+    "21231"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      190,
+      140
+     ],
+     "hay": [
+      70,
+      40
+     ],
+     "pasture": [
+      60,
+      35
+     ],
+     "tobacco": [
+      380,
+      260
+     ]
+    },
+    "responses": 25,
+    "value": {
+     "crop": 8200,
+     "hay": 6600,
+     "pasture": 5600,
+     "wood": 4100
+    }
+   },
+   "region": "Central",
+   "rent": {
+    "crop": [
+     210,
+     150
+    ],
+    "hay": [
+     65,
+     40
+    ],
+    "pasture": [
+     55,
+     35
+    ],
+    "tobacco": [
+     360,
+     250
+    ]
+   },
+   "responses": 10,
+   "value": {
+    "crop": 7900,
+    "hay": 5800,
+    "pasture": 4500,
+    "wood": 3000
+   },
+   "withheld": {}
+  },
+  "South East": {
+   "counties": [
+    "21013",
+    "21025",
+    "21051",
+    "21063",
+    "21065",
+    "21071",
+    "21095",
+    "21109",
+    "21115",
+    "21119",
+    "21121",
+    "21125",
+    "21127",
+    "21129",
+    "21131",
+    "21133",
+    "21153",
+    "21159",
+    "21165",
+    "21175",
+    "21189",
+    "21193",
+    "21195",
+    "21197",
+    "21203",
+    "21235",
+    "21237"
+   ],
+   "parent": {
+    "rent": {
+     "crop": [
+      130,
+      90
+     ],
+     "hay": [
+      50,
+      35
+     ],
+     "pasture": [
+      40,
+      25
+     ],
+     "tobacco": [
+      360,
+      240
+     ]
+    },
+    "responses": 17,
+    "value": {
+     "crop": 3400,
+     "hay": 2900,
+     "pasture": 2400,
+     "wood": 1600
+    }
+   },
+   "region": "Eastern",
+   "rent": {
+    "crop": [
+     90,
+     70
+    ],
+    "hay": [
+     40,
+     25
+    ],
+    "pasture": [
+     35,
+     20
+    ]
+   },
+   "responses": 10,
+   "value": {
+    "crop": 3100,
+    "hay": 2800,
+    "pasture": 2400,
+    "wood": 1600
+   },
+   "withheld": {
+    "tobacco": "UK prints no figure (a dash)"
+   }
+  }
+ },
+ "regions_from": "Figure 1, Kentucky Counties by Subregion (an image without county names: read by laying the county outlines over it)",
+ "respondents": 70,
+ "source": {
+  "authors": "Greg Halich and Thomas Keene",
+  "date_words": "survey of January 2025, issued September 2025",
+  "org": "University of Kentucky Cooperative Extension Service",
+  "ref": "uky-aec-102-pdf",
+  "released": "September 2025",
+  "sha256": "5fdbbe64223981c553135e68351c6cab4a9824eeadfc1837a492ec1c6e69f97e",
+  "survey": "January 2025",
+  "title": "Kentucky ANR Agent Land Value and Cash Rent Survey (AEC-102)",
+  "url": "https://publications.mgcafe.uky.edu/aec-102"
+ },
+ "state": "KY",
+ "states": [
+  "KY"
+ ],
+ "unit": "subregion",
+ "what": {
+  "rent": "average cash rent per acre per year, 2025 survey, good-excellent and fair ground (tobacco: with and without a barn)",
+  "responses": "completed surveys in the subregion (Figure 1)",
+  "value": "average land value per acre, 2025 survey: cropland, hay, pasture, woodland"
+ },
+ "year": 2025
+}

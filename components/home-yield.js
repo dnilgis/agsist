@@ -10,6 +10,20 @@
   function ncWithheld(we,now){var w=/^\d{4}-\d{2}-\d{2}$/.test(String(we))?Date.UTC(+we.slice(0,4),+we.slice(5,7)-1,+we.slice(8,10)):NaN;return isNaN(w)||(now-w)/864e5>=16;}
   /* Nov 10: the time a futures stamp names. A last trade carries its own close_time; anything else, the file's read time F. */
   function stampAt(cq,F){return cq&&cq.close_kind==='last'&&cq.close_time&&!isNaN(Date.parse(cq.close_time))?new Date(cq.close_time):F;}
+  /* Nov 19 (owner): a withheld estimate is one plain line, the reason and the date, never a card of dashes.
+     The reason is the file's own (held_back.reason, the clause after its first colon) when it is about the
+     week on file (held_back.last_good_week); else the age rule above says why. -> the line's text. */
+  var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function ncDay(we){return /^\d{4}-\d{2}-\d{2}$/.test(String(we))?MO[+we.slice(5,7)-1]+' '+(+we.slice(8,10))+', '+we.slice(0,4):'';}
+  function ncWhy(d,we){
+    var hb=d&&d.held_back,dt=ncDay(we),r=hb&&hb.last_good_week===we&&typeof hb.reason==='string'?hb.reason:'';
+    var cl=r.indexOf(': ')>=0?r.slice(r.indexOf(': ')+2):'';cl=cl.split(/\.(\s|$)/)[0].trim();
+    if(cl&&dt)return 'Yield nowcast withheld since the week ending '+dt+': '+cl+'. It returns with next season\u2019s ratings.';
+    return 'Yield nowcast withheld: the last usable USDA ratings week ended '+(dt||'too long ago')+', two or more weeks back. It returns with next season\u2019s ratings.';
+  }
+  /* the heading, the two crop boxes and the source line show only with an estimate */
+  function ncShow(on){var w=document.getElementById('nowcast-widget');if(!w)return;w.classList.toggle('nc-on',!!on);
+    [].forEach.call(w.querySelectorAll('.nc-in'),function(e){e.hidden=!on;});}
   function loadYieldNowcast(){
     fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
       if(!d||!d.crops)throw new Error('no-nowcast');
@@ -17,18 +31,14 @@
       /* Nov 10: an estimate from ratings two or more weekly reports old is
          withheld, not headed "Near USDA" (Oct 4 ratings were still shown Nov 9).
          A fresh week is 2 to 9 days old when it posts; 16 days means two missed. */
-      var _we=d.crops.corn&&d.crops.corn.week_ending,_wd=/^\d{4}-\d{2}-\d{2}$/.test(String(_we))?Date.UTC(+_we.slice(0,4),+_we.slice(5,7)-1,+_we.slice(8,10)):NaN;
+      var _we=d.crops.corn&&d.crops.corn.week_ending;
       if(ncWithheld(_we,Date.now())){
-        var _mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],_wt=isNaN(_wd)?'':_mo[+_we.slice(5,7)-1]+' '+(+_we.slice(8,10));
-        Object.keys(map).forEach(function(crop){
-          var el=document.getElementById(map[crop]),bd=document.getElementById(map[crop]+'-band'),vs=document.getElementById(map[crop]+'-vs');
-          if(el)el.textContent='-';if(bd&&bd.parentNode)bd.parentNode.style.visibility='hidden';if(vs){vs.textContent='Withheld';vs.style.color='var(--text-muted)';}
-        });
-        var _v=document.getElementById('nc-verdict');if(_v){_v.className='ratio-verdict neutral';_v.textContent='Withheld';}
-        var _w=document.getElementById('nc-week');if(_w)_w.textContent='No estimate now: the last usable USDA ratings week ended '+(_wt||'too long ago')+', two or more weeks back. It returns with the next season’s ratings.';
+        ncShow(false);
+        var _w=document.getElementById('nc-week');if(_w){_w.textContent=ncWhy(d,_we);_w.style.color='';}
         var _y=document.getElementById('nc-years');if(_y&&d.crops.corn&&d.crops.corn.backtest_years)_y.textContent=d.crops.corn.backtest_years;
         return;
       }
+      ncShow(true);
       var above=0,below=0;
       Object.keys(map).forEach(function(crop){
         var c=d.crops[crop];
@@ -89,7 +99,8 @@
       var v=document.getElementById('nc-verdict');
       if(v){v.className='ratio-verdict neutral';v.textContent='Data unavailable';}
       var wk=document.getElementById('nc-week');
-      if(wk){wk.textContent='Could not load this week\u2019s ratings.';wk.style.color='';}
+      if(wk){wk.textContent='Yield nowcast: this week\u2019s ratings did not load.';wk.style.color='';}
+      ncShow(false);
       /* No numbers to show: the two "--" boxes hide; the line above says why. */
       var _g=document.getElementById('nc-corn');_g=_g&&_g.parentNode&&_g.parentNode.parentNode;if(_g&&_g.style)_g.style.display='none';
     });

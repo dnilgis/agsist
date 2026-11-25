@@ -122,7 +122,7 @@
         var np = wavg('nccpi'), cs = wavg('csr2');
         set('frp-soil', '<table class="fl-tbl" style="min-width:0"><thead><tr><th>Soil</th><th class="n">Acres</th><th class="n">Share</th><th class="n">Class</th></tr></thead><tbody>' +
           cl.slice().sort(function (a, b) { return b.ac - a.ac; }).slice(0, 8).map(function (x) { return '<tr><td style="white-space:normal">' + esc(x.name) + '</td><td class="n">' + (x.ac > 0 ? x.ac.toFixed(1) : '') + '</td><td class="n">' + (tot > 0 && x.ac > 0 ? Math.round(x.ac / tot * 100) + '%' : '') + '</td><td class="n">' + (x.nicc || '') + '</td></tr>'; }).join('') +
-          '</tbody></table>' + miss([np != null ? 'Soil productivity ' + Math.round(np * 100) + '/100 (USDA NCCPI ' + np.toFixed(2) + ')' : null, cs != null ? 'CSR2 ' + cs.toFixed(1) : null].filter(Boolean).join(' &middot; ') + (np != null || cs != null ? ', weighted by acres in the outline. ' : '') + 'Class is land capability, 1 best to 8. USDA NRCS soil survey (SSURGO).'));
+          '</tbody></table>' + miss([np != null ? 'USDA NCCPI ' + np.toFixed(2) + ' (soil productivity, 0 to 1)' : null, cs != null ? 'CSR2 ' + cs.toFixed(1) : null].filter(Boolean).join(' &middot; ') + (np != null || cs != null ? ', weighted by acres in the outline. ' : '') + 'Class is land capability, 1 best to 8. USDA NRCS soil survey (SSURGO).'));
       }).catch(function () { set('frp-soil', miss('The soil survey did not answer. Reload in a minute.')); });
 
     fetch(FS_WORKER + '/cdl?lat=' + c.lat.toFixed(5) + '&lon=' + c.lng.toFixed(5) + '&years=10').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {

@@ -1503,7 +1503,7 @@
         '<label>Class<select data-f="cls"><option value="">farm, forest, undeveloped</option><option value="4">Agricultural only</option><option value="5M,6">Forest</option><option value="5">Undeveloped</option><option value="7">With farm buildings</option></select></label>' +
         '<label>Deeds<select data-f="all"><option value="">market sales</option><option value="1">every deed type</option></select></label>' +
         '</div><div id="fl-clist"></div>' +
-        '<p class="fl-note"><a class="fl-btn" style="display:inline-block;text-decoration:none" id="fl-comprep" href="#" target="_blank" rel="noopener">Comparable sales report</a> Numbered comps, map, search stated, print or CSV. Free.</p>' +
+        '<p class="fl-note"><a class="fl-btn" style="display:inline-block;text-decoration:none" id="fl-comprep" href="#" target="_blank" rel="noopener">Comparable sales report</a> Numbered comps, map, search stated, print. Free.</p>' +
         olderHTML(files) +
         '<p class="fl-note">' + esc(f.source || 'State transfer returns') + '. ' + (FSLand.coverageText(cov, f.state) ? esc(FSLand.coverageText(cov, f.state)) + '. ' : '') +
         (String(f.state).toUpperCase() === 'FL'

@@ -225,7 +225,7 @@
         sec.classList.add('sent');
         out.innerHTML = '<div class="cl-msg ok"><p><b>Sent.</b> I have your request for ' + esc(p.elevator) + ' in ' + esc(p.town) + ', ' + esc(p.state) + '.</p>' +
           '<p>Next I call the elevator at its own number to make sure you work there. Then I send your link to ' + esc(p.email) +
-          '. Nothing shows on the site until you post. Questions: ' + TO + ' or 715-797-2428. Sig</p></div>';
+          '. Nothing shows on the site until you post. Questions: ' + TO + ' or 715-797-2428.</p></div>';
         try { var m = out.querySelector('.cl-msg'); m.setAttribute('tabindex', '-1'); m.focus(); } catch (err) {}
       })
       .catch(function () {

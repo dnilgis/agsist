@@ -23,7 +23,7 @@
 /* the scoreboard: six markets, three across */
 .cotp-grid{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:.22in;row-gap:.06in;margin-top:.07in}
 .cotp-m{break-inside:avoid;page-break-inside:avoid;border-top:2pt solid #000;padding-top:.04in}
-.cotp-n{font-size:12pt;font-weight:800;text-transform:uppercase;letter-spacing:.05em;line-height:1.2}
+.cotp-n{font-size:12pt;font-weight:800;text-transform:none;letter-spacing:0;line-height:1.2}
 .cotp-fig{line-height:1;margin:.02in 0 .02in!important}
 .cotp-fig b{display:block;font-size:32pt;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .cotp-side{font-size:11pt;font-weight:700}
@@ -62,7 +62,7 @@
 .cotw-h1{font-size:40pt;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:.08in 0 .06in!important}
 .cotw-grid{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:.3in;row-gap:.1in}
 .cotw-m{border-top:3pt solid #000;padding-top:.04in;break-inside:avoid}
-.cotw-n{font-size:16pt;font-weight:800;text-transform:uppercase;letter-spacing:.05em;line-height:1.15}
+.cotw-n{font-size:16pt;font-weight:800;text-transform:none;letter-spacing:0;line-height:1.15}
 .cotw-fig{font-size:14pt;font-weight:700;line-height:1.1}
 .cotw-fig b{display:block;font-size:38pt;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .cotw-chg{font-size:18pt;font-weight:800;font-variant-numeric:tabular-nums}

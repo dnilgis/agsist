@@ -3,18 +3,12 @@ var rb=document.getElementById('rc-open');
 if(rb)rb.addEventListener('click',function(){
   var box=document.getElementById('rc-box'),o=!box.hidden;box.hidden=o;rb.setAttribute('aria-expanded',o?'false':'true');
   if(o||box.getAttribute('data-on'))return;box.setAttribute('data-on','1');
-  var s=document.createElement('script');s.src='/components/rent-calc.js?v=2';
+  var s=document.createElement('script');s.src='/components/rent-calc.js?v=3';
   s.onload=function(){window.AgRentCalc.mount(box,{st:rb.getAttribute('data-st'),fips:rb.getAttribute('data-fips')});};
   s.onerror=function(){box.textContent='The calculator did not load. Try again in a minute.';box.removeAttribute('data-on');};
   document.head.appendChild(s);
 });
 var rec=JSON.parse(document.getElementById('rec').textContent);
-document.getElementById('dl').addEventListener('click',function(){
-  var k=Object.keys(rec),q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
-  var t=k.join(',')+'\n'+k.map(function(x){return q(rec[x]);}).join(',')+'\n';
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='agsist-atlas-'+rec.fips+'.csv';
-  document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
-});
 var cp=document.getElementById('cp');
 if(cp)cp.addEventListener('click',function(){
   var u=location.origin+location.pathname;
@@ -24,4 +18,9 @@ if(cp)cp.addEventListener('click',function(){
   try{gaEvent('atlas_county_share',{fips:rec.fips});}catch(e){}
 });
 try{gaEvent('atlas_county_page',{fips:rec.fips});}catch(e){}
+[].forEach.call(document.querySelectorAll('a[data-share]'),function(a){a.addEventListener('click',function(){
+  if(a.getAttribute('data-share')==='text'){var m=document.querySelector('meta[property="og:image:alt"]'),c=document.querySelector('link[rel=canonical]');
+    a.href='sms:?&body='+encodeURIComponent((m?m.getAttribute('content')+' ':'')+(c?c.href:location.origin+location.pathname));}
+  try{gaEvent('county_print',{kind:a.getAttribute('data-share'),fips:rec.fips});}catch(e){}
+});});
 })();

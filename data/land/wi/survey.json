@@ -1,0 +1,781 @@
+{
+ "about": "County average prices of agricultural land sold in 2025 (bare land, 35 to 2,000 acres, between unrelated parties), from Wisconsin Department of Revenue transfer returns, as UW-Madison Extension reports them, with the number of sales.",
+ "counties": {
+  "55001": {
+   "acres": 615,
+   "n": 6,
+   "name": "Adams",
+   "prior": {
+    "n": 6,
+    "value": 4048,
+    "year": 2024
+   },
+   "value": 8073
+  },
+  "55003": {
+   "acres": 483,
+   "n": 3,
+   "name": "Ashland",
+   "value": 1674
+  },
+  "55005": {
+   "acres": 1492,
+   "n": 12,
+   "name": "Barron",
+   "prior": {
+    "n": 9,
+    "value": 4584,
+    "year": 2024
+   },
+   "value": 5688
+  },
+  "55007": {
+   "acres": 35,
+   "n": 1,
+   "name": "Bayfield",
+   "prior": {
+    "n": 3,
+    "value": 1362,
+    "year": 2024
+   },
+   "value": 2286
+  },
+  "55009": {
+   "acres": 264,
+   "n": 5,
+   "name": "Brown",
+   "prior": {
+    "n": 7,
+    "value": 11338,
+    "year": 2024
+   },
+   "value": 10116
+  },
+  "55011": {
+   "acres": 1140,
+   "n": 9,
+   "name": "Buffalo",
+   "prior": {
+    "n": 14,
+    "value": 7225,
+    "year": 2024
+   },
+   "value": 7679
+  },
+  "55013": {
+   "acres": 451,
+   "n": 5,
+   "name": "Burnett",
+   "prior": {
+    "n": 3,
+    "value": 3591,
+    "year": 2024
+   },
+   "value": 4069
+  },
+  "55015": {
+   "acres": 1321,
+   "n": 11,
+   "name": "Calumet",
+   "prior": {
+    "n": 5,
+    "value": 7972,
+    "year": 2024
+   },
+   "value": 10442
+  },
+  "55017": {
+   "acres": 545,
+   "n": 9,
+   "name": "Chippewa",
+   "prior": {
+    "n": 18,
+    "value": 6046,
+    "year": 2024
+   },
+   "value": 4043
+  },
+  "55019": {
+   "acres": 2483,
+   "n": 22,
+   "name": "Clark",
+   "prior": {
+    "n": 32,
+    "value": 4968,
+    "year": 2024
+   },
+   "value": 6452
+  },
+  "55021": {
+   "acres": 1687,
+   "n": 11,
+   "name": "Columbia",
+   "prior": {
+    "n": 17,
+    "value": 7758,
+    "year": 2024
+   },
+   "value": 8190
+  },
+  "55023": {
+   "acres": 731,
+   "n": 12,
+   "name": "Crawford",
+   "prior": {
+    "n": 12,
+    "value": 5237,
+    "year": 2024
+   },
+   "value": 5570
+  },
+  "55025": {
+   "acres": 1394,
+   "n": 8,
+   "name": "Dane",
+   "prior": {
+    "n": 17,
+    "value": 10477,
+    "year": 2024
+   },
+   "value": 10401
+  },
+  "55027": {
+   "acres": 1788,
+   "n": 18,
+   "name": "Dodge",
+   "prior": {
+    "n": 9,
+    "value": 9216,
+    "year": 2024
+   },
+   "value": 9592
+  },
+  "55029": {
+   "acres": 497,
+   "n": 9,
+   "name": "Door",
+   "prior": {
+    "n": 4,
+    "value": 5668,
+    "year": 2024
+   },
+   "value": 6455
+  },
+  "55031": {
+   "n": 0,
+   "name": "Douglas",
+   "prior": {
+    "n": 3,
+    "value": 3076,
+    "year": 2024
+   },
+   "withheld": "no agricultural land sales in the county in 2025"
+  },
+  "55033": {
+   "acres": 2619,
+   "n": 21,
+   "name": "Dunn",
+   "prior": {
+    "n": 15,
+    "value": 5942,
+    "year": 2024
+   },
+   "value": 6068
+  },
+  "55035": {
+   "acres": 428,
+   "n": 6,
+   "name": "Eau Claire",
+   "prior": {
+    "n": 11,
+    "value": 5057,
+    "year": 2024
+   },
+   "value": 5457
+  },
+  "55037": {
+   "n": 0,
+   "name": "Florence",
+   "prior": {
+    "n": 1,
+    "value": 3074,
+    "year": 2024
+   },
+   "withheld": "no agricultural land sales in the county in 2025"
+  },
+  "55039": {
+   "acres": 1442,
+   "n": 15,
+   "name": "Fond du Lac",
+   "prior": {
+    "n": 14,
+    "value": 9378,
+    "year": 2024
+   },
+   "value": 9643
+  },
+  "55041": {
+   "acres": 40,
+   "n": 1,
+   "name": "Forest",
+   "value": 1842
+  },
+  "55043": {
+   "acres": 6962,
+   "n": 29,
+   "name": "Grant",
+   "prior": {
+    "n": 21,
+    "value": 9347,
+    "year": 2024
+   },
+   "value": 6978
+  },
+  "55045": {
+   "acres": 1649,
+   "n": 11,
+   "name": "Green",
+   "prior": {
+    "n": 15,
+    "value": 7873,
+    "year": 2024
+   },
+   "value": 9212
+  },
+  "55047": {
+   "acres": 592,
+   "n": 8,
+   "name": "Green Lake",
+   "prior": {
+    "n": 7,
+    "value": 5844,
+    "year": 2024
+   },
+   "value": 8597
+  },
+  "55049": {
+   "acres": 1354,
+   "n": 10,
+   "name": "Iowa",
+   "prior": {
+    "n": 27,
+    "value": 10479,
+    "year": 2024
+   },
+   "value": 8785
+  },
+  "55051": {
+   "acres": 243,
+   "n": 2,
+   "name": "Iron",
+   "prior": {
+    "n": 5,
+    "value": 1276,
+    "year": 2024
+   },
+   "value": 991
+  },
+  "55053": {
+   "acres": 2630,
+   "n": 11,
+   "name": "Jackson",
+   "prior": {
+    "n": 7,
+    "value": 4264,
+    "year": 2024
+   },
+   "value": 5469
+  },
+  "55055": {
+   "acres": 672,
+   "n": 7,
+   "name": "Jefferson",
+   "prior": {
+    "n": 13,
+    "value": 8170,
+    "year": 2024
+   },
+   "value": 10311
+  },
+  "55057": {
+   "acres": 926,
+   "n": 7,
+   "name": "Juneau",
+   "prior": {
+    "n": 9,
+    "value": 2688,
+    "year": 2024
+   },
+   "value": 4435
+  },
+  "55059": {
+   "acres": 361,
+   "n": 4,
+   "name": "Kenosha",
+   "prior": {
+    "n": 5,
+    "value": 9446,
+    "year": 2024
+   },
+   "value": 10472
+  },
+  "55061": {
+   "acres": 446,
+   "n": 4,
+   "name": "Kewaunee",
+   "prior": {
+    "n": 6,
+    "value": 7444,
+    "year": 2024
+   },
+   "value": 7611
+  },
+  "55063": {
+   "acres": 836,
+   "n": 5,
+   "name": "La Crosse",
+   "prior": {
+    "n": 5,
+    "value": 4958,
+    "year": 2024
+   },
+   "value": 8229
+  },
+  "55065": {
+   "acres": 1497,
+   "n": 11,
+   "name": "Lafayette",
+   "prior": {
+    "n": 22,
+    "value": 9236,
+    "year": 2024
+   },
+   "value": 9680
+  },
+  "55067": {
+   "acres": 536,
+   "n": 4,
+   "name": "Langlade",
+   "prior": {
+    "n": 3,
+    "value": 2837,
+    "year": 2024
+   },
+   "value": 4771
+  },
+  "55069": {
+   "acres": 266,
+   "n": 3,
+   "name": "Lincoln",
+   "prior": {
+    "n": 7,
+    "value": 2698,
+    "year": 2024
+   },
+   "value": 2434
+  },
+  "55071": {
+   "acres": 515,
+   "n": 9,
+   "name": "Manitowoc",
+   "prior": {
+    "n": 10,
+    "value": 7973,
+    "year": 2024
+   },
+   "value": 7305
+  },
+  "55073": {
+   "acres": 2613,
+   "n": 21,
+   "name": "Marathon",
+   "prior": {
+    "n": 25,
+    "value": 5030,
+    "year": 2024
+   },
+   "value": 5926
+  },
+  "55075": {
+   "acres": 151,
+   "n": 3,
+   "name": "Marinette",
+   "prior": {
+    "n": 4,
+    "value": 4410,
+    "year": 2024
+   },
+   "value": 5934
+  },
+  "55077": {
+   "acres": 244,
+   "n": 4,
+   "name": "Marquette",
+   "prior": {
+    "n": 8,
+    "value": 5474,
+    "year": 2024
+   },
+   "value": 6801
+  },
+  "55081": {
+   "acres": 1311,
+   "n": 11,
+   "name": "Monroe",
+   "prior": {
+    "n": 17,
+    "value": 5534,
+    "year": 2024
+   },
+   "value": 4873
+  },
+  "55083": {
+   "acres": 551,
+   "n": 9,
+   "name": "Oconto",
+   "prior": {
+    "n": 21,
+    "value": 4530,
+    "year": 2024
+   },
+   "value": 5864
+  },
+  "55085": {
+   "acres": 40,
+   "n": 1,
+   "name": "Oneida",
+   "prior": {
+    "n": 1,
+    "value": 1701,
+    "year": 2024
+   },
+   "value": 5000
+  },
+  "55087": {
+   "acres": 1422,
+   "n": 15,
+   "name": "Outagamie",
+   "prior": {
+    "n": 18,
+    "value": 10374,
+    "year": 2024
+   },
+   "value": 8002
+  },
+  "55089": {
+   "acres": 182,
+   "n": 3,
+   "name": "Ozaukee",
+   "prior": {
+    "n": 3,
+    "value": 6820,
+    "year": 2024
+   },
+   "value": 9761
+  },
+  "55091": {
+   "acres": 1254,
+   "n": 8,
+   "name": "Pepin",
+   "prior": {
+    "n": 6,
+    "value": 5232,
+    "year": 2024
+   },
+   "value": 8003
+  },
+  "55093": {
+   "acres": 932,
+   "n": 11,
+   "name": "Pierce",
+   "prior": {
+    "n": 23,
+    "value": 6988,
+    "year": 2024
+   },
+   "value": 7438
+  },
+  "55095": {
+   "acres": 954,
+   "n": 12,
+   "name": "Polk",
+   "prior": {
+    "n": 23,
+    "value": 4252,
+    "year": 2024
+   },
+   "value": 5243
+  },
+  "55097": {
+   "acres": 379,
+   "n": 3,
+   "name": "Portage",
+   "prior": {
+    "n": 5,
+    "value": 7601,
+    "year": 2024
+   },
+   "value": 2773
+  },
+  "55099": {
+   "acres": 120,
+   "n": 2,
+   "name": "Price",
+   "prior": {
+    "n": 8,
+    "value": 2087,
+    "year": 2024
+   },
+   "value": 1967
+  },
+  "55101": {
+   "acres": 469,
+   "n": 6,
+   "name": "Racine",
+   "prior": {
+    "n": 4,
+    "value": 13355,
+    "year": 2024
+   },
+   "value": 9439
+  },
+  "55103": {
+   "acres": 1040,
+   "n": 14,
+   "name": "Richland",
+   "prior": {
+    "n": 13,
+    "value": 6823,
+    "year": 2024
+   },
+   "value": 6744
+  },
+  "55105": {
+   "acres": 1714,
+   "n": 9,
+   "name": "Rock",
+   "prior": {
+    "n": 8,
+    "value": 9608,
+    "year": 2024
+   },
+   "value": 10729
+  },
+  "55107": {
+   "acres": 677,
+   "n": 11,
+   "name": "Rusk",
+   "prior": {
+    "n": 9,
+    "value": 2259,
+    "year": 2024
+   },
+   "value": 3651
+  },
+  "55109": {
+   "acres": 1470,
+   "n": 12,
+   "name": "St. Croix",
+   "prior": {
+    "n": 22,
+    "value": 7033,
+    "year": 2024
+   },
+   "value": 8116
+  },
+  "55111": {
+   "acres": 3686,
+   "n": 32,
+   "name": "Sauk",
+   "prior": {
+    "n": 21,
+    "value": 7010,
+    "year": 2024
+   },
+   "value": 7328
+  },
+  "55113": {
+   "acres": 119,
+   "n": 2,
+   "name": "Sawyer",
+   "prior": {
+    "n": 5,
+    "value": 1753,
+    "year": 2024
+   },
+   "value": 6929
+  },
+  "55115": {
+   "acres": 1343,
+   "n": 14,
+   "name": "Shawano",
+   "prior": {
+    "n": 8,
+    "value": 8347,
+    "year": 2024
+   },
+   "value": 7107
+  },
+  "55117": {
+   "acres": 1137,
+   "n": 8,
+   "name": "Sheboygan",
+   "prior": {
+    "n": 8,
+    "value": 7512,
+    "year": 2024
+   },
+   "value": 9253
+  },
+  "55119": {
+   "acres": 726,
+   "n": 6,
+   "name": "Taylor",
+   "prior": {
+    "n": 11,
+    "value": 3201,
+    "year": 2024
+   },
+   "value": 3344
+  },
+  "55121": {
+   "acres": 1678,
+   "n": 14,
+   "name": "Trempealeau",
+   "prior": {
+    "n": 13,
+    "value": 6021,
+    "year": 2024
+   },
+   "value": 5988
+  },
+  "55123": {
+   "acres": 1656,
+   "n": 13,
+   "name": "Vernon",
+   "prior": {
+    "n": 14,
+    "value": 6269,
+    "year": 2024
+   },
+   "value": 7008
+  },
+  "55125": {
+   "n": 0,
+   "name": "Vilas",
+   "withheld": "no agricultural land sales in the county in 2025"
+  },
+  "55127": {
+   "acres": 1141,
+   "n": 15,
+   "name": "Walworth",
+   "prior": {
+    "n": 7,
+    "value": 10208,
+    "year": 2024
+   },
+   "value": 10866
+  },
+  "55129": {
+   "acres": 167,
+   "n": 3,
+   "name": "Washburn",
+   "prior": {
+    "n": 4,
+    "value": 4080,
+    "year": 2024
+   },
+   "value": 4362
+  },
+  "55131": {
+   "acres": 350,
+   "n": 4,
+   "name": "Washington",
+   "prior": {
+    "n": 4,
+    "value": 8795,
+    "year": 2024
+   },
+   "value": 7284
+  },
+  "55133": {
+   "acres": 113,
+   "n": 2,
+   "name": "Waukesha",
+   "prior": {
+    "n": 1,
+    "value": 17021,
+    "year": 2024
+   },
+   "value": 17194
+  },
+  "55135": {
+   "acres": 916,
+   "n": 10,
+   "name": "Waupaca",
+   "prior": {
+    "n": 15,
+    "value": 6099,
+    "year": 2024
+   },
+   "value": 6279
+  },
+  "55137": {
+   "acres": 581,
+   "n": 9,
+   "name": "Waushara",
+   "prior": {
+    "n": 12,
+    "value": 4557,
+    "year": 2024
+   },
+   "value": 4705
+  },
+  "55139": {
+   "acres": 732,
+   "n": 7,
+   "name": "Winnebago",
+   "prior": {
+    "n": 7,
+    "value": 7692,
+    "year": 2024
+   },
+   "value": 6766
+  },
+  "55141": {
+   "acres": 490,
+   "n": 7,
+   "name": "Wood",
+   "prior": {
+    "n": 11,
+    "value": 4041,
+    "year": 2024
+   },
+   "value": 4991
+  }
+ },
+ "evidence": "average of recorded sales, UW-Madison Extension",
+ "not_listed": [
+  "Menominee",
+  "Milwaukee"
+ ],
+ "source": {
+  "authors": "Heather Schlesser",
+  "org": "UW-Madison Division of Extension",
+  "ref": "uw-wi-ag-land-prices-2025-t2-pdf",
+  "released": "May 2026",
+  "sha256": "e7e43f1bf32446c1fd4403f6260420b409097c2cd8f383c2bb6e0560e5ed734e",
+  "table": "https://docs.google.com/spreadsheets/d/17n1FNb6ULAUdwIL-SLvkHy_RsnbiPPlx/edit",
+  "terms": "Cited as: Wisconsin Agricultural Land Prices 2025, UW-Madison Division of Extension, published May 20, 2026, Appendix Table 2; data from Wisconsin Department of Revenue transfer returns.",
+  "title": "Wisconsin Agricultural Land Prices 2025",
+  "url": "https://farms.extension.wisc.edu/articles/wisconsin-agricultural-land-prices/"
+ },
+ "state": "WI",
+ "what": {
+  "acres": "acres sold",
+  "n": "number of sales",
+  "prior": "the year before, same table",
+  "value": "average sale price, dollars an acre"
+ },
+ "year": 2025
+}

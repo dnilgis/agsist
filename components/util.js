@@ -200,9 +200,33 @@
     return t;
   }
 
+
+  /* LIVESTOCK FUTURES (Nov 13 2026): live cattle, feeders and lean hogs trade in 2.5-cent ticks and print
+     to the cent. Snap to the tick first (338.42499 is 338.425), then a half cent rounds up: 53.525 ->
+     "$53.53". livestockChange(a, b) is the difference of the two printed prices, so a printed move always
+     closes: (55.10, 53.525) -> "$1.57". Input in dollars. Twin: scripts/pricefmt.py livestock(),
+     livestock_change(). */
+  function livestockCents(v) {
+    if (!ok(v)) return null;
+    var n = Number(v), t = Math.round(Math.abs(n) / 0.025);
+    var c = Math.floor(t * 5 / 2) + (t % 2 ? 1 : 0);
+    return n < 0 ? -c : c;
+  }
+  function centsText(a) { var s = String(a % 100); return Math.floor(a / 100) + '.' + (s.length < 2 ? '0' + s : s); }
+  function livestock(v, o) {
+    var c = livestockCents(v);
+    if (c === null) return '';
+    return (c < 0 ? MINUS : '') + (o && o.dollar === false ? '' : '$') + centsText(Math.abs(c));
+  }
+  function livestockChange(a, b, o) {
+    var ca = livestockCents(a), cb = livestockCents(b);
+    if (ca === null || cb === null) return '';
+    return (o && o.dollar === false ? '' : '$') + centsText(Math.abs(cb - ca));
+  }
+
   var px = { quarters: quarters, parts: parts, price: price, priceDollars: priceDollars,
              move: move, pct: pct, change: change, range: range, cash: cash, basis: basis,
-             contract: contract, MINUS: MINUS };
+             contract: contract, livestock: livestock, livestockChange: livestockChange, MINUS: MINUS };
 
   /* Fetch once per page. Measured 2026-10-12: the homepage asked for
      prices.json four times and six other files twice each, because every page

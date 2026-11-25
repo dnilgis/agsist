@@ -1,7 +1,7 @@
 {
  "_comment": "AGSIST farm-bill page data. pills, tldr, next90, compare and tracker are baked into static HTML so crawlers see them. byOperation, detailNote, titles and ledger are NOT baked: components/farm-bill.js fetches this file and renders them only when a reader clicks, so they add nothing to the page weight. HTML entities allowed in text fields. Keep <b> for emphasis. A past date drops out by itself: each next90 item, and any <span data-until=\"YYYY-MM-DD\"> in a baked field, shows through that day and is gone the next (build_farmbill.py and components/farm-bill.js).",
- "updated": "2026-10-16",
- "updated_display": "Oct 16, 2026",
+ "updated": "2026-11-12",
+ "updated_display": "Nov 12, 2026",
  "pills": [
   {
    "cls": "live",
@@ -9,17 +9,17 @@
   },
   {
    "cls": "live",
-   "html": "Senate Ag Committee <b>passed S.&nbsp;5526, 12&ndash;11</b> &middot; Sep 16, 2026"
+   "html": "S.&nbsp;5526 <b>on the Senate calendar</b> &middot; <b>no vote scheduled</b> &middot; Nov 12, 2026"
   },
   {
    "cls": "warn",
-   "html": "Extension <b>lapsed Sep 30, 2026</b><span data-until=\"2026-11-09\"> &middot; Senate back Nov 9</span>"
+   "html": "Extension <b>lapsed Sep 30, 2026</b>"
   }
  ],
  "tldr": [
   {
    "k": "Status",
-   "v": "The House passed <b>H.R. 7567</b>; the Senate Ag Committee passed <b>S.&nbsp;5526</b>. No Senate floor vote yet. <b>Neither bill is law.</b>"
+   "v": "The House passed <b>H.R.&nbsp;7567</b>, 224&ndash;200 on Apr 30, and the Senate received it May 19. <b>S.&nbsp;5526</b> was reported to the Senate Sep 24 and placed on the calendar (No.&nbsp;683). <b>Neither bill is law.</b>"
   },
   {
    "k": "The money",
@@ -35,7 +35,7 @@
   },
   {
    "k": "Next step",
-   "v": "<span data-until=\"2026-11-09\">Congress returns Nov 9, after the election. </span>Boozman wants a deal with the House and a Senate floor vote (60 votes) before the permanent-law cliff on <span class=\"num\">Jan 1, 2027</span>."
+   "v": "<b>None scheduled.</b> No step found on either committee&rsquo;s schedule or in Senate floor information as of Nov 12. Being on the calendar does not schedule a vote. Boozman has said he wants a deal with the House and a Senate floor vote (60 votes) before the permanent-law cliff on <span class=\"num\">Jan 1, 2027</span>."
   },
   {
    "k": "Not in either bill",
@@ -45,8 +45,8 @@
  "compare": [
   {
    "k": "Status &amp; length",
-   "h": "Passed the House 224&ndash;200 on Apr 30; ~800 pages; CBO-scored.",
-   "s": "Failed in committee Aug 6, then <b>passed 12&ndash;11 on Sep 16</b>; reported Sep 24 as <b>S.&nbsp;5526</b>. No CBO score found as of Oct 15; no floor vote yet."
+   "h": "Passed the House 224&ndash;200 on Apr 30; received in the Senate May 19; ~800 pages; CBO-scored.",
+   "s": "Failed in committee Aug 6, then <b>passed 12&ndash;11 on Sep 16</b>; reported Sep 24 as <b>S.&nbsp;5526</b>. No CBO score found as of Oct 15; On the Senate calendar; no floor vote scheduled as of Nov 12."
   },
   {
    "k": "Overall cost",
@@ -99,7 +99,7 @@
   },
   {
    "stage": "House floor",
-   "desc": "Passed 224&ndash;200, bipartisan &middot; Apr 30, 2026",
+   "desc": "Passed 224&ndash;200, bipartisan &middot; Apr 30, 2026. Received in the Senate May 19, 2026",
    "mk": "done",
    "label": "passed"
   },
@@ -117,15 +117,15 @@
   },
   {
    "stage": "Senate revote",
-   "desc": "Committee <b>passed it 12&ndash;11</b> along party lines on Sep 16: Sen. McConnell returned to cast the deciding Republican vote. Reported to the Senate as <a href=\"https://www.congress.gov/bill/119th-congress/senate-bill/5526\">S.&nbsp;5526</a> on Sep 24 (<a href=\"https://www.govinfo.gov/content/pkg/BILLS-119s5526rs/html/BILLS-119s5526rs.htm\">bill text as reported, GPO</a>)",
+   "desc": "Committee <b>passed it 12&ndash;11</b> along party lines on Sep 16: Sen. McConnell returned to cast the deciding Republican vote. Reported to the Senate as <a href=\"https://www.congress.gov/bill/119th-congress/senate-bill/5526\">S.&nbsp;5526</a> on Sep 24, Calendar No.&nbsp;683 (<a href=\"https://www.govinfo.gov/content/pkg/BILLS-119s5526rs/html/BILLS-119s5526rs.htm\">bill text as reported, GPO</a>)",
    "mk": "done",
    "label": "passed"
   },
   {
    "stage": "Senate floor",
-   "desc": "Needs 60 votes. The Senate left Sep 30 for the midterms without taking it up. <span data-until=\"2026-11-09\">It returns Nov 9. </span>Boozman expects a floor vote after the election",
+   "desc": "Needs 60 votes. On the Senate calendar since Sep 24; <b>no vote is scheduled</b> as of Nov 12. Boozman has said he expects a floor vote after the election",
    "mk": "now",
-   "label": "pending"
+   "label": "not set"
   },
   {
    "stage": "Conference",
@@ -152,12 +152,6 @@
    "iso": "2026-11-03",
    "what": "Election day",
    "means": "Nothing changes on your farm. It decides who closes the deal. Any bill not passed by early January dies with this Congress and starts over."
-  },
-  {
-   "date": "Nov 9",
-   "iso": "2026-11-09",
-   "what": "Senate back",
-   "means": "First chance for a Senate floor vote on S.&nbsp;5526 (60 votes) and a House-Senate deal."
   },
   {
    "date": "Dec 11",
@@ -532,5 +526,33 @@
    "amt": "$0"
   }
  ],
- "ledgerNote": "Separately, H.R. 7567 authorizes <b>$22.5B</b> in discretionary spending over ten years (with ~$21.4B in estimated outlays), money that only flows if future appropriations bills provide it. Commodities and Crop Insurance carry no specific discretionary authorizations. We have not found a CBO score for the Senate bill (S.&nbsp;5526) as of Oct 15; the table reflects the House bill only."
+ "ledgerNote": "Separately, H.R. 7567 authorizes <b>$22.5B</b> in discretionary spending over ten years (with ~$21.4B in estimated outlays), money that only flows if future appropriations bills provide it. Commodities and Crop Insurance carry no specific discretionary authorizations. We have not found a CBO score for the Senate bill (S.&nbsp;5526) as of Oct 15; the table reflects the House bill only.",
+ "status_facts": {
+  "_note": "Primary-source checks, read Nov 12, 2026. The pills, 60-second read, tracker, compare row, FAQ, structured data, share card and the ai-answers block must agree with these. Next scheduled step: none found; never invent a date.",
+  "checked": "2026-11-12",
+  "checked_display": "Nov 12, 2026",
+  "next_step": "none found on either Agriculture committee's schedule or Senate floor information as of Nov 12, 2026",
+  "bills": [
+   {
+    "id": "S.5526",
+    "name": "Agricultural Act of 2026",
+    "action": "Reported to the Senate; read twice and placed on the legislative calendar, Calendar No. 683",
+    "date": "2026-09-24",
+    "committee_business_meeting": "2026-09-16",
+    "url": "https://www.congress.gov/bill/119th-congress/senate-bill/5526",
+    "also_checked": [
+     "GPO records",
+     "agriculture.senate.gov"
+    ]
+   },
+   {
+    "id": "H.R.7567",
+    "name": "Farm, Food, and National Security Act of 2026",
+    "action": "Passed the House 224-200",
+    "date": "2026-04-30",
+    "received_in_senate": "2026-05-19",
+    "url": "https://www.congress.gov/bill/119th-congress/house-bill/7567"
+   }
+  ]
+ }
 }
