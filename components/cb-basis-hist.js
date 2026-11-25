@@ -15,8 +15,9 @@
  *   changes, the step says so (a thin mark, and the table names both).
  *   Nothing is interpolated, averaged or carried past the last logged run.
  *   An elevator with no logged change shows a plain line saying so.
- *   The log's public record starts on its publicFrom day (2026-10-12), and
- *   the heading names that day with its year.
+ *   The log's public record starts on its publicFrom day (2026-10-12 at the
+ *   earliest) and keeps only the last windowDays days (90): the heading names
+ *   the start day with its year until the log is that old, then says "last 90 days".
  *
  * Matching: the log writes "CDR FARMS, LLC" where the network writes "CDR
  * Farms LLC"; case, punctuation, "&"/"and" and trailing legal and co-op words
@@ -346,10 +347,13 @@
     cs.forEach(function (c) { c.all.forEach(function (l) { got[l.full] = 1; if (!first || l.rows[0].date < first) first = l.rows[0].date; }); });
     var lab = labels(boards, town, st), none = boards.map(function (b, i) { return lab[i]; }).filter(function (l) { return !got[l]; });
     var since = from ? fullDay(from) : (first ? dayText(first) : '');
-    var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (since ? ', since ' + since : '') +
+    // the public log keeps its last windowDays days: once the log is that old, say so instead of a start day
+    var wd = +data.windowDays || 0, run = String(data.generated || '').slice(0, 10), span = since ? 'since ' + since : '';
+    if (wd > 0 && from && /^\d{4}-\d{2}-\d{2}$/.test(run) && (Date.parse(run) - Date.parse(from)) / 864e5 >= wd - 1) { span = 'over the last ' + wd + ' days'; since = ''; }
+    var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (span ? ', ' + span : '') +
       '. Only the days a basis changed are logged: it held flat between dots. A thin dashed stretch is the days no open delivery month had a logged basis. A dotted vertical line is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator for a crop is in one chart, on one scale. Each name is the company, then the place it posts for. A bid far off the others for a few days is drawn in a break under the chart and named, so the rest stay readable.</p>';
     var html = intro + cs.map(function (c, i) { return blockOf(c, town, i); }).join('');
-    if (none.length) html += '<p class="cbt-sub">No basis change logged' + (since ? ' since ' + since : '') + ' for ' + esc(none.join(', ')) + '.</p>';
+    if (none.length) html += '<p class="cbt-sub">No basis change logged' + (span ? ' ' + (since ? 'since ' + since : span) : '') + ' for ' + esc(none.join(', ')) + '.</p>';
     body.innerHTML = html;
     cs.forEach(function (c, i) {   // a phone's box holds the key's rows from the first paint, so nothing moves when the kit draws
       var kit = body.querySelector && body.querySelector('.cbh-crop[data-crop="' + i + '"] .cbh-kit');
@@ -357,6 +361,7 @@
     });
     var sum = box.querySelector('summary');
     if (sum && since) sum.textContent = 'Basis since ' + since;
+    else if (sum && span) sum.textContent = 'Basis, last ' + wd + ' days';
     if (box.ownerDocument) needKit().then(function (K) {
       if (!K) return;
       var canon = box.ownerDocument.querySelector('link[rel="canonical"]'), url = canon ? canon.href : String(location.href).split('#')[0];
