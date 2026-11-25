@@ -242,6 +242,25 @@
     }
     return null;
   }
+  /* THE OVERNIGHT BOX, ONE RULE (Nov 18 2026). The overnight line under a futures hero price
+     (#hero-ovn, futures.js heroOvernight) is drawn when prices.json loads, from the file's own times.
+     Its box is held from the first paint by one class on <html>, ovn-hold, and one CSS rule (below:
+     two lines tall, and 26rem wide from 521 px, the width the drawn line takes). Two things set the
+     class before the first paint: this script, in the head, when the reader's clock is in the hours
+     a price file can carry the line (ovnWindow), and the page's bake (seed_static.ovn_hold_seed, the
+     SEED:ovn script) when the quote it baked has the line, whatever the clock. Once held the box
+     stays all load, empty when the file has no line (futures.js hides the line, the rule keeps the box).
+     Main red Nov 18, corn at 1280: the bake held the height only; the line widened the price column
+     238 to 442 px and moved the price 204 px left (CLS 0.012, test/state-line-cls).
+     ovnWindow: Sunday to Thursday from 7 pm, Monday to Friday until 8:30 am CT (the overnight session
+     to 7:45 and the pause before the day session, when the last read is still an overnight trade). */
+  function ovnWindow(now) {
+    var p = ct(now == null ? new Date() : now);
+    if (!p) return false;
+    var wd = new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay(), m = p.hh * 60 + p.mm;
+    if (m >= 19 * 60) return wd <= 4;
+    return m < 8 * 60 + 30 && wd >= 1 && wd <= 5;
+  }
   /* One line for under a price. fmt(px) and move(net) are the page's own
      formatters (plain text; this escapes them). With the overnight trade as
      the main price (o.hero) the line names the settle beside it; otherwise
@@ -508,7 +527,7 @@
     return { key: key, q: d, label: label(d.ticker) || null };
   }
 
-  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, change: change, pairGuard: pairGuard, shortStamp: shortStamp, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, change: change, pairGuard: pairGuard, shortStamp: shortStamp, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, ovnWindow: ovnWindow, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
@@ -596,8 +615,10 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', folds); else folds();
 
   var css = doc.createElement('style');
-  css.textContent = '.pl-line.pl-wait{visibility:hidden}.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
-    '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
+  css.textContent = '.pl-line.pl-wait{visibility:hidden}.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:var(--r-md);font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
+    '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.ovn-hold #hero-ovn,.ovn-hold #hero-ovn[hidden]{display:block!important;min-height:2.4em}@media(min-width:521px){.ph-price .ph-ovn{width:26rem;max-width:100%}}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
   (doc.head || doc.documentElement).appendChild(css);
+  /* the overnight box (ovnWindow above): held from the first paint in the hours a price file can carry the line */
+  try { if (ovnWindow(new Date())) doc.documentElement.classList.add('ovn-hold'); } catch (e) { }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this);

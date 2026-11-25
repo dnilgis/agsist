@@ -1,0 +1,75 @@
+/* the rain gauge ask on the rain pages (scripts/gauge_ask.py). Phone: a thumb of the render beside the words, then the
+   form and the hook across. 620 px and wider: the render on the left, the rest on the right. .gk-b holds the form's own
+   height (test/gauge-ask.test.mjs measures it in a browser at 390 and 1280), so the thank-you, or a reader already on the
+   list, swaps inside the same box and nothing below moves. */
+/* The box is empty until components/gauge-ask.js fills it, so its height is held here, one set of steps for each page kind (the
+   county lead sentence makes the county box taller). Each step is the filled box's height from that width up, measured in a
+   browser (test/gauge-ask-height.test.mjs checks 24 widths on a county page, the /rain County tab and /rain-print). */
+.gk{box-sizing:border-box}
+.gk[data-gk="rain-county"]{min-height:32.88rem}
+@media(min-width:332px){.gk[data-gk="rain-county"]{min-height:31.47rem}}
+@media(min-width:336px){.gk[data-gk="rain-county"]{min-height:30.06rem}}
+@media(min-width:352px){.gk[data-gk="rain-county"]{min-height:28.65rem}}
+@media(min-width:364px){.gk[data-gk="rain-county"]{min-height:27.24rem}}
+@media(min-width:388px){.gk[data-gk="rain-county"]{min-height:25.82rem}}
+@media(min-width:416px){.gk[data-gk="rain-county"]{min-height:24.47rem}}
+@media(min-width:428px){.gk[data-gk="rain-county"]{min-height:23.06rem}}
+@media(min-width:448px){.gk[data-gk="rain-county"]{min-height:21.65rem}}
+@media(min-width:484px){.gk[data-gk="rain-county"]{min-height:23.06rem}}
+@media(min-width:488px){.gk[data-gk="rain-county"]{min-height:21.65rem}}
+@media(min-width:556px){.gk[data-gk="rain-county"]{min-height:20.24rem}}
+@media(min-width:620px){.gk[data-gk="rain-county"]{min-height:26.29rem}}
+@media(min-width:692px){.gk[data-gk="rain-county"]{min-height:24.71rem}}
+@media(min-width:744px){.gk[data-gk="rain-county"]{min-height:23.12rem}}
+@media(min-width:748px){.gk[data-gk="rain-county"]{min-height:21.71rem}}
+@media(min-width:808px){.gk[data-gk="rain-county"]{min-height:18.59rem}}
+@media(min-width:852px){.gk[data-gk="rain-county"]{min-height:17.00rem}}
+.gk[data-gk="rain-hub"]{min-height:28.65rem}
+@media(min-width:332px){.gk[data-gk="rain-hub"]{min-height:27.24rem}}
+@media(min-width:356px){.gk[data-gk="rain-hub"]{min-height:25.82rem}}
+@media(min-width:364px){.gk[data-gk="rain-hub"]{min-height:24.47rem}}
+@media(min-width:392px){.gk[data-gk="rain-hub"]{min-height:23.06rem}}
+@media(min-width:428px){.gk[data-gk="rain-hub"]{min-height:21.65rem}}
+@media(min-width:440px){.gk[data-gk="rain-hub"]{min-height:20.24rem}}
+@media(min-width:556px){.gk[data-gk="rain-hub"]{min-height:19.59rem}}
+@media(min-width:620px){.gk[data-gk="rain-hub"]{min-height:24.71rem}}
+@media(min-width:676px){.gk[data-gk="rain-hub"]{min-height:23.12rem}}
+@media(min-width:744px){.gk[data-gk="rain-hub"]{min-height:21.47rem}}
+@media(min-width:748px){.gk[data-gk="rain-hub"]{min-height:20.06rem}}
+@media(min-width:808px){.gk[data-gk="rain-hub"]{min-height:17.00rem}}
+@media(min-width:860px){.gk[data-gk="rain-hub"]{min-height:15.41rem}}
+.gk[data-gk="rain-print"]{min-height:26.29rem}
+@media(min-width:332px){.gk[data-gk="rain-print"]{min-height:25.00rem}}
+@media(min-width:356px){.gk[data-gk="rain-print"]{min-height:23.71rem}}
+@media(min-width:364px){.gk[data-gk="rain-print"]{min-height:22.35rem}}
+@media(min-width:392px){.gk[data-gk="rain-print"]{min-height:21.06rem}}
+@media(min-width:428px){.gk[data-gk="rain-print"]{min-height:19.59rem}}
+@media(min-width:440px){.gk[data-gk="rain-print"]{min-height:18.88rem}}
+@media(min-width:620px){.gk[data-gk="rain-print"]{min-height:22.65rem}}
+@media(min-width:676px){.gk[data-gk="rain-print"]{min-height:21.12rem}}
+@media(min-width:744px){.gk[data-gk="rain-print"]{min-height:19.65rem}}
+@media(min-width:748px){.gk[data-gk="rain-print"]{min-height:18.18rem}}
+@media(min-width:808px){.gk[data-gk="rain-print"]{min-height:15.06rem}}
+@media(min-width:860px){.gk[data-gk="rain-print"]{min-height:13.59rem}}
+.gk{display:grid;grid-template-columns:104px 1fr;grid-template-areas:"p t" "b b" "s s";gap:.55rem .85rem;margin:1.8rem 0;padding:.9rem 1rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);max-width:46em;align-items:start}
+.gk-p{grid-area:p;margin:0}
+.gk-p img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:var(--r-8)}
+.gk-p figcaption{margin-top:.25rem;font-size:var(--fs-xs);line-height:1.3;color:var(--text-muted)}
+.gk-t{grid-area:t;margin:0;color:var(--text-dim);line-height:1.5;font-size:var(--fs-sm)}
+.gk-t b{color:var(--text)}
+.gk-b{grid-area:b;min-height:5.755rem}
+.gk-f{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.gk-l{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.gk-e{flex:1 1 100%;min-width:0;min-height:44px;padding:.45rem .7rem;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border-2,var(--border));border-radius:var(--r-8)}
+.gk-h{position:absolute;left:-9999px;width:1px;height:1px}
+.gk .btn{min-height:44px}
+.gk-m{margin:0;color:var(--text);font-size:var(--fs-sm);line-height:1.5}
+.gk-m.err{color:var(--orange)}
+.gk-s{grid-area:s;margin:0;font-size:var(--fs-sm);color:var(--text-muted)}
+@media(min-width:620px){
+  .gk{grid-template-columns:240px 1fr;grid-template-areas:"p t" "p b" "p s";gap:.7rem 1.2rem;padding:1rem 1.1rem}
+  .gk-p figcaption{font-size:var(--fs-sm)}
+  .gk-t{font-size:inherit}
+  .gk-b{min-height:44px}
+  .gk-e{flex:1 1 14rem}
+}

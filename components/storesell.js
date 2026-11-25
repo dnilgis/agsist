@@ -606,7 +606,7 @@
   var tmr = null;
   function wire(){
     if(!document.querySelector('link[data-ss]')){
-      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/storesell.css?v=1'; l.setAttribute('data-ss', '1');
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/storesell.css?v=2'; l.setAttribute('data-ss', '1');
       document.head.appendChild(l);
     }
     restore();

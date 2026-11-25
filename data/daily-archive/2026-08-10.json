@@ -1,13 +1,13 @@
 {
   "headline": "WASDE TOMORROW; GRAINS SOFT, CRUDE RUNS",
-  "subheadline": "Corn and wheat give back ground ahead of Tuesday's report while WTI adds 2.6% on fresh geopolitical freight risk.",
-  "lead": "The market is doing what it does the day before a WASDE: not much. Corn settled at $4.38, off 3.75 cents. Wheat gave back 6.5 cents to $6.46. The funds aren't adding conviction either direction with tomorrow's numbers still in the envelope. Crude ran to $80.84 on Kazakhstan rerouting headlines and that's the loudest thing that happened today. Wait on grains.",
-  "the_takeaway": "Hold tight: WASDE tomorrow sets the grain story for the next four weeks.",
+  "subheadline": "Corn and wheat give back ground ahead of Wednesday's report while WTI adds 2.6% on fresh geopolitical freight risk.",
+  "lead": "The market is doing what it does the day before a WASDE: not much. Corn settled at $4.38, off 3.75 cents. Wheat gave back 6.5 cents to $6.46. The funds aren't adding conviction either direction with Wednesday's numbers still in the envelope. Crude ran to $80.84 on Kazakhstan rerouting headlines and that's the loudest thing that happened today. Wait on grains. (Corrected Nov 18, see the note below.)",
+  "the_takeaway": "Hold tight: WASDE on Wednesday sets the grain story for the next four weeks.",
   "teaser": "WASDE eve, grains drift, crude runs -- here's what to watch Tuesday.",
   "one_number": {
     "value": "25%",
     "unit": "of China's annual US soybean target already bought",
-    "context": "China's purchases since the May summit are roughly a quarter of the $17B annual commitment. That pace, if it holds, outpaces typical seasonal buying and is one reason beans at $11.60 aren't breaking lower ahead of tomorrow's WASDE."
+    "context": "China's purchases since the May summit are roughly a quarter of the $17B annual commitment. That pace, if it holds, outpaces typical seasonal buying and is one reason beans at $11.60 aren't breaking lower ahead of Wednesday's WASDE."
   },
   "yesterdays_call": {},
   "todays_call": {
@@ -20,7 +20,7 @@
       "title": "GRAINS SOFT AHEAD OF WASDE",
       "body": "- Corn Dec '26 settled at **$4.62**, off 3.5 cents, with no fresh fundamental reason to move; the funds are sitting on their hands the day before USDA prints new supply-demand numbers.\n- Wheat at $6.46 gave back 6.5 cents; the weather story that briefly lifted it last week hasn't produced new headlines, and without a fresh catalyst the short sellers own the afternoon.\n- Soybeans nearby held the best of a bad lot, up 3 cents to $11.60, underpinned by the China-pace story: purchases since the May summit are running roughly 25% toward the annual commitment, which is early-season heat for a demand floor.",
       "catalyst": "China soybean purchase pace running ahead of seasonal norms, per Farm Policy News.",
-      "bottom_line": "WASDE tomorrow at 11 AM CT resets everything; today's drift is the market clearing the decks.",
+      "bottom_line": "WASDE on Wednesday at 11 AM CT resets everything; today's drift is the market clearing the decks.",
       "conviction_level": "medium",
       "overnight_surprise": false,
       "farmer_action": "If you have old-crop corn to move, the WASDE is a defined risk event; price ahead of the print or set a target and let the market come to you."
@@ -43,7 +43,7 @@
     },
     {
       "title": "CROP PROGRESS AT 3 PM CT",
-      "body": "- USDA Crop Progress drops at 3:00 PM CT today; corn is in dough-to-dent and soybeans are filling pods, so the ratings print carries real weight: good-to-excellent above last week's reading confirms the 2026 growing season's clean crop story, a step down opens the door for a weather-premium bid ahead of WASDE.\n- AGSIST's ratings-based nowcast has corn at **184.1 bu/acre** against USDA trend of 183.0; the crop tour the week of Aug 17 is the next real-world check on those numbers.\n- Today's Crop Progress is the last major read before WASDE prints tomorrow; if ratings slip, the Aug 12 report may carry a downward yield adjustment.",
+      "body": "- USDA Crop Progress drops at 3:00 PM CT today; corn is in dough-to-dent and soybeans are filling pods, so the ratings print carries real weight: good-to-excellent above last week's reading confirms the 2026 growing season's clean crop story, a step down opens the door for a weather-premium bid ahead of WASDE.\n- AGSIST's ratings-based nowcast has corn at **184.1 bu/acre** against USDA trend of 183.0; the crop tour the week of Aug 17 is the next real-world check on those numbers.\n- Today's Crop Progress is the last major read before WASDE prints Wednesday; if ratings slip, the Aug 12 report may carry a downward yield adjustment.",
       "catalyst": "USDA Crop Progress, 3:00 PM CT Monday (per calendar schedule).",
       "bottom_line": "Ratings hold the line, WASDE confirms; ratings slip, WASDE becomes a live event.",
       "conviction_level": "medium",
@@ -64,13 +64,13 @@
     }
   ],
   "weekly_thread": {
-    "question": "Does the WASDE on Tuesday confirm a record or near-record corn yield, and does that break Dec corn below $4.50?",
+    "question": "Does the WASDE on Wednesday confirm a record or near-record corn yield, and does that break Dec corn below $4.50?",
     "day": 1,
-    "status_text": "Grains are drifting soft into the print; the answer comes Tuesday at 11 AM CT when USDA sets the official yield number against a market sitting at $4.62 Dec."
+    "status_text": "Grains are drifting soft into the print; the answer comes Wednesday at 11 AM CT when USDA sets the official yield number against a market sitting at $4.62 Dec."
   },
   "the_more_you_know": {
     "title": "WASDE Eve Is Its Own Forecast",
-    "body": "The day before a WASDE, price drift without a news catalyst is actually information. When the funds have conviction ahead of a report, they show up. When they sit, it means the market's probability distribution is wide. A flat-to-soft grain board today says the trade genuinely doesn't know which way tomorrow's yield number lands."
+    "body": "The day before a WASDE, price drift without a news catalyst is actually information. When the funds have conviction ahead of a report, they show up. When they sit, it means the market's probability distribution is wide. A flat-to-soft grain board today says the trade genuinely doesn't know which way Wednesday's yield number lands."
   },
   "watch_list": [
     {
@@ -78,8 +78,8 @@
       "desc": "USDA Crop Progress: corn good-to-excellent below last week's reading adds weather premium; above it, the bear case holds."
     },
     {
-      "time": "11:00 AM CT Tuesday",
-      "desc": "August WASDE: corn yield above 183.5 bu/acre is the line that keeps Dec corn below $4.62; below 182.0 reopens the upside."
+      "time": "11:00 AM CT Wednesday, Aug 12",
+      "desc": "August WASDE: corn yield above 183.5 bu/acre is the line that keeps Dec corn below $4.62; below 182.0 reopens the upside. (Corrected Nov 18, see the note below.)"
     },
     {
       "time": "7:30 AM CT Thursday",
@@ -179,7 +179,6 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 151,
   "generated_at": "2026-08-10T15:10:10.981107+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 0,
@@ -237,5 +236,11 @@
       }
     ],
     "dry_run": false
-  }
+  },
+  "corrections": [
+    {
+      "date": "2026-11-18",
+      "text": "This issue put the August WASDE report on Tuesday, Aug 11, and called it tomorrow in several lines. USDA released it Wednesday, Aug 12, at 11:00 AM CT, as the line naming Aug 12 said. We fixed the day in those lines. The headline, the opening line and the one-line summary stay as sent."
+    }
+  ]
 }

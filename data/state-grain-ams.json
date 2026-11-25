@@ -1,15 +1,15 @@
 {
  "schema": "agsist-state-grain-ams/1",
- "generated": "2026-11-12T23:56:24Z",
+ "generated": "2026-11-25T23:25:04Z",
  "method": "USDA AMS state daily grain reports through My Market News. Country elevator bids only. Basis is USDA's reported figure, withheld where USDA's rows disagree or too few regions report.",
  "states": {
   "IA": {
    "name": "Iowa",
    "report_id": 2850,
    "report": "Iowa Daily Cash Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 14:41:44",
-   "source": "USDA AMS, Iowa Daily Cash Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-24",
+   "published": "11/24/2026 14:24:21",
+   "source": "USDA AMS, Iowa Daily Cash Grain Bids, Nov 24, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -17,21 +17,28 @@
      "crop": "corn",
      "current": {
       "regions": 6,
-      "price_lo": 3.845,
-      "price_hi": 4.325,
-      "avg_price": 4.0485,
+      "price_lo": 3.76,
+      "price_hi": 4.3025,
+      "avg_price": 4.0156,
       "avg_n": 6,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -37,
+        "hi": -20,
+        "regions": 4
+       },
        "Z": {
         "label": "Dec",
         "lo": -58,
-        "hi": -10,
+        "hi": -18,
         "regions": 6
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -38
+       "H": -49,
+       "Z": -32
       }
      }
     },
@@ -39,21 +46,21 @@
      "crop": "soybeans",
      "current": {
       "regions": 6,
-      "price_lo": 11.19,
-      "price_hi": 11.76,
-      "avg_price": 11.4841,
+      "price_lo": 11.34,
+      "price_hi": 11.87,
+      "avg_price": 11.6372,
       "avg_n": 6,
       "basis": {
        "F": {
         "label": "Jan",
         "lo": -100,
-        "hi": -43,
+        "hi": -47,
         "regions": 6
        }
       },
       "month": "F",
       "avg_basis": {
-       "F": -71
+       "F": -70
       }
      }
     }
@@ -65,25 +72,25 @@
    },
    "usda_state_avg": {
     "corn": {
-     "price": 4.04,
-     "basis": -38,
+     "price": 4.01,
+     "basis": -33,
      "month": "Z"
     },
     "soybeans": {
-     "price": 11.48,
+     "price": 11.63,
      "basis": -71,
      "month": "F"
     }
    },
-   "daily_line": "USDA's Iowa average cash bids: corn $4.05 (38 under Dec), soybeans $11.48 (71 under Jan). USDA AMS, Iowa Daily Cash Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Iowa average cash bids: corn $4.02 (32 under Dec), soybeans $11.64 (70 under Jan). USDA AMS, Iowa Daily Cash Grain Bids, Nov 24, 2026."
   },
   "IL": {
    "name": "Illinois",
    "report_id": 3192,
    "report": "Illinois Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 13:08:57",
-   "source": "USDA AMS, Illinois Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "published": "11/25/2026 13:00:31",
+   "source": "USDA AMS, Illinois Grain Bids, Nov 25, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -91,21 +98,21 @@
      "crop": "corn",
      "current": {
       "regions": 7,
-      "price_lo": 4.025,
-      "price_hi": 4.675,
-      "avg_price": 4.2396,
+      "price_lo": 3.9975,
+      "price_hi": 4.6975,
+      "avg_price": 4.225,
       "avg_n": 7,
       "basis": {
        "Z": {
         "label": "Dec",
         "lo": -40,
-        "hi": 25,
+        "hi": 30,
         "regions": 7
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -19
+       "Z": -17
       }
      }
     },
@@ -113,21 +120,21 @@
      "crop": "soybeans",
      "current": {
       "regions": 7,
-      "price_lo": 11.47,
-      "price_hi": 12.54,
-      "avg_price": 11.9195,
+      "price_lo": 11.72,
+      "price_hi": 12.84,
+      "avg_price": 12.2032,
       "avg_n": 7,
       "basis": {
        "F": {
         "label": "Jan",
         "lo": -72,
-        "hi": 35,
+        "hi": 40,
         "regions": 7
        }
       },
       "month": "F",
       "avg_basis": {
-       "F": -27
+       "F": -24
       }
      }
     },
@@ -135,8 +142,8 @@
      "crop": "wheat_srw",
      "new_crop": {
       "regions": 1,
-      "price_lo": 5.4575,
-      "price_hi": 5.4575,
+      "price_lo": 5.3825,
+      "price_hi": 5.3825,
       "avg_price": null,
       "avg_n": 1,
       "basis": {
@@ -157,15 +164,15 @@
     "not_plain": 0,
     "other_points": 20
    },
-   "daily_line": "USDA's Illinois average cash bids: corn $4.24 (19 under Dec), soybeans $11.92 (27 under Jan). USDA AMS, Illinois Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Illinois average cash bids: corn $4.22 (17 under Dec), soybeans $12.20 (24 under Jan). USDA AMS, Illinois Grain Bids, Nov 25, 2026."
   },
   "NE": {
    "name": "Nebraska",
    "report_id": 3225,
    "report": "Nebraska Daily Elevator Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 13:02:22",
-   "source": "USDA AMS, Nebraska Daily Elevator Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "published": "11/25/2026 13:09:13",
+   "source": "USDA AMS, Nebraska Daily Elevator Grain Bids, Nov 25, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -173,21 +180,28 @@
      "crop": "corn",
      "current": {
       "regions": 7,
-      "price_lo": 3.915,
-      "price_hi": 4.825,
-      "avg_price": 4.2412,
+      "price_lo": 3.9475,
+      "price_hi": 4.815,
+      "avg_price": 4.2364,
       "avg_n": 7,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -38,
+        "hi": 25,
+        "regions": 3
+       },
        "Z": {
         "label": "Dec",
-        "lo": -51,
-        "hi": 40,
+        "lo": -45,
+        "hi": 13,
         "regions": 7
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -18
+       "H": -33,
+       "Z": -16
       }
      }
     },
@@ -195,9 +209,9 @@
      "crop": "soybeans",
      "current": {
       "regions": 6,
-      "price_lo": 10.69,
-      "price_hi": 11.52,
-      "avg_price": 11.312,
+      "price_lo": 10.94,
+      "price_hi": 11.77,
+      "avg_price": 11.5735,
       "avg_n": 6,
       "basis": {
        "F": {
@@ -209,7 +223,7 @@
       },
       "month": "F",
       "avg_basis": {
-       "F": -88
+       "F": -87
       }
      }
     },
@@ -217,11 +231,17 @@
      "crop": "wheat_hrw",
      "current": {
       "regions": 5,
-      "price_lo": 5.2925,
-      "price_hi": 5.6725,
-      "avg_price": 5.5306,
+      "price_lo": 5.11,
+      "price_hi": 5.49,
+      "avg_price": 5.362,
       "avg_n": 5,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -98,
+        "hi": -98,
+        "regions": 1
+       },
        "Z": {
         "label": "Dec",
         "lo": -93,
@@ -231,7 +251,8 @@
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -69
+       "H": -94,
+       "Z": -68
       }
      }
     }
@@ -241,15 +262,15 @@
     "not_plain": 6,
     "other_points": 0
    },
-   "daily_line": "USDA's Nebraska average cash bids: corn $4.24 (18 under Dec), soybeans $11.31 (88 under Jan). USDA AMS, Nebraska Daily Elevator Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Nebraska average cash bids: corn $4.24 (16 under Dec), soybeans $11.57 (87 under Jan). USDA AMS, Nebraska Daily Elevator Grain Bids, Nov 25, 2026."
   },
   "KS": {
    "name": "Kansas",
    "report_id": 2886,
    "report": "Kansas Daily Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 13:49:19",
-   "source": "USDA AMS, Kansas Daily Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "published": "11/25/2026 13:17:15",
+   "source": "USDA AMS, Kansas Daily Grain Bids, Nov 25, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -257,21 +278,28 @@
      "crop": "corn",
      "current": {
       "regions": 5,
-      "price_lo": 4.075,
-      "price_hi": 4.725,
-      "avg_price": 4.3888,
+      "price_lo": 4.0475,
+      "price_hi": 4.815,
+      "avg_price": 4.3779,
       "avg_n": 5,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -5,
+        "hi": 25,
+        "regions": 2
+       },
        "Z": {
         "label": "Dec",
         "lo": -35,
-        "hi": 30,
+        "hi": 15,
         "regions": 5
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -4
+       "H": -19,
+       "Z": -2
       }
      }
     },
@@ -279,21 +307,21 @@
      "crop": "soybeans",
      "current": {
       "regions": 4,
-      "price_lo": 11.09,
-      "price_hi": 11.34,
-      "avg_price": 11.2369,
+      "price_lo": 11.34,
+      "price_hi": 11.69,
+      "avg_price": 11.5119,
       "avg_n": 4,
       "basis": {
        "F": {
         "label": "Jan",
         "lo": -110,
-        "hi": -85,
+        "hi": -75,
         "regions": 4
        }
       },
       "month": "F",
       "avg_basis": {
-       "F": -95
+       "F": -93
       }
      }
     },
@@ -301,21 +329,28 @@
      "crop": "wheat_hrw",
      "current": {
       "regions": 5,
-      "price_lo": 5.4225,
-      "price_hi": 5.6225,
-      "avg_price": 5.5233,
+      "price_lo": 5.29,
+      "price_hi": 5.505,
+      "avg_price": 5.3676,
       "avg_n": 5,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -85,
+        "hi": -80,
+        "regions": 2
+       },
        "Z": {
         "label": "Dec",
-        "lo": -80,
+        "lo": -75,
         "hi": -60,
         "regions": 5
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -70
+       "H": -94,
+       "Z": -67
       }
      }
     },
@@ -323,21 +358,28 @@
      "crop": "wheat_hw",
      "current": {
       "regions": 2,
-      "price_lo": 5.2225,
-      "price_hi": 5.6225,
-      "avg_price": 5.3975,
+      "price_lo": 5.19,
+      "price_hi": 5.44,
+      "avg_price": 5.3101,
       "avg_n": 2,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -90,
+        "hi": -90,
+        "regions": 1
+       },
        "Z": {
         "label": "Dec",
-        "lo": -100,
+        "lo": -85,
         "hi": -60,
         "regions": 2
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -83
+       "H": -99,
+       "Z": -73
       }
      }
     }
@@ -347,15 +389,15 @@
     "not_plain": 5,
     "other_points": 27
    },
-   "daily_line": "USDA's Kansas average cash bids: corn $4.39 (4 under Dec), soybeans $11.24 (95 under Jan). USDA AMS, Kansas Daily Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Kansas average cash bids: corn $4.38 (2 under Dec), soybeans $11.51 (93 under Jan). USDA AMS, Kansas Daily Grain Bids, Nov 25, 2026."
   },
   "MN": {
    "name": "Southern Minnesota",
    "report_id": 3049,
    "report": "Southern Minnesota Daily Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 12:46:04",
-   "source": "USDA AMS, Southern Minnesota Daily Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "published": "11/25/2026 12:51:14",
+   "source": "USDA AMS, Southern Minnesota Daily Grain Bids, Nov 25, 2026",
    "single_area": true,
    "stale": false,
    "crops": {
@@ -363,21 +405,28 @@
      "crop": "corn",
      "current": {
       "regions": 1,
-      "price_lo": 3.825,
-      "price_hi": 4.045,
-      "avg_price": 3.9183,
+      "price_lo": 3.7975,
+      "price_hi": 4.135,
+      "avg_price": 3.9817,
       "avg_n": 1,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -43,
+        "hi": -43,
+        "regions": 1
+       },
        "Z": {
         "label": "Dec",
         "lo": -60,
-        "hi": -38,
+        "hi": -60,
         "regions": 1
        }
       },
-      "month": "Z",
+      "month": "H",
       "avg_basis": {
-       "Z": -51
+       "H": -58,
+       "Z": -42
       }
      }
     },
@@ -385,15 +434,15 @@
      "crop": "soybeans",
      "current": {
       "regions": 1,
-      "price_lo": 11.46,
-      "price_hi": 11.59,
-      "avg_price": 11.5333,
+      "price_lo": 11.71,
+      "price_hi": 11.83,
+      "avg_price": 11.785,
       "avg_n": 1,
       "basis": {
        "F": {
         "label": "Jan",
         "lo": -73,
-        "hi": -60,
+        "hi": -61,
         "regions": 1
        }
       },
@@ -409,15 +458,15 @@
     "not_plain": 0,
     "other_points": 0
    },
-   "daily_line": "USDA's Southern Minnesota average cash bids: corn $3.92 (51 under Dec), soybeans $11.53 (66 under Jan). USDA AMS, Southern Minnesota Daily Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Southern Minnesota average cash bids: corn $3.98 (58 under Mar), soybeans $11.79 (66 under Jan). USDA AMS, Southern Minnesota Daily Grain Bids, Nov 25, 2026."
   },
   "SD": {
    "name": "South Dakota",
    "report_id": 3186,
    "report": "South Dakota Daily Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 13:44:06",
-   "source": "USDA AMS, South Dakota Daily Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "published": "11/25/2026 13:46:05",
+   "source": "USDA AMS, South Dakota Daily Grain Bids, Nov 25, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -425,21 +474,28 @@
      "crop": "corn",
      "current": {
       "regions": 5,
-      "price_lo": 3.475,
-      "price_hi": 4.045,
-      "avg_price": 3.7028,
+      "price_lo": 3.4475,
+      "price_hi": 4.105,
+      "avg_price": 3.7064,
       "avg_n": 5,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -80,
+        "hi": -46,
+        "regions": 3
+       },
        "Z": {
         "label": "Dec",
         "lo": -95,
-        "hi": -38,
+        "hi": -50,
         "regions": 5
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -72
+       "H": -86,
+       "Z": -69
       }
      }
     },
@@ -447,21 +503,21 @@
      "crop": "soybeans",
      "current": {
       "regions": 5,
-      "price_lo": 11.17,
-      "price_hi": 12.89,
-      "avg_price": 11.437,
+      "price_lo": 11.49,
+      "price_hi": 12.04,
+      "avg_price": 11.7106,
       "avg_n": 5,
       "basis": {
        "F": {
         "label": "Jan",
-        "lo": -102,
-        "hi": 70,
+        "lo": -95,
+        "hi": -40,
         "regions": 5
        }
       },
       "month": "F",
       "avg_basis": {
-       "F": -75
+       "F": -73
       }
      }
     },
@@ -470,9 +526,9 @@
      "protein": "14.0%",
      "current": {
       "regions": 4,
-      "price_lo": 5.2175,
-      "price_hi": 5.6775,
-      "avg_price": 5.5716,
+      "price_lo": 5.405,
+      "price_hi": 5.865,
+      "avg_price": 5.763,
       "avg_n": 4,
       "basis": {
        "Z": {
@@ -484,29 +540,36 @@
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -66
+       "Z": -65
       }
      }
     },
     "wheat_hrw": {
      "crop": "wheat_hrw",
      "current": {
-      "regions": 5,
-      "price_lo": 4.9225,
-      "price_hi": 5.3225,
-      "avg_price": 5.1598,
-      "avg_n": 5,
+      "regions": 4,
+      "price_lo": 4.74,
+      "price_hi": 5.14,
+      "avg_price": 5.0378,
+      "avg_n": 4,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -140,
+        "hi": -140,
+        "regions": 1
+       },
        "Z": {
         "label": "Dec",
         "lo": -130,
         "hi": -90,
-        "regions": 5
+        "regions": 4
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -106
+       "H": -127,
+       "Z": -100
       }
      }
     }
@@ -516,15 +579,15 @@
     "not_plain": 2,
     "other_points": 0
    },
-   "daily_line": "USDA's South Dakota average cash bids: corn $3.70 (72 under Dec), soybeans $11.44 (75 under Jan). USDA AMS, South Dakota Daily Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's South Dakota average cash bids: corn $3.71 (69 under Dec), soybeans $11.71 (73 under Jan). USDA AMS, South Dakota Daily Grain Bids, Nov 25, 2026."
   },
   "ND": {
    "name": "North Dakota",
    "report_id": 3878,
    "report": "North Dakota Daily Grain Bids",
-   "report_date": "2026-11-10",
-   "published": "11/10/2026 14:40:44",
-   "source": "USDA AMS, North Dakota Daily Grain Bids, Nov 10, 2026",
+   "report_date": "2026-11-25",
+   "published": "11/25/2026 13:59:58",
+   "source": "USDA AMS, North Dakota Daily Grain Bids, Nov 25, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -532,21 +595,28 @@
      "crop": "corn",
      "current": {
       "regions": 5,
-      "price_lo": 3.44,
-      "price_hi": 3.74,
-      "avg_price": 3.6129,
+      "price_lo": 3.465,
+      "price_hi": 3.865,
+      "avg_price": 3.6833,
       "avg_n": 5,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -110,
+        "hi": -70,
+        "regions": 5
+       },
        "Z": {
         "label": "Dec",
-        "lo": -105,
-        "hi": -75,
-        "regions": 5
+        "lo": -90,
+        "hi": -85,
+        "regions": 2
        }
       },
-      "month": "Z",
+      "month": "H",
       "avg_basis": {
-       "Z": -88
+       "H": -88,
+       "Z": -71
       }
      }
     },
@@ -554,28 +624,21 @@
      "crop": "soybeans",
      "current": {
       "regions": 5,
-      "price_lo": 11.18,
-      "price_hi": 11.68,
-      "avg_price": 11.3837,
+      "price_lo": 11.34,
+      "price_hi": 12.04,
+      "avg_price": 11.6008,
       "avg_n": 5,
       "basis": {
        "F": {
         "label": "Jan",
         "lo": -110,
-        "hi": -60,
+        "hi": -40,
         "regions": 5
-       },
-       "X": {
-        "label": "Nov",
-        "lo": -95,
-        "hi": -95,
-        "regions": 1
        }
       },
       "month": "F",
       "avg_basis": {
-       "F": -90,
-       "X": -86
+       "F": -84
       }
      }
     },
@@ -584,21 +647,28 @@
      "protein": "14.0%",
      "current": {
       "regions": 5,
-      "price_lo": 5.4875,
-      "price_hi": 5.8375,
-      "avg_price": 5.6374,
+      "price_lo": 5.815,
+      "price_hi": 6.015,
+      "avg_price": 5.9246,
       "avg_n": 5,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -65,
+        "hi": -45,
+        "regions": 4
+       },
        "Z": {
         "label": "Dec",
-        "lo": -80,
-        "hi": -45,
-        "regions": 5
+        "lo": -55,
+        "hi": -40,
+        "regions": 2
        }
       },
-      "month": "Z",
+      "month": "H",
       "avg_basis": {
-       "Z": -65
+       "H": -54,
+       "Z": -49
       }
      }
     }
@@ -608,15 +678,15 @@
     "not_plain": 0,
     "other_points": 0
    },
-   "daily_line": "USDA's North Dakota average cash bids: corn $3.61 (88 under Dec), soybeans $11.38 (90 under Jan). USDA AMS, North Dakota Daily Grain Bids, Nov 10, 2026."
+   "daily_line": "USDA's North Dakota average cash bids: corn $3.68 (88 under Mar), soybeans $11.60 (84 under Jan). USDA AMS, North Dakota Daily Grain Bids, Nov 25, 2026."
   },
   "IN": {
    "name": "Indiana",
    "report_id": 3463,
    "report": "Indiana Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 15:29:10",
-   "source": "USDA AMS, Indiana Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-23",
+   "published": "11/23/2026 16:13:45",
+   "source": "USDA AMS, Indiana Grain Bids, Nov 23, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -624,43 +694,57 @@
      "crop": "corn",
      "current": {
       "regions": 7,
-      "price_lo": 4.125,
-      "price_hi": 4.675,
-      "avg_price": 4.4127,
+      "price_lo": 4.1525,
+      "price_hi": 4.6425,
+      "avg_price": 4.3945,
       "avg_n": 7,
       "basis": {
        "Z": {
         "label": "Dec",
-        "lo": -30,
-        "hi": 25,
+        "lo": -19,
+        "hi": 30,
         "regions": 7
        }
       },
+      "month": "Z"
+     },
+     "new_crop": {
+      "regions": 5,
+      "price_lo": 4.3625,
+      "price_hi": 4.5325,
+      "avg_price": 4.4615,
+      "avg_n": 5,
+      "basis": {
+       "Z": {
+        "label": "Dec",
+        "lo": -40,
+        "hi": -25,
+        "regions": 4
+       }
+      },
       "month": "Z",
-      "avg_basis": {
-       "Z": -1
-      }
+      "delivery": "Sep to Nov 2027"
      }
     },
     "soybeans": {
      "crop": "soybeans",
      "current": {
       "regions": 7,
-      "price_lo": 11.39,
-      "price_hi": 12.09,
-      "avg_price": 11.9077,
+      "price_lo": 11.4875,
+      "price_hi": 12.4375,
+      "avg_price": 12.0822,
       "avg_n": 7,
       "basis": {
        "F": {
         "label": "Jan",
         "lo": -80,
-        "hi": -10,
+        "hi": 15,
         "regions": 7
        }
       },
       "month": "F",
       "avg_basis": {
-       "F": -28
+       "F": -21
       }
      }
     },
@@ -668,15 +752,15 @@
      "crop": "wheat_srw",
      "current": {
       "regions": 1,
-      "price_lo": 5.4225,
-      "price_hi": 5.4225,
+      "price_lo": 5.35,
+      "price_hi": 5.52,
       "avg_price": null,
       "avg_n": 1,
       "basis": {
        "Z": {
         "label": "Dec",
         "lo": -42,
-        "hi": -42,
+        "hi": -25,
         "regions": 1
        }
       },
@@ -684,9 +768,9 @@
      },
      "new_crop": {
       "regions": 6,
-      "price_lo": 5.5075,
-      "price_hi": 6.1075,
-      "avg_price": 5.728,
+      "price_lo": 5.485,
+      "price_hi": 6.085,
+      "avg_price": 5.7056,
       "avg_n": 6,
       "basis": {
        "N": {
@@ -705,29 +789,45 @@
     }
    },
    "left_out": {
-    "forward": 14,
+    "forward": 7,
     "not_plain": 1,
-    "other_points": 17
+    "other_points": 16
    },
-   "daily_line": "USDA's Indiana average cash bids: corn $4.41 (1 under Dec), soybeans $11.91 (28 under Jan). USDA AMS, Indiana Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Indiana average cash bids: corn $4.39, soybeans $12.08 (21 under Jan). USDA AMS, Indiana Grain Bids, Nov 23, 2026."
   },
   "OH": {
    "name": "Ohio",
    "report_id": 2851,
    "report": "Ohio Daily Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 15:31:37",
-   "source": "USDA AMS, Ohio Daily Grain Bids, Nov 12, 2026",
-   "single_area": false,
+   "report_date": "2026-11-23",
+   "published": "11/23/2026 16:12:04",
+   "source": "USDA AMS, Ohio Daily Grain Bids, Nov 23, 2026",
+   "single_area": true,
    "stale": false,
    "crops": {
     "corn": {
      "crop": "corn",
      "current": {
       "regions": 1,
-      "price_lo": 3.775,
-      "price_hi": 3.875,
-      "avg_price": null,
+      "price_lo": 3.7425,
+      "price_hi": 3.8425,
+      "avg_price": 3.8092,
+      "avg_n": 1,
+      "basis": {
+       "Z": {
+        "label": "Dec",
+        "lo": -60,
+        "hi": -50,
+        "regions": 1
+       }
+      },
+      "month": "Z"
+     },
+     "new_crop": {
+      "regions": 1,
+      "price_lo": 4.1325,
+      "price_hi": 4.2325,
+      "avg_price": 4.1992,
       "avg_n": 1,
       "basis": {
        "Z": {
@@ -737,28 +837,29 @@
         "regions": 1
        }
       },
-      "month": "Z"
+      "month": "Z",
+      "delivery": "Sep to Nov 2027"
      }
     },
     "soybeans": {
      "crop": "soybeans",
      "current": {
-      "regions": 2,
-      "price_lo": 11.34,
-      "price_hi": 11.99,
-      "avg_price": 11.6837,
-      "avg_n": 2,
+      "regions": 1,
+      "price_lo": 11.4375,
+      "price_hi": 11.8875,
+      "avg_price": 11.6708,
+      "avg_n": 1,
       "basis": {
        "F": {
         "label": "Jan",
         "lo": -85,
-        "hi": -20,
-        "regions": 2
+        "hi": -40,
+        "regions": 1
        }
       },
       "month": "F",
       "avg_basis": {
-       "F": -51
+       "F": -62
       }
      }
     },
@@ -766,9 +867,9 @@
      "crop": "wheat_srw",
      "current": {
       "regions": 1,
-      "price_lo": 4.9425,
-      "price_hi": 4.9425,
-      "avg_price": null,
+      "price_lo": 4.87,
+      "price_hi": 4.87,
+      "avg_price": 4.87,
       "avg_n": 1,
       "basis": {
        "Z": {
@@ -778,41 +879,47 @@
         "regions": 1
        }
       },
-      "month": "Z"
+      "month": "Z",
+      "avg_basis": {
+       "Z": -90
+      }
      },
      "new_crop": {
       "regions": 1,
-      "price_lo": 5.3575,
-      "price_hi": 5.4075,
-      "avg_price": null,
+      "price_lo": 5.385,
+      "price_hi": 5.385,
+      "avg_price": 5.385,
       "avg_n": 1,
       "basis": {
        "N": {
         "label": "Jul",
-        "lo": -75,
+        "lo": -70,
         "hi": -70,
         "regions": 1
        }
       },
       "month": "N",
+      "avg_basis": {
+       "N": -70
+      },
       "delivery": "Jun to Jul 2027"
      }
     }
    },
    "left_out": {
-    "forward": 2,
+    "forward": 1,
     "not_plain": 0,
-    "other_points": 19
+    "other_points": 18
    },
-   "daily_line": "USDA's Ohio average cash bids: soybeans $11.68 (51 under Jan). USDA AMS, Ohio Daily Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Ohio average cash bids: corn $3.81, soybeans $11.67 (62 under Jan). USDA AMS, Ohio Daily Grain Bids, Nov 23, 2026."
   },
   "MO": {
    "name": "Missouri",
    "report_id": 2932,
    "report": "Missouri Daily Grain Bids",
-   "report_date": "2026-11-12",
-   "published": "11/12/2026 12:54:03",
-   "source": "USDA AMS, Missouri Daily Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "published": "11/25/2026 12:56:09",
+   "source": "USDA AMS, Missouri Daily Grain Bids, Nov 25, 2026",
    "single_area": false,
    "stale": false,
    "crops": {
@@ -820,21 +927,28 @@
      "crop": "corn",
      "current": {
       "regions": 5,
-      "price_lo": 3.875,
-      "price_hi": 4.425,
-      "avg_price": 4.1917,
+      "price_lo": 3.865,
+      "price_hi": 4.4475,
+      "avg_price": 4.1971,
       "avg_n": 5,
       "basis": {
+       "H": {
+        "label": "Mar",
+        "lo": -70,
+        "hi": -40,
+        "regions": 2
+       },
        "Z": {
         "label": "Dec",
-        "lo": -55,
-        "hi": 0,
+        "lo": -30,
+        "hi": 5,
         "regions": 5
        }
       },
       "month": "Z",
       "avg_basis": {
-       "Z": -23
+       "H": -37,
+       "Z": -20
       }
      }
     },
@@ -842,9 +956,9 @@
      "crop": "soybeans",
      "current": {
       "regions": 6,
-      "price_lo": 11.49,
-      "price_hi": 11.94,
-      "avg_price": 11.7647,
+      "price_lo": 11.74,
+      "price_hi": 12.19,
+      "avg_price": 12.0308,
       "avg_n": 6,
       "basis": {
        "F": {
@@ -856,7 +970,7 @@
       },
       "month": "F",
       "avg_basis": {
-       "F": -43
+       "F": -41
       }
      }
     },
@@ -864,9 +978,9 @@
      "crop": "wheat_srw",
      "current": {
       "regions": 5,
-      "price_lo": 4.5425,
-      "price_hi": 5.4425,
-      "avg_price": 5.1775,
+      "price_lo": 4.355,
+      "price_hi": 5.255,
+      "avg_price": 4.99,
       "avg_n": 5,
       "basis": {
        "Z": {
@@ -888,7 +1002,7 @@
     "not_plain": 0,
     "other_points": 14
    },
-   "daily_line": "USDA's Missouri average cash bids: corn $4.19 (23 under Dec), soybeans $11.76 (43 under Jan). USDA AMS, Missouri Daily Grain Bids, Nov 12, 2026."
+   "daily_line": "USDA's Missouri average cash bids: corn $4.20 (20 under Dec), soybeans $12.03 (41 under Jan). USDA AMS, Missouri Daily Grain Bids, Nov 25, 2026."
   }
  },
  "terminals": {
@@ -896,8 +1010,8 @@
    "name": "Minneapolis",
    "report_id": 3046,
    "report": "Minneapolis Daily Grain Report",
-   "report_date": "2026-11-12",
-   "source": "USDA AMS, Minneapolis Daily Grain Report, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "source": "USDA AMS, Minneapolis Daily Grain Report, Nov 25, 2026",
    "stale": false,
    "bids": [
     {
@@ -906,11 +1020,11 @@
      "period": "current",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 3.925,
-     "price_hi": 3.955,
+     "price_lo": 3.6475,
+     "price_hi": 3.9775,
      "basis_month": "Dec",
-     "basis_lo": -50,
-     "basis_hi": -47
+     "basis_lo": -75,
+     "basis_hi": -42
     },
     {
      "crop": "soybeans",
@@ -918,10 +1032,10 @@
      "period": "current",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 11.69,
-     "price_hi": 11.74,
+     "price_lo": 11.59,
+     "price_hi": 11.99,
      "basis_month": "Jan",
-     "basis_lo": -50,
+     "basis_lo": -85,
      "basis_hi": -45
     },
     {
@@ -931,8 +1045,8 @@
      "protein": "11.0%",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 6.2275,
-     "price_hi": 6.2275,
+     "price_lo": 6.415,
+     "price_hi": 6.415,
      "basis_month": "Dec",
      "basis_lo": 0,
      "basis_hi": 0
@@ -944,8 +1058,8 @@
      "protein": "12.0%",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 6.2275,
-     "price_hi": 6.2275,
+     "price_lo": 6.415,
+     "price_hi": 6.415,
      "basis_month": "Dec",
      "basis_lo": 0,
      "basis_hi": 0
@@ -957,8 +1071,8 @@
      "protein": "13.0%",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 6.2275,
-     "price_hi": 6.2275,
+     "price_lo": 6.415,
+     "price_hi": 6.415,
      "basis_month": "Dec",
      "basis_lo": 0,
      "basis_hi": 0
@@ -969,8 +1083,8 @@
    "name": "Kansas City wheat",
    "report_id": 3223,
    "report": "Kansas City Board of Trade Daily Wheat Bids",
-   "report_date": "2026-11-12",
-   "source": "USDA AMS, Kansas City Board of Trade Daily Wheat Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "source": "USDA AMS, Kansas City Board of Trade Daily Wheat Bids, Nov 25, 2026",
    "stale": false,
    "bids": [
     {
@@ -979,11 +1093,11 @@
      "period": "current",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.2725,
-     "price_hi": 7.3725,
-     "basis_month": "Dec",
-     "basis_lo": 105,
-     "basis_hi": 115
+     "price_lo": 7.005,
+     "price_hi": 7.105,
+     "basis_month": "Mar",
+     "basis_lo": 70,
+     "basis_hi": 80
     },
     {
      "crop": "wheat_hrw",
@@ -992,11 +1106,11 @@
      "protein": "11.0%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.4225,
-     "price_hi": 7.5225,
-     "basis_month": "Dec",
-     "basis_lo": 120,
-     "basis_hi": 130
+     "price_lo": 7.235,
+     "price_hi": 7.335,
+     "basis_month": "Mar",
+     "basis_lo": 93,
+     "basis_hi": 103
     },
     {
      "crop": "wheat_hrw",
@@ -1005,11 +1119,11 @@
      "protein": "11.2%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.4225,
-     "price_hi": 7.5225,
-     "basis_month": "Dec",
-     "basis_lo": 120,
-     "basis_hi": 130
+     "price_lo": 7.235,
+     "price_hi": 7.335,
+     "basis_month": "Mar",
+     "basis_lo": 93,
+     "basis_hi": 103
     },
     {
      "crop": "wheat_hrw",
@@ -1018,11 +1132,11 @@
      "protein": "11.4%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.4225,
-     "price_hi": 7.5225,
-     "basis_month": "Dec",
-     "basis_lo": 120,
-     "basis_hi": 130
+     "price_lo": 7.235,
+     "price_hi": 7.335,
+     "basis_month": "Mar",
+     "basis_lo": 93,
+     "basis_hi": 103
     },
     {
      "crop": "wheat_hrw",
@@ -1031,11 +1145,11 @@
      "protein": "11.6%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.5225,
-     "price_hi": 7.6225,
-     "basis_month": "Dec",
-     "basis_lo": 130,
-     "basis_hi": 140
+     "price_lo": 7.255,
+     "price_hi": 7.355,
+     "basis_month": "Mar",
+     "basis_lo": 95,
+     "basis_hi": 105
     },
     {
      "crop": "wheat_hrw",
@@ -1044,11 +1158,11 @@
      "protein": "11.8%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.5225,
-     "price_hi": 7.6225,
-     "basis_month": "Dec",
-     "basis_lo": 130,
-     "basis_hi": 140
+     "price_lo": 7.325,
+     "price_hi": 7.425,
+     "basis_month": "Mar",
+     "basis_lo": 102,
+     "basis_hi": 112
     },
     {
      "crop": "wheat_hrw",
@@ -1057,11 +1171,11 @@
      "protein": "12.0%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.4725,
-     "price_hi": 7.5725,
-     "basis_month": "Dec",
-     "basis_lo": 125,
-     "basis_hi": 135
+     "price_lo": 7.325,
+     "price_hi": 7.425,
+     "basis_month": "Mar",
+     "basis_lo": 102,
+     "basis_hi": 112
     },
     {
      "crop": "wheat_hrw",
@@ -1070,11 +1184,11 @@
      "protein": "12.2%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.4725,
-     "price_hi": 7.5725,
-     "basis_month": "Dec",
-     "basis_lo": 125,
-     "basis_hi": 135
+     "price_lo": 7.335,
+     "price_hi": 7.435,
+     "basis_month": "Mar",
+     "basis_lo": 103,
+     "basis_hi": 113
     },
     {
      "crop": "wheat_hrw",
@@ -1083,11 +1197,11 @@
      "protein": "12.4%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.3925,
-     "price_hi": 7.4925,
-     "basis_month": "Dec",
-     "basis_lo": 117,
-     "basis_hi": 127
+     "price_lo": 7.265,
+     "price_hi": 7.365,
+     "basis_month": "Mar",
+     "basis_lo": 96,
+     "basis_hi": 106
     },
     {
      "crop": "wheat_hrw",
@@ -1096,11 +1210,11 @@
      "protein": "12.6%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.3925,
-     "price_hi": 7.4925,
-     "basis_month": "Dec",
-     "basis_lo": 117,
-     "basis_hi": 127
+     "price_lo": 7.265,
+     "price_hi": 7.365,
+     "basis_month": "Mar",
+     "basis_lo": 96,
+     "basis_hi": 106
     },
     {
      "crop": "wheat_hrw",
@@ -1109,11 +1223,11 @@
      "protein": "12.8%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.3925,
-     "price_hi": 7.4925,
-     "basis_month": "Dec",
-     "basis_lo": 117,
-     "basis_hi": 127
+     "price_lo": 7.265,
+     "price_hi": 7.365,
+     "basis_month": "Mar",
+     "basis_lo": 96,
+     "basis_hi": 106
     },
     {
      "crop": "wheat_hrw",
@@ -1122,11 +1236,11 @@
      "protein": "13.0%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.5225,
-     "price_hi": 7.6225,
-     "basis_month": "Dec",
-     "basis_lo": 130,
-     "basis_hi": 140
+     "price_lo": 7.265,
+     "price_hi": 7.365,
+     "basis_month": "Mar",
+     "basis_lo": 96,
+     "basis_hi": 106
     },
     {
      "crop": "wheat_hrw",
@@ -1135,11 +1249,11 @@
      "protein": "13.2%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.5725,
-     "price_hi": 7.6725,
-     "basis_month": "Dec",
-     "basis_lo": 135,
-     "basis_hi": 145
+     "price_lo": 7.285,
+     "price_hi": 7.385,
+     "basis_month": "Mar",
+     "basis_lo": 98,
+     "basis_hi": 108
     },
     {
      "crop": "wheat_hrw",
@@ -1148,11 +1262,11 @@
      "protein": "13.4%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.5725,
-     "price_hi": 7.6725,
-     "basis_month": "Dec",
-     "basis_lo": 135,
-     "basis_hi": 145
+     "price_lo": 7.285,
+     "price_hi": 7.385,
+     "basis_month": "Mar",
+     "basis_lo": 98,
+     "basis_hi": 108
     },
     {
      "crop": "wheat_hrw",
@@ -1161,11 +1275,11 @@
      "protein": "13.6%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.5725,
-     "price_hi": 7.6725,
-     "basis_month": "Dec",
-     "basis_lo": 135,
-     "basis_hi": 145
+     "price_lo": 7.435,
+     "price_hi": 7.535,
+     "basis_month": "Mar",
+     "basis_lo": 113,
+     "basis_hi": 123
     },
     {
      "crop": "wheat_hrw",
@@ -1174,11 +1288,11 @@
      "protein": "13.8%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.5725,
-     "price_hi": 7.6725,
-     "basis_month": "Dec",
-     "basis_lo": 135,
-     "basis_hi": 145
+     "price_lo": 7.485,
+     "price_hi": 7.585,
+     "basis_month": "Mar",
+     "basis_lo": 118,
+     "basis_hi": 128
     },
     {
      "crop": "wheat_hrw",
@@ -1187,11 +1301,11 @@
      "protein": "14.0%",
      "mode": "Rail",
      "freight": "F.O.B.",
-     "price_lo": 7.6725,
-     "price_hi": 7.7725,
-     "basis_month": "Dec",
-     "basis_lo": 145,
-     "basis_hi": 155
+     "price_lo": 7.585,
+     "price_hi": 7.685,
+     "basis_month": "Mar",
+     "basis_lo": 128,
+     "basis_hi": 138
     }
    ]
   },
@@ -1199,8 +1313,8 @@
    "name": "Iowa-Southern Minnesota barge terminals",
    "report_id": 3043,
    "report": "Iowa-Southern Minnesota Barge Terminal Grain Bids",
-   "report_date": "2026-11-12",
-   "source": "USDA AMS, Iowa-Southern Minnesota Barge Terminal Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "source": "USDA AMS, Iowa-Southern Minnesota Barge Terminal Grain Bids, Nov 25, 2026",
    "stale": false,
    "bids": [
     {
@@ -1210,11 +1324,11 @@
      "location": "North Iowa MS River",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 4.115,
-     "price_hi": 4.325,
+     "price_lo": 3.9475,
+     "price_hi": 4.2475,
      "basis_month": "Dec",
-     "basis_lo": -31,
-     "basis_hi": -10
+     "basis_lo": -45,
+     "basis_hi": -15
     },
     {
      "crop": "corn",
@@ -1223,11 +1337,11 @@
      "location": "South Iowa MS River",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 4.205,
-     "price_hi": 4.225,
+     "price_lo": 4.1175,
+     "price_hi": 4.2975,
      "basis_month": "Dec",
-     "basis_lo": -22,
-     "basis_hi": -20
+     "basis_lo": -28,
+     "basis_hi": -10
     },
     {
      "crop": "corn",
@@ -1236,11 +1350,11 @@
      "location": "South Minnesota MS River",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 3.875,
-     "price_hi": 3.925,
+     "price_lo": 3.8475,
+     "price_hi": 3.9575,
      "basis_month": "Dec",
      "basis_lo": -55,
-     "basis_hi": -50
+     "basis_hi": -44
     },
     {
      "crop": "soybeans",
@@ -1249,11 +1363,11 @@
      "location": "North Iowa MS River",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 11.79,
-     "price_hi": 12.09,
+     "price_lo": 11.84,
+     "price_hi": 12.36,
      "basis_month": "Jan",
-     "basis_lo": -40,
-     "basis_hi": -10
+     "basis_lo": -60,
+     "basis_hi": -8
     },
     {
      "crop": "soybeans",
@@ -1262,11 +1376,11 @@
      "location": "South Iowa MS River",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 11.93,
-     "price_hi": 12.01,
+     "price_lo": 12.2,
+     "price_hi": 12.3,
      "basis_month": "Jan",
-     "basis_lo": -26,
-     "basis_hi": -18
+     "basis_lo": -24,
+     "basis_hi": -14
     },
     {
      "crop": "soybeans",
@@ -1275,8 +1389,11 @@
      "location": "South Minnesota MS River",
      "mode": "Truck",
      "freight": "Delivered",
-     "price_lo": 11.69,
-     "price_hi": 11.77
+     "price_lo": 11.94,
+     "price_hi": 12.06,
+     "basis_month": "Jan",
+     "basis_lo": -50,
+     "basis_hi": -38
     }
    ]
   }
@@ -1286,8 +1403,8 @@
    "name": "Louisiana and Texas Gulf",
    "report_id": 3147,
    "report": "Louisiana and Texas Export Bids",
-   "report_date": "2026-11-12",
-   "source": "USDA AMS, Louisiana and Texas Export Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "source": "USDA AMS, Louisiana and Texas Export Bids, Nov 25, 2026",
    "stale": false,
    "bids": [
     {
@@ -1297,37 +1414,37 @@
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 5.365,
-     "price_hi": 5.375,
+     "price_lo": 5.2375,
+     "price_hi": 5.2375,
+     "basis_month": "Dec",
+     "basis_lo": 84,
+     "basis_hi": 84
+    },
+    {
+     "crop": "corn",
+     "point": "Export Elevators",
+     "period": "2026-12 first half",
+     "location": "Gulf Coast Ports - LA",
+     "mode": "Barge",
+     "freight": "C.I.F.",
+     "price_lo": 5.3375,
+     "price_hi": 5.3375,
      "basis_month": "Dec",
      "basis_lo": 94,
-     "basis_hi": 95
+     "basis_hi": 94
     },
     {
      "crop": "corn",
      "point": "Export Elevators",
-     "period": "2026-11 last half",
+     "period": "2026-12 last half",
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 5.375,
-     "price_hi": 5.395,
+     "price_lo": 5.3775,
+     "price_hi": 5.3775,
      "basis_month": "Dec",
-     "basis_lo": 95,
-     "basis_hi": 97
-    },
-    {
-     "crop": "corn",
-     "point": "Export Elevators",
-     "period": "2026-12",
-     "location": "Gulf Coast Ports - LA",
-     "mode": "Barge",
-     "freight": "C.I.F.",
-     "price_lo": 5.425,
-     "price_hi": 5.435,
-     "basis_month": "Dec",
-     "basis_lo": 100,
-     "basis_hi": 101
+     "basis_lo": 98,
+     "basis_hi": 98
     },
     {
      "crop": "corn",
@@ -1336,11 +1453,11 @@
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 5.4675,
-     "price_hi": 5.4875,
+     "price_lo": 5.465,
+     "price_hi": 5.475,
      "basis_month": "Mar",
-     "basis_lo": 92,
-     "basis_hi": 94
+     "basis_lo": 90,
+     "basis_hi": 91
     },
     {
      "crop": "soybeans",
@@ -1349,37 +1466,37 @@
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 13.22,
-     "price_hi": 13.43,
-     "basis_month": "Nov",
-     "basis_lo": 95,
-     "basis_hi": 116
-    },
-    {
-     "crop": "soybeans",
-     "point": "Export Elevators",
-     "period": "2026-11 last half",
-     "location": "Gulf Coast Ports - LA",
-     "mode": "Barge",
-     "freight": "C.I.F.",
-     "price_lo": 13.22,
-     "price_hi": 13.45,
-     "basis_month": "Nov",
-     "basis_lo": 95,
-     "basis_hi": 118
-    },
-    {
-     "crop": "soybeans",
-     "point": "Export Elevators",
-     "period": "2026-12",
-     "location": "Gulf Coast Ports - LA",
-     "mode": "Barge",
-     "freight": "C.I.F.",
-     "price_lo": 13.28,
-     "price_hi": 13.29,
+     "price_lo": 13.5,
+     "price_hi": 13.52,
      "basis_month": "Jan",
-     "basis_lo": 109,
-     "basis_hi": 110
+     "basis_lo": 106,
+     "basis_hi": 108
+    },
+    {
+     "crop": "soybeans",
+     "point": "Export Elevators",
+     "period": "2026-12 first half",
+     "location": "Gulf Coast Ports - LA",
+     "mode": "Barge",
+     "freight": "C.I.F.",
+     "price_lo": 13.55,
+     "price_hi": 13.56,
+     "basis_month": "Jan",
+     "basis_lo": 111,
+     "basis_hi": 112
+    },
+    {
+     "crop": "soybeans",
+     "point": "Export Elevators",
+     "period": "2026-12 last half",
+     "location": "Gulf Coast Ports - LA",
+     "mode": "Barge",
+     "freight": "C.I.F.",
+     "price_lo": 13.56,
+     "price_hi": 13.56,
+     "basis_month": "Jan",
+     "basis_lo": 112,
+     "basis_hi": 112
     },
     {
      "crop": "soybeans",
@@ -1388,10 +1505,10 @@
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 13.3,
-     "price_hi": 13.33,
+     "price_lo": 13.58,
+     "price_hi": 13.58,
      "basis_month": "Jan",
-     "basis_lo": 111,
+     "basis_lo": 114,
      "basis_hi": 114
     },
     {
@@ -1401,24 +1518,11 @@
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 6.3425,
-     "price_hi": 6.6425,
+     "price_lo": 6.205,
+     "price_hi": 6.255,
      "basis_month": "Dec",
-     "basis_lo": 50,
-     "basis_hi": 80
-    },
-    {
-     "crop": "wheat_srw",
-     "point": "Export Elevators",
-     "period": "2026-11 last half",
-     "location": "Gulf Coast Ports - LA",
-     "mode": "Barge",
-     "freight": "C.I.F.",
-     "price_lo": 6.5925,
-     "price_hi": 6.6425,
-     "basis_month": "Dec",
-     "basis_lo": 75,
-     "basis_hi": 80
+     "basis_lo": 55,
+     "basis_hi": 60
     },
     {
      "crop": "wheat_srw",
@@ -1427,11 +1531,11 @@
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 6.5925,
-     "price_hi": 6.8425,
+     "price_lo": 6.405,
+     "price_hi": 6.555,
      "basis_month": "Dec",
      "basis_lo": 75,
-     "basis_hi": 100
+     "basis_hi": 90
     },
     {
      "crop": "wheat_srw",
@@ -1440,11 +1544,24 @@
      "location": "Gulf Coast Ports - LA",
      "mode": "Barge",
      "freight": "C.I.F.",
-     "price_lo": 6.7425,
-     "price_hi": 6.9925,
+     "price_lo": 6.725,
+     "price_hi": 6.825,
      "basis_month": "Mar",
-     "basis_lo": 75,
-     "basis_hi": 100
+     "basis_lo": 85,
+     "basis_hi": 95
+    },
+    {
+     "crop": "wheat_srw",
+     "point": "Export Elevators",
+     "period": "2027-02",
+     "location": "Gulf Coast Ports - LA",
+     "mode": "Barge",
+     "freight": "C.I.F.",
+     "price_lo": 6.725,
+     "price_hi": 6.825,
+     "basis_month": "Mar",
+     "basis_lo": 85,
+     "basis_hi": 95
     }
    ]
   },
@@ -1452,8 +1569,8 @@
    "name": "Portland (Pacific Northwest)",
    "report_id": 3148,
    "report": "Portland Daily Grain Bids",
-   "report_date": "2026-11-12",
-   "source": "USDA AMS, Portland Daily Grain Bids, Nov 12, 2026",
+   "report_date": "2026-11-25",
+   "source": "USDA AMS, Portland Daily Grain Bids, Nov 25, 2026",
    "stale": false,
    "bids": [
     {
@@ -1475,11 +1592,11 @@
      "protein": "13.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.6475,
-     "price_hi": 6.7475,
-     "basis_month": "Dec",
-     "basis_lo": 42,
-     "basis_hi": 52
+     "price_lo": 6.685,
+     "price_hi": 6.935,
+     "basis_month": "Mar",
+     "basis_lo": 22,
+     "basis_hi": 47
     },
     {
      "crop": "wheat_hrs",
@@ -1489,11 +1606,8 @@
      "protein": "14.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.9275,
-     "price_hi": 6.9275,
-     "basis_month": "Dec",
-     "basis_lo": 70,
-     "basis_hi": 70
+     "price_lo": 6.965,
+     "price_hi": 7.115
     },
     {
      "crop": "wheat_hrs",
@@ -1503,11 +1617,8 @@
      "protein": "14.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.9275,
-     "price_hi": 6.9275,
-     "basis_month": "Dec",
-     "basis_lo": 70,
-     "basis_hi": 70
+     "price_lo": 6.965,
+     "price_hi": 7.115
     },
     {
      "crop": "wheat_hrs",
@@ -1517,11 +1628,11 @@
      "protein": "14.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.9175,
-     "price_hi": 6.9175,
+     "price_lo": 7.015,
+     "price_hi": 7.115,
      "basis_month": "Mar",
      "basis_lo": 55,
-     "basis_hi": 55
+     "basis_hi": 65
     },
     {
      "crop": "wheat_hrs",
@@ -1531,11 +1642,11 @@
      "protein": "14.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.9175,
-     "price_hi": 6.9175,
+     "price_lo": 7.015,
+     "price_hi": 7.115,
      "basis_month": "Mar",
      "basis_lo": 55,
-     "basis_hi": 55
+     "basis_hi": 65
     },
     {
      "crop": "wheat_hrs",
@@ -1545,11 +1656,8 @@
      "protein": "15.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 7.0475,
-     "price_hi": 7.0475,
-     "basis_month": "Dec",
-     "basis_lo": 82,
-     "basis_hi": 82
+     "price_lo": 7.085,
+     "price_hi": 7.235
     },
     {
      "crop": "wheat_hrs",
@@ -1559,11 +1667,8 @@
      "protein": "16.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 7.1675,
-     "price_hi": 7.1675,
-     "basis_month": "Dec",
-     "basis_lo": 94,
-     "basis_hi": 94
+     "price_lo": 7.205,
+     "price_hi": 7.355
     },
     {
      "crop": "wheat_hrw",
@@ -1572,11 +1677,8 @@
      "location": "Pacific Ports",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.2725,
-     "price_hi": 6.3225,
-     "basis_month": "Dec",
-     "basis_lo": 5,
-     "basis_hi": 10
+     "price_lo": 6.09,
+     "price_hi": 6.305
     },
     {
      "crop": "wheat_hrw",
@@ -1586,11 +1688,8 @@
      "protein": "11.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.5725,
-     "price_hi": 6.6225,
-     "basis_month": "Dec",
-     "basis_lo": 35,
-     "basis_hi": 40
+     "price_lo": 6.39,
+     "price_hi": 6.605
     },
     {
      "crop": "wheat_hrw",
@@ -1600,11 +1699,8 @@
      "protein": "11.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.6725,
-     "price_hi": 6.7225,
-     "basis_month": "Dec",
-     "basis_lo": 45,
-     "basis_hi": 50
+     "price_lo": 6.49,
+     "price_hi": 6.755
     },
     {
      "crop": "wheat_hrw",
@@ -1614,8 +1710,8 @@
      "protein": "11.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.6725,
-     "price_hi": 6.8225
+     "price_lo": 6.49,
+     "price_hi": 6.755
     },
     {
      "crop": "wheat_hrw",
@@ -1625,8 +1721,8 @@
      "protein": "11.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.7725,
-     "price_hi": 6.8225,
+     "price_lo": 6.755,
+     "price_hi": 6.805,
      "basis_month": "Mar",
      "basis_lo": 45,
      "basis_hi": 50
@@ -1639,8 +1735,8 @@
      "protein": "11.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.7725,
-     "price_hi": 6.8225,
+     "price_lo": 6.755,
+     "price_hi": 6.805,
      "basis_month": "Mar",
      "basis_lo": 45,
      "basis_hi": 50
@@ -1653,11 +1749,8 @@
      "protein": "12.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.6725,
-     "price_hi": 6.8225,
-     "basis_month": "Dec",
-     "basis_lo": 45,
-     "basis_hi": 60
+     "price_lo": 6.49,
+     "price_hi": 6.805
     },
     {
      "crop": "wheat_hrw",
@@ -1667,11 +1760,8 @@
      "protein": "13.0%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.8725,
-     "price_hi": 7.0225,
-     "basis_month": "Dec",
-     "basis_lo": 65,
-     "basis_hi": 80
+     "price_lo": 6.69,
+     "price_hi": 7.005
     },
     {
      "crop": "wheat_sw",
@@ -1681,7 +1771,7 @@
      "protein": "10.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.25,
+     "price_lo": 6.15,
      "price_hi": 6.25
     },
     {
@@ -1692,7 +1782,7 @@
      "protein": "10.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.25,
+     "price_lo": 6.15,
      "price_hi": 6.25
     },
     {
@@ -1703,7 +1793,7 @@
      "protein": "10.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.3,
+     "price_lo": 6.2,
      "price_hi": 6.3
     },
     {
@@ -1714,28 +1804,28 @@
      "protein": "10.5%",
      "mode": "Rail/Barge",
      "freight": "Delivered",
-     "price_lo": 6.35,
+     "price_lo": 6.25,
      "price_hi": 6.35
     }
    ]
   }
  },
  "status": {
-  "2850": "ok 2026-11-12",
-  "3192": "ok 2026-11-12",
-  "3225": "ok 2026-11-12",
-  "2886": "ok 2026-11-12",
-  "3049": "ok 2026-11-12",
-  "3186": "ok 2026-11-12",
-  "3878": "ok 2026-11-10",
-  "3463": "ok 2026-11-12",
-  "2851": "ok 2026-11-12",
-  "2932": "ok 2026-11-12",
-  "3046": "ok 2026-11-12",
-  "3223": "ok 2026-11-12",
-  "3043": "ok 2026-11-12",
-  "3147": "ok 2026-11-12",
-  "3148": "ok 2026-11-12"
+  "2850": "ok 2026-11-24",
+  "3192": "ok 2026-11-25",
+  "3225": "ok 2026-11-25",
+  "2886": "ok 2026-11-25",
+  "3049": "ok 2026-11-25",
+  "3186": "ok 2026-11-25",
+  "3878": "ok 2026-11-25",
+  "3463": "ok 2026-11-23",
+  "2851": "ok 2026-11-23",
+  "2932": "ok 2026-11-25",
+  "3046": "ok 2026-11-25",
+  "3223": "ok 2026-11-25",
+  "3043": "ok 2026-11-25",
+  "3147": "ok 2026-11-25",
+  "3148": "ok 2026-11-25"
  },
- "daily_line": "Gulf export bids, barge CIF: corn 94 to 95 over Dec; soybeans 95 to 116 over Nov. USDA AMS, Louisiana and Texas Export Bids, Nov 12, 2026."
+ "daily_line": "Gulf export bids, barge CIF: corn 84 over Dec; soybeans 106 to 108 over Jan. USDA AMS, Louisiana and Texas Export Bids, Nov 25, 2026."
 }

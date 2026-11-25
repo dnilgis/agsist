@@ -38,7 +38,6 @@
   var RADIUS = 50, STALE_H = 36, DAY = 864e5;
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
   var BAND = { corn: [2, 12], soybeans: [6, 32] };
-  var SPECIAL = /non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
@@ -104,8 +103,18 @@
 
   /* Pure. {corn: {best, nearest, n}, soybeans: ...}; best/nearest are
      {place, name, town, state, mi, cash, basisCents, period, pricedAt} */
+  /* Nov 20, 2026: ONE RULE (components/bid-filter.js isCurrent / windowKey, the
+     Daily's scripts/bid_rule.py). A candidate is a current delivery: a next-year
+     harvest or a month 3+ out is never the best or the nearest bid. The best is
+     the highest cash in the earliest window any candidate has. No rule loaded:
+     no candidate, never an unfiltered one. */
+  function bidRule() {
+    if (typeof window !== 'undefined' && window.AG && window.AG.bidFilter && window.AG.bidFilter.windowKey) return window.AG.bidFilter;
+    try { if (typeof module === 'object' && module.exports) return require('./bid-filter.js'); } catch (e) { /* none */ }
+    return null;
+  }
   function pick(index, lat, lon, nowMs) {
-    var out = {};
+    var out = {}, BR = bidRule();
     var places = (index && index.places) || [];
     CROPS.forEach(function (c) {
       var crop = c[0], cands = [];
@@ -113,7 +122,8 @@
         if (typeof p.lat !== 'number' || typeof p.lon !== 'number' || (p.currency || 'USD') !== 'USD') return;
         var n = p.now && p.now[crop];
         if (!n || typeof n.cash !== 'number' || !isFinite(n.cash) || !n.period || !p.place) return;
-        if (n.cash < BAND[crop][0] || n.cash > BAND[crop][1] || SPECIAL.test(n.commodity || '')) return;
+        if (n.cash < BAND[crop][0] || n.cash > BAND[crop][1]) return;
+        if (!BR || !BR.isPlainCurrent({ commodity: n.commodity || crop, crop: crop, cash: n.cash, period: n.period }, nowMs)) return;
         if (!fresh(p.pricedAt, nowMs)) return;
         var d = miles(lat, lon, p.lat, p.lon);
         if (d > RADIUS) return;
@@ -121,16 +131,12 @@
         if (town && String(p.operator || '').trim().toLowerCase() === town.toLowerCase()) town = '';
         cands.push({ place: p.place, name: String(p.operator || '').trim(), town: town, state: p.state || '',
           mi: Math.round(d * 10) / 10, cash: n.cash, basisCents: typeof n.basisCents === 'number' ? n.basisCents : null,
-          period: n.period, key: periodKey(n.period, nowMs, crop), pricedAt: p.pricedAt, delivery: n.delivery || '' });
+          period: n.period, key: periodKey(n.period, nowMs, crop), wk: BR.windowKey({ period: n.period, crop: crop }, nowMs),
+          dw: BR.deliveryWords({ period: n.period, crop: crop }, nowMs), pricedAt: p.pricedAt, delivery: n.delivery || '', commodity: n.commodity || '' });
       });
       if (!cands.length) { out[crop] = { best: null, nearest: null, n: 0 }; return; }
-      var thisMonth = ctDay(nowMs).slice(0, 7);
-      var keyed = cands.filter(function (x) { return x.key && x.key >= thisMonth; });
-      var pool = cands;
-      if (keyed.length) {
-        var mk = keyed.reduce(function (m, x) { return !m || x.key < m ? x.key : m; }, '');
-        pool = keyed.filter(function (x) { return x.key === mk; });
-      }
+      var mk = cands.reduce(function (m, x) { return !m || x.wk === 'now' || (m !== 'now' && x.wk < m) ? x.wk : m; }, '');
+      var pool = cands.filter(function (x) { return x.wk === mk; });
       var best = pool.reduce(function (b, x) { return !b || x.cash > b.cash || (x.cash === b.cash && x.mi < b.mi) ? x : b; }, null);
       var nearest = cands.reduce(function (b, x) { return !b || x.mi < b.mi ? x : b; }, null);
       out[crop] = { best: best, nearest: nearest, n: cands.length };
@@ -146,7 +152,9 @@
     var t = Date.parse(row.pricedAt || '');
     if (!Array.isArray(hist) || isNaN(t)) return null;
     var on = ctDay(t), prev = null;
-    for (var i = 0; i < hist.length; i++) if (hist[i] && hist[i][0] < on && typeof hist[i][1] === 'number') prev = hist[i];
+    /* an entry of another commodity (bids-prev's 4th field, Nov 20, 2026) is never the day before */
+    var tag = String(row.commodity || '').toLowerCase().split(/\s+/).filter(Boolean).join(' ');
+    for (var i = 0; i < hist.length; i++) if (hist[i] && hist[i][0] < on && typeof hist[i][1] === 'number' && (hist[i].length < 4 || row.commodity == null || hist[i][3] === tag)) prev = hist[i];
     if (!prev) return null;
     return { cents: Math.round((row.cash - prev[1]) * 1e6) / 1e4, since: dayName(prev[0]) };
   }
@@ -182,7 +190,7 @@
       CROPS.forEach(function (c) {
         var k = o.picks[c[0]];
         if (!k || !k.best) { lines.push('<b>' + c[1] + '</b>: no bid posted in the last 36 hours within ' + RADIUS + ' miles.'); return; }
-        var b = k.best, s = '<b>' + c[1] + '</b> best bid ' + cash(b.cash) + ' at ' + where(b);
+        var b = k.best, s = '<b>' + c[1] + '</b> best bid ' + cash(b.cash) + (b.dw ? ' for ' + esc(b.dw) + ' delivery' : '') + ' at ' + where(b);
         var bw = basisWords(b.basisCents);
         s += (bw ? ', ' + bw : '') + chgWords(o.changes && o.changes[c[0]]) + '.';
         if (k.nearest && k.nearest.place !== b.place) s += ' Nearest: ' + where(k.nearest) + ' ' + cash(k.nearest.cash) + '.';
@@ -213,14 +221,14 @@
   root.AGSIST_DAILY_LOCAL = api;
 
   var doc = root.document;
-  var CSS = 'aside.dl{margin:1rem 0;padding:.75rem .95rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;background:var(--surface);font-size:.9rem;line-height:1.55;color:var(--text-dim)}' +
+  var CSS = 'aside.dl{margin:1rem 0;padding:.75rem .95rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);background:var(--surface);font-size:.9rem;line-height:1.55;color:var(--text-dim)}' +
     'aside.dl p{margin:.3rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.dl b{color:var(--text)}' +
-    'aside.dl .dl-k{font-family:"JetBrains Mono",monospace;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}' +
+    'aside.dl .dl-k{font-family:var(--font-body);font-size:.7rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim)}' +
     'aside.dl a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.dl .dl-s{font-size:.76rem;color:var(--text-muted)}' +
     'aside.dl .dl-f{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}' +
     'aside.dl .dl-lab{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}' +
-    'aside.dl input{font:inherit;font-family:"JetBrains Mono",monospace;width:7.5rem;min-height:44px;padding:0 .7rem;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text)}' +
-    'aside.dl button{font:inherit;font-weight:700;min-height:44px;padding:0 1rem;border:1px solid var(--gold);border-radius:6px;background:transparent;color:var(--gold);cursor:pointer}' +
+    'aside.dl input{font:inherit;font-family:"JetBrains Mono",monospace;width:7.5rem;min-height:44px;padding:0 .7rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2);color:var(--text)}' +
+    'aside.dl button{font:inherit;font-weight:700;min-height:44px;padding:0 1rem;border:1px solid var(--gold);border-radius:var(--r-md);background:transparent;color:var(--gold);cursor:pointer}' +
     'aside.dl .dl-err{color:var(--red,#e0685f)}aside.ya.ya-n{display:none}';
   function get(u, opt) { return fetch(u, opt || { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   /* The radar file's 24-hour and 7-day readings at the spot, or null (no file, outside the lower 48, an old

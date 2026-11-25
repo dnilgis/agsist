@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '23 9 3 * *'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 07"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -18,7 +18,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 07' || (contains(github.event.workflow_run.display_title, ' refs.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -124,7 +126,7 @@ jobs:
 
       - name: Fetch the sources
         timeout-minutes: 75
-        run: '"${PY:-python3}" scripts/fetch_refs.py --out "$REFS" --ids "$IN_IDS"'
+        run: '"${PY:-python3}" scripts/fetch_refs.py --out "$REFS" --ids "$IN_IDS" --budget-min 60'
 
       - name: Commit to references
         if: ${{ !cancelled() }}

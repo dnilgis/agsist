@@ -18,10 +18,18 @@ fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(fu
       var bits=[move(now[1],w1&&w1[1],'a week before'),move(now[1],w4&&w4[1],'four weeks before')].filter(Boolean);
       return {now:now,moves:bits.join(' and '),year:y1?f1(y1[1])+'% a year before ('+day(dates[3])+')':''};
     }
+    /* Late: NDMC releases the next map (valid the Tuesday after this one) on Thursday at 8:30 am ET, the schedule
+       summary.json's released_rule states (scripts/released_at.py). That is the map valid date plus 9 days, at
+       13:30 UTC (8:30 EST; 12:30 in summer, so never early). Not the file's released_at plus 7 days: a holiday week
+       moves a release earlier, and the week after it is back on Thursday. The map is late only once that release
+       plus LATE_GRACE (8 h) has passed: the fetch (drought-county-week.yml) is due Thursday 13:52 UTC, its gate
+       still runs it up to 6 h late (cron_gate --max-lag 360) and the job may take 90 min. */
+    function dmLate(S,now){var LATE_GRACE=8*36e5,next=S&&S.valid?Date.parse(S.valid+'T13:30:00Z')+9*864e5:NaN;return isFinite(next)&&now>next+LATE_GRACE;}
+    window.__dmLate=dmLate;
     window.__dmSummary=fetch('/data/drought/summary.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(S){
       var el=document.getElementById('dm-answer');
       if(!S||!S.conus||!S.conus[0]||!el)return S;
-      var L=line(S.conus,S.dates),old=(Date.now()-Date.parse(S.valid+'T00:00:00Z'))/864e5>9;
+      var L=line(S.conus,S.dates),old=dmLate(S,Date.now());
       el.innerHTML='On the map valid '+day(S.valid)+', <strong>'+f1(L.now[1])+'%</strong> of the Lower 48 is in drought (D1 or worse)'
         +(L.moves?', '+L.moves:'')+'. <strong>'+f1(L.now[2])+'%</strong> is in severe drought (D2) or worse.'
         +(L.year?' In drought '+L.year+'.':'')

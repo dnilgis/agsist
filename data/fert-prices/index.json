@@ -1,0 +1,275 @@
+{
+ "note": "USDA AMS state fertilizer price reports on file, newest report each, and the report shown for each state.",
+ "reports": [
+  {
+   "id": "2863",
+   "region": "Iowa",
+   "states": [
+    "IA"
+   ],
+   "cadence": "biweekly",
+   "title": "Iowa Production Cost Report (Bi-Weekly)",
+   "published": "2026-11-13"
+  },
+  {
+   "id": "3195",
+   "region": "Illinois",
+   "states": [
+    "IL"
+   ],
+   "cadence": "biweekly",
+   "title": "Illinois Production Cost Report (Bi-weekly)",
+   "published": "2026-11-13"
+  },
+  {
+   "id": "3621",
+   "region": "Oklahoma",
+   "states": [
+    "OK"
+   ],
+   "cadence": "biweekly",
+   "title": "Oklahoma Production Cost Report (Bi-Weekly)",
+   "published": "2026-11-13"
+  },
+  {
+   "id": "3159",
+   "region": "North Carolina",
+   "states": [
+    "NC"
+   ],
+   "cadence": "weekly",
+   "title": "North Carolina Production Cost Report (Weekly)",
+   "published": "2026-11-13"
+  },
+  {
+   "id": "3883",
+   "region": "Inter-Mountain West",
+   "states": [
+    "UT",
+    "ID",
+    "CO",
+    "WY"
+   ],
+   "cadence": "monthly",
+   "title": "Inter-Mountain West Production Cost Report (Monthly)",
+   "published": "2026-11-20"
+  },
+  {
+   "id": "3657",
+   "region": "Pacific Northwest",
+   "states": [
+    "OR",
+    "WA"
+   ],
+   "cadence": "biweekly",
+   "title": "Pacific Northwest Production Cost Report (Bi-Weekly)",
+   "published": "2026-11-13"
+  }
+ ],
+ "nearest": {
+  "AL": {
+   "id": null,
+   "own": false
+  },
+  "AK": {
+   "id": null,
+   "own": false
+  },
+  "AZ": {
+   "id": "3883",
+   "own": false
+  },
+  "AR": {
+   "id": "3621",
+   "own": false
+  },
+  "CA": {
+   "id": null,
+   "own": false
+  },
+  "CO": {
+   "id": "3883",
+   "own": true
+  },
+  "CT": {
+   "id": null,
+   "own": false
+  },
+  "DE": {
+   "id": "3159",
+   "own": false
+  },
+  "DC": {
+   "id": "3159",
+   "own": false
+  },
+  "FL": {
+   "id": null,
+   "own": false
+  },
+  "GA": {
+   "id": "3159",
+   "own": false
+  },
+  "HI": {
+   "id": null,
+   "own": false
+  },
+  "ID": {
+   "id": "3883",
+   "own": true
+  },
+  "IL": {
+   "id": "3195",
+   "own": true
+  },
+  "IN": {
+   "id": "3195",
+   "own": false
+  },
+  "IA": {
+   "id": "2863",
+   "own": true
+  },
+  "KS": {
+   "id": "3621",
+   "own": false
+  },
+  "KY": {
+   "id": "3195",
+   "own": false
+  },
+  "LA": {
+   "id": "3621",
+   "own": false
+  },
+  "ME": {
+   "id": null,
+   "own": false
+  },
+  "MD": {
+   "id": "3159",
+   "own": false
+  },
+  "MA": {
+   "id": null,
+   "own": false
+  },
+  "MI": {
+   "id": "3195",
+   "own": false
+  },
+  "MN": {
+   "id": "2863",
+   "own": false
+  },
+  "MS": {
+   "id": null,
+   "own": false
+  },
+  "MO": {
+   "id": "3195",
+   "own": false
+  },
+  "MT": {
+   "id": "3883",
+   "own": false
+  },
+  "NE": {
+   "id": "2863",
+   "own": false
+  },
+  "NV": {
+   "id": "3883",
+   "own": false
+  },
+  "NH": {
+   "id": null,
+   "own": false
+  },
+  "NJ": {
+   "id": "3159",
+   "own": false
+  },
+  "NM": {
+   "id": "3883",
+   "own": false
+  },
+  "NY": {
+   "id": null,
+   "own": false
+  },
+  "NC": {
+   "id": "3159",
+   "own": true
+  },
+  "ND": {
+   "id": null,
+   "own": false
+  },
+  "OH": {
+   "id": "3195",
+   "own": false
+  },
+  "OK": {
+   "id": "3621",
+   "own": true
+  },
+  "OR": {
+   "id": "3657",
+   "own": true
+  },
+  "PA": {
+   "id": "3159",
+   "own": false
+  },
+  "RI": {
+   "id": null,
+   "own": false
+  },
+  "SC": {
+   "id": "3159",
+   "own": false
+  },
+  "SD": {
+   "id": "2863",
+   "own": false
+  },
+  "TN": {
+   "id": "3195",
+   "own": false
+  },
+  "TX": {
+   "id": "3621",
+   "own": false
+  },
+  "UT": {
+   "id": "3883",
+   "own": true
+  },
+  "VT": {
+   "id": null,
+   "own": false
+  },
+  "VA": {
+   "id": "3159",
+   "own": false
+  },
+  "WA": {
+   "id": "3657",
+   "own": true
+  },
+  "WV": {
+   "id": "3159",
+   "own": false
+  },
+  "WI": {
+   "id": "2863",
+   "own": false
+  },
+  "WY": {
+   "id": "3883",
+   "own": true
+  }
+ }
+}

@@ -127,7 +127,7 @@
       var old = doc.getElementById('outbox-said'); if (old) old.remove();
       var b = doc.createElement('div');
       b.id = 'outbox-said'; b.setAttribute('role', 'status');
-      b.style.cssText = 'background:' + (bad ? '#7a2414' : '#1f5130') + ';color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9991;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+      b.style.cssText = 'background:' + (bad ? '#7a2414' : '#1f5130') + ';color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9991;text-align:center';
       lines.forEach(function (t, i) { var p = doc.createElement('div'); p.textContent = t; if (i) p.style.marginTop = '4px'; b.appendChild(p); });
       var c = doc.createElement('button');
       c.type = 'button'; c.setAttribute('aria-label', 'Close'); c.textContent = '×';

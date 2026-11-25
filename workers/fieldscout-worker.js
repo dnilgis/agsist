@@ -36,7 +36,7 @@
  */
 
 // Build stamp — bump on every paste so /health proves which code is live.
-const BUILD = 'fs-2026-09-30a';
+const BUILD = 'fs-2026-11-20a';
 
 const CDSE_TOKEN_URL = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token';
 const SH_PROCESS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/process';
@@ -65,21 +65,32 @@ function setup() {
   };
 }
 function evaluatePixel(s) {
-  var bad = (s.SCL==0||s.SCL==1||s.SCL==3||s.SCL==8||s.SCL==9||s.SCL==10||s.SCL==11);
-  var m   = (s.dataMask==1 && !bad) ? 1 : 0;
   var d   = function(a,b){ return (a+b)===0 ? 0 : (a-b)/(a+b); };
+  var ndsi = d(s.B03, s.B11);
+  // SCL misses thin or patchy snow (it can label it vegetation or bare soil), so snow is also
+  // caught by its own signature: NDSI over 0.4 with a bright near-infrared band.
+  var snow = (ndsi > 0.4 && s.B08 > 0.11);
+  var bad = (s.SCL==0||s.SCL==1||s.SCL==3||s.SCL==8||s.SCL==9||s.SCL==10||s.SCL==11||snow);
+  var m   = (s.dataMask==1 && !bad) ? 1 : 0;
   var ndvi = d(s.B08, s.B04);
   var ndre = d(s.B08, s.B05);
   var ndmi = d(s.B08, s.B11);
   var nmdi = (s.B08+(s.B11-s.B12))===0 ? 0 : (s.B08-(s.B11-s.B12))/(s.B08+(s.B11-s.B12));
   var msi  = s.B08===0 ? 0 : s.B11/s.B08;
   var ndwi = d(s.B03, s.B08);
-  var ndsi = d(s.B03, s.B11);
   var bsi  = (((s.B11+s.B04)+(s.B08+s.B03))===0) ? 0
              : ((s.B11+s.B04)-(s.B08+s.B03))/((s.B11+s.B04)+(s.B08+s.B03));
   return { ndvi:[ndvi], ndre:[ndre], ndmi:[ndmi], nmdi:[nmdi],
            msi:[msi], ndwi:[ndwi], ndsi:[ndsi], bsi:[bsi], dataMask:[m] };
 }`;
+
+// A pass is a field average only when most of the field was clear, and no field average of
+// Sentinel-2 reaches 0.95. Under half clear, the survivors can be a tree line or a ditch left
+// after snow or haze was masked, and they read like a dense canopy (Nov 2026: NDVI 0.92 on a
+// harvested field). The page vets the series again, so an older cached answer is held back too.
+const MIN_CLEAR_SHARE = 0.5;
+const NDVI_CEILING = 0.95;
+const SNOW_NDSI = 0.4;
 
 // Allow only the AGSIST origins to use this worker (prevents others piggybacking
 // on your processing units). Add localhost for local testing.
@@ -415,7 +426,8 @@ async function proxySoil(request, cors) {
   // v3 namespace: columns [10..14] appended (csr2, farmlndcl, flodfreq, hydric_pct,
   // nirrcapscl) plus the top-level `ext` flag — v2 entries lack both.
   // v4 namespace: corn/soy submodel names fixed (v3 entries carry NULL for both).
-  const sk = new Request('https://fs-cache/soil/v4/' + (await sha1(wkt)));
+  // v5 namespace (Nov 20, 2026): the extended query no longer asks for iacornsr, so it answers.
+  const sk = new Request('https://fs-cache/soil/v5/' + (await sha1(wkt)));
   const sCache = caches.default;
   const sHit = await sCache.match(sk);
   if (sHit) return withCors(sHit, cors);
@@ -487,16 +499,16 @@ function sdaPost(query, tries) {
 // Builds the SDA soil query. `extended` appends columns [10..14]; the first ten
 // columns and their order are identical either way (field-scout.js parses by index).
 function soilQuery(wktSql, extended) {
-  // `like` = true matches a prefix. The corn and soybean submodels are published as
-  // "NCCPI - NCCPI Corn Submodel (I)" / "... Soybeans Submodel (I)" (soilDB's rule list);
-  // this code asked for "(II)" and got NULL every time. A prefix match takes either.
+  // the overall NCCPI is the ruledepth-0 rule; nccpiPart below reads its crop sub-rules
   const nccpiSub = (mrule, like) =>
     " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.ruledepth=0 AND ci.mrulename" + (like ? " LIKE '" + mrule + "%'" : "='" + mrule + "'") + " AND ci.interphr IS NOT NULL )";
+  const nccpiPart = (rule) =>
+    " ( SELECT ROUND(SUM(ci.interphr*c2.comppct_r)/NULLIF(SUM(c2.comppct_r),0),3) FROM component c2 JOIN cointerp ci ON ci.cokey=c2.cokey WHERE c2.mukey=mu.mukey AND ci.mrulename='NCCPI - National Commodity Crop Productivity Index (Ver 3.0)' AND ci.ruledepth=1 AND ci.rulename LIKE '" + rule + "%' AND ci.interphr IS NOT NULL )";
   const extCols = !extended ? '' :
-    // [10] Iowa CSR2: component-weighted mean over components that carry a rating
-    // (NULL outside Iowa, where iacornsr is not populated).
-    ", ( SELECT ROUND(SUM(CAST(c3.iacornsr AS float)*c3.comppct_r)/NULLIF(SUM(c3.comppct_r),0),1) FROM component c3" +
-    "   WHERE c3.mukey=mu.mukey AND c3.iacornsr IS NOT NULL ) AS csr2" +
+    // [10] Iowa CSR2: the map unit column mapunit.iacornsr (NULL outside Iowa). This query asked
+    // for component.iacornsr, which real Soil Data Access refused with HTTP 400 ("Invalid column
+    // name 'iacornsr'", checked Nov 20, 2026), so every read fell back to the ten base columns.
+    ", CAST(mu.iacornsr AS float) AS csr2" +
     ", mu.farmlndcl AS farmlndcl" +          // [11]
     ", ma.flodfreqdcd AS flodfreq" +         // [12]
     ", ma.hydclprs AS hydric_pct" +          // [13]
@@ -512,8 +524,11 @@ function soilQuery(wktSql, extended) {
     " ( SELECT ROUND(AVG(CAST(c.slope_r AS float)),1) FROM component c" +
     "   WHERE c.mukey=mu.mukey AND c.majcompflag='Yes' ) AS slope_pct," +
     nccpiSub('NCCPI - National Commodity Crop Productivity Index (Ver 3.0)') + " AS nccpi," +
-    nccpiSub('NCCPI - NCCPI Corn Submodel', true) + " AS nccpi_corn," +
-    nccpiSub('NCCPI - NCCPI Soybeans Submodel', true) + " AS nccpi_soy," +
+    // the corn and soybean parts are ruledepth-1 sub-rules of the NCCPI rule, matched on rulename
+    // ("NCCPI - NCCPI Corn Submodel (I)" in IA169; the suffix may differ), the same as the page's
+    // own query in components/soil-read.js (checked against real SDA component rows, Nov 20, 2026)
+    nccpiPart('NCCPI - NCCPI Corn Submodel') + " AS nccpi_corn," +
+    nccpiPart('NCCPI - NCCPI Soybeans Submodel') + " AS nccpi_soy," +
     " ma.drclassdcd AS drainage" +
     extCols +
     " FROM ( SELECT id AS mukey," +
@@ -950,7 +965,7 @@ async function indicesStats(request, env, ctx, cors) {
   const from = isoDay.test(body.from || '') ? body.from : (today.getUTCFullYear() + '-04-01');
 
   // Edge-cache by geometry + window (warm repeat views are free, and bank history).
-  const ck = new Request('https://fs-cache/indices/' + (await sha1(JSON.stringify(geometry) + from + to)));
+  const ck = new Request('https://fs-cache/indices/v2/' + (await sha1(JSON.stringify(geometry) + from + to)));   // v2: snow test, clear share 0.5, ceiling
   const cache = caches.default;
   const hit = await cache.match(ck);
   if (hit) return withCors(hit, cors);
@@ -1036,7 +1051,7 @@ async function ndviNormal(geometry, token, toDateStr) {
       if (!ns || !isFinite(ns.mean)) continue;
       const ms = bs(o.dataMask);
       const valid = (ms && isFinite(ms.mean)) ? ms.mean : 1;
-      if (valid < 0.2) continue;
+      if (valid < MIN_CLEAR_SHARE || ns.mean > NDVI_CEILING) continue;
       out.push(ns.mean);
     }
     return out;
@@ -1071,18 +1086,21 @@ function shapeIndices(raw) {
     return bk ? out.bands[bk].stats : null;
   };
   const out = [];
+  let held = 0;
   for (const iv of data) {
     const o = iv.outputs || {};
     const ns = stats(o.ndvi);
     if (!ns || !isFinite(ns.mean)) continue;          // an interval is real only if NDVI read
     const ms = stats(o.dataMask);
     const valid = (ms && isFinite(ms.mean)) ? ms.mean : 1;
-    if (valid < 0.2) continue;                          // skip mostly-cloud passes only
+    if (valid < MIN_CLEAR_SHARE) { held++; continue; }   // under half the field clear: not the field's average
     const row = { date: ((iv.interval && iv.interval.from) || '').slice(0, 10), valid: Math.round(valid * 100) / 100 };
     for (const k of keys) { const st = stats(o[k]); row[k] = (st && isFinite(st.mean)) ? r3(st.mean) : null; }
     row.ndvi_sd = isFinite(ns.stDev) ? r3(ns.stDev) : null;
+    if (row.ndvi > NDVI_CEILING || (row.ndsi != null && row.ndsi > SNOW_NDSI)) { held++; continue; }   // not crop: snow, haze or an image problem
     if (row.date) out.push(row);
   }
+  if (held) console.log('indices passes held back');
   out.sort((a, b) => (a.date < b.date ? -1 : 1));
   return out;
 }

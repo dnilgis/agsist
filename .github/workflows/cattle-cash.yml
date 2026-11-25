@@ -19,7 +19,7 @@ on:
     - cron: '43 21 * * 1-5'
     - cron: '17 15 * * 1,2'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 14"]
     types: [completed]
 
 permissions:
@@ -27,7 +27,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 14' || (contains(github.event.workflow_run.display_title, ' cattle-cash.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -59,6 +61,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     concurrency:
       group: cattle-cash
       cancel-in-progress: false

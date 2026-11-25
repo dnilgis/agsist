@@ -2,6 +2,538 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-25-daily-lock-followup",
+   "date": "2026-11-25",
+   "title": "The Daily: market moves read by what each sentence is about",
+   "line": "When a Daily line says the board or the market moved, the move comes from the morning's price table; lines about cash, crop ratings or exports stay as written.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-25-daily-locked-prices",
+   "date": "2026-11-25",
+   "title": "The Daily: board prices come from the price table",
+   "line": "Futures prices and their moves in the Daily are set from the morning's price table, one trading session per sentence, and a basis change always says basis.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-25-ad-reps",
+   "date": "2026-11-25",
+   "title": "Ad reps wanted",
+   "line": "Know the farm businesses near you? We are looking for commission ad reps. How it works and how to apply is on the advertise page.",
+   "link": "/sponsor#sell-for-us"
+  },
+  {
+   "id": "2026-11-25-gauge-ask",
+   "date": "2026-11-25",
+   "title": "Rain gauge waitlist on the rain pages",
+   "line": "I'm building a rain gauge that keeps its own log. The rain pages and Rain Print now have a short note and an email box if you want one.",
+   "link": "/rain-gauge"
+  },
+  {
+   "id": "2026-11-25-cash-index-v5",
+   "date": "2026-11-25",
+   "title": "Cash Bid Index: method in plain words",
+   "line": "The Cash Bid Index now explains its method in plain words and lists the 2027 release dates and any corrections. A USDA long view follows once USDA is read.",
+   "link": "/cash-bid-index"
+  },
+  {
+   "id": "2026-11-25-croptour-terms-fold",
+   "date": "2026-11-25",
+   "title": "Tidier Crop Tour page",
+   "line": "The Crop Tour page keeps its sources and notices in one short fold at the bottom.",
+   "link": "/crop-tour"
+  },
+  {
+   "id": "2026-11-25-prf-county-rows",
+   "date": "2026-11-25",
+   "title": "PRF state pages: a priced example in every county row",
+   "line": "Each county row on the PRF state pages now shows what the 100-acre grazing example costs you a year and in how many of 75 years it would have paid.",
+   "link": "/prf/texas"
+  },
+  {
+   "id": "2026-11-24-daily-fertilizer-line",
+   "date": "2026-11-24",
+   "title": "The Daily: a fertilizer price line",
+   "line": "When co-op posted fertilizer prices in a state move $10 a ton or more in a month, the Daily says so, with the number of co-ops and the dates posted.",
+   "link": "/fertilizer"
+  },
+  {
+   "id": "2026-11-24-fertilizer-usda-cross-check",
+   "date": "2026-11-24",
+   "title": "Fertilizer: USDA dealer survey as a cross-check",
+   "line": "The USDA dealer survey is now one labelled section under the co-op prices on the fertilizer page. The old state pages forward there. Co-op prices stay the price.",
+   "link": "/fertilizer#usda-check"
+  },
+  {
+   "id": "2026-11-24-field-scout-text-print",
+   "date": "2026-11-24",
+   "title": "Field Scout: text a field in one tap",
+   "line": "Text it sends your field's acres, county and soil score with a link that opens the same field. The printed field report now fits on one page, with its QR.",
+   "link": "/field-scout"
+  },
+  {
+   "id": "2026-11-24-lease-notice-reminder",
+   "date": "2026-11-24",
+   "title": "Cash lease: a reminder before your notice deadline",
+   "line": "Pick Iowa, Kansas or Ohio in the notice section and get one email about two weeks before that state's deadline to end a farm lease, with what the law asks.",
+   "link": "/cash-lease#notice"
+  },
+  {
+   "id": "2026-11-24-lease-text",
+   "date": "2026-11-24",
+   "title": "Cash lease: each state's notice rule as the statute says it",
+   "line": "Ohio's notice rule now covers crop leases only and lists personal delivery, fax or email. Iowa, Kansas and Wisconsin delivery lines follow their statutes.",
+   "link": "/cash-lease#notice"
+  },
+  {
+   "id": "2026-11-24-rain-fields-tab",
+   "date": "2026-11-24",
+   "title": "Rain: your fields move into a tab on the rain page",
+   "line": "Rain at your fields is now the My fields tab on /rain, beside the radar tab. Saved fields and field links carry over; the old address forwards.",
+   "link": "/rain#fields"
+  },
+  {
+   "id": "2026-11-24-trust-fixes",
+   "date": "2026-11-24",
+   "title": "Markets and links: one contract per change",
+   "line": "Cotton and KC wheat show no day change when the price and the settle are different contract months. County PRF links open the state page on that county.",
+   "link": "/markets"
+  },
+  {
+   "id": "2026-11-24-elevator-alerts-wheat-classes",
+   "date": "2026-11-24",
+   "title": "Elevator alerts: spring and white wheat boards",
+   "line": "A cash or basis target on a spring wheat, DNS or white wheat board now fires on that board's current bid, and the alert names the board's own wheat.",
+   "link": "/"
+  },
+  {
+   "id": "2026-11-24-elevator-alerts-later-delivery",
+   "date": "2026-11-24",
+   "title": "Elevator alerts: boards that post only a later delivery",
+   "line": "An elevator that posts only next harvest or a month well out keeps its alerts and Daily line, named by that delivery. A price target fires only on a current bid.",
+   "link": "/"
+  },
+  {
+   "id": "2026-11-23-farmland-atlas-share",
+   "date": "2026-11-23",
+   "title": "Farmland Atlas: send your county in one tap",
+   "line": "Each county page says how its cash rent ranks in the state and sends by text or Facebook in one tap; the link shows its land value, change and rent.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-23-field-scout-picture",
+   "date": "2026-11-23",
+   "title": "Field Scout: a picture of your field to send",
+   "line": "Draw a field and tap Save picture or Share: acres, soils, NCCPI (CSR2 in Iowa), ten years of crops and rain against normal, drawn on your phone.",
+   "link": "/field-scout"
+  },
+  {
+   "id": "2026-11-23-rain-print-gift-card-late",
+   "date": "2026-11-23",
+   "title": "Rain Print: a gift card when the mail is too late",
+   "line": "After the Christmas order dates pass, one tap turns your Rain Print into a gift card to print now, with the print itself in January.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-11-20-cash-lease-county-flex",
+   "date": "2026-11-20",
+   "title": "Cash lease: your county's rent, soil tier and a flex lease calculator",
+   "line": "The lease page opens with your county's USDA and state survey rents, places your field by CSR2, P/I or yield where the survey allows, and shows flex rent at 9 outcomes.",
+   "link": "/cash-lease"
+  },
+  {
+   "id": "2026-11-20-fertilizer-prices-by-state",
+   "date": "2026-11-20",
+   "title": "Fertilizer prices by state",
+   "line": "Dealer prices per ton from USDA's own state reports, with the change since the last report and a page for each state covered.",
+   "link": "/fertilizer#usda-check"
+  },
+  {
+   "id": "2026-11-20-rain-at-your-fields",
+   "date": "2026-11-20",
+   "title": "Rain at your fields, free",
+   "line": "Save up to 20 fields on your phone: radar and PRISM rain for each, the nearest gauge and your own beside it, and a daily history in a link you keep.",
+   "link": "/field-rain"
+  },
+  {
+   "id": "2026-11-20-arc-plc-payments",
+   "date": "2026-11-20",
+   "title": "ARC/PLC: what the check is",
+   "line": "County ARC/PLC cards now show dollars per base acre: 2025 from FSA's posted rates and the 2026 estimate for each program, with a calculator for your base acres.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-20-arc-plc-results-first",
+   "date": "2026-11-20",
+   "title": "ARC/PLC: results first",
+   "line": "County ARC/PLC pages open with each crop's dollars and pick, then your check. Tap a crop to see its card, and print your own estimate on one page.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-19-atlas-extension-surveys",
+   "date": "2026-11-19",
+   "title": "Minnesota, Wisconsin and Kansas survey figures",
+   "line": "Minnesota rents paid, Wisconsin land sale prices and K-State's Kansas rent estimates and land values now sit beside USDA's on the Atlas and the rent pages.",
+   "link": "/rent/minnesota"
+  },
+  {
+   "id": "2026-11-19-atlas-land-sources",
+   "date": "2026-11-19",
+   "title": "Every state's land figures and their sources",
+   "line": "The Farmland Atlas now maps which land figures each state gets, who publishes them and when each survey was taken.",
+   "link": "/farmland-atlas#fa-sources"
+  },
+  {
+   "id": "2026-11-19-atlas-north-dakota-survey",
+   "date": "2026-11-19",
+   "title": "North Dakota county rents and land prices",
+   "line": "North Dakota counties now show the state Trust Lands survey of rents and land prices, with report counts, beside USDA's figures on the Atlas and the rent page.",
+   "link": "/rent/north-dakota"
+  },
+  {
+   "id": "2026-11-19-atlas-rain-county-average",
+   "date": "2026-11-19",
+   "title": "Atlas rain matches the county rain page",
+   "line": "The Farmland Atlas county sheet and rain map now show the same rain figure the county's rain page leads with: the county average from the PRISM grid where there is one.",
+   "link": "/farmland-atlas#l=rain"
+  },
+  {
+   "id": "2026-11-19-atlas-region-surveys",
+   "date": "2026-11-19",
+   "title": "Indiana, Nebraska, Missouri and South Dakota region surveys",
+   "line": "University land surveys now show each Indiana, Nebraska, Missouri and South Dakota county its region's land value, plus rent outside Missouri, on the Atlas.",
+   "link": "/rent/indiana"
+  },
+  {
+   "id": "2026-11-19-atlas-wave3-surveys",
+   "date": "2026-11-19",
+   "title": "Illinois, Ohio, Northeast, Kentucky and Colorado region surveys",
+   "line": "Region land values and rents from Illinois and Northeast appraisers, Ohio State, Kentucky and Colorado State now show on the Atlas, plus South Dakota county clusters.",
+   "link": "/rent/illinois"
+  },
+  {
+   "id": "2026-11-19-daily-headline-subject",
+   "date": "2026-11-19",
+   "title": "The Daily's subject is the news",
+   "line": "AGSIST Daily's subject line now carries the day's headline, and corn, soybean and wheat prices with one number to watch sit right under the lead.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-19-farmland-atlas-review-fixes",
+   "date": "2026-11-19",
+   "title": "Farmland Atlas keys you can check",
+   "line": "Atlas map keys now print the cents that tell their bins apart, cautions look different from missing figures, and each county figure names its years.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-19-one-page-per-question",
+   "date": "2026-11-19",
+   "title": "Short addresses for company bid pages",
+   "line": "Town bid pages lead with the town, company pages open at short addresses, and a board our own price checks refuse stays listed, without prices, for up to 30 days.",
+   "link": "/cash-bids/company/landus-cooperative"
+  },
+  {
+   "id": "2026-11-19-slim-header",
+   "date": "2026-11-19",
+   "title": "The answer comes first",
+   "line": "A slimmer menu bar, and the sponsor line and other notes now sit below each page's answer instead of above it.",
+   "link": "/"
+  },
+  {
+   "id": "2026-11-19-usda-calendar-next-reports",
+   "date": "2026-11-19",
+   "title": "Next USDA reports up top",
+   "line": "The USDA calendar now opens with the next date and Eastern time of WASDE, Crop Production and Crop Progress.",
+   "link": "/usda-calendar"
+  },
+  {
+   "id": "2026-11-19-daily-price-sessions",
+   "date": "2026-11-19",
+   "title": "Daily prices name their session",
+   "line": "The Daily keeps the overnight move and the previous day's settle apart, each with its day, so a morning gain is never written as yesterday's.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-18-arc-plc-wheat-dollars",
+   "date": "2026-11-18",
+   "title": "ARC/PLC wheat: expected payments are back",
+   "line": "Wheat county pages print 2026 expected ARC-CO and PLC payments again, from how far USDA's November wheat price has missed the final price since 2015.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-18-drought-map-atlas",
+   "date": "2026-11-18",
+   "title": "Drought map links open the Farmland Atlas",
+   "line": "Drought map links across the site now open the Farmland Atlas drought map, every county on one map. The land sales page links the Atlas from the top.",
+   "link": "/farmland-atlas#l=drought"
+  },
+  {
+   "id": "2026-11-18-farmland-atlas-first-paint",
+   "date": "2026-11-18",
+   "title": "Atlas answers before the map loads",
+   "line": "The Farmland Atlas shows its dated answer before the map loads, says so with a Try again button if the map does not come, and answers for the state you open.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-farmland-atlas-key-counts",
+   "date": "2026-11-18",
+   "title": "Atlas key counts the state you open",
+   "line": "Open a state on the Farmland Atlas and the key counts that state's counties. The picture button names the map it saves.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-iowa-state-land-surveys",
+   "date": "2026-11-18",
+   "title": "Iowa State land values and rent by land quality",
+   "line": "Iowa county pages and Iowa rent now show Iowa State's 2025 land value and 2026 rent for high, medium and low quality ground, each dated.",
+   "link": "/rent/iowa"
+  },
+  {
+   "id": "2026-11-18-menu-cash-bids-prf",
+   "date": "2026-11-18",
+   "title": "Cash bids on the menu bar",
+   "line": "Cash bids now has its own link on the menu bar and comes first under My place on phones. PRF moved to Programs, next to ARC or PLC.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-18-sponsor-numbers-same-day",
+   "date": "2026-11-18",
+   "title": "Sponsor numbers follow late corrections",
+   "line": "When Google Analytics corrects a past day, the visit totals on the sponsor page now change the same day.",
+   "link": "/sponsor"
+  },
+  {
+   "id": "2026-11-18-cash-bid-index-schedule",
+   "date": "2026-11-18",
+   "title": "Cash Bid Index ready for its December edition",
+   "line": "The first-of-the-month build now picks last month on its own when no month is set.",
+   "link": "/cash-bid-index"
+  },
+  {
+   "id": "2026-11-18-accuracy-fixes",
+   "date": "2026-11-18",
+   "title": "Corrections from an accuracy check",
+   "line": "Seven Daily issues carry dated corrections. Hail days give standard-time hours, rain records list the longest first, and rent tables skip thin-year medians.",
+   "link": "/editorial-standards#corrections"
+  },
+  {
+   "id": "2026-11-18-accuracy-follow-ups",
+   "date": "2026-11-18",
+   "title": "CRP peak years and company page dates",
+   "line": "Farmland Atlas CRP charts name when a tied peak was first reached. Company bid pages drop an old date, and the Aug 10 Daily has a correction.",
+   "link": "/editorial-standards#corrections"
+  },
+  {
+   "id": "2026-11-18-atlas-accuracy",
+   "date": "2026-11-18",
+   "title": "Farmland Atlas county fixes",
+   "line": "Farmland Atlas county pages now give the real reason when rent per bushel is withheld, count every year claims topped premium, and mark forest sales in the newest list.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-cash-bids-accuracy",
+   "date": "2026-11-18",
+   "title": "Cash bid pages fixed",
+   "line": "Town pages headline the regular corn bid, not a white corn premium. Company pages count each crop where it is bid. Estimates name the futures time.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-18-futures-overnight-box",
+   "date": "2026-11-18",
+   "title": "Futures prices hold still",
+   "line": "On the corn, soybean and wheat futures pages the price no longer jumps sideways when the overnight trade line appears.",
+   "link": "/corn-futures-prices"
+  },
+  {
+   "id": "2026-11-18-home-today-card",
+   "date": "2026-11-18",
+   "title": "Home card shows the overnight futures moves",
+   "line": "Before the 8:30 am open the home card shows the overnight move of each bid's futures contract, with the quote time. Basis reads 74¢ under Jan '27.",
+   "link": "/"
+  },
+  {
+   "id": "2026-11-18-farmland-atlas-new-maps",
+   "date": "2026-11-18",
+   "title": "Farmland Atlas: fourteen new county maps",
+   "line": "New Atlas maps: soybean basis, CRP ending, frost-free days, GDD, land rented, rent change, tile, cover crops, cattle, solar and wind, foreign land, hail, wind, claims.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-farmland-atlas-one-map",
+   "date": "2026-11-18",
+   "title": "Farmland Atlas: one map",
+   "line": "The Atlas top shows five numbers at a glance. Every map, ranked county list and county record opens on one map, under its question.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-farmland-atlas-questions",
+   "date": "2026-11-18",
+   "title": "Farmland Atlas: five questions",
+   "line": "The Atlas opens on drought now and five questions: weather, land, grain, program and risk. Each opens its own map. County pages lead with the answer.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-18-rain-county-average-first",
+   "date": "2026-11-18",
+   "title": "County rain pages lead with the county average",
+   "line": "County rain pages now answer with the county-wide average where there is one. The weather station follows with its own date, and the page says when they disagree.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-11-17-arc-plc-range-ends",
+   "date": "2026-11-17",
+   "title": "ARC/PLC trigger yields to a tenth",
+   "line": "County ARC/PLC cards now print the yield where ARC-CO starts to pay to a tenth, rounded down, so 38.62 bu reads 38.6. The 60% to 100% range ends are rounded once.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-13-honest-counts",
+   "date": "2026-11-13",
+   "title": "Honest visit counts",
+   "line": "Visit counts now leave out most automated browsers and visits with no real reading, so the numbers we quote are closer to real readers.",
+   "link": "/privacy"
+  },
+  {
+   "id": "2026-11-13-atlas-data-page",
+   "date": "2026-11-13",
+   "title": "Farmland Atlas data page",
+   "line": "The Atlas data page now explains every county column, its unit and its source, and how to cite a page. The CSV files are retired; read, print or share any county page.",
+   "link": "/farmland-atlas/data"
+  },
+  {
+   "id": "2026-11-13-basis-by-distance",
+   "date": "2026-11-13",
+   "title": "Is the drive worth it: town basis by distance",
+   "line": "Town cash bid pages now show every bid in town and out to 40 miles by distance, where each was a week ago, and the state middle.",
+   "link": "/cash-bids/iowa/cedar-rapids"
+  },
+  {
+   "id": "2026-11-13-cash-bid-titles-short",
+   "date": "2026-11-13",
+   "title": "Cash bid page titles fit in a search result",
+   "line": "Town and company cash bid pages now have shorter titles that show whole, and a town with no bid today no longer says today. Morton Mills, Iowa has its own page.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-13-custom-rates",
+   "date": "2026-11-13",
+   "title": "Custom rates: Ohio 2026, medians, base plus bushels",
+   "line": "Ohio's 2026 survey is in, Iowa, Ohio and Nebraska show the median or most common rate, Kansas shows base plus bushels with a yield box, and phone search is easier.",
+   "link": "/custom-rates"
+  },
+  {
+   "id": "2026-11-13-daily-archive",
+   "date": "2026-11-13",
+   "title": "Daily archive: last 30 days",
+   "line": "The past briefings list on the Daily page now shows the last 30 days. Older issues keep their pages, so search still finds them. The standards page says how it is made.",
+   "link": "/daily#past"
+  },
+  {
+   "id": "2026-11-13-daily-chart",
+   "date": "2026-11-13",
+   "title": "A chart of the day in the Daily",
+   "line": "Each AGSIST Daily now has one subject and, on days the data allows, one chart on it: USDA against the trade, a contract's settles, or cash hogs against futures.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-13-daily-story",
+   "date": "2026-11-13",
+   "title": "The Daily email leads with the story",
+   "line": "The AGSIST Daily email now opens with a headline and a short lead. The morning after a USDA report, USDA's number, the trade guess and last month's come first.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-13-field-scout-season",
+   "date": "2026-11-13",
+   "title": "Field Scout knows the season",
+   "line": "Field Scout describes the season that was after the freeze and the ground going in before planting, and holds back satellite readings that are snow, not crop.",
+   "link": "/field-scout"
+  },
+  {
+   "id": "2026-11-13-nitrogen-credits-insects",
+   "date": "2026-11-13",
+   "title": "Nitrogen credits and insect thresholds",
+   "line": "New pages: a nitrogen credit calculator for alfalfa, manure and green manure, and corn and soybean insect thresholds, every number with its source and date.",
+   "link": "/nitrogen-credits"
+  },
+  {
+   "id": "2026-11-13-price-answers",
+   "date": "2026-11-13",
+   "title": "Today's price, in words",
+   "line": "Corn, soybean and wheat pages, the markets board and the home page now say today's price in plain text, with the contract month, trade time and source.",
+   "link": "/corn-futures-prices"
+  },
+  {
+   "id": "2026-11-13-rent-chart",
+   "date": "2026-11-13",
+   "title": "Every county's rent, and what corn was doing",
+   "line": "Each state rent page shows every county's rent since 2008 as a dash, the median county, your own county in gold, and the years corn paid over $5.",
+   "link": "/rent/illinois#rent-history"
+  },
+  {
+   "id": "2026-11-13-share-cards",
+   "date": "2026-11-13",
+   "title": "Share card for county ARC or PLC pages",
+   "line": "Sharing a county ARC or PLC page now sends its answer, the dollars it is based on and the Dec 11 deadline to elect at your county FSA office.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-13-sponsor-pay",
+   "date": "2026-11-13",
+   "title": "Sponsors pay by check or wire",
+   "line": "Sponsor spots are paid by check or bank wire from the invoice we email, at the posted price.",
+   "link": "/sponsor"
+  },
+  {
+   "id": "2026-11-13-sponsor-totals",
+   "date": "2026-11-13",
+   "title": "Sponsor numbers show totals",
+   "line": "The sponsor line and page show the total AI answer citations and the people on our email lists, each counted once, with their dates.",
+   "link": "/sponsor"
+  },
+  {
+   "id": "2026-11-13-agronomy-hub",
+   "date": "2026-11-13",
+   "title": "Agronomy, by the question you are asking",
+   "line": "New Agronomy page: nitrogen, P and K, manure, planting, pests and harvest in one place, university sources only, each dated. Fast Facts tabs now say what they hold.",
+   "link": "/agronomy"
+  },
+  {
+   "id": "2026-11-13-harvest-fuel-relief",
+   "date": "2026-11-13",
+   "title": "Harvest Fuel Relief: what USDA has said",
+   "line": "Harvest Fuel Relief: what USDA has confirmed, what is coming and what is still open, each fact labeled by source and date. No rates yet.",
+   "link": "/harvest-fuel-relief"
+  },
+  {
+   "id": "2026-11-13-plain-look",
+   "date": "2026-11-13",
+   "title": "A plainer look",
+   "line": "Menus, cards and charts lose the icons, glows and rounded tiles. Same numbers and sources, flat boxes, square corners and plain text links.",
+   "link": "/"
+  },
+  {
+   "id": "2026-11-13-rain-chart",
+   "date": "2026-11-13",
+   "title": "County rain on a phone: the chart first",
+   "line": "On a phone, county rain pages and Fast Facts now show a chart of rain so far against normal, above the Rain Print.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-11-12-seo-four",
+   "date": "2026-11-12",
+   "title": "Find the tools",
+   "line": "Rain, land sale, ARC or PLC and PRF pages now link to cash bids, corn futures, fertilizer prices and the bin calculator.",
+   "link": "/fertilizer"
+  },
+  {
+   "id": "2026-11-12-alert-expiry",
+   "date": "2026-11-12",
+   "title": "Price alerts end with their contract",
+   "line": "When the contract a price alert watches stops trading, you get one email saying it ended, and the alert no longer counts toward your limit.",
+   "link": "/#f-price-alert"
+  },
+  {
    "id": "2026-11-12-arc-plc-signup-source",
    "date": "2026-11-12",
    "title": "ARC/PLC: signup dates show their source",
@@ -9,11 +541,25 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-12-atlas-charts",
+   "date": "2026-11-12",
+   "title": "Farmland Atlas charts you can read and share",
+   "line": "Each county's rent, corn yield, insurance loss ratio, drought and CRP charts now say what changed, name every line and save as a picture.",
+   "link": "/farmland-atlas/iowa/story-county"
+  },
+  {
    "id": "2026-11-12-bin-hopper-eave",
    "date": "2026-11-12",
    "title": "Grain bin calculator: hopper tape readings",
    "line": "A hopper bin tape reading past the cylinder is now figured up the cone and says so, instead of showing a full cone. Bin Print uses the same math.",
    "link": "/grain-bin-calculator"
+  },
+  {
+   "id": "2026-11-12-cash-bid-titles",
+   "date": "2026-11-12",
+   "title": "Elevator cash bids are easier to find",
+   "line": "Each company and town cash bid page now says cash bids today with the elevator name, town and state in its title, so a search for your elevator finds its page.",
+   "link": "/cash-bids"
   },
   {
    "id": "2026-11-12-cash-bids-harvest",
@@ -30,6 +576,13 @@
    "link": "/conditions"
   },
   {
+   "id": "2026-11-12-email-format",
+   "date": "2026-11-12",
+   "title": "Emails in one clean format",
+   "line": "Every AGSIST email now reads the same way: what happened in one line, your own numbers, one button for the next step, and a plain stop link at the bottom.",
+   "link": "/#f-price-alert"
+  },
+  {
    "id": "2026-11-12-farm-bill-dates",
    "date": "2026-11-12",
    "title": "Farm bill: past dates drop off",
@@ -42,6 +595,41 @@
    "title": "Home page prices, checked",
    "line": "Every market row shows its front month with that contract's own change and trade time, rice and cattle print to the tick, and price alerts name the contract.",
    "link": "/#f-prices"
+  },
+  {
+   "id": "2026-11-12-policy-status",
+   "date": "2026-11-12",
+   "title": "Farm bill status, checked",
+   "line": "The farm bill page now shows S. 5526 on the Senate calendar with no vote scheduled, and the ARC/PLC signup box sends you to your county FSA office first.",
+   "link": "/farm-bill"
+  },
+  {
+   "id": "2026-11-12-rain-find",
+   "date": "2026-11-12",
+   "title": "Rain by county: find any county",
+   "line": "Type a county or a ZIP on any rain page to open that county's rain. More neighbors under Next door, and the site search now finds every county rain page.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-11-12-rent-chart",
+   "date": "2026-11-12",
+   "title": "State cash rent by year, as a chart",
+   "line": "Each state rent page draws median county rent since 2008, says how much it moved in the same counties, and saves as a picture to share.",
+   "link": "/rent/iowa#rent-history"
+  },
+  {
+   "id": "2026-11-12-state-sales-pages",
+   "date": "2026-11-12",
+   "title": "A farm sales page for each state",
+   "line": "Each state with farm sale records now has its own page: the median price per acre, every county and the newest sales. ARC or PLC and PRF lead with their sign-up dates.",
+   "link": "/land-sales/wisconsin/"
+  },
+  {
+   "id": "2026-11-12-town-basis-chart",
+   "date": "2026-11-12",
+   "title": "Town basis history, one chart per crop",
+   "line": "The basis history box on a town cash bid page now puts every elevator on one chart, says who pays the best basis, and saves as a picture.",
+   "link": "/cash-bids/iowa/iowa-falls"
   },
   {
    "id": "2026-11-12-farm-sale-map",
@@ -655,7 +1243,7 @@
   {
    "id": "2026-11-04-funds",
    "date": "2026-11-04",
-   "title": "Fund positions at a glance",
+   "title": "Fund positions in one line each",
    "line": "The COT page and the home card now open with one plain line per market: long or short, how heavy, and the week's buying or selling. Get it every Friday by email.",
    "link": "/cot"
   },
@@ -686,13 +1274,6 @@
    "title": "Feeder steer index: more barns",
    "line": "The feeder steer index now counts 80 to 94 barns a week through USDA's My Market News (55 to 92 before); the last three weeks came in $0.55 to $2.93 lower.",
    "link": "/cattle-auction-prices#feeder-index"
-  },
-  {
-   "id": "2026-11-03-rainbox",
-   "date": "2026-11-03",
-   "title": "Put your county's rain on your site or in your newsletter",
-   "line": "Each county rain page has a closed fold with a one-line rain box for websites, the same line in words to copy, and the monthly newsletter block.",
-   "link": "/developer#rain"
   },
   {
    "id": "2026-11-03-auditleft",
@@ -807,13 +1388,6 @@
    "link": "/"
   },
   {
-   "id": "2026-11-02-newsblock",
-   "date": "2026-11-02",
-   "title": "Rain and bids for your newsletter",
-   "line": "A monthly block for co-op, Farm Credit and local paper newsletters: a county's rain last month and the state basis, ready to paste as text, HTML or an image.",
-   "link": "/newsletter-block"
-  },
-  {
    "id": "2026-11-02-seofix",
    "date": "2026-11-02",
    "title": "ARC or PLC county pages open with the answer",
@@ -859,7 +1433,7 @@
    "id": "2026-10-30-rpxmas",
    "date": "2026-10-30",
    "title": "A Rain Print, made for you",
-   "line": "Rather not make the print yourself? Call or text Sig, or leave your number. He makes two or three versions to pick from; you pay only if you order.",
+   "line": "Rather not make the print yourself? Call or text us, or leave your number. We make two or three versions to pick from; you pay only if you order.",
    "link": "/rain-print"
   },
   {

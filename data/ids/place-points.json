@@ -1,0 +1,50 @@
+{
+ "schema": "agsist-place-points/1",
+ "note": "Hand-kept map points for boards no source gives one. Used only when every source has no point, never over one. Each row is the ZIP's own internal point from the Census Bureau's 2023 ZIP Code Tabulation Area gazetteer, not the street address: it places the record in a county and gives the town page its place. Add a row only with the page it was read from and the date.",
+ "rows": [
+  {
+   "bids_repo": "newcoop-mortonmills",
+   "st": "IA",
+   "city": "Morton Mills",
+   "zip": "50864",
+   "lat": 40.9704,
+   "lng": -94.9781,
+   "source": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_Gaz_zcta_national.zip",
+   "read": "2026-11-13",
+   "why": "NEW Cooperative's Morton Mills branch files ZIP 50864 (Villisca, Iowa) in data/elevator-directory.json, under state IL by mistake. Census ZCTA 50864 internal point 40.97037, -94.978111."
+  },
+  {
+   "bids_repo": "newcoop-cainsville",
+   "st": "MO",
+   "city": "Cainsville",
+   "zip": "64632",
+   "lat": 40.469,
+   "lng": -93.7668,
+   "source": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_Gaz_zcta_national.zip",
+   "read": "2026-11-13",
+   "why": "The bids repo has no pin for this board. Census ZCTA 64632 internal point 40.468986, -93.766788."
+  },
+  {
+   "bids_repo": "newcoop-mtayr",
+   "st": "IA",
+   "city": "Mt. Ayr",
+   "zip": "50854",
+   "lat": 40.6794,
+   "lng": -94.2128,
+   "source": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_Gaz_zcta_national.zip",
+   "read": "2026-11-13",
+   "why": "The bids repo has no pin for this board. Census ZCTA 50854 internal point 40.679375, -94.21277."
+  },
+  {
+   "bids_repo": "newcoop-essex",
+   "st": "IA",
+   "city": "Essex",
+   "zip": "51638",
+   "lat": 40.8374,
+   "lng": -95.2662,
+   "source": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2023_Gazetteer/2023_Gaz_zcta_national.zip",
+   "read": "2026-11-13",
+   "why": "The bids repo has no pin for this board (it posts ZIP 50638, a typo for 51638). Census ZCTA 51638 internal point 40.837439, -95.266231."
+  }
+ ]
+}

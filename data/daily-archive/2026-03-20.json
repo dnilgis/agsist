@@ -6,13 +6,13 @@
   "one_number": {
     "value": "$332.90",
     "unit": "soybean meal per ton",
-    "context": "That's a $7.50 overnight jump — the biggest single-day gain since January. Chinese processors are paying up for immediate protein as their livestock sector rebuilds post-disease outbreak. This pulls value away from oil and into meal, boosting your bean basis."
+    "context": "That's a $7.60 overnight jump — the biggest single-day gain since January. (Corrected Nov 17, see the note below.) Chinese processors are paying up for immediate protein as their livestock sector rebuilds post-disease outbreak. This pulls value away from oil and into meal, boosting your bean basis."
   },
   "sections": [
     {
       "title": "GRAINS & OILSEEDS",
       "icon": "🌾",
-      "body": "Soybeans rode meal's coattails up 8½¢, but the real story is the <strong>protein premium explosion</strong>. Meal gained $7.50 while oil barely budged, widening the crush spread to levels that make processors drool. Corn tagged along for a 5¾¢ gain on feed substitution fears — when meal gets expensive, feeders eye corn gluten. Wheat added 5¢ in sympathy, though Black Sea competition remains fierce. The meal surge signals Chinese demand is real, not just trade war posturing.",
+      "body": "Soybeans rode meal's coattails up 8½¢, but the real story is the <strong>protein premium explosion</strong>. Meal gained $7.60 while oil barely budged, widening the crush spread to levels that make processors drool. (Corrected Nov 17, see the note below.) Corn tagged along for a 5¾¢ gain on feed substitution fears — when meal gets expensive, feeders eye corn gluten. Wheat added 5¢ in sympathy, though Black Sea competition remains fierce. The meal surge signals Chinese demand is real, not just trade war posturing.",
       "bottom_line": "Meal shortage pulls beans higher — oil stays weak.",
       "conviction_level": "high",
       "overnight_surprise": true,
@@ -21,7 +21,7 @@
     {
       "title": "LIVESTOCK & DAIRY",
       "icon": "🐄",
-      "body": "Cattle and hogs got crushed while feed costs surged — a nightmare scenario for margins. <strong>Feeder cattle dropped 1.9% as meal's jump threatens backgrounding profits</strong>. Live cattle fell 1.1% as packers backed off amid weak retail demand. Hogs suffered worst, down 2.5% on heavy supplies and export uncertainty. But milk rallied 2.1% as spring flush delays and strong cheese demand supported prices. The feed cost squeeze is real — meal up $7.50 while cattle sink.",
+      "body": "Cattle and hogs got crushed while feed costs surged — a nightmare scenario for margins. <strong>Feeder cattle dropped 1.9% as meal's jump threatens backgrounding profits</strong>. Live cattle fell 1.1% as packers backed off amid weak retail demand. Hogs suffered worst, down 2.5% on heavy supplies and export uncertainty. But milk rallied 2.1% as spring flush delays and strong cheese demand supported prices. The feed cost squeeze is real — meal up $7.60 while cattle sink. (Corrected Nov 17, see the note below.)",
       "bottom_line": "Feed costs surge while meat prices sink — margins getting squeezed hard.",
       "conviction_level": "high",
       "overnight_surprise": true,
@@ -126,6 +126,12 @@
       "pct_change": 2.3363,
       "direction": "up",
       "surprise_magnitude": 1.2
+    }
+  ],
+  "corrections": [
+    {
+      "date": "2026-11-17",
+      "text": "This issue said meal gained $7.50 overnight, in three places: \"That's a $7.50 overnight jump, the biggest single-day gain since January.\" Meal at $332.90 was up 2.34% from $325.30, a gain of $7.60. The lines now say $7.60."
     }
   ]
 }

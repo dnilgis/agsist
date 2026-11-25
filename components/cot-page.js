@@ -4,17 +4,17 @@
 'use strict';
 
 var CFG = [
-  {key:'corn',        label:'Corn',             short:'Corn',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>', color:'#d4a23f', group:'grains'},
-  {key:'beans',       label:'Soybeans',         short:'Beans',  emoji:'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg>', color:'#4aab4c', group:'grains'},
-  {key:'wheat',       label:'Wheat (SRW)',      short:'SRW',    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#5ba3e0', group:'grains'},
-  {key:'kcwheat',     label:'KC Wheat (HRW)',   short:'KC',     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#2fb5a5', group:'grains'},
-  {key:'mplswheat',   label:'Mpls Wheat (HRS)', short:'Mpls',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#9b7cc4', group:'grains'},
-  {key:'soymeal',     label:'Soybean Meal',     short:'Meal',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-package"/></svg>', color:'#7ab87c', group:'crush'},
-  {key:'soyoil',      label:'Soybean Oil',      short:'Oil',    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg>', color:'#d8c24a', group:'crush'},
-  {key:'livecattle',  label:'Live Cattle',      short:'Cattle', emoji:'<svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg>', color:'#d9534f', group:'livestock'},
-  {key:'feedercattle',label:'Feeder Cattle',    short:'Feeder', emoji:'<svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg>', color:'#e07b5a', group:'livestock'},
-  {key:'leanhogs',    label:'Lean Hogs',        short:'Hogs',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-ham"/></svg>', color:'#e89ab0', group:'livestock'},
-  {key:'milk',        label:'Class III Milk',   short:'Milk',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg>', color:'#8fb8e0', group:'dairy'}
+  {key:'corn',        label:'Corn',             short:'Corn',   emoji:'', color:'#d4a23f', group:'grains'},
+  {key:'beans',       label:'Soybeans',         short:'Beans',  emoji:'', color:'#4aab4c', group:'grains'},
+  {key:'wheat',       label:'Wheat (SRW)',      short:'SRW',    emoji:'', color:'#5ba3e0', group:'grains'},
+  {key:'kcwheat',     label:'KC Wheat (HRW)',   short:'KC',     emoji:'', color:'#2fb5a5', group:'grains'},
+  {key:'mplswheat',   label:'Mpls Wheat (HRS)', short:'Mpls',   emoji:'', color:'#9b7cc4', group:'grains'},
+  {key:'soymeal',     label:'Soybean Meal',     short:'Meal',   emoji:'', color:'#7ab87c', group:'crush'},
+  {key:'soyoil',      label:'Soybean Oil',      short:'Oil',    emoji:'', color:'#d8c24a', group:'crush'},
+  {key:'livecattle',  label:'Live Cattle',      short:'Cattle', emoji:'', color:'#d9534f', group:'livestock'},
+  {key:'feedercattle',label:'Feeder Cattle',    short:'Feeder', emoji:'', color:'#e07b5a', group:'livestock'},
+  {key:'leanhogs',    label:'Lean Hogs',        short:'Hogs',   emoji:'', color:'#e89ab0', group:'livestock'},
+  {key:'milk',        label:'Class III Milk',   short:'Milk',   emoji:'', color:'#8fb8e0', group:'dairy'}
 ];
 var GROUP_ORDER = [['grains','Grain Board'],['crush','Crush Complex'],['livestock','Livestock'],['dairy','Dairy']];
 var GROUPS = {}, COLORS = {}, LABELS = {}, SHORT = {}, EMOJI = {};

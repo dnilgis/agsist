@@ -1,0 +1,526 @@
+{
+ "id": "3195",
+ "title": "Illinois Production Cost Report (Bi-weekly)",
+ "region": "Illinois",
+ "states": [
+  "IL"
+ ],
+ "cadence": "biweekly",
+ "source": "USDA AMS, Illinois Production Cost Report (Bi-weekly)",
+ "credit": "USDA AMS, Illinois Production Cost Report (Bi-weekly), Nov 13, 2026",
+ "published": "2026-11-13",
+ "week_begin": "2026-11-09",
+ "terms": "Dealer asking prices, low, high and average, as USDA printed them.",
+ "products": [
+  {
+   "key": "anhydrous",
+   "label": "Anhydrous ammonia",
+   "name": "Anhydrous Ammonia",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 850.0,
+   "high": 1060.0,
+   "avg": 981.11,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 981.11,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": null,
+   "why_year": "no_year_report"
+  },
+  {
+   "key": "urea",
+   "label": "Urea",
+   "name": "Urea (46-0-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 650.0,
+   "high": 890.0,
+   "avg": 770.0,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 770.0,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": null,
+   "why_year": "no_year_report"
+  },
+  {
+   "key": "uan28",
+   "label": "UAN 28%",
+   "name": "Liquid Nitrogen (28-0-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 400.0,
+   "high": 550.0,
+   "avg": 467.86,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 467.86,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": null,
+   "why_year": "no_year_report"
+  },
+  {
+   "key": "uan32",
+   "label": "UAN 32%",
+   "name": "Liquid Nitrogen (32-0-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 540.0,
+   "high": 540.0,
+   "avg": 540.0,
+   "thin": true,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 540.0,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": null,
+   "why_year": "no_year_report"
+  },
+  {
+   "key": "dap",
+   "label": "DAP",
+   "name": "DAP (Diammonium Phosphate 18-46-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 840.0,
+   "high": 995.0,
+   "avg": 932.14,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 932.14,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": null,
+   "why_year": "no_year_report"
+  },
+  {
+   "key": "map",
+   "label": "MAP",
+   "name": "MAP (Monoammonium Phosphate 11-52-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 840.0,
+   "high": 985.0,
+   "avg": 948.0,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 948.0,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": null,
+   "why_year": "no_year_report"
+  },
+  {
+   "key": "potash",
+   "label": "Potash",
+   "name": "Potash (Red 0-0-60)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 480.0,
+   "high": 550.0,
+   "avg": 517.73,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 517.73,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": null,
+   "why_year": "no_year_report"
+  }
+ ],
+ "series": {
+  "anhydrous": [
+   [
+    "2026-10-26",
+    835.0,
+    1040.0,
+    947.5
+   ],
+   [
+    "2026-10-30",
+    850.0,
+    1060.0,
+    981.11
+   ],
+   [
+    "2026-11-13",
+    850.0,
+    1060.0,
+    981.11
+   ]
+  ],
+  "dap": [
+   [
+    "2026-10-26",
+    840.0,
+    995.0,
+    929.29
+   ],
+   [
+    "2026-10-30",
+    840.0,
+    995.0,
+    932.14
+   ],
+   [
+    "2026-11-13",
+    840.0,
+    995.0,
+    932.14
+   ]
+  ],
+  "map": [
+   [
+    "2026-10-26",
+    840.0,
+    985.0,
+    948.0
+   ],
+   [
+    "2026-10-30",
+    840.0,
+    985.0,
+    948.0
+   ],
+   [
+    "2026-11-13",
+    840.0,
+    985.0,
+    948.0
+   ]
+  ],
+  "potash": [
+   [
+    "2026-10-26",
+    480.0,
+    550.0,
+    515.0
+   ],
+   [
+    "2026-10-30",
+    480.0,
+    550.0,
+    517.73
+   ],
+   [
+    "2026-11-13",
+    480.0,
+    550.0,
+    517.73
+   ]
+  ],
+  "uan28": [
+   [
+    "2026-10-26",
+    400.0,
+    550.0,
+    467.86
+   ],
+   [
+    "2026-10-30",
+    400.0,
+    550.0,
+    467.86
+   ],
+   [
+    "2026-11-13",
+    400.0,
+    550.0,
+    467.86
+   ]
+  ],
+  "uan32": [
+   [
+    "2026-10-26",
+    540.0,
+    540.0,
+    540.0
+   ],
+   [
+    "2026-10-30",
+    540.0,
+    540.0,
+    540.0
+   ],
+   [
+    "2026-11-13",
+    540.0,
+    540.0,
+    540.0
+   ]
+  ],
+  "urea": [
+   [
+    "2026-10-26",
+    650.0,
+    890.0,
+    770.0
+   ],
+   [
+    "2026-10-30",
+    650.0,
+    890.0,
+    770.0
+   ],
+   [
+    "2026-11-13",
+    650.0,
+    890.0,
+    770.0
+   ]
+  ]
+ },
+ "reports": [
+  {
+   "published": "2026-10-26",
+   "week_begin": "2026-10-12",
+   "items": {
+    "anhydrous": {
+     "name": "Anhydrous Ammonia",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 835.0,
+     "high": 1040.0,
+     "avg": 947.5,
+     "change": 2.5
+    },
+    "dap": {
+     "name": "DAP (Diammonium Phosphate 18-46-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 995.0,
+     "avg": 929.29,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 985.0,
+     "avg": 948.0,
+     "change": 12.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 480.0,
+     "high": 550.0,
+     "avg": 515.0,
+     "change": -1.36
+    },
+    "uan28": {
+     "name": "Liquid Nitrogen (28-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 400.0,
+     "high": 550.0,
+     "avg": 467.86,
+     "change": 1.19
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 540.0,
+     "high": 540.0,
+     "avg": 540.0,
+     "change": 10.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 890.0,
+     "avg": 770.0,
+     "change": 0.0
+    }
+   }
+  },
+  {
+   "published": "2026-10-30",
+   "week_begin": "2026-10-26",
+   "items": {
+    "anhydrous": {
+     "name": "Anhydrous Ammonia",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 850.0,
+     "high": 1060.0,
+     "avg": 981.11,
+     "change": 33.61
+    },
+    "dap": {
+     "name": "DAP (Diammonium Phosphate 18-46-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 995.0,
+     "avg": 932.14,
+     "change": 2.86
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 985.0,
+     "avg": 948.0,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 480.0,
+     "high": 550.0,
+     "avg": 517.73,
+     "change": 2.73
+    },
+    "uan28": {
+     "name": "Liquid Nitrogen (28-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 400.0,
+     "high": 550.0,
+     "avg": 467.86,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 540.0,
+     "high": 540.0,
+     "avg": 540.0,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 890.0,
+     "avg": 770.0,
+     "change": 0.0
+    }
+   }
+  },
+  {
+   "published": "2026-11-13",
+   "week_begin": "2026-11-09",
+   "items": {
+    "anhydrous": {
+     "name": "Anhydrous Ammonia",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 850.0,
+     "high": 1060.0,
+     "avg": 981.11,
+     "change": 0.0
+    },
+    "dap": {
+     "name": "DAP (Diammonium Phosphate 18-46-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 995.0,
+     "avg": 932.14,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 985.0,
+     "avg": 948.0,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 480.0,
+     "high": 550.0,
+     "avg": 517.73,
+     "change": 0.0
+    },
+    "uan28": {
+     "name": "Liquid Nitrogen (28-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 400.0,
+     "high": 550.0,
+     "avg": 467.86,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 540.0,
+     "high": 540.0,
+     "avg": 540.0,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 890.0,
+     "avg": 770.0,
+     "change": 0.0
+    }
+   }
+  }
+ ],
+ "status": {
+  "ok": true,
+  "checked": "2026-11-23T15:24:56Z",
+  "notes": [
+   "week of 2025-10-27: published date 2026-10-26 is in the future",
+   "week of 2025-11-10: published date 2026-10-26 is in the future",
+   "week of 2025-11-24: published date 2026-10-26 is in the future",
+   "week of 2025-12-08: published date 2026-10-26 is in the future",
+   "week of 2025-12-22: published date 2026-10-26 is in the future",
+   "week of 2026-01-05: published date 2026-10-26 is in the future",
+   "week of 2026-01-19: published date 2026-10-26 is in the future",
+   "week of 2026-02-02: published date 2026-10-26 is in the future",
+   "week of 2026-02-16: published date 2026-10-26 is in the future",
+   "week of 2026-03-02: published date 2026-10-26 is in the future",
+   "week of 2026-03-16: published date 2026-10-26 is in the future",
+   "week of 2026-03-30: published date 2026-10-26 is in the future",
+   "week of 2026-04-13: published date 2026-10-26 is in the future",
+   "week of 2026-04-27: published date 2026-10-26 is in the future",
+   "week of 2026-05-11: published date 2026-10-26 is in the future",
+   "week of 2026-05-25: published date 2026-10-26 is in the future",
+   "week of 2026-06-08: published date 2026-10-26 is in the future",
+   "week of 2026-06-22: published date 2026-10-26 is in the future",
+   "week of 2026-07-06: published date 2026-10-26 is in the future",
+   "week of 2026-07-20: published date 2026-10-26 is in the future"
+  ]
+ }
+}
