@@ -172,9 +172,6 @@ jobs:
         continue-on-error: true
         run: python3 scripts/dev/quiet.py bids-prev -- python scripts/build_bids_prev.py
 
-      # The month files are per board, so they live on the private-data branch, never on the site.
-      # No fold without the private copy (the builder refuses too); bids-prev keeps 4 trading days,
-      # so a later run catches up. Saved only when the fold changed them, never on a dry run.
       - name: Fold the day into the Cash Bid Index month
         continue-on-error: true
         env:

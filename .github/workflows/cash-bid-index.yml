@@ -78,9 +78,6 @@ jobs:
           python scripts/daily_edge.py --selftest
           python scripts/cash_bid_index.py --selftest
           python scripts/cash_index_usda.py --selftest
-      # USDA's prices received and paid (the long view) and, once a year, last year's state production (the
-      # frozen weights). Every answer is kept as read, as a first print, on the private raw branch. When USDA
-      # does not answer, the page keeps the last good numbers and says so; nothing is typed in.
       - name: Read USDA
         continue-on-error: true
         env:
@@ -95,8 +92,6 @@ jobs:
         run: |
           [ -d vintage/nass-cash-index ] || { echo "nothing read from USDA this run"; exit 0; }
           bash scripts/push_raw.sh "nass cash index first print $(date -u +%F)" vintage/nass-cash-index
-      # The per-board month files live on the private-data branch, never on the site:
-      # no edition is built without them (a hard stop, not a short month).
       - name: Unpack the private month files
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
