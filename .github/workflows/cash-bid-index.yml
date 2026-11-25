@@ -73,6 +73,13 @@ jobs:
         run: |
           python scripts/daily_edge.py --selftest
           python scripts/cash_bid_index.py --selftest
+      - name: Unpack the private month files
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: |
+          bash scripts/pull_raw.sh private/cash-index
+          cat private/cash-index/*.json | sha256sum > "$RUNNER_TEMP/cash-index-before"
       - name: Build the edition
         env:
           MONTH: ${{ github.event.inputs.month }}
@@ -83,6 +90,14 @@ jobs:
           [ "$PARTIAL" = "true" ] && args="$args --partial-ok"
           python scripts/cash_bid_index.py $args
           python scripts/cash_bid_index.py --check
+      - name: Save the folded month files privately
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: |
+          [ "$(cat private/cash-index/*.json | sha256sum)" = "$(cat "$RUNNER_TEMP/cash-index-before")" ] && { echo "cash index: nothing new to save"; exit 0; }
+          bash scripts/push_raw.sh "cash index build $(date -u +%F)" private/cash-index
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
