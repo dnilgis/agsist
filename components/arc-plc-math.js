@@ -102,7 +102,8 @@
   function vclass(v) {
     return 'ap-w-' + ({ plc: 'plc', arc: 'arc', lean_plc: 'lean-plc', lean_arc: 'lean-arc', close: 'close', none: 'neither' }[v] || 'withheld');
   }
-  function verdictLine(v, g) {
+  /* bw: the crop's exact reason for withheld 2026 dollars (the build's wheat_why forms), or none for the general line */
+  function verdictLine(v, g, bw) {
     var w_ = v.verdict;
     if (w_ === 'withheld') return 'Not enough history to say: ' + v.n + ' past years with both a price and a county yield; we need ' + g.min_scen + '.';
     if (w_ === 'mismatch') return 'No one typical farm: FSA&rsquo;s county average PLC yield is ' + (v.low ? 'under 60% of' : 'above') + ' this benchmark yield. Across PLC yields of 60% to 100% of the benchmark: ' +
@@ -112,7 +113,7 @@
     if (w_ === 'pending') return 'Waiting on USDA&rsquo;s closing 2025 season-average price, which sets the 2027 reference price.';
     /* no dollars (nousd): the call and the year counts only (verdict_line_borrowed in the build script) */
     var B = v.nousd;
-    var nums = B ? 'PLC paid more in ' + v.plc_wins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arc_wins + '; ' + BOR_NOTE :
+    var nums = B ? 'PLC paid more in ' + v.plc_wins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arc_wins + '; ' + (bw ? bw.note : BOR_NOTE) :
       'expected ' + usdC(v.plc) + ' PLC vs ' + usdC(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plc_wins + ' of ' +
       v.n + ' past-year scenarios, ARC-CO in ' + v.arc_wins;
     if (w_ === 'none') return 'Neither expected to pay (' + nums + ').';
@@ -129,14 +130,15 @@
     }
     return WORD[w_] + ' expected to pay more on these assumptions (' + nums + ').' + note;
   }
-  function whyText(v, cy, cd, by, py) {
+  /* meth: the 2026 label of a crop on its own forecast-error spread (wheat; the build's wheat_method) */
+  function whyText(v, cy, cd, by, py, bw, meth) {
     var maxPlc = Math.max(0, cy.erp - Math.max(0, cy.loan)) * py * 0.85;
     var maxArc = 0.12 * by * cy.bp * 0.85;
     return 'PLC pays on any season-average price below ' + pf(cd, cy.erp) + ', up to ' + usd(maxPlc) + ' per base acre at the ' + pf(cd, cy.loan) + ' loan rate, so it ' +
       'protects against a deep price drop. ARC-CO is capped at ' + usd(maxArc) + ' per base acre but also pays when the county&rsquo;s ' +
       'yield is short; it paid something in ' + v.short + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pf(cd, cy.cen) + ', ' +
-      (v.nousd ? 'the expected payments are not printed: this crop does not have enough of its own price history.' :
-        'PLC is expected to pay ' + usdC(v.plc) + ' and ARC-CO ' + usdC(v.arc) + ' per base acre.');
+      (v.nousd ? 'the expected payments are not printed: ' + (bw ? bw.tail : 'this crop does not have enough of its own price history.') :
+        'PLC is expected to pay ' + usdC(v.plc) + ' and ARC-CO ' + usdC(v.arc) + ' per base acre.' + (meth ? ' ' + meth : ''));
   }
   function shortWord(v) {
     var w_ = v.verdict;
@@ -182,9 +184,9 @@
       if (headV === null && SHORT[vl.verdict]) headV = [vl, e, LY_];
       var src = e.ds ? 'the ' + esc(g.n) + ' average for this crop and practice (the county has fewer than ' + g.min_scen + ' years)' : 'this county&rsquo;s own FSA yields';
       var note7 = ' The 2027 view uses FSA&rsquo;s 2026 benchmark; FSA posts 2027 later.';
-      lines.push('<div class="ap-verdict ' + vclass(vl.verdict) + '"><p><b>' + lab + ', ' + LY_ + ': ' + verdictLine(vl, g) + '</b></p>' +
-        (!NOCALL[vl.verdict] ? '<p>' + whyText(vl, cropYear(g, k, LY_), cd, e.by, pyv) + '</p>' : (why ? '<p class="ap-small">' + why + '</p>' : '')) +
-        (vo ? '<p class="ap-small"><b>' + OY_ + ':</b> ' + verdictLine(vo, g) + (OY_ === '2027' ? note7 : '') + '</p>' : '') +
+      lines.push('<div class="ap-verdict ' + vclass(vl.verdict) + '"><p><b>' + lab + ', ' + LY_ + ': ' + verdictLine(vl, g, LY_ === '2026' ? cd.bw : null) + '</b></p>' +
+        (!NOCALL[vl.verdict] ? '<p>' + whyText(vl, cropYear(g, k, LY_), cd, e.by, pyv, LY_ === '2026' ? cd.bw : null, LY_ === '2026' ? cd.meth : null) + '</p>' : (why ? '<p class="ap-small">' + why + '</p>' : '')) +
+        (vo ? '<p class="ap-small"><b>' + OY_ + ':</b> ' + verdictLine(vo, g, OY_ === '2026' ? cd.bw : null) + (OY_ === '2027' ? note7 : '') + '</p>' : '') +
         '<p class="ap-small">For a typical farm: FSA&rsquo;s county average PLC yield ' + yf(cd, pyv, 1) + ' (program year ' + g.plc_py + ') and the official ' +
         byf(cd, e.by) + ' benchmark.' + (e.d === 'irr' ? ' That PLC yield is FSA&rsquo;s average over all practices, irrigated and not; an irrigated farm&rsquo;s own is often higher.' : '') +
         ' County yields from ' + src + '. Run your own numbers in the calculator below.</p></div>');
@@ -332,7 +334,7 @@
     var w_ = v.verdict, cy = cd.y[y] || cd.y['2026'];
     var erp = ' PLC pays under ' + (cd.u === 'lb' ? sayPrice(cd, cy.erp) : pf(cd, cy.erp)) + '.';
     if (v.nousd && (w_ === 'plc' || w_ === 'arc' || w_ === 'close' || w_.indexOf('lean_') === 0))
-      return (w_ === 'close' ? 'Too close to call for ' + y + '.' : WORD[w_.replace('lean_', '')] + ' leads for ' + y + '.') + ' No expected dollars: too little price history.' + erp;
+      return (w_ === 'close' ? 'Too close to call for ' + y + '.' : WORD[w_.replace('lean_', '')] + ' leads for ' + y + '.') + ' ' + (y === '2026' && cd.bw ? cd.bw.sheet : 'No expected dollars: too little price history.') + erp;
     if (w_ === 'plc' || w_ === 'arc' || w_.indexOf('lean_') === 0) return WORD[w_.replace('lean_', '')] + ' about $' + v.whole + ' more per base acre for ' + y + '.' + erp;
     if (w_ === 'close') return (v.under1 ? 'Under $1 apart for ' + y + '.' : 'About $' + v.whole + ' apart for ' + y + '.') + erp;
     if (w_ === 'none') { var cen = cy.cen; return cen ? 'At USDA&rsquo;s ' + pf(cd, cen) + ', neither pays for ' + y + '.' : 'Neither pays for ' + y + '.'; }

@@ -74,7 +74,7 @@
   },
   "the_more_you_know": {
     "title": "The Carry Spread Is the Crop Tour's Lie Detector",
-    "body": "Corn's nearby at $4.38 versus December at $4.62 is a 24-cent carry. That spread widens when the market doubts the current crop and narrows when supply looks comfortable. Watch whether Pro Farmer yield estimates this week move that spread more than the outright price; the carry tells you what the funds actually believe about the harvest."
+    "body": "Corn's nearby at $4.38½ versus December at $4.61½ is a 23-cent carry. (Corrected Nov 17, see the note below.) That spread widens when the market doubts the current crop and narrows when supply looks comfortable. Watch whether Pro Farmer yield estimates this week move that spread more than the outright price; the carry tells you what the funds actually believe about the harvest."
   },
   "watch_list": [
     {
@@ -184,7 +184,6 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 144,
   "generated_at": "2026-08-03T13:44:46.371541+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 0,
@@ -242,5 +241,11 @@
       }
     ],
     "dry_run": false
-  }
+  },
+  "corrections": [
+    {
+      "date": "2026-11-17",
+      "text": "This issue said \"Corn's nearby at $4.38 versus December at $4.62 is a 24-cent carry.\" The prices were $4.38½ and $4.61½, so the carry was 23 cents."
+    }
+  ]
 }

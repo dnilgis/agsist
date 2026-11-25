@@ -1,0 +1,108 @@
+# Friday Chart: proposes the week's spec as a pull request for review (never publishes).
+name: Friday Chart spec
+
+on:
+  workflow_run:
+    workflows: ["Fetch COT Data"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: "week (the rotation rule), harvest-gap or funds-corn"
+        required: false
+        default: week
+      day:
+        description: "the chart's date, yyyy-mm-dd (default: today, UTC)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: friday-chart-spec
+  cancel-in-progress: false
+
+jobs:
+  spec:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Only after the Friday COT fetch
+        id: when
+        env:
+          EVENT: ${{ github.event_name }}
+          CREATED: ${{ github.event.workflow_run.created_at }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then echo "go=1" >> "$GITHUB_OUTPUT"; exit 0; fi
+          dow=$(date -u -d "$CREATED" +%u); hr=$(date -u -d "$CREATED" +%H)
+          if [ "$dow" = "5" ] && [ "$hr" -ge 21 ]; then echo "go=1" >> "$GITHUB_OUTPUT"; else echo "not the Friday fetch after the release ($CREATED)"; fi
+      - uses: actions/checkout@v4
+        if: steps.when.outputs.go == '1'
+      - name: Engine checkout
+        if: steps.when.outputs.go == '1'
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        if: steps.when.outputs.go == '1'
+        with:
+          python-version: "3.12"
+      - name: Build the week's spec and propose it
+        if: steps.when.outputs.go == '1'
+        env:
+          KIND: ${{ github.event.inputs.kind || 'week' }}
+          DAY_IN: ${{ github.event.inputs.day }}
+          CREATED: ${{ github.event.workflow_run.created_at }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "${DAY_IN:-}" ]; then DAY="$DAY_IN"; elif [ -n "${CREATED:-}" ]; then DAY=$(date -u -d "$CREATED" +%F); else DAY=$(date -u +%F); fi
+          case "$DAY" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "bad day: $DAY"; exit 1 ;; esac
+          case "$KIND" in week|harvest-gap|funds-corn) ;; *) echo "bad kind: $KIND"; exit 1 ;; esac
+          OUT=$(python3 scripts/build_infographic.py "$KIND" "$DAY" 2>&1) || { echo "$OUT"; exit 1; }
+          echo "$OUT"
+          if echo "$OUT" | grep -q '^skip: '; then
+            echo "### Friday Chart: no spec this week" >> "$GITHUB_STEP_SUMMARY"
+            echo "$OUT" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          SPEC="data/infographics/$DAY.json"
+          [ -f "$SPEC" ] || { echo "no spec written"; exit 1; }
+          PICKED=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["kind"])' "$SPEC")
+          TITLE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["title"])' "$SPEC")
+          DATA_DATE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["data_date"])' "$SPEC")
+          BRANCH="friday-chart/$DAY-$PICKED"
+          if [ "$(gh pr list --head "$BRANCH" --state all --json number --jq length)" != "0" ]; then
+            echo "$BRANCH is already proposed; nothing new"; exit 0
+          fi
+          for ref in $(gh pr list --state open --json headRefName --jq '.[].headRefName | select(startswith("friday-chart/"))'); do
+            d=${ref#friday-chart/}; d=${d:0:10}
+            git fetch -q --depth 1 origin "refs/heads/$ref" || continue
+            other=$(git show "FETCH_HEAD:data/infographics/$d.json" 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("data_date", ""))' || true)
+            if [ "$other" = "$DATA_DATE" ]; then echo "skip: $ref is open with the same data ($DATA_DATE)"; exit 0; fi
+          done
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "$BRANCH exists without a pull request: opening one"
+          else
+            git config user.name "AGSIST Bot"
+            git config user.email "bot@agsist.com"
+            git checkout -b "$BRANCH"
+            git add -- "data/infographics/$DAY.json"
+            git commit -m "Friday Chart $DAY: $TITLE"
+            git push origin "HEAD:refs/heads/$BRANCH"
+          fi
+          {
+            echo "This week's Friday Chart spec, for review. Merging it publishes the page, the link card and the home page block (infographic-pages.yml)."
+            echo
+            echo "- Hook: $TITLE"
+            echo "- Kind: $PICKED"
+            echo "- Builder: $OUT"
+            echo
+            echo "Only data/infographics/$DAY.json is in this pull request. To see the poster before merging, build the page locally with scripts/build_infographic_pages.py."
+          } > /tmp/body.md
+          gh pr create --base main --head "$BRANCH" --title "Friday Chart $DAY: $TITLE" --body-file /tmp/body.md
+          echo "### Friday Chart: $TITLE (pull request opened for review)" >> "$GITHUB_STEP_SUMMARY"

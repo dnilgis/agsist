@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '13,43 19-21 * * 1-5'
   workflow_run:
-    workflows: ["Fetch Grain Bids", "Fetch Prices"]
+    workflows: ["Fetch Grain Bids", "Tick 03", "Fetch Prices"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -21,12 +21,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: fetch-cot
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 03' && !(contains(github.event.workflow_run.display_title, ' cot-release-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('fetch-cot-{0}', github.run_id) || 'fetch-cot' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 03' || (contains(github.event.workflow_run.display_title, ' cot-release-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     outputs:
@@ -62,6 +64,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout
