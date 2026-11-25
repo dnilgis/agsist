@@ -73,8 +73,6 @@ jobs:
         run: |
           python scripts/daily_edge.py --selftest
           python scripts/cash_bid_index.py --selftest
-      # The per-board month files live on the private-data branch, never on the site:
-      # no edition is built without them (a hard stop, not a short month).
       - name: Unpack the private month files
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
