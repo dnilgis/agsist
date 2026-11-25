@@ -9,6 +9,13 @@
    "link": "/fertilizer"
   },
   {
+   "id": "2026-11-24-fertilizer-usda-cross-check",
+   "date": "2026-11-24",
+   "title": "Fertilizer: USDA dealer survey as a cross-check",
+   "line": "The USDA dealer survey is now one labelled section under the co-op prices on the fertilizer page. The old state pages forward there. Co-op prices stay the price.",
+   "link": "/fertilizer#usda-check"
+  },
+  {
    "id": "2026-11-24-field-scout-text-print",
    "date": "2026-11-24",
    "title": "Field Scout: text a field in one tap",
@@ -28,6 +35,13 @@
    "title": "Cash lease: each state's notice rule as the statute says it",
    "line": "Ohio's notice rule now covers crop leases only and lists personal delivery, fax or email. Iowa, Kansas and Wisconsin delivery lines follow their statutes.",
    "link": "/cash-lease#notice"
+  },
+  {
+   "id": "2026-11-24-trust-fixes",
+   "date": "2026-11-24",
+   "title": "Markets and links: one contract per change",
+   "line": "Cotton and KC wheat show no day change when the price and the settle are different contract months. County PRF links open the state page on that county.",
+   "link": "/markets"
   },
   {
    "id": "2026-11-24-elevator-alerts-wheat-classes",
@@ -76,7 +90,7 @@
    "date": "2026-11-20",
    "title": "Fertilizer prices by state",
    "line": "Dealer prices per ton from USDA's own state reports, with the change since the last report and a page for each state covered.",
-   "link": "/fertilizer-prices"
+   "link": "/fertilizer#usda-check"
   },
   {
    "id": "2026-11-20-rain-at-your-fields",

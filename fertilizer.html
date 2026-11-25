@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=30" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=30">
+  <link rel="preload" href="/components/styles.css?v=31" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=31">
   <script src="/components/util.js?v=21"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -187,6 +187,36 @@
 /* FIX: fert-related uses minmax(0,1fr) to prevent iOS Safari overflow */
 .fert-related{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin-bottom:1.25rem}
 .fert-related-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:none;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem}
+
+/* the USDA dealer survey: one cross-check section below the co-op answer (components/fert-usda.js) */
+.usda-x{margin:1.5rem 0 1.25rem}
+.usda-lede{font-size:.92rem;line-height:1.5;color:var(--text-dim);margin:0 0 .7rem}
+.usda-states{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .7rem}
+.usda-states a{display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box;padding:0 .8rem;font-size:.88rem;font-weight:600;color:var(--text-dim);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);text-decoration:none}
+.usda-states a[aria-current="true"]{color:var(--text);border-color:var(--gold)}
+.usda-states a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.usda-out{min-height:24rem}
+.usda-wait,.usda-none{font-size:.9rem;line-height:1.5;color:var(--text-dim);margin:0}
+.usda-h{font-size:1.05rem;line-height:1.3;margin:.2rem 0 .3rem;color:var(--text)}
+.usda-alone{font-size:.88rem;line-height:1.45;color:var(--text-dim);margin:0 0 .5rem}
+.usda-tw{overflow-x:auto}
+.usda-t{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+.usda-t th,.usda-t td{padding:.5rem .45rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.usda-t thead th{font-size:.74rem;font-weight:700;color:var(--text-muted)}
+.usda-t tbody th{font-weight:600;color:var(--text)}
+.usda-n{display:block}
+.usda-g,.usda-r,.usda-was{display:block;font-size:.74rem;font-weight:400;color:var(--text-muted);margin-top:1px}
+.usda-v b{font-size:1.1rem;color:var(--text);font-family:'JetBrains Mono',monospace}
+.usda-c{color:var(--text);font-weight:600;white-space:nowrap}
+.usda-c.up{color:var(--red,#d9534f)}
+.usda-c.dn{color:var(--green,#4caf50)}
+.usda-na{font-weight:400;font-size:.78rem;color:var(--text-muted);white-space:normal}
+.usda-src{font-size:.8rem;line-height:1.45;color:var(--text-dim);margin:.5rem 0 0}
+.usda-note{font-size:.85rem;line-height:1.45;color:var(--text);margin:.5rem 0 0}
+.usda-terms{margin:1rem 0 0;font-size:.82rem;line-height:1.6;color:var(--text-dim);border-top:1px solid var(--border);padding-top:.4rem}
+.usda-terms summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700}
+.usda-terms p{margin:.5rem 0}
+@media(max-width:560px){.usda-t{font-size:.84rem}.usda-t th,.usda-t td{padding:.45rem .3rem}.usda-v b{font-size:1rem}}
 
 @media(max-width:560px){
   .fert-explainer{grid-template-columns:1fr}
@@ -394,6 +424,30 @@
     </div>
   </div>
 
+  <section class="usda-x" id="usda-check" aria-labelledby="usda-h">
+    <h2 class="fert-related-title" id="usda-h">USDA dealer survey (cross-check, not our price)</h2>
+    <p class="usda-lede">The co-op prices above are this site&rsquo;s fertilizer price, and the calculators here use them. USDA also surveys dealers in some states. Its asking prices are shown here only to compare, and are never mixed into the co-op prices.</p>
+    <nav class="usda-states" aria-label="USDA report by state">
+      <a href="#usda-iowa" id="usda-iowa" data-st="IA">Iowa</a>
+      <a href="#usda-illinois" id="usda-illinois" data-st="IL">Illinois</a>
+      <a href="#usda-oklahoma" id="usda-oklahoma" data-st="OK">Oklahoma</a>
+      <a href="#usda-north-carolina" id="usda-north-carolina" data-st="NC">North Carolina</a>
+      <a href="#usda-utah" id="usda-utah" data-st="UT">Utah</a>
+      <a href="#usda-idaho" id="usda-idaho" data-st="ID">Idaho</a>
+      <a href="#usda-colorado" id="usda-colorado" data-st="CO">Colorado</a>
+      <a href="#usda-wyoming" id="usda-wyoming" data-st="WY">Wyoming</a>
+      <a href="#usda-oregon" id="usda-oregon" data-st="OR">Oregon</a>
+      <a href="#usda-washington" id="usda-washington" data-st="WA">Washington</a>
+    </nav>
+    <div class="usda-out" id="usda-out" aria-live="polite"><p class="usda-wait">Loading the USDA reports.</p></div>
+    <details class="usda-terms"><summary>How the survey figures are read</summary>
+      <p><b>Source.</b> USDA Agricultural Marketing Service production cost reports, free and public. Iowa, Illinois, Oklahoma and the Pacific Northwest come out every two weeks, North Carolina weekly, the Inter-Mountain West monthly.</p>
+      <p><b>What the table shows.</b> Each report surveys fertilizer dealers. For each product it prints a low, a high and one price for the whole survey, per ton, with the freight term. These are asking prices, not quotes.</p>
+      <p><b>Changes.</b> A change compares two reports of the same USDA survey, for the same product, priced the same way. When that is not possible, the cell says why.</p>
+      <p><b>Not blended.</b> These figures never enter the co-op prices, the cost per pound or the fertility bill on this page.</p>
+    </details>
+  </section>
+
   <!-- answer:fertilizer-supply --><!-- /answer:fertilizer-supply -->
   <h2 class="fert-explainer-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem">Why prices move</h2>
   <div class="fert-explainer">
@@ -417,7 +471,6 @@
 
   <h2 class="fert-related-title">Related Tools</h2>
   <div class="fert-related">
-    <a href="/fertilizer-prices" class="fr-link">Fertilizer Prices by State (USDA)</a>
     <a href="/breakeven" class="fr-link">Break-Even Calculator</a>
     <a href="/tariffs" class="fr-link">Tariff Tracker</a>
     <a href="/cot"     class="fr-link">Fund Positioning</a>
@@ -478,6 +531,7 @@
 <script src="/components/fert-sources.js?v=6"></script>
 <script src="/components/fert-coops.js?v=7"></script>
 <script src="/components/fert-trend.js?v=2" defer></script>
+<script src="/components/fert-usda.js?v=1" defer></script>
 <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=4';document.head.appendChild(s);}}catch(e){}</script>
 
 <script>
