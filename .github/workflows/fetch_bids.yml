@@ -134,6 +134,27 @@ jobs:
         continue-on-error: true
         run: python3 scripts/dev/quiet.py elevator-contacts -- python scripts/build_elevator_contacts.py
 
+      - name: Save finished basis days to the private log
+        continue-on-error: true
+        env:
+          GH_EVENT: ${{ github.event_name }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: |
+          # The public basis folder keeps the last 90 days. A public change file is deleted only when its day is
+          # saved in the private basis log first (basis_log_private.py lists the days the private branch holds
+          # byte for byte; no list, no deletion). Once a day, in the 05 and 06 UTC runs, or on a manual run.
+          mkdir -p private; rm -f private/basis-log-confirmed.txt private/basis-log-pending.txt
+          h=$(date -u +%H)
+          [ "$GH_EVENT" = workflow_dispatch ] || [ "$h" = 05 ] || [ "$h" = 06 ] || { echo "basis log: saved in the 05 and 06 UTC runs"; exit 0; }
+          RAW_SOFT=1 bash scripts/pull_raw.sh private/ledger/basis-log || true
+          python3 scripts/basis_log_private.py sync
+          if [ -s private/basis-log-pending.txt ]; then
+            bash scripts/push_raw.sh "basis log $(date -u +%F)" private/ledger/basis-log \
+              || { echo "::warning::basis log: new days not saved to the private branch; the public files stay"; exit 0; }
+          fi
+          python3 scripts/basis_log_private.py confirm
+
       - name: Keep the basis history
         continue-on-error: true
         run: python3 scripts/dev/quiet.py basis-history -- python scripts/build_basis_history.py
