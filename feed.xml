@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 24 Nov 2026 14:05:19 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 25 Nov 2026 13:50:15 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Ohio soybeans basis firmed 5 cents in a week</title>
+      <link>https://agsist.com/daily/2026-11-25</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-25</guid>
+      <pubDate>Wed, 25 Nov 2026 13:49:12 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>Local bids improved this week even though futures slipped. Ohio soybean basis firmed 5 cents, with North Dakota and Ohio corn up the same. That gain softens the overnight drop in January soybeans.
+• Basis firms in the Eastern Corn Belt
+• Beans slip, meal holds
+• Cattle firm, hogs soft
+Read more: https://agsist.com/daily/2026-11-25</description>
+    </item>
     <item>
       <title>Corn harvest reaches 94%; the five-year average is 96%</title>
       <link>https://agsist.com/daily/2026-11-24</link>
@@ -340,18 +352,6 @@ Read more: https://agsist.com/daily/2026-10-28</description>
 • Crude firm, gas gains
 • Cattle firm, hogs lower
 Read more: https://agsist.com/daily/2026-10-27</description>
-    </item>
-    <item>
-      <title>Corn dips 3¢ to $4.53, beans lose 16¢ to $12.40</title>
-      <link>https://agsist.com/daily/2026-10-26</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-26</guid>
-      <pubDate>Mon, 26 Oct 2026 10:48:12 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Soybeans gave back 16 cents overnight to $12.40, and meal fell harder at 1.8%, while corn barely moved at $4.53. Beans are carrying the grain market lower today. The 16 cents is a November futures move; what it means for beans in the bin depends on your local bid and basis. (Corrected Oct 27, see the note below.)
-• Beans lead grains lower
-• Cattle hold near highs
-• Crude slips; gas gains
-Read more: https://agsist.com/daily/2026-10-26</description>
     </item>
   </channel>
 </rss>

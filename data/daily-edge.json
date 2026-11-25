@@ -1,6 +1,6 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-11-24T14:04:01Z",
+ "generated": "2026-11-25T13:48:31Z",
  "label": "Only on AGSIST",
  "note": "From the elevator boards AGSIST reads.",
  "facts": [
@@ -8,44 +8,44 @@
    "id": "over_futures_corn",
    "crop": "corn",
    "kind": "over_futures",
-   "sentence": "Of 713 elevators AGSIST reads with a fresh corn bid on Nov 24, 106 were paying over futures, most of them in Indiana (27).",
-   "key": "106 were paying over futures",
-   "detail": "592 under futures, 15 even. Each board against the futures month it names.",
-   "value": 106,
+   "sentence": "Of 1,854 elevators AGSIST reads with a fresh corn bid on Nov 25, 224 were paying over futures, most of them in Indiana (33).",
+   "key": "224 were paying over futures",
+   "detail": "1,591 under futures, 39 even. Each board against the futures month it names.",
+   "value": 224,
    "unit": "elevators bidding over futures",
    "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
-   "n": 713,
-   "over": 106,
-   "under": 592,
-   "even": 15,
+   "n": 1854,
+   "over": 224,
+   "under": 1591,
+   "even": 39,
    "states": [
     {
      "state": "IN",
      "name": "Indiana",
-     "n": 27
-    },
-    {
-     "state": "CO",
-     "name": "Colorado",
-     "n": 21
-    },
-    {
-     "state": "IL",
-     "name": "Illinois",
-     "n": 13
+     "n": 33
     },
     {
      "state": "KS",
      "name": "Kansas",
-     "n": 9
+     "n": 33
     },
     {
      "state": "NE",
      "name": "Nebraska",
-     "n": 9
+     "n": 26
+    },
+    {
+     "state": "CO",
+     "name": "Colorado",
+     "n": 25
+    },
+    {
+     "state": "IL",
+     "name": "Illinois",
+     "n": 22
     }
    ],
-   "as_of": "2026-11-24",
+   "as_of": "2026-11-25",
    "source": "AGSIST elevator network, live board basis (merged-index.json)",
    "url": "/cash-bids",
    "link_text": "Cash bids near you"
@@ -55,12 +55,12 @@
   {
    "id": "cash_change_corn",
    "why": "sample",
-   "detail": "702 boards, under 80% of the 5-day median 1805"
+   "detail": "628 of 1854 boards with a usable bid posted the same delivery month on 2026-11-23 and 2026-11-24, fewer than 50% of the boards matched"
   },
   {
    "id": "cash_change_soybeans",
    "why": "sample",
-   "detail": "608 boards, under 80% of the 5-day median 1569"
+   "detail": "607 of 1617 boards with a usable bid posted the same delivery month on 2026-11-23 and 2026-11-24, fewer than 50% of the boards matched"
   }
  ]
 }
