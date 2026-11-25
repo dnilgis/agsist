@@ -112,6 +112,9 @@ build/shots/
 # the twenty-year COT history behind data/cot-analysis.json.
 /data/site-usage.json
 /data/cot-deep.json
+# Cash Bid Index month files are per board: they live under private/cash-index on the
+# private-data branch, never here (test/cash-index-private.test.mjs).
+/data/cash-index/acc-*.json
 
 # Share images live in dnilgis/agsist-data since Nov 4, 2026 (scripts/share_host.py); never commit them here
 /farmland-atlas/og/

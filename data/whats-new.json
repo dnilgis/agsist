@@ -2,11 +2,53 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-25-daily-lock-followup",
+   "date": "2026-11-25",
+   "title": "The Daily: market moves read by what each sentence is about",
+   "line": "When a Daily line says the board or the market moved, the move comes from the morning's price table; lines about cash, crop ratings or exports stay as written.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-25-daily-locked-prices",
+   "date": "2026-11-25",
+   "title": "The Daily: board prices come from the price table",
+   "line": "Futures prices and their moves in the Daily are set from the morning's price table, one trading session per sentence, and a basis change always says basis.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-25-ad-reps",
+   "date": "2026-11-25",
+   "title": "Ad reps wanted",
+   "line": "Know the farm businesses near you? We are looking for commission ad reps. How it works and how to apply is on the advertise page.",
+   "link": "/sponsor#sell-for-us"
+  },
+  {
    "id": "2026-11-25-gauge-ask",
    "date": "2026-11-25",
    "title": "Rain gauge waitlist on the rain pages",
    "line": "I'm building a rain gauge that keeps its own log. The rain pages and Rain Print now have a short note and an email box if you want one.",
    "link": "/rain-gauge"
+  },
+  {
+   "id": "2026-11-25-cash-index-v5",
+   "date": "2026-11-25",
+   "title": "Cash Bid Index: method in plain words",
+   "line": "The Cash Bid Index now explains its method in plain words and lists the 2027 release dates and any corrections. A USDA long view follows once USDA is read.",
+   "link": "/cash-bid-index"
+  },
+  {
+   "id": "2026-11-25-croptour-terms-fold",
+   "date": "2026-11-25",
+   "title": "Tidier Crop Tour page",
+   "line": "The Crop Tour page keeps its sources and notices in one short fold at the bottom.",
+   "link": "/crop-tour"
+  },
+  {
+   "id": "2026-11-25-prf-county-rows",
+   "date": "2026-11-25",
+   "title": "PRF state pages: a priced example in every county row",
+   "line": "Each county row on the PRF state pages now shows what the 100-acre grazing example costs you a year and in how many of 75 years it would have paid.",
+   "link": "/prf/texas"
   },
   {
    "id": "2026-11-24-daily-fertilizer-line",

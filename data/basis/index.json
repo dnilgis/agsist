@@ -16,9 +16,9 @@
    "kb":3.2
   },
   "CO":{
-   "rows":220,
+   "rows":273,
    "facilities":21,
-   "kb":10.3
+   "kb":12.5
   },
   "FL":{
    "rows":2,
@@ -31,9 +31,9 @@
    "kb":1.5
   },
   "IA":{
-   "rows":7810,
+   "rows":7917,
    "facilities":508,
-   "kb":365.5
+   "kb":370.0
   },
   "ID":{
    "rows":1,
@@ -41,24 +41,24 @@
    "kb":0.3
   },
   "IL":{
-   "rows":10520,
+   "rows":10593,
    "facilities":249,
-   "kb":477.7
+   "kb":480.6
   },
   "IN":{
-   "rows":1231,
+   "rows":1260,
    "facilities":83,
-   "kb":55.9
+   "kb":57.1
   },
   "KS":{
-   "rows":5915,
+   "rows":6210,
    "facilities":263,
-   "kb":262.3
+   "kb":274.9
   },
   "KY":{
-   "rows":130,
+   "rows":137,
    "facilities":11,
-   "kb":6.6
+   "kb":6.9
   },
   "LA":{
    "rows":3,
@@ -66,14 +66,14 @@
    "kb":0.4
   },
   "MI":{
-   "rows":433,
+   "rows":443,
    "facilities":25,
-   "kb":19.2
+   "kb":19.5
   },
   "MN":{
-   "rows":5579,
+   "rows":5645,
    "facilities":164,
-   "kb":248.4
+   "kb":251.1
   },
   "MO":{
    "rows":399,
@@ -81,19 +81,19 @@
    "kb":19.5
   },
   "MT":{
-   "rows":132,
+   "rows":136,
    "facilities":10,
-   "kb":6.1
+   "kb":6.2
   },
   "ND":{
-   "rows":8265,
+   "rows":8321,
    "facilities":68,
-   "kb":346.5
+   "kb":348.8
   },
   "NE":{
-   "rows":10107,
+   "rows":10276,
    "facilities":255,
-   "kb":457.1
+   "kb":464.5
   },
   "NY":{
    "rows":10,
@@ -101,14 +101,14 @@
    "kb":0.7
   },
   "OH":{
-   "rows":4753,
+   "rows":4782,
    "facilities":91,
-   "kb":203.5
+   "kb":204.6
   },
   "OK":{
-   "rows":3353,
+   "rows":3366,
    "facilities":81,
-   "kb":140.8
+   "kb":141.3
   },
   "OR":{
    "rows":11,
@@ -126,12 +126,12 @@
    "kb":0.5
   },
   "SD":{
-   "rows":2167,
+   "rows":2198,
    "facilities":116,
-   "kb":94.8
+   "kb":96.0
   },
   "TN":{
-   "rows":51,
+   "rows":53,
    "facilities":4,
    "kb":3.0
   },
@@ -146,9 +146,9 @@
    "kb":6.4
   },
   "WI":{
-   "rows":2410,
+   "rows":2453,
    "facilities":107,
-   "kb":110.0
+   "kb":111.6
   },
   "WY":{
    "rows":25,
