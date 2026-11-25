@@ -21,7 +21,7 @@
    THE WORLD (#fp-world), read when it comes near the screen. Every card: the topic and place, one number, one line on what it
    means, a dated source, a tap to the full tool. Feature cards carry a picture: bids (a map of the elevators around the reader,
    placed by distance and bearing, the best in gold; no place: soybean basis by state), rain, markets. Compact cards carry
-   none: the latest top land sale, anhydrous from the USDA state report nearest the reader (data/fert-prices), ARC/PLC, funds.
+   none: the latest top land sale, anhydrous from the co-op price sheets (the reader's state, else the middle of all), ARC/PLC, funds.
    Soil (NCCPI, CSR2) joins once a county soil file exists; there is none yet, so no soil card, never an empty one. The Friday
    Chart card shows only when /infographic/latest.json names a chart from the last 13 days and its spot is below the screen.
 
@@ -275,21 +275,23 @@
     var s = (j.sections || []).filter(function (x) { return x && x.title && !STOCK.test(x.title); })[0];
     return s ? String(s.title) : '';
   }
-  /* fertilizer: the USDA state report for a state (data/fert-prices/index.json nearest), Iowa's for no place */
-  function fertReportId(I, st) {
-    if (!st) return '2863';
-    var n = I && I.nearest && I.nearest[st];
-    return n && n.id ? String(n.id) : null;
-  }
-  function fertCopy(R) {
-    var p = (R && R.products || []).filter(function (x) { return x.key === 'anhydrous' && num(x.avg); })[0];
+  /* fertilizer: the co-op anhydrous price, read the way /fertilizer reads it (components/fert-pick.js over
+     data/fertilizer-coops.json): the reader's own state's co-op sheets, else the middle of every current sheet, Iowa as
+     the place when none is saved. doc is what AgFertPick.choose returns; st is the place's state ('' for none known). */
+  function fertCopy(doc, st) {
+    var p = (doc && doc.prices || []).filter(function (x) { return x.key === 'anhydrous' && num(x.price) && x.price > 0 && x.as_of; })[0];
     if (!p) return null;
-    var v = p.avg, s = esc(R.region) + ' dealers’ average, a ton.';
-    if (p.prev && num(p.prev.change) && p.prev.published) {
-      var c = Math.round(p.prev.change);
-      s += c === 0 ? ' Unchanged since ' + md(p.prev.published) + '.' : ' ' + (c > 0 ? 'Up ' : 'Down ') + money(Math.abs(c)) + ' since ' + md(p.prev.published) + '.';
+    var FP = root.AgFertPick, names = (FP && FP.NAMES) || {}, own = p.scope === 'state', where = names[st] || STN[st] || '';
+    var n = p.n || 1, region = p.region || '';
+    var s;
+    if (own) s = n === 1 ? 'One ' + region + ' co-op’s cash price, a ton.' : (n === 2 ? 'Average' : 'Middle') + ' of ' + n + ' ' + region + ' co-ops’ cash prices, a ton.';
+    else {
+      var mid = (n === 1 ? 'One co-op' : (n === 2 ? 'Average' : 'Middle') + ' of ' + n + ' co-ops') + ' in ' + region + ', a ton.';
+      s = where ? 'No ' + where + ' co-op posts it. ' + mid : mid;
+      if (s.length > 72) s = (where ? 'No ' + where + ' co-op posts it. ' : '') + (n === 1 ? 'One co-op' : 'Middle of ' + n + ' co-ops') + ' in ' + (p.states || []).length + ' states.';
     }
-    return { v: v, s: s, src: 'USDA AMS, ' + md(R.published), region: R.region };
+    var lo = p.oldest && p.oldest < p.as_of ? p.oldest : p.as_of;
+    return { v: p.price, s: s, src: 'Co-op sheets, ' + (lo < p.as_of ? md(lo) + ' to ' : '') + md(p.as_of), region: region };
   }
   /* funds: managed money's net and the week's change, corn's too */
   function fundCopy(C) {
@@ -383,7 +385,7 @@
   var api = { ct: ct, ctIso: ctIso, when: when, md: md, dayName: dayName, fnv: fnv, miles: miles, placeName: placeName, futMonth: futMonth,
     basisWords: basisWords, currentDelivery: currentDelivery, plain: plain, freshFrom: freshFrom, prevTrading: prevTrading, nearBids: nearBids,
     moveSince: moveSince, moveText: moveText, postedWords: postedWords, stateBasis: stateBasis, beltRain: beltRain, rainLine: rainLine,
-    futItems: futItems, rankWords: rankWords, dailyIso: dailyIso, dryWords: dryWords, dailyLine: dailyLine, fertReportId: fertReportId, fertCopy: fertCopy, fundCopy: fundCopy,
+    futItems: futItems, rankWords: rankWords, dailyIso: dailyIso, dryWords: dryWords, dailyLine: dailyLine, fertCopy: fertCopy, fundCopy: fundCopy,
     landCopy: landCopy, spark: spark, bars: bars, ranges: ranges, bidsMap: bidsMap, setW: setW, BELT: BELT, RADIUS: RADIUS, cents: cents };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root || !root.document) return;
@@ -668,15 +670,14 @@
     }).catch(function () { cardFail('land', 'Could not read the farm sales file just now.'); });
   }
   function fertCard(p) {
-    return get('/data/fert-prices/index.json').then(function (I) {
-      var id = fertReportId(I, p && p.state);
-      if (!id) { card('fert', { v: '<span class="fp-none">None near</span>', s: 'No USDA state fertilizer report covers ' + esc(STN[p.state] || p.state) + '.', src: 'USDA AMS' }); return; }
-      return get('/data/fert-prices/' + id + '.json').then(function (R) {
-        var o = fertCopy(R);
-        if (!o) throw new Error('none');
-        card('fert', { k: 'Anhydrous · <b>' + esc(o.region) + '</b>', v: money(o.v, o.v % 1 ? 2 : 0), n: o.v, f: function (x) { return money(x); }, s: o.s, src: o.src, href: '/fertilizer' });
-      });
-    }).catch(function () { cardFail('fert', 'Could not read the USDA fertilizer report just now.'); });
+    var st = p ? p.state || '' : 'IA', FP = root.AgFertPick;
+    if (!FP) { cardFail('fert', 'Could not read the co-op fertilizer prices just now.'); return Promise.resolve(); }
+    return FP.load(st || null).then(function (doc) {
+      if (!doc || !doc.prices) throw new Error('none');
+      var o = fertCopy(doc, st);
+      if (!o) { card('fert', { v: '<span class="fp-none">None posted</span>', s: 'No co-op has a current anhydrous price on file.', src: 'Co-op price sheets', href: '/fertilizer' }); return; }
+      card('fert', { k: 'Anhydrous · <b>' + esc(o.region) + '</b>', v: money(o.v, o.v % 1 ? 2 : 0), n: o.v, f: function (x) { return money(x); }, s: esc(o.s), src: o.src, href: '/fertilizer' });
+    }).catch(function () { cardFail('fert', 'Could not read the co-op fertilizer prices just now.'); });
   }
   function arcCard(p) {
     var Wd = root.AgHomeWorld;
