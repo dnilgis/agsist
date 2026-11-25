@@ -501,7 +501,7 @@
     var ASK = { src: 'rain-gauge', fips: '' };
     try {
       var qs = new URLSearchParams(location.search), sv = qs.get('src') || '', fv = qs.get('fips') || '';
-      if (['rain-county', 'rain-state', 'rain-hub', 'rain-print', 'field-scout', 'hail-map'].indexOf(sv) >= 0) ASK.src = sv;
+      if (['rain-county', 'rain-hub', 'rain-print'].indexOf(sv) >= 0) ASK.src = sv;
       if (/^\d{2}(\d{3})?$/.test(fv)) ASK.fips = fv;
     } catch (e) {}
     var savedZip = '';

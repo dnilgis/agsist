@@ -8,7 +8,7 @@
  * v5.72 (2026-11-25): RAIN GAUGE WAITLIST KEEPS WHERE AND HOW MANY. /notice with topic rain-gauge also takes
  *   fips (a state FIPS of 2 digits or a county FIPS of 5, state code real, else dropped), n ("1", "2-5" or "6+")
  *   and biz (true: "for my customers"), kept on note:<email>.t["rain-gauge"] next to zip and note; src (the
- *   page kind: rain-county, rain-state, rain-hub, rain-print, field-scout, hail-map, else rain-gauge; kept only from that list) is the existing source field, 60 chars.
+ *   page kind: rain-county, rain-hub, rain-print, else rain-gauge; kept only from that list) is the existing source field, 60 chars.
  *   Asked again, n, biz and fips are taken when given. /notice-list returns fips, n, biz on those rows. /count
  *   gains gauge {total, gauges_min, customers, with_zip, n:<1|2-5|6+|unsaid>, st:<state FIPS>, src:<source>},
  *   flat counts only (no address, no ZIP, no county), read by scripts/stats_ingest.py and scripts/gauge_count.py.
@@ -1622,7 +1622,7 @@ function gaugeFips(v) {
   const x = String(v == null ? "" : v).trim();
   return /^\d{2}(\d{3})?$/.test(x) && RAIN_ST_FIPS.has(+x.slice(0, 2)) ? x : "";
 }
-const GAUGE_SRC = new Set(["rain-gauge", "rain-county", "rain-state", "rain-hub", "rain-print", "field-scout", "hail-map"]);
+const GAUGE_SRC = new Set(["rain-gauge", "rain-county", "rain-hub", "rain-print"]);
 function gaugeCount(v) { const x = String(v == null ? "" : v).trim(); return x === "1" || x === "2-5" || x === "6+" ? x : ""; }
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();

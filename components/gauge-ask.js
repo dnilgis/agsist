@@ -9,9 +9,32 @@
   var RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   function listed() { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; return !!n['rain-gauge']; } catch (e) { return false; } }
   function mark() { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; n['rain-gauge'] = Date.now(); localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {} }
+  // The block's words and picture. The pages carry only an empty box with the page kind and FIPS (its height is held in
+  // gauge-ask.css), so the 2,865 county pages stay small. Same endpoint, same fields as before.
+  var PHOTO = '/img/rain-gauge/gauge-t-post.webp';
+  var ALT = '3D render of the prototype rain gauge held to a green steel T-post by two metal clips, with fence wire and a field behind it';
+  var KINDS = ['rain-county', 'rain-hub', 'rain-print'];
+  function fill(box, kind, fips) {
+    var lead = kind === 'rain-county' ? 'This page is one station. For your own field: ' : '';
+    var q = '?src=' + kind + (fips ? '&fips=' + fips : '');
+    box.innerHTML = '<figure class="gk-p"><img src="' + PHOTO + '" width="1200" height="750" loading="lazy" alt="' + ALT + '">' +
+      '<figcaption>Prototype design, 3D render.</figcaption></figure>' +
+      '<p class="gk-t">' + lead + '<b>I&rsquo;m building a rain gauge that keeps its own log.</b> Read it like any gauge. ' +
+      'Or scan the code with your phone, and the reading goes into your log for that field. No battery, no app.</p>' +
+      '<div class="gk-b"><form class="gk-f" action="/rain-gauge#waitlist" method="get" novalidate>' +
+      '<label class="gk-l" for="gk-e">Email</label><input class="gk-e" id="gk-e" type="email" autocomplete="email" maxlength="254" placeholder="your@email.com">' +
+      '<input class="gk-h" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      '<button class="btn btn-primary" type="submit">Get on the waitlist</button></form>' +
+      '<p class="gk-m" role="status" hidden></p></div>' +
+      '<p class="gk-s">Free to join. The waitlist hears first and gets the first-batch price. No price is set yet. ' +
+      '<a href="/rain-gauge' + q + '#waitlist">See the gauge</a>.</p>';
+  }
   [].forEach.call(document.querySelectorAll('.gk'), function (box) {
-    var f = box.querySelector('.gk-f'), m = box.querySelector('.gk-m'), e = box.querySelector('.gk-e'), btn = box.querySelector('button');
     var kind = box.getAttribute('data-gk'), fips = box.getAttribute('data-fips') || '';
+    if (KINDS.indexOf(kind) < 0) return;
+    if (!/^(\d{2}|\d{5})$/.test(fips)) fips = '';
+    fill(box, kind, fips);
+    var f = box.querySelector('.gk-f'), m = box.querySelector('.gk-m'), e = box.querySelector('.gk-e'), btn = box.querySelector('button');
     function say(t, ok) { m.textContent = t; m.className = 'gk-m' + (ok ? '' : ' err'); m.hidden = false; }
     function thanks() {
       f.hidden = true;
