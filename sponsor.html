@@ -101,6 +101,9 @@
     .sp-btn--alt{background:transparent;color:var(--text);border-color:var(--text-dim);}
     .sp-btn--alt:hover{background:transparent;color:var(--brand);border-color:var(--brand);}
     .sp-note{max-width:64ch;}
+    .sp-rep{scroll-margin-top:84px;margin-top:2.2rem;}
+    .sp-rep .sp-h2{margin-top:0;}
+    .sp-rep p{max-width:64ch;margin:0 0 .6rem;color:var(--text-dim);line-height:1.6;}
     .sp-report{margin:-.3rem 0 1rem;}
     .sp-report a{color:var(--text);text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:12px 0;margin:-12px 0;}
     .sp-form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.2rem;background:var(--surface);}
@@ -264,6 +267,15 @@
         <li><strong>Month to month or by the year.</strong> A year costs the same as 10 months. Money back if you ask inside 30 days. W-9 on request.</li>
       </ol>
 
+      <section class="sp-rep" id="sell-for-us" aria-labelledby="sp-rep-h">
+        <h2 class="sp-h2" id="sp-rep-h">Sell ads for AGSIST</h2>
+        <p>This is commission only. There is no hourly pay.</p>
+        <p>You get 25% of what each ad you sell brings in during its first year, and 10% on renewals.</p>
+        <p>You sell to farm businesses you already know: co-ops, seed and chemical dealers, equipment dealers, lenders, insurance agents and local services.</p>
+        <p>Territories are open.</p>
+        <p>To apply, email <a href="mailto:sig@agsist.com?subject=AGSIST%20ad%20rep" data-ref="0">sig@agsist.com</a> with your area and the businesses you know.</p>
+      </section>
+
       <h2 class="sp-h2">Questions</h2>
       <div class="sp-faq">
         <details id="how-counted">
@@ -306,7 +318,7 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=23" defer></script>
+  <script src="/components/loader.js?v=24" defer></script>
   <script src="/components/sponsor-apply.js?v=13" defer></script>
   <script>/* "How each is counted" and "How you see it" open their question on arrival */(function(){function o(){if(location.hash==='#how-counted'||location.hash==='#report'){var d=document.getElementById(location.hash.slice(1));if(d)d.open=true;}}o();addEventListener('hashchange',o);})();</script>
   <script src="/components/next-links.js?v=4" defer></script>

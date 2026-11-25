@@ -2,11 +2,32 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-25-daily-locked-prices",
+   "date": "2026-11-25",
+   "title": "The Daily: board prices come from the price table",
+   "line": "Futures prices and their moves in the Daily are set from the morning's price table, one trading session per sentence, and a basis change always says basis.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-25-gauge-ask",
    "date": "2026-11-25",
    "title": "Rain gauge waitlist on the rain pages",
    "line": "I'm building a rain gauge that keeps its own log. The rain pages and Rain Print now have a short note and an email box if you want one.",
    "link": "/rain-gauge"
+  },
+  {
+   "id": "2026-11-25-croptour-terms-fold",
+   "date": "2026-11-25",
+   "title": "Tidier Crop Tour page",
+   "line": "The Crop Tour page keeps its sources and notices in one short fold at the bottom.",
+   "link": "/crop-tour"
+  },
+  {
+   "id": "2026-11-25-prf-county-rows",
+   "date": "2026-11-25",
+   "title": "PRF state pages: a priced example in every county row",
+   "line": "Each county row on the PRF state pages now shows what the 100-acre grazing example costs you a year and in how many of 75 years it would have paid.",
+   "link": "/prf/texas"
   },
   {
    "id": "2026-11-24-daily-fertilizer-line",
