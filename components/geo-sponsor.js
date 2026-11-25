@@ -152,7 +152,8 @@
     var nm = esc(name), soon = held(card, st);
     return '<div class="ss-box ss-open"><p class="ss-tag">' + nm + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
       '<p class="ss-txt">Your card on every ' + nm + ' page and for ' + nm + ' readers. See who reads AGSIST and the price on the sponsor page.</p>' +
-      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + ' <span class="ss-go-x">on AGSIST</span></a></div>';
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + ' <span class="ss-go-x">on AGSIST</span></a>' +
+      '<a class="ss-rep" href="/sponsor#sell-for-us">Or sell ads for AGSIST on commission.</a></div>';
   }
   /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the
      sitewide sponsor is on the same screen) keeps its room and says so, with no sponsor name: never an empty box,
@@ -236,7 +237,7 @@
   function spot() { return doc.querySelector('[data-state-spot]'); }
   function firstScreen(el) { try { return el.getBoundingClientRect().top < (root.innerHeight || doc.documentElement.clientHeight); } catch (x) { return false; } }
   function sitewideSold() { var l = doc.getElementById('ag-sw'); return !!(l && /sw-line--sold/.test(l.className) && shown(l)); }
-  var CSS = '/components/geo-sponsor.css?v=4';
+  var CSS = '/components/geo-sponsor.css?v=5';
   function css() { return need('link', 'href', CSS, function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }); }
   function hold(lower) {
     var sp = spot(), st = sp && sp.getAttribute('data-state-spot');
@@ -247,7 +248,7 @@
     var onSpot = surface === 'state-page' || surface === 'preview-state';
     Promise.all([
       need('link', 'href', '/components/sponsor-ad.css?v=4', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
-      need('link', 'href', '/components/geo-sponsor.css?v=4', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
+      need('link', 'href', '/components/geo-sponsor.css?v=5', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
       need('script', 'src', '/components/sponsor-ad.js?v=4', function () { return !!root.AgsistAd; })
     ]).then(function () {
       if (!root.AgsistAd || (!preview && soldOnPage())) { if (onSpot) hold(false); return; }
