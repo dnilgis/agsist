@@ -1,7 +1,7 @@
 /* components/rain-county-print.js: the county's year so far, drawn as a Rain
  * Print, on every county rain page (/rain/<state>/<county>), 2026-10-15.
  *
- * Sig: "put a rain print in place of that chart on every county rain page."
+ * 
  * The page ships only a small placeholder: the plain running-total chart
  * (inline SVG, a few KB) inside <figure id="rc-print" data-...>. Nothing more
  * loads until that figure comes near the screen; then, once:
@@ -29,10 +29,10 @@
   var doc = root.document;
   /* mount(fig): the same drawing for any figure carrying these data- fields (2026-10-19:
      /here draws the nearest county station's year with it). It resolves true once the
-     print is drawn, false when it is not (the plain chart stays). The county page's own
+     print is drawn, false when it is not (the enhanced chart stays). The county page's own
      #rc-print mounts itself, as before. */
   root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf, mount: mount };   // for test/rain-county-print.test.mjs
-  var ART = '/components/rain-print-art.js?v=23', ENGINE = '/components/rain-print.js?v=91';
+  var ART = '/components/rain-print-art.js?v=24', ENGINE = '/components/rain-print.js?v=98';
   // "Watch it draw" (2026-10-20): loaded only when a reader taps it
   var DRAW = '/components/rain-print-draw.js?v=5';
   var MISS_BLOCK = 31, MIN_DAYS = 60;
@@ -133,8 +133,8 @@
       var svg = A.render(lastInput = {
         style: style, year: year, place: D.place, name: '', dedication: '',
         days: S.days, D: S.d, showDry: S.RP.showDry(S.d), axisLen: S.preview ? (isLeap(year) ? 366 : 365) : S.d.n,
-        ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Usual: NOAA 1991 to 2020 normals, on the days reported' : 'Usual: NOAA 30-year normals, on the days reported') : '',
-        showNormals: !!S.ov, markers: [], records: [], qr: null,
+        ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Normal: NOAA 1991 to 2020, on the days reported' : 'Normal: NOAA 30-year, on the days reported') : '',
+        showNormals: !!S.ov, loc: { word: 'normal' }, markers: [], records: [], qr: null,
         preview: S.preview ? { last: S.days[S.days.length - 1].date } : null,
         gauge: D.gauge || '', logo: null, watermark: false, bleed: 0, idPrefix: 'rc'
       });
@@ -160,7 +160,7 @@
         if (days.length !== +D.days || Math.abs(d.total - +D.total) > 0.011) return false;
         if (d.missing > MISS_BLOCK || days.length < MIN_DAYS) return false;
         state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
-        /* the style the page ships pressed opens first: Roots on county pages (Sig, Oct 28 2026),
+        /* the style the page ships pressed opens first: Roots on county pages (Oct 28 2026),
            Staircase where a figure presses it (/here) or presses none */
         var pre = fig.querySelector('.rc-print-styles [data-style][aria-pressed="true"]');
         draw(pre && pre.getAttribute('data-style') === 'r2' ? 'r2' : 'r1');
@@ -208,11 +208,11 @@
         var lead = doc.getElementById('rc-sell-lead'), plain = doc.querySelector('.rc-sell-plain');
         if (lead) { lead.hidden = false; if (plain) plain.hidden = true; }
         return true;
-      }).catch(function () { return false; /* the plain chart stays */ });
+      }).catch(function () { return false; /* the enhanced chart stays */ });
     }
     return new Promise(function (done) {
-      /* not drawn (no days file, a mismatch, a failure): the plain chart stays, and on the county page the
-         room held for the print, its picker and its caption is let go (rain-county.css .rc-print-off) */
+      /* not drawn (no days file, a mismatch, a failure): the enhanced chart stays, and on the county page the
+         room held for the print, its picker and its caption is let go on a phone and held wider (rain-county.css .rc-print-off) */
       function off() { fig.classList.add('rc-print-off'); return false; }
       function run() { go().then(function (ok) { done(ok || off()); }, function () { done(off()); }); }
       if ('IntersectionObserver' in root) {

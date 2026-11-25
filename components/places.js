@@ -38,6 +38,23 @@
     return s.replace(/[^a-z]/g, '');
   }
   function shardKey(k) { return (k + '__').slice(0, 2); }
+  // letters to change, add, drop or swap (two side by side) to turn a into b; stops early past most
+  function dist(a, b, most) {
+    if (Math.abs(a.length - b.length) > most) return most + 1;
+    var prev2 = null, prev = [], i, j;
+    for (j = 0; j <= b.length; j++) prev.push(j);
+    for (i = 1; i <= a.length; i++) {
+      var cur = [i], low = i;
+      for (j = 1; j <= b.length; j++) {
+        var c = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        if (prev2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) c = Math.min(c, prev2[j - 2] + 1);
+        cur.push(c); if (c < low) low = c;
+      }
+      if (low > most) return most + 1;
+      prev2 = prev; prev = cur;
+    }
+    return prev[b.length];
+  }
 
   function defaultGet(url) {
     var ctl = typeof AbortController === 'function' ? new AbortController() : null;
@@ -88,7 +105,30 @@
         return { results: hit.slice(0, count).map(function (p) { return townRow(p, cc); }) };
       });
     }
-    return { search: search, zip: zip, fold: fold, STATES: STATES, PROVS: PROVS };
+    /* The nearest spellings to a town the lookup did not find (2026-11-09, Rain Print panel: "Lenox, SD" said
+       only "Check the spelling" while Lennox, SD sat in the same file). Same file as the search (the first two
+       letters), the same state when one is given (opt.st, a postal code), at most 1 letter off for a name of 5
+       letters or fewer, 2 for a longer one; nearest first, then the bigger town. -> {results: [up to 3]} */
+    function near(q, opt) {
+      opt = opt || {};
+      var cc = String(opt.country || 'US').toUpperCase() === 'CA' ? 'CA' : 'US', st = String(opt.st || '').toUpperCase();
+      var k = fold(q);
+      if (k.length < 3) return Promise.resolve({ results: [] });
+      var most = k.length <= 5 ? 1 : 2;
+      return file(base + cc.toLowerCase() + '/' + shardKey(k) + '.json', opt.get).then(function (t) {
+        var got = [];
+        ((t && t.p) || []).forEach(function (p) {
+          if (st && p[1] !== st) return;
+          var d = dist(fold(p[0]), k, most);
+          if (d > 0 && d <= most) got.push({ d: d, p: p });
+        });
+        got.sort(function (a, b) { return a.d - b.d || (b.p[5] || 0) - (a.p[5] || 0); });
+        var seen = {}, out = [];
+        got.forEach(function (x) { var key = x.p[0] + '|' + x.p[1]; if (!seen[key] && out.length < 3) { seen[key] = 1; out.push(townRow(x.p, cc)); } });
+        return { results: out };
+      });
+    }
+    return { search: search, near: near, zip: zip, fold: fold, STATES: STATES, PROVS: PROVS };
   }
 
   var api = make();

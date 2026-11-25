@@ -51,13 +51,6 @@
    "tier": null
   },
   {
-   "id": "drought",
-   "page": "/drought-monitor",
-   "name": "Drought Monitor",
-   "pitch": "Your name beside the drought map. One category-exclusive slot.",
-   "tier": null
-  },
-  {
    "id": "fast-facts",
    "page": "/fast-facts",
    "name": "Fast Facts",
@@ -146,13 +139,6 @@
    "page": "/tools",
    "name": "All Tools",
    "pitch": "Your name on the page that lists every tool. One category-exclusive slot.",
-   "tier": null
-  },
-  {
-   "id": "urea",
-   "page": "/urea",
-   "name": "Urea Volatilization Risk",
-   "pitch": "Your name beside the urea loss risk. One category-exclusive slot.",
    "tier": null
   },
   {

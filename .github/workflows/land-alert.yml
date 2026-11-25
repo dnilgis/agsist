@@ -1,14 +1,10 @@
 name: Monthly land sale email
-# Monthly land sale email.
 
-# scripts/land_alert.py). Sig approved the list, the sender and this schedule on Oct 23, 2026.
-# Signups on (Sig approved Oct 27, 2026: "Turn on land sale email alert signups"). The ask tells a
-# The 3rd, 15:47 UTC (the schedule Sig approved): after land-data.yml (the 3rd, 09:23 UTC,
 on:
   schedule:
     - cron: "47 15 3 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 12"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -31,7 +27,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 12' || (contains(github.event.workflow_run.display_title, ' land-alert.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read

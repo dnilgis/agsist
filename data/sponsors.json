@@ -1,7 +1,4 @@
 {
- "note": "Sponsors with a report page. The link token is NOT here (Nov 4, 2026): it lives only in the private repo (private-data, private/sponsors/tokens/), and the report is served by the subs worker to whoever holds the link, which is obscurity rather than a login: anyone holding the link can read that sponsor's numbers, which is the point of being able to email it. Do not put anything in a report that would matter if it were forwarded. Set 'pages' to limit the report to the slots that sponsor actually bought; leave it null for site-wide. A new sponsor here gets its token from scripts/sponsor_publish.py mint.",
- "startNote": "'start' is the date that sponsor's FIRST AD RAN. It is not a reporting window and it must never be guessed: with no start date the builder writes a page that says the counter has not begun, which is the truth, instead of handing over ninety days of traffic that was never theirs. Set it the day the ad goes live.",
- "oneAtATime": "While `slot` is unregistered as a GA4 custom dimension, only ONE sponsor may be active. Two would each be shown the site-wide total as their own. build_sponsor_report.py refuses rather than guessing.",
  "sponsors": [
   {
    "slug": "apex",
@@ -12,9 +9,7 @@
    "pages": null,
    "approved": null,
    "billing": {
-    "tier": "daily",
-    "trial_months": 1,
-    "rate_lock_months": 12
+    "tier": "daily"
    },
    "placements": [
     "homepage",
@@ -85,11 +80,5 @@
     "cta_text": "Learn more"
    }
   }
- ],
- "approvedNote": "'approved' is filled in by hand when the sponsor's approval email arrives: {\"proof\": the code quoted in that email, \"on\": the date, \"by\": who sent it}. The portal shows APPROVED only while that code equals the current proof code, so an edit to the copy after approval shows up on the sponsor's own page as 'changed since you approved it'. scripts/sponsor-checks.mjs refuses a live ad whose current proof code was never approved.",
- "billingNote": "'billing' is the deal as agreed, typed here, never inferred. The price comes from data/rate-card.json by tier, so the portal cannot quote a rate the sales page does not. The schedule on the portal (free weeks, first billed week, rate-lock end) is computed from these numbers and 'start'.",
- "contactNote": "No contact or invoice address goes in this file, or in any file in this repo: the site publishes every file here, so a name, phone or email typed here is public. Who to call and where invoices go live with Sig, in his own email, never in the repo. build_sponsor_report.py writes neither to a portal.",
- "licensedNote": "'licensed_states' is the list of states the sponsor can write business in, as two-letter codes (\"WI\", \"MN\", ...), typed from the sponsor's own list. null means nobody has sent one yet, and the portal says it is waiting for it. The audience section marks these states on the map and totals the readers inside them.",
- "geoNote": "A state-targeted sponsor (Oct 28, 2026, RootLot) has 'geo': its id in data/geo-sponsors.json, where its ad lives, and 'regions': the states the ad is aimed at. Its portal is the same page. billing.free_test true marks a free test: the portal shows every part about money muted under 'Free test: no charge'. 'active' here means the portal is built; the ad itself runs only while its geo-sponsors.json entry is active. A geo ad switched on by hand carries 'count_from', the day Sig said start (nothing of it could run before): GA4 is asked from that day and the portal shows 'live since' the first day with data, 0 until then. 'start' stays null for it; it is never guessed. A paid geo ad also needs its approval on record before it is switched on; a free test whose copy Sig picked himself does not (scripts/test_sponsor_portal.py).",
- "demoNote": "A demo portal ('demo': true) shows a prospect what their page would look like. It never runs an ad: it has no 'geo' id, no entry in data/geo-sponsors.json, data/page-sponsors.json, data/sponsor.json, data/supporters.json or data/prf-sponsors.json, and no billing tier (test/sponsor-demo.test.mjs). Its ad counters stay at the not-started 0 and are never asked of GA4; the audience numbers are AGSIST's real readers from data/audience.json. 'expires' (YYYY-MM-DD) is its last day: after it the builder drops the data and the page says the demo has ended. A demo without a valid expires date is treated as ended. 'demo_ad' is the placeholder ad, plain text, no logo and no outside link."
+ ]
 }

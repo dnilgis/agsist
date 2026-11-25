@@ -3,7 +3,7 @@
  *
  * A few things only the worker can finish: a gift card order (the card must
  * be checked and used once), a business quote (its customer list never goes
- * to the backup form, Sig's rule), a hay board post or change, an elevator's
+ * to the backup form), a hay board post or change, an elevator's
  * bids, a watch confirm. When the worker is blocked or down, the page keeps
  * the request here, in this browser's storage, and says so in one plain
  * line. Nothing about it leaves this browser until the worker answers again.
@@ -127,7 +127,7 @@
       var old = doc.getElementById('outbox-said'); if (old) old.remove();
       var b = doc.createElement('div');
       b.id = 'outbox-said'; b.setAttribute('role', 'status');
-      b.style.cssText = 'background:' + (bad ? '#7a2414' : '#1f5130') + ';color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9991;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+      b.style.cssText = 'background:' + (bad ? '#7a2414' : '#1f5130') + ';color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9991;text-align:center';
       lines.forEach(function (t, i) { var p = doc.createElement('div'); p.textContent = t; if (i) p.style.marginTop = '4px'; b.appendChild(p); });
       var c = doc.createElement('button');
       c.type = 'button'; c.setAttribute('aria-label', 'Close'); c.textContent = '×';

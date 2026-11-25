@@ -42,7 +42,7 @@
     var d = new Date(iso);
     return isNaN(d) ? '' : d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Chicago' });
   }
-  // a digital file: the email job (started by this approval) sends the files at once (Sig, 2026-10-20)
+  // a digital file: the email job (started by this approval) sends the files at once (2026-10-20)
   function next(product, already) {
     if (product === 'digital') return already ? 'Your files went out by email when you approved it. Not there? Check spam, or write to me at sig@agsist.com.'
       : 'Your files come by email within minutes: a PDF, a PNG and a JPG, with a page on how to read it. Not there in an hour? Check spam.';

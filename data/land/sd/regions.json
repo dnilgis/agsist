@@ -1,0 +1,1137 @@
+{
+ "about": "SDSU Extension's eight South Dakota regions: reported value (February 2026) and cash rent (2026) per acre of non-irrigated cropland and pasture, high, average and low productivity, from an expert opinion survey. A region's figure, not a county's or a parcel's.",
+ "counties": {
+  "46003": {
+   "cluster": 0,
+   "name": "Aurora",
+   "region": "Central"
+  },
+  "46005": {
+   "cluster": 0,
+   "name": "Beadle",
+   "region": "Central"
+  },
+  "46007": {
+   "name": "Bennett",
+   "region": "Southwest"
+  },
+  "46009": {
+   "cluster": 1,
+   "name": "Bon Homme",
+   "region": "Southeast"
+  },
+  "46011": {
+   "cluster": 1,
+   "name": "Brookings",
+   "region": "East Central"
+  },
+  "46013": {
+   "cluster": 0,
+   "name": "Brown",
+   "region": "North Central"
+  },
+  "46015": {
+   "cluster": 1,
+   "name": "Brule",
+   "region": "Central"
+  },
+  "46017": {
+   "cluster": 1,
+   "name": "Buffalo",
+   "region": "Central"
+  },
+  "46019": {
+   "name": "Butte",
+   "region": "Northwest"
+  },
+  "46021": {
+   "cluster": 2,
+   "name": "Campbell",
+   "region": "North Central"
+  },
+  "46023": {
+   "cluster": 2,
+   "name": "Charles Mix",
+   "region": "Southeast"
+  },
+  "46025": {
+   "cluster": 2,
+   "name": "Clark",
+   "region": "Northeast"
+  },
+  "46027": {
+   "cluster": 0,
+   "name": "Clay",
+   "region": "Southeast"
+  },
+  "46029": {
+   "cluster": 0,
+   "name": "Codington",
+   "region": "Northeast"
+  },
+  "46031": {
+   "name": "Corson",
+   "region": "Northwest"
+  },
+  "46033": {
+   "name": "Custer",
+   "region": "Southwest"
+  },
+  "46035": {
+   "cluster": 2,
+   "name": "Davison",
+   "region": "East Central"
+  },
+  "46037": {
+   "cluster": 2,
+   "name": "Day",
+   "region": "Northeast"
+  },
+  "46039": {
+   "cluster": 0,
+   "name": "Deuel",
+   "region": "Northeast"
+  },
+  "46041": {
+   "name": "Dewey",
+   "region": "Northwest"
+  },
+  "46043": {
+   "cluster": 2,
+   "name": "Douglas",
+   "region": "Southeast"
+  },
+  "46045": {
+   "cluster": 1,
+   "name": "Edmunds",
+   "region": "North Central"
+  },
+  "46047": {
+   "name": "Fall River",
+   "region": "Southwest"
+  },
+  "46049": {
+   "cluster": 1,
+   "name": "Faulk",
+   "region": "North Central"
+  },
+  "46051": {
+   "cluster": 1,
+   "name": "Grant",
+   "region": "Northeast"
+  },
+  "46053": {
+   "name": "Gregory",
+   "region": "South Central"
+  },
+  "46055": {
+   "name": "Haakon",
+   "region": "Southwest"
+  },
+  "46057": {
+   "cluster": 0,
+   "name": "Hamlin",
+   "region": "Northeast"
+  },
+  "46059": {
+   "cluster": 1,
+   "name": "Hand",
+   "region": "Central"
+  },
+  "46061": {
+   "cluster": 2,
+   "name": "Hanson",
+   "region": "East Central"
+  },
+  "46063": {
+   "name": "Harding",
+   "region": "Northwest"
+  },
+  "46065": {
+   "cluster": 2,
+   "name": "Hughes",
+   "region": "Central"
+  },
+  "46067": {
+   "cluster": 1,
+   "name": "Hutchinson",
+   "region": "Southeast"
+  },
+  "46069": {
+   "cluster": 1,
+   "name": "Hyde",
+   "region": "Central"
+  },
+  "46071": {
+   "name": "Jackson",
+   "region": "Southwest"
+  },
+  "46073": {
+   "cluster": 0,
+   "name": "Jerauld",
+   "region": "Central"
+  },
+  "46075": {
+   "name": "Jones",
+   "region": "South Central"
+  },
+  "46077": {
+   "cluster": 2,
+   "name": "Kingsbury",
+   "region": "East Central"
+  },
+  "46079": {
+   "cluster": 1,
+   "name": "Lake",
+   "region": "East Central"
+  },
+  "46081": {
+   "name": "Lawrence",
+   "region": "Northwest"
+  },
+  "46083": {
+   "cluster": 0,
+   "name": "Lincoln",
+   "region": "Southeast"
+  },
+  "46085": {
+   "name": "Lyman",
+   "region": "South Central"
+  },
+  "46087": {
+   "cluster": 1,
+   "name": "McCook",
+   "region": "East Central"
+  },
+  "46089": {
+   "cluster": 1,
+   "name": "McPherson",
+   "region": "North Central"
+  },
+  "46091": {
+   "cluster": 2,
+   "name": "Marshall",
+   "region": "Northeast"
+  },
+  "46093": {
+   "name": "Meade",
+   "region": "Northwest"
+  },
+  "46095": {
+   "name": "Mellette",
+   "region": "South Central"
+  },
+  "46097": {
+   "cluster": 2,
+   "name": "Miner",
+   "region": "East Central"
+  },
+  "46099": {
+   "cluster": 0,
+   "name": "Minnehaha",
+   "region": "East Central"
+  },
+  "46101": {
+   "cluster": 0,
+   "name": "Moody",
+   "region": "East Central"
+  },
+  "46102": {
+   "name": "Oglala Lakota",
+   "region": "Southwest"
+  },
+  "46103": {
+   "name": "Pennington",
+   "region": "Southwest"
+  },
+  "46105": {
+   "name": "Perkins",
+   "region": "Northwest"
+  },
+  "46107": {
+   "cluster": 2,
+   "name": "Potter",
+   "region": "North Central"
+  },
+  "46109": {
+   "cluster": 1,
+   "name": "Roberts",
+   "region": "Northeast"
+  },
+  "46111": {
+   "cluster": 2,
+   "name": "Sanborn",
+   "region": "East Central"
+  },
+  "46115": {
+   "cluster": 0,
+   "name": "Spink",
+   "region": "North Central"
+  },
+  "46117": {
+   "name": "Stanley",
+   "region": "Southwest"
+  },
+  "46119": {
+   "cluster": 2,
+   "name": "Sully",
+   "region": "Central"
+  },
+  "46121": {
+   "name": "Todd",
+   "region": "South Central"
+  },
+  "46123": {
+   "name": "Tripp",
+   "region": "South Central"
+  },
+  "46125": {
+   "cluster": 0,
+   "name": "Turner",
+   "region": "Southeast"
+  },
+  "46127": {
+   "cluster": 0,
+   "name": "Union",
+   "region": "Southeast"
+  },
+  "46129": {
+   "cluster": 2,
+   "name": "Walworth",
+   "region": "North Central"
+  },
+  "46135": {
+   "cluster": 1,
+   "name": "Yankton",
+   "region": "Southeast"
+  },
+  "46137": {
+   "name": "Ziebach",
+   "region": "Northwest"
+  }
+ },
+ "evidence": "expert opinion survey, region averages",
+ "not_mapped": {},
+ "notes": {
+  "clusters": "county clusters from Appendix Tables 2 and 4, county names printed in the column heads (SDSU prints Edmunds as Edmund)",
+  "limited": "Note that data for the South Central, Northwest, and Southwest regions are limited, and figures for those regions should be interpreted with caution.",
+  "no_cluster": "Due to insufficient data, county cluster level estimates are not available for the South Central, Southwest, and Northwest regions.",
+  "parcel": "The values and rental rates in this report represent regional averages and should not be interpreted as estimates for any specific parcel of land.",
+  "private": "The land values and cash rental rates are reported only for privately owned land and should not be considered as estimated values for tribal lands or federal lands."
+ },
+ "regions": {
+  "Central": {
+   "asd": "50",
+   "clusters": [
+    {
+     "counties": [
+      "46003",
+      "46005",
+      "46073"
+     ],
+     "name": "Aurora, Beadle and Jerauld",
+     "rent": {
+      "crop": {
+       "average": 147,
+       "high": 165,
+       "low": 128
+      },
+      "pasture": {
+       "average": 78,
+       "high": 87,
+       "low": 60
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 6417,
+       "high": 7800,
+       "low": 5000
+      },
+      "pasture": {
+       "average": 3133,
+       "high": 3550,
+       "low": 2400
+      }
+     }
+    },
+    {
+     "counties": [
+      "46015",
+      "46017",
+      "46059",
+      "46069"
+     ],
+     "name": "Buffalo, Brule, Hand and Hyde",
+     "rent": {
+      "crop": {
+       "average": 125,
+       "high": 156,
+       "low": 97
+      },
+      "pasture": {
+       "average": 65,
+       "high": 84,
+       "low": 45
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 5594,
+       "high": 6838,
+       "low": 4213
+      },
+      "pasture": {
+       "average": 3422,
+       "high": 3906,
+       "low": 2294
+      }
+     }
+    },
+    {
+     "counties": [
+      "46065",
+      "46119"
+     ],
+     "name": "Hughes and Sully",
+     "rent": {
+      "crop": {
+       "average": 109,
+       "high": 135,
+       "low": 93
+      },
+      "pasture": {
+       "average": 60,
+       "high": 72,
+       "low": 45
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 4500,
+       "high": 5417,
+       "low": 3375
+      },
+      "pasture": {
+       "average": 1973,
+       "high": 2833,
+       "low": 1700
+      }
+     }
+    }
+   ],
+   "counties": [
+    "46003",
+    "46005",
+    "46015",
+    "46017",
+    "46059",
+    "46065",
+    "46069",
+    "46073",
+    "46119"
+   ],
+   "rent": {
+    "crop": {
+     "average": 126,
+     "high": 153,
+     "low": 105
+    },
+    "pasture": {
+     "average": 67,
+     "high": 82,
+     "low": 48
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 5517,
+     "high": 6642,
+     "low": 4247
+    },
+    "pasture": {
+     "average": 3026,
+     "high": 3594,
+     "low": 2250
+    }
+   }
+  },
+  "East Central": {
+   "asd": "60",
+   "clusters": [
+    {
+     "counties": [
+      "46099",
+      "46101"
+     ],
+     "name": "Minnehaha and Moody",
+     "rent": {
+      "crop": {
+       "average": 328,
+       "high": 386,
+       "low": 286
+      },
+      "pasture": {
+       "average": 96,
+       "high": 116,
+       "low": 77
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 12778,
+       "high": 15833,
+       "low": 10611
+      },
+      "pasture": {
+       "average": 4857,
+       "high": 5714,
+       "low": 3786
+      }
+     }
+    },
+    {
+     "counties": [
+      "46011",
+      "46079",
+      "46087"
+     ],
+     "name": "Brookings, Lake and McCook",
+     "rent": {
+      "crop": {
+       "average": 265,
+       "high": 314,
+       "low": 218
+      },
+      "pasture": {
+       "average": 92,
+       "high": 117,
+       "low": 72
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 10175,
+       "high": 12675,
+       "low": 7975
+      },
+      "pasture": {
+       "average": 4500,
+       "high": 5688,
+       "low": 3500
+      }
+     }
+    },
+    {
+     "counties": [
+      "46035",
+      "46061",
+      "46077",
+      "46097",
+      "46111"
+     ],
+     "name": "Sanborn, Davison, Hanson, Kingsbury and Miner",
+     "rent": {
+      "crop": {
+       "average": 221,
+       "high": 257,
+       "low": 179
+      },
+      "pasture": {
+       "average": 88,
+       "high": 106,
+       "low": 66
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 8455,
+       "high": 10562,
+       "low": 6706
+      },
+      "pasture": {
+       "average": 3721,
+       "high": 4730,
+       "low": 2608
+      }
+     }
+    }
+   ],
+   "counties": [
+    "46011",
+    "46035",
+    "46061",
+    "46077",
+    "46079",
+    "46087",
+    "46097",
+    "46099",
+    "46101",
+    "46111"
+   ],
+   "rent": {
+    "crop": {
+     "average": 260,
+     "high": 305,
+     "low": 217
+    },
+    "pasture": {
+     "average": 91,
+     "high": 111,
+     "low": 71
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 10105,
+     "high": 12579,
+     "low": 8156
+    },
+    "pasture": {
+     "average": 4210,
+     "high": 5232,
+     "low": 3157
+    }
+   }
+  },
+  "North Central": {
+   "asd": "20",
+   "clusters": [
+    {
+     "counties": [
+      "46013",
+      "46115"
+     ],
+     "name": "Brown and Spink",
+     "rent": {
+      "crop": {
+       "average": 171,
+       "high": 220,
+       "low": 133
+      },
+      "pasture": {
+       "average": 61,
+       "high": 78,
+       "low": 39
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 7120,
+       "high": 10500,
+       "low": 4700
+      },
+      "pasture": {
+       "average": 3563,
+       "high": 4500,
+       "low": 2333
+      }
+     }
+    },
+    {
+     "counties": [
+      "46045",
+      "46049",
+      "46089"
+     ],
+     "name": "Edmunds, Faulk and McPherson",
+     "rent": {
+      "crop": {
+       "average": 116,
+       "high": 145,
+       "low": 91
+      },
+      "pasture": {
+       "average": 52,
+       "high": 73,
+       "low": 42
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 4350,
+       "high": 5800,
+       "low": 3340
+      },
+      "pasture": {
+       "average": 2563,
+       "high": 3050,
+       "low": 2000
+      }
+     }
+    },
+    {
+     "counties": [
+      "46021",
+      "46107",
+      "46129"
+     ],
+     "name": "Campbell, Potter and Walworth",
+     "rent": {
+      "crop": {
+       "average": 111,
+       "high": 135,
+       "low": 91
+      },
+      "pasture": {
+       "average": 51,
+       "high": 56,
+       "low": 38
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 5000,
+       "high": 6111,
+       "low": 3769
+      },
+      "pasture": {
+       "average": 2156,
+       "high": 2558,
+       "low": 1900
+      }
+     }
+    }
+   ],
+   "counties": [
+    "46013",
+    "46021",
+    "46045",
+    "46049",
+    "46089",
+    "46107",
+    "46115",
+    "46129"
+   ],
+   "rent": {
+    "crop": {
+     "average": 125,
+     "high": 154,
+     "low": 101
+    },
+    "pasture": {
+     "average": 54,
+     "high": 66,
+     "low": 40
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 5387,
+     "high": 7184,
+     "low": 3908
+    },
+    "pasture": {
+     "average": 2639,
+     "high": 3158,
+     "low": 2031
+    }
+   }
+  },
+  "Northeast": {
+   "asd": "30",
+   "clusters": [
+    {
+     "counties": [
+      "46029",
+      "46039",
+      "46057"
+     ],
+     "name": "Codington, Deuel and Hamlin",
+     "rent": {
+      "crop": {
+       "average": 247,
+       "high": 310,
+       "low": 192
+      },
+      "pasture": {
+       "average": 92,
+       "high": 112,
+       "low": 70
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 9305,
+       "high": 12150,
+       "low": 6710
+      },
+      "pasture": {
+       "average": 3765,
+       "high": 4725,
+       "low": 2770
+      }
+     }
+    },
+    {
+     "counties": [
+      "46051",
+      "46109"
+     ],
+     "name": "Grant and Roberts",
+     "rent": {
+      "crop": {
+       "average": 198,
+       "high": 256,
+       "low": 156
+      },
+      "pasture": {
+       "average": 75,
+       "high": 87,
+       "low": 61
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 7320,
+       "high": 9030,
+       "low": 5050
+      },
+      "pasture": {
+       "average": 3038,
+       "high": 4100,
+       "low": 2375
+      }
+     }
+    },
+    {
+     "counties": [
+      "46025",
+      "46037",
+      "46091"
+     ],
+     "name": "Clark, Day and Marshall",
+     "rent": {
+      "crop": {
+       "average": 189,
+       "high": 240,
+       "low": 148
+      },
+      "pasture": {
+       "average": 74,
+       "high": 91,
+       "low": 55
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 7700,
+       "high": 10170,
+       "low": 5025
+      },
+      "pasture": {
+       "average": 2971,
+       "high": 3757,
+       "low": 2321
+      }
+     }
+    }
+   ],
+   "counties": [
+    "46025",
+    "46029",
+    "46037",
+    "46039",
+    "46051",
+    "46057",
+    "46091",
+    "46109"
+   ],
+   "rent": {
+    "crop": {
+     "average": 214,
+     "high": 271,
+     "low": 167
+    },
+    "pasture": {
+     "average": 83,
+     "high": 100,
+     "low": 63
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 8266,
+     "high": 10734,
+     "low": 5704
+    },
+    "pasture": {
+     "average": 3362,
+     "high": 4283,
+     "low": 2545
+    }
+   }
+  },
+  "Northwest": {
+   "counties": [
+    "46019",
+    "46031",
+    "46041",
+    "46063",
+    "46081",
+    "46093",
+    "46105",
+    "46137"
+   ],
+   "limited": true,
+   "rent": {
+    "crop": {
+     "average": 57,
+     "high": 79,
+     "low": 36
+    },
+    "pasture": {
+     "average": 25,
+     "high": 32,
+     "low": 17
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 1731,
+     "high": 2175,
+     "low": 1417
+    },
+    "pasture": {
+     "average": 1217,
+     "high": 1667,
+     "low": 875
+    }
+   }
+  },
+  "South Central": {
+   "asd": "80",
+   "counties": [
+    "46053",
+    "46075",
+    "46085",
+    "46095",
+    "46121",
+    "46123"
+   ],
+   "limited": true,
+   "rent": {
+    "crop": {
+     "average": 93,
+     "high": 113,
+     "low": 81
+    },
+    "pasture": {
+     "average": 44,
+     "high": 53,
+     "low": 32
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 3519,
+     "high": 4414,
+     "low": 3250
+    },
+    "pasture": {
+     "average": 2199,
+     "high": 3250,
+     "low": 2667
+    }
+   }
+  },
+  "Southeast": {
+   "asd": "90",
+   "clusters": [
+    {
+     "counties": [
+      "46027",
+      "46083",
+      "46125",
+      "46127"
+     ],
+     "name": "Clay, Lincoln, Turner and Union",
+     "rent": {
+      "crop": {
+       "average": 284,
+       "high": 331,
+       "low": 243
+      },
+      "pasture": {
+       "average": 106,
+       "high": 129,
+       "low": 88
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 10628,
+       "high": 13156,
+       "low": 8872
+      },
+      "pasture": {
+       "average": 4618,
+       "high": 5721,
+       "low": 3811
+      }
+     }
+    },
+    {
+     "counties": [
+      "46009",
+      "46067",
+      "46135"
+     ],
+     "name": "Bon Homme, Hutchinson and Yankton",
+     "rent": {
+      "crop": {
+       "average": 216,
+       "high": 253,
+       "low": 181
+      },
+      "pasture": {
+       "average": 99,
+       "high": 117,
+       "low": 86
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 8705,
+       "high": 10332,
+       "low": 7182
+      },
+      "pasture": {
+       "average": 4438,
+       "high": 5288,
+       "low": 3613
+      }
+     }
+    },
+    {
+     "counties": [
+      "46023",
+      "46043"
+     ],
+     "name": "Charles Mix and Douglas",
+     "rent": {
+      "crop": {
+       "average": 183,
+       "high": 213,
+       "low": 152
+      },
+      "pasture": {
+       "average": 83,
+       "high": 97,
+       "low": 62
+      }
+     },
+     "value": {
+      "crop": {
+       "average": 6438,
+       "high": 7386,
+       "low": 5129
+      },
+      "pasture": {
+       "average": 3957,
+       "high": 4567,
+       "low": 3114
+      }
+     }
+    }
+   ],
+   "counties": [
+    "46009",
+    "46023",
+    "46027",
+    "46043",
+    "46067",
+    "46083",
+    "46125",
+    "46127",
+    "46135"
+   ],
+   "rent": {
+    "crop": {
+     "average": 244,
+     "high": 285,
+     "low": 208
+    },
+    "pasture": {
+     "average": 100,
+     "high": 120,
+     "low": 83
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 9254,
+     "high": 11275,
+     "low": 7706
+    },
+    "pasture": {
+     "average": 4440,
+     "high": 5381,
+     "low": 3619
+    }
+   }
+  },
+  "Southwest": {
+   "counties": [
+    "46007",
+    "46033",
+    "46047",
+    "46055",
+    "46071",
+    "46102",
+    "46103",
+    "46117"
+   ],
+   "limited": true,
+   "rent": {
+    "crop": {
+     "average": 55,
+     "high": 67,
+     "low": 41
+    },
+    "pasture": {
+     "average": 35,
+     "high": 43,
+     "low": 25
+    }
+   },
+   "value": {
+    "crop": {
+     "average": 1850,
+     "high": 2550,
+     "low": 1413
+    },
+    "pasture": {
+     "average": 1471,
+     "high": 1750,
+     "low": 1050
+    }
+   }
+  }
+ },
+ "regions_from": "the five regions east of the Missouri River and South Central are the USDA Agricultural Statistics Districts (the report's words); Northwest and Southwest from Figure 1, which prints the county names",
+ "respondents": 68,
+ "responses": 190,
+ "source": {
+  "authors": "Hoanh Le",
+  "org": "SDSU Extension, South Dakota State University",
+  "ref": "sdsu-p00117-2026-pdf",
+  "released": "June 2026",
+  "sha256": "eb59f1a077ff4c4152d6b659836902d996dd5250b11798d4ae9b75375dea5074",
+  "title": "South Dakota Agricultural Land Market Trends, 1991-2026",
+  "url": "https://extension.sdstate.edu/south-dakota-agricultural-land-market-trends"
+ },
+ "state": "SD",
+ "tiers": {
+  "average": "average",
+  "high": "high",
+  "low": "low"
+ },
+ "unit": "region",
+ "what": {
+  "limited": "SDSU: data for the region are limited, interpret with caution",
+  "rent": "reported cash rent per acre, 2026",
+  "value": "reported value per acre, 2026 (privately owned land)"
+ },
+ "year": 2026
+}

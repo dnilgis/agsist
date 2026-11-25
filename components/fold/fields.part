@@ -1,0 +1,54 @@
+<!-- fold/fields.html: the My fields tab of /rain, read by scripts/build_county_rain.py (was /field-rain until Nov 24, 2026) -->
+<script>/* hold the cards' room before first paint: the saved fields on this device, plus a field link not among them (components/field-rain.js); a hash that opens this tab also loads its style now, so the tab paints once (components/page-tabs.js would load it a moment later) */(function(d){var n=0,a=[],h=location.hash,m=/(?:^|[#?&])f=-?[\d.]+,-?[\d.]+/.test(h);try{a=JSON.parse(localStorage.getItem('agsist-fields')||'[]');if(!Array.isArray(a))a=[];}catch(e){a=[];}n=m?1:Math.min(a.length,20);if(m)d.documentElement.classList.add('fr-link');
+/* rows per card: 4, or 5 with a planting date on or before today */var t=new Date(),td=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2),r=0,k,p,pm=h.match(/[#?&]p=(\d{4}-\d\d-\d\d)/);
+if(m)r=pm&&pm[1]<=td?5:4;else for(k=0;k<n;k++){p=a[k]&&a[k].p;r+=typeof p==='string'&&p<=td?5:4;}
+d.documentElement.style.setProperty('--frn',String(Math.max(n,1)));d.documentElement.style.setProperty('--frx',m?'0':'1');d.documentElement.style.setProperty('--frr',String(Math.max(r,4)));if(!n)d.documentElement.classList.add('fr-none');if(/^#(p-)?fields(&|$)/.test(h))d.write('<link rel="stylesheet" href="/components/fold/fields.css?v=1">');})(document);</script>
+    <article class="fr">
+      <h2 class="fr-h1">Rain at your fields</h2>
+      <p class="by">Free, no sign-up. Radar estimate (NOAA MRMS) and PRISM estimate, the nearest gauge beside them.</p>
+      <noscript><p class="fr-err">This tab reads the radar and PRISM files in your browser, so it needs JavaScript. The county tab has every county without it: <a href="#county">rain by county</a>.</p></noscript>
+      <div id="fr-app" aria-live="polite"></div>
+      <p class="fr-count" id="fr-count"></p>
+      <p class="fr-msg" id="fr-msg" role="status"></p>
+      <section id="fr-hist" class="fr-off" aria-labelledby="fr-htitle">
+        <h2 id="fr-htitle">Every day of rain, PRISM estimate</h2>
+        <p class="fr-note">This link is the field's record. It holds the coordinates, name and planting date. It opens the same history on any phone or computer, with no account. Bookmark it or text it to yourself.</p>
+        <p class="fr-row2"><button type="button" class="fr-btn go" data-h="print">Print this history</button> <button type="button" class="fr-btn" data-h="copy">Copy this field's link</button></p>
+        <div class="fr-hbody"><p class="fr-note">Reading PRISM for this field.</p></div>
+      </section>
+      <form class="fr-form" id="fr-form" data-mode="add" autocomplete="off">
+        <fieldset style="border:0;margin:0;padding:0">
+          <legend id="fr-legend">Add a field</legend>
+          <label for="fr-name">Name (what you call it)</label>
+          <input id="fr-name" maxlength="40" placeholder="North 80">
+          <label for="fr-where">Where: a ZIP code, or a point pasted from a map</label>
+          <input id="fr-where" inputmode="decimal" placeholder="42.0308, -93.6319 or 50010" required>
+          <label for="fr-plant">Planting date (optional; adds rain since planting)</label>
+          <input id="fr-plant" type="date">
+          <div class="fr-row2">
+            <button type="submit" class="fr-btn go" id="fr-go">Save this field</button>
+            <button type="button" class="fr-btn" id="fr-geo">Use my location</button>
+            <button type="button" class="fr-btn" id="fr-pick">Pick on a map</button>
+            <button type="button" class="fr-btn" id="fr-cancel">Cancel</button>
+          </div>
+          <div id="fr-map" hidden></div>
+        </fieldset>
+      </form>
+      <p class="fr-note">Saved on this device only, up to 20 fields, free. What leaves this device:</p>
+      <ul class="fr-note">
+        <li>Our site sees which state radar files and ZIP code tables this tab fetches. That is the field's state, plus its neighbors near a state line, never the point.</li>
+        <li>PRISM (through RCC-ACIS) is asked for the point itself, to read its rain there.</li>
+        <li>"Pick on a map" loads USGS map tiles around the spot you look at.</li>
+        <li>A field's link keeps its place after the # sign, which browsers never send to a server.</li>
+      </ul>
+      <h2 class="fr-h2">What each number is</h2>
+      <ul class="fr-note">
+        <li><b>Radar estimate (NOAA MRMS):</b> NOAA's multi-sensor rain estimate, Pass 2, the run corrected with rain gauges, posted about an hour after each hour ends. We read it four times a day into one file per state, in squares about 2.8 by 2 miles. Last 24 hours, last 7 days and month to date come from it. "Rain through" is the newest radar hour; "data received" is when our job read it.</li>
+        <li><b>PRISM estimate:</b> Oregon State's daily rain grid, 4 km squares, built from gauge reports and radar; it posts a day or two late. Since Jan 1, since planting and every last-year figure come from it, read by your browser through RCC-ACIS when this tab opens. Each PRISM day ends at 12:00 UTC (6 am Central in winter).</li>
+        <li><b>P, preliminary:</b> PRISM reissues a month's days once late gauge reports arrive. A total that holds a day from this month or last month may still change. The link always shows PRISM's latest.</li>
+        <li><b>Nearest gauge:</b> a county gauge within 30 miles, in any state (a NOAA co-op station or a volunteer's rain gauge). It shows the gauge's own reported days and the radar at that gauge for the same days. That tells you how the radar does near you.</li>
+        <li><b>Your gauge:</b> what your own gauge held on a morning ("My gauge"). The page sets it beside PRISM's estimate for the same day, with the difference in inches. A morning reading covers about the 24 hours before it, close to PRISM's day. Your readings stay on this device. They show in the field's daily table, so printing it keeps them.</li>
+        <li><b>Grid cells read:</b> the radar square and the PRISM square each figure comes from, and the nearest ZIP code center. A pin in the wrong place shows there. Move it with "Move".</li>
+      </ul>
+      <p class="fr-note">One field on a map with storm replay: <a href="#radar">the radar tab</a>. A county's whole year from its gauge: <a href="#county">the county tab</a>.</p>
+      </article>

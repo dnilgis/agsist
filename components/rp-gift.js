@@ -24,7 +24,7 @@
  *     usable is true only for an unused card. prepaid (worker v5.40) is a
  *     card set when it was bought (the giver gave the address at checkout):
  *     not usable, nothing to fill in, its design shown. head, steps and note
- *     are the banner's lines (2026-10-20, Sig: what they get, how to use it). With banner, it fills that
+ *     are the banner's lines (2026-10-20, what they get, how to use it). With banner, it fills that
  *     element with the banner (and a box to type a code if the link's was
  *     wrong). It never throws; a network failure answers ok:false.
  *   AgRpGift.redeem(G, order) -> Promise of {ok:true, redeemed_on, ships,
@@ -34,7 +34,7 @@
  *   AgRpGift.doneHtml(G, result, choice) -> the thank-you message for the order
  *     box. choice is the product ordered (the card's when left out): a print
  *     gets a proof first; the digital file comes finished, no proof step, and
- *     Sig redoes it free on request (2026-10-14).
+ *     The owner redoes it free on request (2026-10-14).
  *   Smaller pieces: norm(code), product(p) ("one framed 13 x 19 Rain Print"),
  *   dayText(day) ("Dec 26, 2026" from that or from 2026-12-26),
  *   summary(designCode) (place, year, name, dedication, style), LOCKABLE.
@@ -151,7 +151,7 @@
     var what = product(G.product);
     var yr = G.lock && G.lock.summary ? G.lock.summary.year : '';
     var jan = G.ships === 'january' ? 'Your ' + (yr || '') + (yr ? ' ' : '') + 'print comes in January, once the full year is in.' : '';
-    // the banner's own lines (2026-10-20, Sig: what the receiver gets and how to use it, plainly, at phone width)
+    // the banner's own lines (2026-10-20, what the receiver gets and how to use it, plainly, at phone width)
     G.head = G.to && G.from_line ? 'A gift for ' + G.to + ' from ' + G.from_line : G.to ? 'A gift for ' + G.to : G.from_line ? 'A gift from ' + G.from_line : 'A gift for you';
     if (G.prepaid) {
       // set when it was bought (worker v5.40): the giver gave the address at checkout, so nothing to fill in
@@ -177,11 +177,11 @@
     return G;
   }
 
-  var BANNER_CSS = '.rpg-banner{border:1px solid var(--border-2,#c9ccc4);border-left:4px solid #2B5C8A;border-radius:6px;padding:12px 14px;margin:0 0 1rem;background:var(--surface,#fff);color:var(--text,#1E2125);line-height:1.55}' +
+  var BANNER_CSS = '.rpg-banner{border:1px solid var(--border-2,#c9ccc4);border-left:4px solid #2B5C8A;border-radius:var(--r-md);padding:12px 14px;margin:0 0 1rem;background:var(--surface,#fff);color:var(--text,#1E2125);line-height:1.55}' +
     '.rpg-banner p{margin:0 0 .4rem}.rpg-banner p:last-child{margin:0}.rpg-banner b{font-weight:600}' +
     '.rpg-banner .rpg-code{font-family:"IBM Plex Mono",monospace;font-size:.85em;color:var(--text-dim,#5E6475)}' +
     '.rpg-banner.rpg-bad{border-left-color:#A8321E}.rpg-banner form{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}' +
-    '.rpg-banner input{font:inherit;font-family:"IBM Plex Mono",monospace;min-height:40px;padding:0 .6rem;border:1px solid var(--border-2,#c9ccc4);border-radius:4px;background:var(--bg,#fff);color:inherit;text-transform:uppercase;flex:1 1 14em;max-width:20em}' +
+    '.rpg-banner input{font:inherit;font-family:"IBM Plex Mono",monospace;min-height:40px;padding:0 .6rem;border:1px solid var(--border-2,#c9ccc4);border-radius:4px;background:var(--bg,#fff);color:inherit;text-transform:none;flex:1 1 14em;max-width:20em}' +
     '.rpg-banner .rpg-h{font-size:1.1em}.rpg-banner .rpg-steps{margin:.2rem 0 .5rem;padding-left:1.4em}.rpg-banner .rpg-steps li{margin:0 0 .25rem}' +
     '.rpg-banner .rpg-note{font-size:.92em;color:var(--text-dim,#5E6475)}' +
     '.rpg-banner .rpg-go{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border-radius:4px;background:#2B5C8A;color:#fff;font-weight:600;text-decoration:none}' +
@@ -287,7 +287,7 @@
       (r && r.upgrade ? '<p>You picked more than the card covers, so I\u2019ll email you a link for the difference.</p>' : '') +
       '<p>Card ' + esc(G.code) + ' is now used.</p></div>';
   }
-  // For rp-gift.html: the card's own data (needs the k from Sig's link).
+  // For rp-gift.html: the card's own data (needs the k from the owner's link).
   function card(c, k) {
     var ctl = root.AbortController ? new root.AbortController() : null;
     var t = ctl ? setTimeout(function () { ctl.abort(); }, TIMEOUT_MS) : null;

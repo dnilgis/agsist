@@ -200,7 +200,7 @@
     var s = SRC.fertilizer; if (!s || s.k !== 'fert') return;
     var f = fertFor(crop(), num('yield')); if (f) $('fertilizer').value = f.usd;
   }
-  /* The page's one signup ask (Sig, 2026-10-23), under the answer: "email me when the futures
+  /* The page's one signup ask (2026-10-23), under the answer: "email me when the futures
      price I need shows up". It watches the same figure the "Futures needed" row shows, on the
      contract on screen, and only a contract the price watch sender follows (December corn,
      November soybeans, wheat). On any other (the next crop's contract) the Daily ask stands in:
@@ -348,7 +348,7 @@
     mk.style.visibility = ''; if (gm) gm.textContent = 'Break-Even';
     var pct = ((Math.max(-200, Math.min(200, profit)) + 200) / 400 * 100);
     mk.style.left = pct + '%'; fill.style.width = pct + '%';
-    fill.style.background = profit >= 0 ? 'linear-gradient(90deg,var(--border) 50%,var(--green) ' + pct + '%)' : 'linear-gradient(90deg,var(--red) 0%,var(--border) ' + pct + '%)';
+    fill.style.background = profit >= 0 ? 'var(--green)' : 'var(--red)';
   }
   function updateSensitivity(baseYield, basePrice, net, basis) {
     basis = basis || 0;
@@ -386,7 +386,12 @@
   function fetchLivePrices() {
     fetch('/data/prices.json', { cache: 'no-cache' })  /* revalidate: as fresh as no-store, and a repeat visit gets a 304 instead of the whole file */
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (data) { _livePrices = data.quotes || {}; _pricesFetched = data.fetched || null; updateLiveBar(); if (W.AgBECounty) W.AgBECounty.basis(); calcBreakeven(); }).catch(function () { });
+      .then(function (data) { _livePrices = data.quotes || {}; _pricesFetched = data.fetched || null; letGoBar(); updateLiveBar(); if (W.AgBECounty) W.AgBECounty.basis(); calcBreakeven(); }).catch(function () { letGoBar(); });
+  }
+  /* breakeven.html holds the bar's and the note's room (live-wait, yr-wait) until the board answers, either way */
+  function letGoBar() {
+    var b = $('live-bar'), n = $('yr-note');
+    if (b) b.classList.remove('live-wait'); if (n) n.classList.remove('yr-wait');
   }
   /* "Settle" only when the price file marks the close a settle (close_kind,
      fetch_prices v3.7); a file from before that counts it a settle only when
@@ -402,9 +407,11 @@
       var md = cd.slice(5).split('-'), when = MON[+md[0] - 1] + ' ' + (+md[1]);
       return { chg: ch, prev: prev, text: when + ' settle' + (ch != null && q.prev_date ? ', change from ' + day(q.prev_date).replace(/, \d{4}$/, '') : '') };
     }
-    var t = '';
-    if (_pricesFetched) { try { var ft = new Date(_pricesFetched); t = ' as of ' + ft.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch (e) { } }
-    return { chg: null, text: 'last trade' + t };
+    /* 2026-11-10: when the site read the quote, in Central time, and the one
+       delay statement (AgPxStamp.stamp), not "last trade as of" the viewer's clock */
+    var P = W.AgPxStamp, s = P && P.stamp && q.close_kind === 'last' ? P.stamp(q, _pricesFetched) : '';
+    if (!s && P && P.clock && _pricesFetched) s = 'Read ' + P.clock(_pricesFetched) + '; ' + P.DELAY;
+    return { chg: null, text: s ? s.charAt(0).toLowerCase() + s.slice(1) : 'delayed trade (quotes delayed 10 to 25 min)' };
   }
   function updateLiveBar() {
     var bar = $('live-bar'); if (!_livePrices) { bar.style.display = 'none'; return; }
@@ -445,7 +452,9 @@
      corn from Nov 30). The page printed Nov '26 against a basis line on Jan '27. */
   function thisCropKey(c) {
     var k = CROP_PRICE_KEY[c], P = W.AgPxStamp;
-    if (c === 'wheat' || !P || !P.headline || !_livePrices) return k;
+    /* wheat: the nearby dated contract, named, never the continuous ZW=F */
+    if (c === 'wheat') { var wn = _livePrices && _livePrices['wheat-nearby']; return wn && wn.close != null && tickerYM('wheat-nearby') ? 'wheat-nearby' : k; }
+    if (!P || !P.headline || !_livePrices) return k;
     /* only the file's own headline (<crop>-nearby): with none on file the harvest month stands */
     var h = P.headline(_livePrices, c === 'corn' ? 'corn' : 'beans'), a = tickerYM(k), hk = h && /-nearby$/.test(h.key) && h.key, b = hk && tickerYM(hk);
     return (a && b && b.yy * 12 + MONTH_I[b.mon] > a.yy * 12 + MONTH_I[a.mon]) ? hk : k;
@@ -461,7 +470,7 @@
     if (ym && BUDGETS.year === 2000 + ym.yy + 1 && nextYearKey(c) && _beYear !== '1') { _beYear = '1'; syncRegionUI(); coFill(true, true); }
   }
   W.__beAutoYear = function () { return { year: _beYear, picked: _yearPicked }; };
-  function contractLabel(c, key) { if (c === 'wheat') return CROP_CONTRACT.wheat; var ym = tickerYM(key); if (!ym) return CROP_CONTRACT[c] || CROP_NAMES[c]; return ym.mon + " '" + String(ym.yy).padStart(2, '0') + ' ' + (c === 'corn' ? 'corn' : 'soybeans') + ' (' + cropOf(c, ym) + ' crop)'; }
+  function contractLabel(c, key) { if (c === 'wheat') { var wy = tickerYM(key); return wy ? wy.mon + " '" + String(wy.yy).padStart(2, '0') + ' Chicago SRW wheat (not your class)' : CROP_CONTRACT.wheat; } var ym = tickerYM(key); if (!ym) return CROP_CONTRACT[c] || CROP_NAMES[c]; return ym.mon + " '" + String(ym.yy).padStart(2, '0') + ' ' + (c === 'corn' ? 'corn' : 'soybeans') + ' (' + cropOf(c, ym) + ' crop)'; }
   function cropYear() {
     var ym = tickerYM(CROP_PRICE_KEY.corn);
     var base = ym ? 2000 + ym.yy : new Date().getFullYear();
@@ -470,7 +479,7 @@
   function syncYearSelect(c) {
     var sel = $('be-year'), nw = $('live-name-wrap'), nt = $('yr-note'); if (!sel) return;
     var k0 = thisCropKey(c), k1 = nextYearKey(c);
-    var y2 = $('be-yr2');
+    var y2 = $('be-yr2'); if (y2) y2.classList.remove('be-yr2-wait');
     if (!k1) { sel.hidden = true; if (nw) nw.hidden = false; if (nt) nt.hidden = true; if (y2) y2.hidden = true; return; }
     sel.innerHTML = '<option value="0">' + contractLabel(c, k0) + '</option><option value="1">' + contractLabel(c, k1) + '</option>';
     sel.value = _beYear; sel.hidden = false; if (nw) nw.hidden = true;

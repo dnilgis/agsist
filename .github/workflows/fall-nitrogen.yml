@@ -13,7 +13,7 @@ on:
     - cron: '47 22 * 3-6,9-12 *'
   # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 10"]
     types: [completed]
 
 permissions:
@@ -21,7 +21,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 10' || (contains(github.event.workflow_run.display_title, ' fall-nitrogen.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -53,6 +55,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     concurrency:
       group: fall-nitrogen
       cancel-in-progress: false
@@ -86,7 +89,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/fall-nitrogen.json fall-nitrogen.html"
+          FILES="data/fall-nitrogen.json"
           rm -rf /tmp/fn && mkdir -p /tmp/fn
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/fn/ || true
@@ -97,7 +100,8 @@ jobs:
             git fetch origin "$BR"
             git reset --hard "origin/$BR"
             cp -r /tmp/fn/. .
-            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            python scripts/fetch_fall_nitrogen.py --stamp
+            for f in $FILES spray.html; do [ -e "$f" ] && git add "$f" || true; done
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update fall nitrogen soil temperatures $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

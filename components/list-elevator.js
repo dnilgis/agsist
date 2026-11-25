@@ -2,9 +2,9 @@
 
    An elevator asks to post its own bids on AGSIST. The form posts to the
    subs worker (POST /form, kind elevator-listing, worker v5.21) through
-   components/form-post.js; scripts/form_digest.py mails Sig, and the request
+   components/form-post.js; scripts/form_digest.py mails the owner, and the request
    shows under Requests on desk/elevators.html. Nothing is published from a
-   request: Sig calls the elevator first, then makes the listing.
+   request: the owner calls the elevator first, then makes the listing.
 
    Prefill: links from the coverage map and the town pages carry
    ?id=<bids directory id, known:... or reg:...>&name=&town=&state=&zip=.
@@ -48,13 +48,9 @@
     s = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
     return n ? s.slice(0, n).trim() : s;
   }
-  /* Registry names come in capitals ("PINE BLUFFS"): shown as people write them. */
-  function niceCase(s) {
-    s = clean(s);
-    if (!s || !(s === s.toUpperCase() || s === s.toLowerCase()) || !/[a-z]/i.test(s)) return s;
-    return s.toLowerCase().replace(/(^|[\s\-'(/.])([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); })
-      .replace(/\b(Llc|Inc|Co-op|Coop)\b/g, function (w) { return { Llc: 'LLC', Inc: 'Inc', 'Co-op': 'Co-op', Coop: 'Coop' }[w]; });
-  }
+  /* Registry names come in capitals ("PINE BLUFFS"): elevNames.niceCase (components/elev-names.js). */
+  function niceCase(s) { return EN().niceCase(clean(s)); }
+  function EN() { return (typeof window !== 'undefined' && window.elevNames) || (typeof require === 'function' ? require('./elev-names.js') : null); }
   /* A town written "ALBIN, WY" by the directory: the town part only. */
   function townOnly(s, st) {
     s = clean(s);
@@ -229,7 +225,7 @@
         sec.classList.add('sent');
         out.innerHTML = '<div class="cl-msg ok"><p><b>Sent.</b> I have your request for ' + esc(p.elevator) + ' in ' + esc(p.town) + ', ' + esc(p.state) + '.</p>' +
           '<p>Next I call the elevator at its own number to make sure you work there. Then I send your link to ' + esc(p.email) +
-          '. Nothing shows on the site until you post. Questions: ' + TO + ' or 715-797-2428. Sig</p></div>';
+          '. Nothing shows on the site until you post. Questions: ' + TO + ' or 715-797-2428.</p></div>';
         try { var m = out.querySelector('.cl-msg'); m.setAttribute('tabindex', '-1'); m.focus(); } catch (err) {}
       })
       .catch(function () {

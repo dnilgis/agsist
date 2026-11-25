@@ -1,25 +1,45 @@
 {
- "updated": "2026-11-09T01:07:08Z",
- "report_date": "2026-11-03",
+ "updated": "2026-11-25T04:28:10Z",
+ "report_date": "2026-11-17",
  "note": "Questions about fund positions only (runs, flips across zero, 52-week highs), picked and answered from the CFTC data by fixed rules. Not about prices.",
  "this_week": {
-  "asked": "2026-11-03",
-  "market": "wheat",
+  "asked": "2026-11-17",
+  "market": "corn",
   "kind": "run",
-  "question": "Will Chicago wheat's selling run reach 10 weeks?",
-  "fact": "Funds sold Chicago wheat in each of the 9 weeks to Tue, Nov 3, 2026, 102,030 contracts in all."
+  "question": "Will corn's selling run reach 10 weeks?",
+  "fact": "Funds sold corn in each of the 9 weeks to Tue, Nov 17, 2026, 448,322 contracts in all."
  },
  "last_week": {
-  "asked": "2026-10-27",
-  "market": "wheat",
+  "asked": "2026-11-10",
+  "market": "corn",
   "kind": "run",
-  "question": "Will Chicago wheat's selling run reach 9 weeks?",
-  "fact": "Funds sold Chicago wheat in each of the 8 weeks to Tue, Oct 27, 2026, 89,510 contracts in all.",
-  "answered": "2026-11-03",
+  "question": "Will corn's selling run reach 9 weeks?",
+  "fact": "Funds sold corn in each of the 8 weeks to Tue, Nov 10, 2026, 437,088 contracts in all.",
+  "answered": "2026-11-17",
   "result": "yes",
-  "answer": "Yes. Funds sold 12,520 Chicago wheat contracts in the week to Tue, Nov 3, 2026: 9 weeks in a row."
+  "answer": "Yes. Funds sold 11,234 corn contracts in the week to Tue, Nov 17, 2026: 9 weeks in a row."
  },
  "archive": [
+  {
+   "asked": "2026-11-10",
+   "market": "corn",
+   "kind": "run",
+   "question": "Will corn's selling run reach 9 weeks?",
+   "fact": "Funds sold corn in each of the 8 weeks to Tue, Nov 10, 2026, 437,088 contracts in all.",
+   "answered": "2026-11-17",
+   "result": "yes",
+   "answer": "Yes. Funds sold 11,234 corn contracts in the week to Tue, Nov 17, 2026: 9 weeks in a row."
+  },
+  {
+   "asked": "2026-11-03",
+   "market": "wheat",
+   "kind": "run",
+   "question": "Will Chicago wheat's selling run reach 10 weeks?",
+   "fact": "Funds sold Chicago wheat in each of the 9 weeks to Tue, Nov 3, 2026, 102,030 contracts in all.",
+   "answered": "2026-11-10",
+   "result": "no",
+   "answer": "No. Funds bought 6,076 Chicago wheat contracts in the week to Tue, Nov 10, 2026, ending the run at 9 weeks."
+  },
   {
    "asked": "2026-10-27",
    "market": "wheat",
@@ -79,26 +99,6 @@
    "answered": "2026-09-29",
    "result": "yes",
    "answer": "Yes. Funds sold 10,093 Chicago wheat contracts in the week to Tue, Sep 29, 2026: 4 weeks in a row."
-  },
-  {
-   "asked": "2026-09-15",
-   "market": "corn",
-   "kind": "run",
-   "question": "Will corn's buying run reach 6 weeks?",
-   "fact": "Funds bought corn in each of the 5 weeks to Tue, Sep 15, 2026, 288,585 contracts in all.",
-   "answered": "2026-09-22",
-   "result": "no",
-   "answer": "No. Funds sold 10,363 corn contracts in the week to Tue, Sep 22, 2026, ending the run at 5 weeks."
-  },
-  {
-   "asked": "2026-09-08",
-   "market": "corn",
-   "kind": "run",
-   "question": "Will corn's buying run reach 5 weeks?",
-   "fact": "Funds bought corn in each of the 4 weeks to Tue, Sep 8, 2026, 288,584 contracts in all.",
-   "answered": "2026-09-15",
-   "result": "yes",
-   "answer": "Yes. Funds bought 1 corn contracts in the week to Tue, Sep 15, 2026: 5 weeks in a row."
   }
  ]
 }

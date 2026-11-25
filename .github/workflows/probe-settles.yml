@@ -1,5 +1,4 @@
 name: probe-settles
-# probe-settles.
 
 on:
   workflow_dispatch:

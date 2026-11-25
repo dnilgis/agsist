@@ -1,8 +1,11 @@
 /* components/a2809.js -- UW Extension A2809 (Laboski and Peters), "Nutrient
    application guidelines for field, vegetable, and fruit crops in Wisconsin",
    the tables /fast-facts uses for corn N, for P and K and for lime. Typed from the
-   Mar 2026 web edition (https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf,
-   copy read Oct 16, 2026); its text matches the 2012 printing on these tables.
+   2012 printing (R-11-2012), the copy UW posted in March 2026 as A2809-web.pdf
+   (https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf, read Oct 16, 2026).
+   It is NOT the 2026 online edition: UW announced updated N, P and K rates in 2026
+   (Updates to A2809, Ruark, read Oct 18, 2026) and those tables are not typed here yet.
+   UW announced them in that talk; the online Corn chapter was still unposted when read Nov 13, 2026.
 
    Corn N:
      Table 6.1  MRTN rate and profitable range by soil, previous crop and
@@ -190,9 +193,103 @@ function nRate(o){
   return {rate:cell[0], lo:cell[1], hi:cell[2], col:c.ratio, off:c.off, soil:r.soil, prev:r.prev};
 }
 
+/* ─── Nitrogen credits, chapter 9 (edition R-11-2012, the copy UW posted Mar 2026) ───
+   Table 9.4  forage legume credits, lb N/a: [medium/fine >8 in, medium/fine <8 in, sand >8, sand <8]
+              regrowth. Red clover and birdsfoot trefoil: 80% of the alfalfa figure for a like
+              stand. Second year, good or fair stand: 50 on medium/fine, 0 on sands.
+   Table 9.5  green manure credits, lb N/a: [<6 in growth, >6 in growth low, high].
+   Table 9.6  field crop legumes: soybean and leguminous vegetables 20 on medium/fine, 0 on sands;
+              never for corn or wheat after soybean (the Table 6.1 rows already count it).
+   Tables 9.1 and 9.2  manure: total N per unit, share available by time to incorporation.
+   Table 9.3 is Table 9.2 times Table 9.1, rounded; test/nitrogen-credits.test.mjs recomputes it. */
+var LEGUME_YEAR1={
+  alfalfa_good:[190,150,140,100], alfalfa_fair:[160,120,110,70], alfalfa_poor:[130,90,80,40],
+  vetch:[160,90,110,40]
+};
+var LEGUME_SECOND_YEAR={fine:50, sand:0};   /* "All crops, good or fair stand" */
+var CLOVER_SHARE=0.8;                        /* red clover, birdsfoot trefoil, of a like alfalfa stand */
+var GREEN_MANURE={
+  alfalfa:{short:40, tall:[60,100]}, red_clover:{short:40, tall:[50,80]},
+  sweet_clover:{short:40, tall:[80,120]}, vetch:{short:40, tall:[40,90], tallest:[110,160]}
+};
+var FIELD_LEGUME={soybean:{fine:20, sand:0}, legume_veg:{fine:20, sand:0}};
+/* Manure availability, first year N by time to incorporation (> 72 h or not, 1-72 h, < 1 h or injected),
+   P2O5 80, K2O 80, S 55 (% of total). Second year N 10, third year N 5. */
+var MANURE_AVAIL={
+  beef_liquid:[30,40,50], beef_solid:[25,30,35], dairy_liquid:[30,40,50], dairy_solid:[25,30,35],
+  goat:[25,30,35], horse:[25,30,35], poultry:[50,55,60], sheep:[25,30,35], swine:[40,50,65], veal:[30,40,50]
+};
+var MANURE_SECOND_YEAR_N=10, MANURE_THIRD_YEAR_N=5, MANURE_P_K_FIRST_YEAR=80;
+/* Table 9.2 rows: name, unit, availability group, dry matter %, lb per unit of total N, P2O5, K2O, S */
+var MANURE={
+  beef_s:{name:'Beef, solid', unit:'ton', avail:'beef_solid', dm:29, n:13, p:8, k:12, s:1.9},
+  dairy_semi:{name:'Dairy, semi-solid (11.1 to 20% DM)', unit:'ton', avail:'dairy_solid', dm:15, n:8, p:4, k:6, s:0.8},
+  dairy_solid:{name:'Dairy, solid (over 20% DM)', unit:'ton', avail:'dairy_solid', dm:33, n:9, p:4, k:7, s:1.2},
+  goat_s:{name:'Goat, solid', unit:'ton', avail:'goat', dm:43, n:13, p:7, k:10, s:2.0},
+  horse:{name:'Horse, solid', unit:'ton', avail:'horse', dm:33, n:10, p:6, k:8, s:1.3},
+  chicken:{name:'Poultry, chicken, solid', unit:'ton', avail:'poultry', dm:57, n:49, p:44, k:33, s:3.0},
+  duck:{name:'Poultry, duck, solid', unit:'ton', avail:'poultry', dm:36, n:12, p:10, k:9, s:1.8},
+  turkey:{name:'Poultry, turkey, solid', unit:'ton', avail:'poultry', dm:59, n:51, p:44, k:31, s:3.8},
+  sheep:{name:'Sheep, solid', unit:'ton', avail:'sheep', dm:34, n:19, p:9, k:24, s:2.2},
+  swine_s:{name:'Swine, solid', unit:'ton', avail:'swine', dm:19, n:18, p:13, k:10, s:2.0},
+  beef_l:{name:'Beef, liquid', unit:'1,000 gal', avail:'beef_liquid', dm:3, n:16, p:7, k:15, s:1.6},
+  dairy_l:{name:'Dairy, liquid (under 4% DM)', unit:'1,000 gal', avail:'dairy_liquid', dm:2, n:14, p:4, k:14, s:1.1},
+  dairy_slurry:{name:'Dairy, slurry (4.1 to 11% DM)', unit:'1,000 gal', avail:'dairy_liquid', dm:6, n:24, p:8, k:21, s:2.2},
+  goat_l:{name:'Goat, liquid', unit:'1,000 gal', avail:'goat', dm:4, n:17, p:8, k:19, s:1.7},
+  poultry_l:{name:'Poultry, liquid', unit:'1,000 gal', avail:'poultry', dm:2, n:12, p:7, k:9, s:1.3},
+  swine_fin_in:{name:'Swine, finish (indoor pit)', unit:'1,000 gal', avail:'swine', dm:5, n:43, p:18, k:28, s:3.2},
+  swine_fin_out:{name:'Swine, finish (outdoor pit)', unit:'1,000 gal', avail:'swine', dm:2, n:18, p:7, k:10, s:1.0},
+  swine_nursery:{name:'Swine, farrow-nursery (indoor pit)', unit:'1,000 gal', avail:'swine', dm:2, n:21, p:8, k:13, s:1.0},
+  veal:{name:'Veal calf, liquid', unit:'1,000 gal', avail:'veal', dm:1, n:9, p:3, k:16, s:0.6}
+};
+var INCORP=['none','h1_72','h1'];             /* > 72 h or not incorporated, 1 to 72 h, < 1 h or injected */
+
+/* legumeCredit({crop:'alfalfa'|'red_clover'|'birdsfoot'|'vetch', stand:'good'|'fair'|'poor',
+   regrowth:'gt8'|'lt8', soil:'fine'|'sand', year:1|2})  -> {n, note} or null when A2809 prints none */
+function legumeCredit(o){
+  var soil=o.soil==='sand'?'sand':'fine', col=(soil==='fine'?0:2)+(o.regrowth==='lt8'?1:0);
+  if(+o.year===2){
+    if(o.crop==='vetch')return null;                              /* the second-year row names stands, not vetch */
+    if(o.stand!=='good'&&o.stand!=='fair')return null;            /* "All crops, good or fair stand" */
+    return {n:LEGUME_SECOND_YEAR[soil], note:'second year, good or fair stand'};
+  }
+  var key=o.crop==='vetch'?'vetch':'alfalfa_'+(o.stand||'good'), row=LEGUME_YEAR1[key];
+  if(!row)return null;
+  var n=row[col], share=(o.crop==='red_clover'||o.crop==='birdsfoot')?CLOVER_SHARE:1;
+  return {n:Math.round(n*share), base:n, share:share, note:share<1?'80% of the alfalfa figure for a like stand':''};
+}
+/* greenManureCredit({crop, tall:bool, spring:bool}) -> {lo,hi} lb N/a; spring seedings plowed down the
+   following spring take the top of the range, fall seedings the bottom */
+function greenManureCredit(o){
+  var g=GREEN_MANURE[o.crop]; if(!g)return null;
+  if(!o.tall)return {lo:g.short, hi:g.short};
+  return {lo:g.tall[0], hi:g.tall[1], pick:o.spring?g.tall[1]:g.tall[0]};
+}
+/* fieldLegumeCredit({crop:'soybean'|'legume_veg', soil, next:'corn'|'wheat'|'other'}) -> lb N/a */
+function fieldLegumeCredit(o){
+  var c=FIELD_LEGUME[o.crop]; if(!c)return null;
+  /* Table 9.6 footnote a: the soybean credit does not apply to corn or wheat after soybean (those rates
+     already count it). A pea or bean crop is not excluded: it takes its 20 lb on medium and fine soils. */
+  if(o.crop==='soybean'&&(o.next==='corn'||o.next==='wheat'))return 0;
+  return c[o.soil==='sand'?'sand':'fine'];
+}
+/* manureN({type, rate, incorp:'none'|'h1_72'|'h1', yearsAgo:0|1|2, totalN}) -> lb N/a credited this year.
+   totalN overrides Table 9.2 (a manure test, lb N per unit). A2809 rounds each year's credit to a whole lb. */
+function manureN(o){
+  var m=MANURE[o.type]; if(!m)return null;
+  var rate=+o.rate; if(!(rate>=0))return null;
+  var total=+o.totalN>0?+o.totalN:m.n, y=+o.yearsAgo||0, pct;
+  if(y===0){var i=INCORP.indexOf(o.incorp); if(i<0)return null; pct=MANURE_AVAIL[m.avail][i];}
+  else if(y===1)pct=MANURE_SECOND_YEAR_N; else if(y===2)pct=MANURE_THIRD_YEAR_N; else return null;
+  return {n:Math.round(total*pct/100*rate), pct:pct, total:total, unit:m.unit};
+}
+
 var api={P_CATS:P_CATS, K_CATS:K_CATS, CROPS:CROPS, P_COLS:P_COLS, K_COLS:K_COLS, CAT_NAMES:CAT_NAMES,
   LIME:LIME, DEPTH:DEPTH, category:category, rowFor:rowFor, pk:pk, lime:lime,
-  N_RATIOS:N_RATIOS, N_CORN:N_CORN, nColumn:nColumn, nRate:nRate};
+  N_RATIOS:N_RATIOS, N_CORN:N_CORN, nColumn:nColumn, nRate:nRate,
+  LEGUME_YEAR1:LEGUME_YEAR1, LEGUME_SECOND_YEAR:LEGUME_SECOND_YEAR, CLOVER_SHARE:CLOVER_SHARE, GREEN_MANURE:GREEN_MANURE,
+  FIELD_LEGUME:FIELD_LEGUME, MANURE_SECOND_YEAR_N:MANURE_SECOND_YEAR_N, MANURE_THIRD_YEAR_N:MANURE_THIRD_YEAR_N, MANURE_P_K_FIRST_YEAR:MANURE_P_K_FIRST_YEAR, MANURE_AVAIL:MANURE_AVAIL, MANURE:MANURE, INCORP:INCORP,
+  legumeCredit:legumeCredit, greenManureCredit:greenManureCredit, fieldLegumeCredit:fieldLegumeCredit, manureN:manureN};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 else root.AgA2809=api;
 })(typeof window!=='undefined'?window:this);

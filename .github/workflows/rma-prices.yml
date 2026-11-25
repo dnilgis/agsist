@@ -1,5 +1,4 @@
 name: RMA price discovery
-# RMA price discovery.
 
 on:
   workflow_dispatch:
@@ -12,10 +11,9 @@ on:
         description: 'Crop year (blank = current)'
         required: false
   schedule:
-    - cron: '10 22 * * *'   # 22:10 UTC — after CBOT settlement, before midnight CT
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: '10 22 * * *'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 14"]
     types: [completed]
 
 permissions:
@@ -23,7 +21,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 14' || (contains(github.event.workflow_run.display_title, ' rma-prices.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -54,6 +54,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 70
     concurrency:
       group: rma-prices
       cancel-in-progress: false

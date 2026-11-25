@@ -1,5 +1,4 @@
 name: NCEI hail backfill
-# NCEI hail backfill.
 
 on:
   workflow_dispatch:
@@ -9,9 +8,8 @@ on:
         required: false
   schedule:
     - cron: '47 8 15 1 *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 06"]
     types: [completed]
 
 permissions:
@@ -19,7 +17,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 06' || (contains(github.event.workflow_run.display_title, ' ncei.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -50,6 +50,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 350
     concurrency:
       group: ncei-backfill
       cancel-in-progress: false

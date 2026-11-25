@@ -20,7 +20,7 @@
 })(typeof self !== 'undefined' ? self : this, function (w) {
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var CSS = '/components/print-sheet.css?v=1';
+  var CSS = '/components/print-sheet.css?v=2';
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function today() {
     var d = new Date(), p = null;

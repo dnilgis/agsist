@@ -1,5 +1,4 @@
 name: Share images
-# Share images.
 
 on:
   push:
@@ -7,15 +6,12 @@ on:
     paths:
       - '*.html'
       - 'data/farm-bill.json'
-      - 'scripts/share_cards.py'
-      - 'scripts/build_share_images.py'
-      - 'scripts/test_share_images.py'
+      - 'img/og/custom-rates.jpg'
       - '.github/workflows/share-images.yml'
   schedule:
     - cron: '23 12 * * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 09"]
     types: [completed]
   workflow_dispatch:
 
@@ -24,7 +20,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 09' || (contains(github.event.workflow_run.display_title, ' share-images.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -81,6 +79,9 @@ jobs:
           python scripts/build_share_images.py --selftest
           python scripts/build_share_images.py
 
+      - name: Custom rates state pages carry the card's hash
+        run: python scripts/build_custom_rates.py
+
       - name: Every indexable page has a good share image
         run: python scripts/test_share_images.py
 
@@ -89,7 +90,7 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add -A img/og
-          git add -- *.html
+          git add -- *.html custom-rates/*.html
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git diff --staged --stat | tail -3
           git commit -q -m "share images: redraw from the data"

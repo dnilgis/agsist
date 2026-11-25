@@ -1,5 +1,4 @@
 name: Search Console sitemaps
-# Search Console sitemaps.
 
 on:
   push:

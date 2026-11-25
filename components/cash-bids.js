@@ -69,18 +69,37 @@ var wtdToggleBtn=$('wtd-toggle-btn'),wtdBodyEl=$('wtd-body');
  * ═══════════════════════════════════════════════════════════════════════════ */
 var MKT_TZ = 'America/Chicago';
 
-/* CME holidays. THIRD-PARTY AND DELIBERATELY NOT ACTED ON.
- * CME finalises product hours roughly two weeks ahead and grains do not all
- * follow the same holiday pattern, so this list is used only to SAY that the
- * schedule differs and to point at CME -- never to invent an open or a close.
- * Rule 1. */
-var MKT_HOLIDAYS_2026 = {
-  '2026-01-01': "New Year's Day", '2026-01-19': 'Martin Luther King Jr. Day',
-  '2026-02-16': "Presidents' Day", '2026-04-03': 'Good Friday',
-  '2026-05-25': 'Memorial Day', '2026-06-19': 'Juneteenth',
-  '2026-07-03': 'Independence Day (observed)', '2026-09-07': 'Labor Day',
-  '2026-11-26': 'Thanksgiving', '2026-12-25': 'Christmas Day'
-};
+/* Exchange holidays: the full-closure list of scripts/contract_calendar.py
+ * market_holidays() (computed, not typed in; components/price-local.js carries
+ * the same rule). Two uses only:
+ * 1. marketSession names the day, to SAY the schedule differs and point at CME;
+ *    it never invents an open or a close (CME finalises holiday hours about two
+ *    weeks ahead and grains do not all follow one pattern). Rule 1.
+ * 2. mktSessionsClosedSince does not count a closed day as a session, the same
+ *    as scripts/build_state_basis_pages.py fresh_until (test/session-fresh-twin.test.mjs
+ *    runs both on one table of cases).
+ * iso 'YYYY-MM-DD' -> the closure's name, or null. */
+function mktHolidayName(iso) {
+  var DAY = 864e5, y0 = +String(iso).slice(0, 4);
+  function U(y, m, d) { return Date.UTC(y, m - 1, d); }
+  function wd(t) { return new Date(t).getUTCDay(); }
+  function nthW(y, m, w, n) { var t = U(y, m, 1); return t + ((w - wd(t) + 7) % 7) * DAY + (n - 1) * 7 * DAY; }
+  function lastW(y, m, w) { var t = Date.UTC(y, m, 0); return t - ((wd(t) - w + 7) % 7) * DAY; }
+  function obs(t) { var x = wd(t); return x === 6 ? t - DAY : x === 0 ? t + DAY : t; }
+  function easter(y) {
+    var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3),
+      h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, mm = Math.floor((a + 11 * h + 22 * l) / 451);
+    return U(y, Math.floor((h + l - 7 * mm + 114) / 31), ((h + l - 7 * mm + 114) % 31) + 1);
+  }
+  for (var y = y0 - 1; y <= y0 + 1; y++) {
+    var L = [[obs(U(y, 1, 1)), "New Year's Day"], [nthW(y, 1, 1, 3), 'MLK Day'], [nthW(y, 2, 1, 3), 'Presidents Day'],
+      [easter(y) - 2 * DAY, 'Good Friday'], [lastW(y, 5, 1), 'Memorial Day'], [obs(U(y, 6, 19)), 'Juneteenth'],
+      [obs(U(y, 7, 4)), 'Independence Day'], [nthW(y, 9, 1, 1), 'Labor Day'], [nthW(y, 11, 4, 4), 'Thanksgiving'],
+      [obs(U(y, 12, 25)), 'Christmas Day']];
+    for (var j = 0; j < L.length; j++) if (new Date(L[j][0]).toISOString().slice(0, 10) === iso) return L[j][1];
+  }
+  return null;
+}
 
 /* The Chicago wall-clock parts of an instant. */
 var _mktFmt = null;
@@ -144,7 +163,7 @@ function mktNextEveningOpen(p) {
 function marketSession(now) {
   var p = mktParts(now);
   var mins = p.minutes, dow = p.dow;
-  var holiday = MKT_HOLIDAYS_2026[p.date] || null;
+  var holiday = mktHolidayName(p.date);
 
   /* A weekday-shaped session only exists Mon-Fri; the overnight that runs into
      Saturday morning belongs to Friday and does not exist. */
@@ -216,7 +235,8 @@ function mktCountdown(ms) {
  * The honest question is not "how many hours" but "how many day sessions have
  * closed since this board last moved". Nothing closed = this IS the board.
  * One = it has not been touched since the last close. Two or more = say so
- * plainly.
+ * plainly. A market holiday (mktHolidayName) is not a session: a Wednesday
+ * board is still current on Thanksgiving afternoon.
  */
 function mktSessionsClosedSince(pricedAt, now) {
   if (!pricedAt) return null;
@@ -226,7 +246,7 @@ function mktSessionsClosedSince(pricedAt, now) {
   var n = 0, p = mktParts(new Date(t));
   for (var i = 0; i < 30; i++) {
     var close = mktInstant(p.y, p.m, p.d, 13, 20);
-    if (p.dow >= 1 && p.dow <= 5 && +close > t && +close <= +now) n++;
+    if (p.dow >= 1 && p.dow <= 5 && !mktHolidayName(p.date) && +close > t && +close <= +now) n++;
     if (+close > +now) break;
     p = mktAddDays(p, 1);
   }
@@ -396,7 +416,7 @@ var BASIS_SANE={corn:2.5,soybeans:2.5,wheat:3};
    near -$0.70 (2026-10-15) was Best soybeans before this. */
 function basisUnusual(bid){
   if(!bid||bid.basis==null)return false;
-  if(bid._odd)return true;
+  if(bid._odd||bid.basisOdd===true)return true;
   var cap=BASIS_SANE[bid.category],c=basisCents(bid.basis,bid);
   return cap!=null&&c!=null&&Math.abs(c)>cap*100;
 }
@@ -462,7 +482,7 @@ function notPerBushel(bid){return NOT_PER_BUSHEL.test(String(bid&&bid.commodity|
    actually carries (read from data/bids.json), nothing invented. If an
    elevator posts ONLY special grades for a crop it still gets a row, and the
    grade name is printed on it. */
-var SPECIAL_GRADE=/non[- ]?gmo|organic|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
+var SPECIAL_GRADE=/non[- ]?gmo|nongmo|organic|plenish|\bip\b|identity[- ]?pres|high[- ]?oleic|food[- ]?grade|\bfood\b|waxy|popcorn|conventional|vistive|clear hilum|tofu|natto|\bwhite\b|\bfeed\b|durum|\bsww\b|spring|\bhrs\b|\bdns\b|dark northern|mgex/i;
 function isSpecialGrade(bid){return SPECIAL_GRADE.test(String(bid&&bid.commodity||''));}
 /* ══ THE FUTURES REFERENCE ═════════════════════════════════════════════════
    Kolton Jackson asked for this first: "every row already knows which contract
@@ -582,8 +602,10 @@ function contractStrip(bids){
    page waits for it or depends on it. */
 var _bhFetch={},_bhMap={};
 function bhNorm(v){return String(v==null?'':v).trim().toUpperCase().replace(/\s+/g,' ');}
+/* The facility is keyed by the one name key (elevNames.basisName, components/elev-names.js):
+   an archived copy ("zFarmers Cooperative Elevator Co.OLD") finds the elevator's history. */
 function bhKeyOf(fac,city,st,cat,sym,month){
-  return [bhNorm(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
+  return [window.elevNames.basisName(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
 }
 function bhLoadState(st){
   if(_bhFetch[st])return _bhFetch[st];
@@ -780,6 +802,14 @@ function bidPeriodPast(b){
      week behind the person reading this page, and believing it would let a
      closed month be ranked as the nearest one. Where the feed says false the
      page checks for itself. */
+  /* A HARVEST-YEAR ROW ("Harvest 2026", newcrop-2026) IS A WINDOW, NOT A
+     MONTH. Keyed on October it read as closed from November on, so a Harvest
+     2027 forward became "soonest delivery" (54728, Nov 12). components/
+     bid-period.js holds the one rule: periodPast:true is taken on trust, false
+     is not (the feed sets it false on every season row), so the crop's harvest
+     window decides (Sep-Dec corn and soybeans, Jun-Sep wheat). */
+  var BP=typeof window!=='undefined'&&window.AgBidPeriod,ss=BP?BP.rowSeason(b,new Date()):null;
+  if(ss)return !ss.open;
   if(b&&b.periodPast===true)return true;
   /* A TWO-MONTH WINDOW HAS GONE WHEN ITS LAST MONTH HAS, not its first.
      "Sep-Oct 26" is still open in October; keyed on September it read as
@@ -799,16 +829,16 @@ function deliveryRank(b){
    classified that label when it built the row, and this page carries the
    answer across as deliveryPeriod. Reading it is not a guess.
      spot            -> this month. It is grain the elevator will take now.
-     newcrop-YYYY    -> that year's October, the first month of its harvest
-                        window, which is what harvestKeys() already means by it.
+     newcrop-YYYY    -> its harvest window (components/bid-period.js): this month
+                        while the window is open, its first month before it.
      YYYY-MM/YYYY-MM -> the first month of the pair, the soonest it can be hauled.
    Anything else still returns '' and still sorts last, which is the only
    honest place for a row whose delivery nobody can read. */
 function periodFallbackKey(b){
   var p=String(b&&b.deliveryPeriod||'');
   if(p==='spot')return monthFloorKey();
-  var nc=/^newcrop-(\d{4})$/.exec(p);
-  if(nc)return nc[1]+'-10';
+  var BP=typeof window!=='undefined'&&window.AgBidPeriod,ss=BP?BP.rowSeason(b,new Date()):null;
+  if(ss)return ss.key;
   var pair=/^(\d{4})-(\d{2})\//.exec(p);
   if(pair)return pair[1]+'-'+pair[2];
   return '';
@@ -1168,8 +1198,26 @@ function rankCmp(a,b){return window.cbRank?cbRank.compare(a,b):(b.rk.price-a.rk.
 /* One candidate per elevator for corn and soybeans; for wheat one per class
    the elevator posts, because HRW, SRW and a wheat that names no class are
    never ranked against each other. */
+/* ONE RULE FOR "BEST" (Nov 20, 2026; components/bid-filter.js, scripts/bid_rule.py).
+   A ranked candidate is a PLAIN bid: a special grade (Plenish, IP, white corn,
+   non-GMO ...) never ranks, not even as a fallback; a wheat class word (HRS,
+   SWW, durum) is not a grade here, because each class is ranked on its own.
+   With "Any delivery" it is also a CURRENT bid (AG.bidFilter.isCurrent): Adell
+   WI's Harvest 2027 corn was Best corn beside $3.70 to $3.80 for now. With one
+   delivery chosen, every candidate is already that delivery. */
+function bidRule(){return window.AG&&window.AG.bidFilter&&window.AG.bidFilter.windowKey?window.AG.bidFilter:null;}
+function rankGradeOk(b,comm){
+  if(!isSpecialGrade(b))return true;
+  var BR=bidRule();
+  return !!BR&&comm==='wheat'&&BR.gradeOk({commodity:b&&b.commodity,category:'wheat'},{wheatClasses:true});
+}
+function rankCurrentOk(b,now){
+  if(currentDelivery!=='all')return true;
+  var BR=bidRule();
+  return !!BR&&BR.isCurrent(b,now);
+}
 function rankCands(elevs,comm){
-  var out=[];
+  var out=[],now=new Date();
   elevs.forEach(function(elev){
     var classes=[''];
     if(comm==='wheat'){
@@ -1177,17 +1225,25 @@ function rankCands(elevs,comm){
       (elev.commodities.wheat||[]).forEach(function(b){var c=wheatCls(b);if(classes.indexOf(c)<0)classes.push(c);});
     }
     classes.forEach(function(c){
-      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&(comm!=='wheat'||wheatCls(x)===c);});
-      if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:''});
+      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&!basisUnusual(x)&&rankGradeOk(x,comm)&&rankCurrentOk(x,now)&&(comm!=='wheat'||wheatCls(x)===c);});
+      if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:'',
+        wk:currentDelivery==='all'&&bidRule()?bidRule().windowKey(b,now):''});
     });
   });
   return out;
 }
-/* {hrw:[...], srw:[...], '':[...]} -- the plain-grade rule applied inside each. */
+/* {hrw:[...], srw:[...], '':[...]} -- the plain-grade rule applied inside each,
+   and with "Any delivery" one window only: the earliest any candidate has
+   ("now" before a month 1-2 out), so a December bid never outranks spot. */
 function classGroups(cands){
   var g={};
   cands.forEach(function(x){(g[x.cls]=g[x.cls]||[]).push(x);});
-  Object.keys(g).forEach(function(k){g[k]=preferPlain(g[k],function(x){return x.bid;});if(!g[k].length)delete g[k];});
+  Object.keys(g).forEach(function(k){
+    var l=preferPlain(g[k],function(x){return x.bid;});
+    var mk=l.reduce(function(m,x){return !m||x.wk==='now'||(m!=='now'&&x.wk&&x.wk<m)?x.wk:m;},'');
+    if(mk)l=l.filter(function(x){return x.wk===mk;});
+    g[k]=l;if(!g[k].length)delete g[k];
+  });
   return g;
 }
 /* Which wheat a single-answer panel shows: the class most elevators here post;
@@ -1211,7 +1267,7 @@ function placeOf(elev){
   Object.keys(elev.commodities||{}).some(function(k){return(elev.commodities[k]||[]).some(function(b){if(b.zip){z=b.zip;return true;}return false;});});
   return cbRank.placeTown(t,z);
 }
-/* "Mid-Iowa Cooperative — Des Moines (28 mi)" */
+/* "Mid-Iowa Cooperative Des Moines (28 mi)" */
 function bannerName(elev){
   var t=placeOf(elev);
   return elev.facility+(t?', '+t:'')+(elev.distance!=null?' ('+elev.distance.toFixed(0)+' mi)':'');
@@ -1240,6 +1296,7 @@ var ROAD_FACTOR=1.25;
 function roadMi(d){return d*ROAD_FACTOR;}
 var ROAD_NOTE='estimated road miles (straight line x 1.25)';
 var EARN_CROP={corn:'corn',soybeans:'soybeans',wheat:'wheat'};
+var EARN_NONE='Best after the drive: not enough boards read today to compare here.';
 function earningsLine(win,compared,bu,money){
   var load=Number(bu).toLocaleString('en-US')+' bu';
   if(win)return 'Best after the drive on '+load+' of '+win.crop+': '+win.name+', '+money(win.net)+' more than your closest elevator.';
@@ -1301,7 +1358,9 @@ function renderEarnings(){
   var line=earningsLine(best?{name:truncName(best.top.elev.facility,24),net:best.net,crop:crop}:null,compared,bu,fmtMoney);
   earningsCallout.classList.toggle('muted',!line);
   earningsCallout.classList.toggle('flat',!!line&&!best);
-  if(!line)return;
+  /* NEVER LEAVE THE PAGE'S "Working out the best bid..." ON SCREEN (2026-11-09 panel). With no board to compare
+     (none read today, or a single elevator) there is no line to write; say so, and clear a line left by an earlier search. */
+  if(!line){earningsHead.textContent=EARN_NONE;earningsDetail.innerHTML='';return;}
   earningsHead.textContent=line;
   if(!best){earningsDetail.innerHTML='';return;}
   /* A re-marked price says so where it is printed. */
@@ -1342,7 +1401,7 @@ function readTimeOnly(pricedAt,checkedAt){
   return !isFinite(p)||(isFinite(c)&&p===c);
 }
 /* "3h ago" from a row's posted time; nothing when the board posted no time. */
-/* "Last updated Oct 20, 2:05 PM CT" on a board Sig pasted by hand, once it is
+/* "Last updated Oct 20, 2:05 PM CT" on a board the owner pasted by hand, once it is
    older than the 14-hour line every live board is held to. Empty before then. */
 var PASTE_MARK_H=14;
 function pastedMark(iso,cls){
@@ -1872,7 +1931,7 @@ function renderBids(bids,keepLimit){
        board. One means it has not been touched since the last close, which is
        worth saying plainly rather than as a warning. Two or more is a warning. */
     /* AN ELEVATOR THAT POSTS ITS OWN BIDS (agsist.com/post) always says when it
-       last saved them, in its own words of time: "Updated 6:10 AM Wed" (Sig, Oct 22).
+       last saved them, in its own words of time: "Updated 6:10 AM Wed" (Oct 22).
        That time is when the manager pressed Save, even for a save that reached us
        late (subs worker v5.50), so an old price is plain to see. */
     if(elev.fromPortal&&elev.asOfT!=null){
@@ -2199,7 +2258,7 @@ function netContract(b){
     return{symbol:t,month:MON[m[3]]+' 202'+m[2]};
   return{symbol:raw,month:raw};
 }
-/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). The bids
    repo flags a row stale whenever its board was not read on the latest pass:
    "refused" or "broken" (the read failed) or "skipped" (not asked: Landus is
    read 5 boards a pass, NEW Cooperative answers most passes with a bot check).
@@ -2295,6 +2354,10 @@ function netRowsFrom(shard,distanceMi){
          rows whose read had failed were drawn as ordinary live prices under a
          badge claiming they came straight from the elevator. */
       stale:b.stale===true&&!held,
+      /* The feed's own flag that this board's basis sits far from the other boards on its contract
+         (data/bids.json basisOdd; Riceville IA soybeans +$1.40 against an Iowa middle near -$0.65).
+         Marked, never ranked: the Best cards and the day's best basis skip it (basisUnusual). */
+      basisOdd:b.basisOdd===true,
       held:held,
       sourceStatus:b.sourceStatus||'',
       /* THE FEED'S OWN ANSWER TO "HAS THIS MONTH GONE", WHEN IT HAS ONE.
@@ -2303,8 +2366,8 @@ function netRowsFrom(shard,distanceMi){
          that is only sometimes there must never be the only thing consulted. */
       periodPast:(b.periodPast===true||b.periodPast===false)?b.periodPast:null,
       via:'direct',
-      /* A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
-         site will not let the reader in, so Sig pastes their public page. Held
+      /* A BOARD PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
+         site will not let the reader in, so the owner pastes their public page. Held
          up to 7 days and stamped "Last updated" once older than 14 hours. */
       pasted:b.pasted===true?(b.pastedAt||b.checkedAt||''):''
     });
@@ -2502,14 +2565,24 @@ function doSearch(zip){
      navigating into the results region during a search found nothing at all
      and no way to tell a slow search from a finished empty one. */
   results.setAttribute('aria-busy','true');
-  results.innerHTML='<div class="cb-skeleton"><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>';
+  /* A SAVED ZIP HOLDS ITS ROOM FROM THE FIRST PAINT (Nov 19, 2026): #cb-wait, shown by the head's cb-zip class, sits
+     where the bids appear and runs past the fold, so the first answer moves nothing on screen. A second skeleton
+     under it would only push the page around. */
+  var held=document.getElementById('cb-wait');
+  results.innerHTML=(held&&!hasSearched&&document.documentElement.classList.contains('cb-zip'))?'':
+    '<div class="cb-skeleton"><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div><div class="cb-skel"></div></div>';
   var radius=parseInt(radiusSel.value,10)||50;
   gaEvent('bids_search',{zip:zip,radius:radius});
   announce('Searching for bids near '+zip+'\u2026');
-  fetchBids(zip,radius,function(err,bids,warn,lateInfo){
+  var onBids=function(err,bids,warn,lateInfo){
     var isLate=!!(lateInfo&&lateInfo.late),elevBefore=isLate?currentElevators.length:0,pinsBefore=pinnedKeys.slice();
-    goBtn.disabled=false;
-    results.removeAttribute('aria-busy');
+    /* first: this phone's last look at this ZIP, drawn while the live read runs (below) */
+    var isFirst=!!(lateInfo&&lateInfo.first);
+    if(!isFirst)liveShown=true;
+    var hw=document.getElementById('cb-wait');if(hw&&hw.parentNode)hw.parentNode.removeChild(hw);
+    if(!isFirst){goBtn.disabled=false;results.removeAttribute('aria-busy');}
+    /* the live answer after a last look takes the same room: what the last look drew keeps its height (held below) */
+    if(!isFirst&&lookShown)holdLookRoom();
     renderDegraded(null);
     /* cb-glance: the network failed -- fall back to the last network snapshot this phone saved, dated. */
     if(err&&!bids.length&&window.CBGlance){var _sn=CBGlance.snapshot(zip,radius);if(_sn){err=null;bids=_sn.rows;warn=_sn.note;}}
@@ -2542,6 +2615,8 @@ function doSearch(zip){
       announce('Error: unable to load bids. '+err.message);return;
     }
     if(warn)renderDegraded(warn);
+    else if(!isFirst&&lookShown&&!err){var dg=document.getElementById('cb-degraded');
+      if(dg){dg.textContent='Live bids loaded '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(' AM',' am').replace(' PM',' pm')+'. Each card says when its elevator posted.';dg.style.display='block';}}
     hasSearched=true;
     lastFetchTime=new Date();
     /* A late answer can land inside these 400 ms; its own line then replaces
@@ -2550,7 +2625,7 @@ function doSearch(zip){
     if(!isLate)cbAnnTimer=setTimeout(function(){ announce((bids.length||0)+' elevator listings loaded. Results below.'); }, 400);
     /* Nov 4, 2026: both saved-place keys at once (components/saved-place.js), so home, rent and ARC/PLC start at this ZIP too. */
     try{if(window.AgSavedPlace){AgSavedPlace.save(zip);AgSavedPlace.full();}else localStorage.setItem('agsist_zip',zip);}catch(e){}
-    goBtn.textContent='\u21BB Refresh';
+    if(!isFirst)goBtn.textContent='\u21BB Refresh';
     currentBids=bids;pinnedKeys=isLate?pinsBefore:[];if(!isLate){cbPinsHidden=false;cbPinsDropped={};cbPinsQuiet=true;}
     if(window.CBGlance&&!isLate)CBGlance.newSearch();
     /* Built from the bids that just arrived, not from a hardcoded list of
@@ -2625,6 +2700,7 @@ function doSearch(zip){
     syncFilterBar(currentFilter);
     renderBids(currentBids);
     renderBestBids(currentElevators);
+    if(!isFirst&&lookShown)applyLookCards();
     renderEarnings();
     updateCompareBar();
     cbFirstResultsDone();
@@ -2635,9 +2711,63 @@ function doSearch(zip){
       else announce('Live bids loaded. '+bids.length+' elevator listings.');
       return;
     }
+    if(isFirst)return;
     gaEvent('bids_loaded',{zip:zip,radius:radius,elevators:currentElevators.length,bids:bids.length});
     try{var p=new URLSearchParams(window.location.search);p.set('zip',zip);p.set('r',radius);history.replaceState(null,'','?'+p.toString());}catch(e){}
-  });
+  };
+  /* THE LAST LOOK FIRST (Nov 19, 2026). A returning reader's first screen used to be an empty skeleton for the seconds
+     the live read takes. When this phone holds its last network read for this ZIP (CBGlance.snapshot: at most a week
+     old, network rows only), those bids are drawn at once, each card with its own posted time, under one line that
+     says when they were saved; the live read replaces them when it lands. Only on the first search of the visit. */
+  /* Nov 19, 2026 (review): only a last look from the last FIRST_LOOK_MAX_MS draws first; an older one could be read as
+     today's price. It is not drawn: the held room and the live read cover it (the failure path still offers it, dated). */
+  var lookShown=false,liveShown=false;
+  releaseLookRoom();
+  if(!hasSearched&&window.CBGlance){
+    var first=null;try{first=CBGlance.snapshot(zip,radius);}catch(e){first=null;}
+    var age=first?Date.now()-(+first.savedAt||0):-1;
+    if(first&&first.rows&&first.rows.length&&age>=0&&age<=FIRST_LOOK_MAX_MS){
+      /* drawn once the page's other parts (the deferred Watch button, cb-alerts.js) are in, so the status line is the
+         size the live one will be; the held room shows until then. Never over a live answer that came first. */
+      var paintLook=function(){
+        if(liveShown||cbSearchSeq>seq0)return;
+        var fr=first.rows.map(function(b){var o={};for(var k in b)o[k]=b[k];o.stale=false;return o;});
+        /* the status line says what the live one will (every row is a board the network read itself) */
+        var pl={};fr.forEach(function(b){pl[(b.facility||'')+'|'+(b.city||b.town||'')]=1;});
+        cbNetStats={places:Object.keys(pl).length,rows:fr.length,duplicatesResolved:0,nationalPlaces:null};renderNetStats();
+        onBids(null,fr,lastLookNote(first.savedAt,zip),{first:true});
+        lookShown=true;
+      };
+      var seq0=cbSearchSeq+1;   /* fetchBids below takes the next number */
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',paintLook);else paintLook();
+    }
+  }
+  fetchBids(zip,radius,onBids);
+}
+var FIRST_LOOK_MAX_MS=12*3600e3;
+/* THE ROOM THE LAST LOOK TOOK. When the live bids replace it, the status line, the note under it and the best-price
+   cards keep at least the height they had, so the swap moves nothing on screen (site standard: layout shift under
+   0.01). Released when the reader starts the next search (a tap, so any shift then is theirs). */
+var LOOK_ROOM=['cb-status','cb-degraded','best-bids-section'];
+function holdLookRoom(){
+  LOOK_ROOM.forEach(function(id){var e=document.getElementById(id);if(e&&e.offsetHeight)e.style.minHeight=e.offsetHeight+'px';});
+  LOOK_CARDS=Array.prototype.map.call(document.querySelectorAll('#best-bids-grid > *'),function(c){return c.offsetHeight;});
+}
+var LOOK_CARDS=[];
+function applyLookCards(){
+  Array.prototype.forEach.call(document.querySelectorAll('#best-bids-grid > *'),function(c,i){if(LOOK_CARDS[i])c.style.minHeight=LOOK_CARDS[i]+'px';});
+}
+function releaseLookRoom(){
+  LOOK_ROOM.forEach(function(id){var e=document.getElementById(id);if(e)e.style.minHeight='';});
+  LOOK_CARDS=[];
+}
+/* 'Your last look at 51250, saved 9:10 am yesterday. Checking each elevator for newer bids.' */
+function lastLookNote(savedAt,zip){
+  var d=new Date(+savedAt),now=new Date();
+  var t=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(' AM',' am').replace(' PM',' pm');
+  var y=new Date(now);y.setDate(now.getDate()-1);
+  var day=d.toDateString()===now.toDateString()?'today':d.toDateString()===y.toDateString()?'yesterday':d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  return 'Your last look at '+zip+', saved on this phone '+t+' '+day+'. Checking each elevator for newer bids\u2026';
 }
 
 goBtn.addEventListener('click',function(){doSearch();});
@@ -2741,7 +2871,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
   if(z&&/^\d{5}$/.test(z)){
     zipInput.value=z;
     if(r&&['25','50','100','150','250'].indexOf(r)>=0)radiusSel.value=r;
-    setTimeout(function(){doSearch(z);},150);
+    setTimeout(function(){doSearch(z);},0);
   } else {
     try{
       var saved=localStorage.getItem('agsist_zip');
@@ -2749,7 +2879,7 @@ if(window.AGSIST_STATE&&window.AGSIST_STATE.lat&&window.AGSIST_STATE.zip){
       if(!(saved&&/^\d{5}$/.test(saved))){try{saved=String((JSON.parse(localStorage.getItem('agsist-wx-loc')||'null')||{}).zip||'');}catch(x){saved='';}}
       if(saved&&/^\d{5}$/.test(saved)&&!zipInput.value.trim()){
         zipInput.value=saved;
-        setTimeout(function(){ doSearch(saved); }, 300); // v2 panel: auto-run for returning farmers
+        setTimeout(function(){ doSearch(saved); }, 0); // auto-run for returning farmers, at once: the head held its room (cb-zip)
       }
     }catch(e){}
   }

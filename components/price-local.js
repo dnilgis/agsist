@@ -2,9 +2,10 @@
    futures price (corn, soybean, wheat and cattle futures, /markets, home).
 
    1. AgPxStamp: what the price stamp says. A quote the price file marks a
-      settle (close_kind "settle") reads "Oct 16 settle"; a last trade reads
-      "Last trade as of 1:46 pm CT" (close_time, else the time the file was
-      read). A quote with no close_kind says "Updated <time> CT". Always
+      settle (close_kind "settle") reads "Oct 16 settle"; a trade reads
+      "Read 1:46 pm CT; quotes delayed 10 to 25 min" (when the site read it),
+      or "Last trade at the 1:20 pm CT bell, change from the Nov 10 settle;
+      settle not posted yet" after the close (change(): the one pair rule). A quote with no close_kind says "Updated <time> CT". Always
       Central time, always named.
 
    2. The state line under the price. Only for a reader whose state the site
@@ -25,7 +26,7 @@
    and this script (defer). Tests: test/price-local.test.mjs */
 (function (root) {
   'use strict';
-  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
   function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' }, DAY = 864e5, TZ = 'America/Chicago';
@@ -146,7 +147,7 @@
   function roll(quotes, now) {
     var out = {}, k;
     if (!quotes) return quotes;
-    for (k in quotes) out[k] = quotes[k];
+    for (k in quotes) out[k] = pairGuard(quotes[k], k);
     function dead(x) { return !!(x && x.ticker && expired(x.ticker, now)); }
     for (k in out) if (/^[a-z]+-[a-z]{3}\d{2}$/.test(k) && dead(out[k])) delete out[k];
     for (k in out) {
@@ -165,8 +166,7 @@
     return out;
   }
 
-  /* THE OVERNIGHT (ELECTRONIC) TRADE, 2026-10-20 (Sig: "don't forget about
-     overnight market trading, I want that displayed if it is available").
+  /* THE OVERNIGHT (ELECTRONIC) TRADE, 2026-10-20.
      CBOT grains trade electronically 7:00 pm to 7:45 am CT. The price file
      carries that trade in one of two shapes (fetch_prices v3.7):
        before the settle posts (about 7 to 11 pm CT): settled:true, close is
@@ -180,21 +180,86 @@
      "settle" or "last" (the day's last trade, before the settle posts).
      An overnight trade is never a settle: titles keep the dated settle
      (seed_static.settled_close). Grain only; livestock has no overnight. */
+  /* THE DAY CHANGE, ONE RULE (Nov 2026; twin of scripts/price_pair.py problem()).
+     A printed change is the shown price against the settle of the session
+     before it: in session the trade, after the bell the day's last trade, once
+     the settle posts the settle, each against the previous session's settle.
+     The price run withholds any other pair (change_withheld, nulls); this
+     checks the file in hand as well, so an older file cannot print one: no
+     change when a trading session (isTradingDay) or a settle on file falls
+     between the two dates, when the change is not the price less the previous
+     settle, or when that settle disagrees with the one on file for its day.
+     Returns { net, pct, vs, kind } or null; vs is the ISO day of the settle
+     the change is from ('' when the file does not say). */
+  /* the markets that settle (price_pair.SETTLE_ROOTS); with no key, a futures ticker or a close_kind says so */
+  var SETTLE_ROOTS = { corn: 1, beans: 1, wheat: 1, kcwheat: 1, mplswheat: 1, oats: 1, meal: 1, soyoil: 1, rice: 1, cattle: 1, feeders: 1,
+    hogs: 1, milk: 1, cotton: 1, crude: 1, natgas: 1, gold: 1, silver: 1 };
+  function judged(q, key) {
+    if (key) return !!SETTLE_ROOTS[String(key).split('-')[0]];
+    return !!(q.close_kind || /=F$|\.(CBT|CME|NYM|CMX|NYB)$/.test(String(q.ticker || '')));
+  }
+  var ISO = /^\d{4}-\d\d-\d\d$/;
+  function pairBad(q, key) {
+    var cd = q.close_date || '', pd = q.prev_date || '', o = q.open;
+    if (num(o) && Math.abs(q.netChange - (q.close - o)) > 0.005) return true;
+    if (!judged(q, key) || !ISO.test(cd) || !ISO.test(pd)) return false;
+    /* pd must be THE session before cd: a trading day, earlier, with no trading day or settle on file between */
+    if (pd >= cd || !isTradingDay(pd)) return true;
+    var seen = Object.keys(q.settles || {}).concat(Object.keys(q.day_last || {}));
+    for (var i = 0; i < seen.length; i++) if (seen[i] > pd && seen[i] < cd) return true;
+    for (var t = tOf(pd) + DAY, n = 0; t < tOf(cd) && n < 40; t += DAY, n++) if (isTradingDay(isoOf(t))) return true;
+    if (!num(o)) return true;                  /* a change with no previous settle beside it */
+    var s = q.settles && q.settles[pd];
+    return num(s) && !q.repaired_from && Math.abs(s - o) > 0.005;
+  }
+  function change(q, key) {
+    if (!q || q.change_withheld || !num(q.close) || !num(q.netChange) || pairBad(q, key)) return null;
+    return { net: q.netChange, pct: num(q.pctChange) ? q.pctChange : null, vs: q.prev_date || '', kind: q.prev_kind || '' };
+  }
+  /* a copy of q with no change when change() rejects its pair (roll() applies it to every quote) */
+  function pairGuard(q, key) {
+    if (!q || typeof q !== 'object' || q.change_withheld || !num(q.netChange) || !num(q.close) || !pairBad(q, key)) return q;
+    var c = {}, f;
+    for (f in q) c[f] = q[f];
+    c.netChange = c.pctChange = c.open = c.prev_date = null;
+    c.change_withheld = 'the change and the price are not one session pair';
+    return c;
+  }
   var OVN_ROOTS = { ZC: 1, ZS: 1, ZW: 1, KE: 1, MW: 1, ZO: 1, ZM: 1, ZL: 1, ZR: 1 };
   function inOvernight(t) { var p = ct(t); if (!p) return false; var m = p.hh * 60 + p.mm; return m >= 19 * 60 || m < 7 * 60 + 45; }
   function num(x) { return typeof x === 'number' && isFinite(x); }
   function overnight(q) {
     if (!q || !OVN_ROOTS[String(q.ticker || '').slice(0, 2)]) return null;
     if (q.settled && num(q.last) && q.last_time && num(q.close)) {
-      return { px: q.last, net: num(q.last_net) ? q.last_net : null, at: q.last_time, hero: false,
+      /* the evening trade's change is from the day's settle; before it posts there is none */
+      return { px: q.last, net: num(q.last_net) && q.close_kind === 'settle' ? q.last_net : null, at: q.last_time, hero: false,
         ref: { px: q.close, date: q.close_date || '', kind: q.close_kind === 'settle' ? 'settle' : 'last' } };
     }
     if (q.close_kind === 'last' && q.close_time && num(q.close) && inOvernight(q.close_time) &&
         num(q.settle) && q.settle_date && q.close_date && q.settle_date < q.close_date && !q.roll) {
-      var net = q.prev_kind === 'settle' && q.prev_date === q.settle_date && num(q.netChange) ? q.netChange : Math.round((q.close - q.settle) * 1e4) / 1e4;
+      var c = change(q), net = c && c.vs === q.settle_date ? c.net : null;
       return { px: q.close, net: net, at: q.close_time, hero: true, ref: { px: q.settle, date: q.settle_date, kind: 'settle' } };
     }
     return null;
+  }
+  /* THE OVERNIGHT BOX, ONE RULE (Nov 18 2026). The overnight line under a futures hero price
+     (#hero-ovn, futures.js heroOvernight) is drawn when prices.json loads, from the file's own times.
+     Its box is held from the first paint by one class on <html>, ovn-hold, and one CSS rule (below:
+     two lines tall, and 26rem wide from 521 px, the width the drawn line takes). Two things set the
+     class before the first paint: this script, in the head, when the reader's clock is in the hours
+     a price file can carry the line (ovnWindow), and the page's bake (seed_static.ovn_hold_seed, the
+     SEED:ovn script) when the quote it baked has the line, whatever the clock. Once held the box
+     stays all load, empty when the file has no line (futures.js hides the line, the rule keeps the box).
+     Main red Nov 18, corn at 1280: the bake held the height only; the line widened the price column
+     238 to 442 px and moved the price 204 px left (CLS 0.012, test/state-line-cls).
+     ovnWindow: Sunday to Thursday from 7 pm, Monday to Friday until 8:30 am CT (the overnight session
+     to 7:45 and the pause before the day session, when the last read is still an overnight trade). */
+  function ovnWindow(now) {
+    var p = ct(now == null ? new Date() : now);
+    if (!p) return false;
+    var wd = new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay(), m = p.hh * 60 + p.mm;
+    if (m >= 19 * 60) return wd <= 4;
+    return m < 8 * 60 + 30 && wd >= 1 && wd <= 5;
   }
   /* One line for under a price. fmt(px) and move(net) are the page's own
      formatters (plain text; this escapes them). With the overnight trade as
@@ -219,14 +284,52 @@
       (o.hero ? 'at ' + esc(at) + '. ' : trade + ' at ' + esc(at) + '. ') + ref + '.</span>';
   }
 
-  /* The stamp for one quote: "Oct 16 settle" | "Last trade as of 1:46 pm CT" |
-     "Overnight trade as of 11:45 pm CT" (overnight() hero) | "Updated 1:46 am CT" */
-  function stamp(q, fetched, now) {
+  /* The one delay statement (Nov 10, 2026): Yahoo lists CBOT and
+     CME futures about 10 minutes behind and the site reads them about every
+     15 minutes, so a grain or livestock quote is 10 to 25 minutes old in
+     session (editorial-standards, terms). Energy, metals and the dollar can
+     lag longer: those say "delayed" with no minutes. */
+  var DELAY = 'quotes delayed 10 to 25 min';
+  var DELAY_ROOTS = /^(ZC|ZS|ZW|KE|MW|ZO|ZM|ZL|ZR|LE|GF|HE)/;
+  function delayWords(q) { return DELAY_ROOTS.test(String((q && q.ticker) || '')) ? DELAY : 'delayed quote'; }
+  /* When a trade price is from (stampParts): the time the site READ it, never
+     "last trade as of" that time (2026-11-10: close_time is the fetch in
+     session, fetch_prices.py). After the bell close_time is the bell itself,
+     earlier than the read: that is the day session's last trade.
+       {kind:'settle', at:'Oct 16'} | {kind:'read', at:'1:05 pm CT'} |
+       {kind:'overnight', at:'11:45 pm CT'} | {kind:'bell', at:'1:20 pm CT', vs:'Nov 10'} |
+       {kind:'updated', at:'1:46 am CT'} | null */
+  function stampParts(q, fetched, now) {
     var k = q && q.close_kind;
-    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return d + ' settle'; }
-    if (k === 'last') { var t = clock(q.close_time || fetched, now); if (t) return (overnight(q) && overnight(q).hero ? 'Overnight trade as of ' : 'Last trade as of ') + t; }
+    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return { kind: 'settle', at: d }; }
+    if (k === 'last') {
+      var ov = overnight(q), rd = fetched || q.close_time, ctm = q.close_time ? Date.parse(q.close_time) : NaN, ftm = fetched ? Date.parse(fetched) : NaN;
+      if (ov && ov.hero) { var o = clock(rd, now); if (o) return { kind: 'overnight', at: o }; }
+      else if (isFinite(ctm) && isFinite(ftm) && ctm < ftm - 60000) {
+        /* after the bell: the day's last trade; vs names the settle its change is from */
+        var b = clock(q.close_time, now), cv = change(q);
+        if (b) return { kind: 'bell', at: b, vs: cv ? isoDay(cv.vs, now) : '' };
+      }
+      else { var r = clock(rd, now); if (r) return { kind: 'read', at: r }; }
+    }
     var u = fetched ? clock(fetched, now) : '';
-    return u ? 'Updated ' + u : '';
+    return u ? { kind: 'updated', at: u } : null;
+  }
+  /* The stamp for one quote: "Oct 16 settle" | "Read 1:05 pm CT; quotes delayed 10 to 25 min" |
+     "Overnight trade read 11:45 pm CT; quotes delayed 10 to 25 min" (overnight() hero) |
+     "Last trade at the 1:20 pm CT bell, change from the Nov 10 settle; settle not posted yet" |
+     "Updated 1:46 am CT" */
+  /* withChange: the stamp sits beside a printed change (html()), so after the bell it names the settle that change is from */
+  function stamp(q, fetched, now, withChange) {
+    var s = stampParts(q, fetched, now);
+    if (!s) return '';
+    if (!withChange) s.vs = '';
+    if (s.kind === 'settle') return s.at + ' settle';
+    if (s.kind === 'read') return 'Read ' + s.at + '; ' + delayWords(q);
+    if (s.kind === 'overnight') return 'Overnight trade read ' + s.at + '; ' + delayWords(q);
+    if (s.kind === 'bell') return (DELAY_ROOTS.test(String(q.ticker || '')) ? 'Last trade at the ' + s.at + ' bell' : 'Last trade ' + s.at) +
+      (s.vs ? ', change from the ' + s.vs + ' settle' : '') + (DELAY_ROOTS.test(String(q.ticker || '')) ? '; settle not posted yet' : '; delayed quote');
+    return 'Updated ' + s.at;
   }
   /* A whole board: "Oct 16 settle where posted, latest delayed trade otherwise. Read 1:46 am CT" */
   /* 2026-10-20: cards on different settle dates show the range ("Oct 16 to
@@ -248,17 +351,30 @@
     else out = 'Latest delayed trades';
     return out + (read ? '. Read ' + read : '');
   }
-  /* Markup: a <time> (no data-asof, so asof.js leaves the words alone) with the full time as its title. */
-  function html(q, fetched, now) {
-    var s = stamp(q, fetched, now);
+  /* The same moment in the few words a small box holds (a card, the hero, a status line): the
+     old "Last trade as of 1:46 pm CT" length, so the line does not wrap where it did not before.
+     The full sentence, with the delay in minutes, is the title. */
+  function shortStamp(q, fetched, now) {
+    var s = stampParts(q, fetched, now);
     if (!s) return '';
-    var t = (q && q.close_kind === 'last' && q.close_time) || fetched || '';
+    if (s.kind === 'settle') return s.at + ' settle';
+    if (s.kind === 'read') return 'Read ' + s.at + ', delayed';
+    if (s.kind === 'overnight') return 'Overnight, read ' + s.at;
+    /* the settle the change is from is in the title (stamp withChange): a longer line wrapped and moved the page at 390 px */
+    if (s.kind === 'bell') return 'Last trade, ' + s.at + ' bell';
+    return 'Updated ' + s.at;
+  }
+  /* Markup: a <time> (no data-asof, so asof.js leaves the words alone), the short words, the full stamp as its title. */
+  function html(q, fetched, now) {
+    var s = shortStamp(q, fetched, now), full = stamp(q, fetched, now, true);
+    if (!s) return '';
+    var sp = stampParts(q, fetched, now), t = sp && sp.kind === 'bell' ? q.close_time : (fetched || (q && q.close_time) || '');
     var dt = (q && q.close_kind === 'settle' && (q.settle_date || q.close_date)) || t;
     /* a settle the file should have moved past says how old it is; past
        OLD_SESSIONS it is greyed like any stale stamp (asof.css is-stale) */
     var a = q && q.close_kind === 'settle' ? settleAge(q.settle_date || q.close_date, now) : null;
     return '<time class="px-stamp' + (a && a.old ? ' is-stale' : '') + '" datetime="' + esc(dt) + '"' + (a && a.old ? ' data-stale=""' : '') +
-      (fetched ? ' title="Price file read ' + esc(clock(fetched, now)) + '"' : '') + '>' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
+      ' title="' + esc(full) + (fetched && q && q.close_kind === 'settle' ? '. Price file read ' + esc(clock(fetched, now)) : '') + '">' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
   }
   /* The age of a whole board: its OLDEST settle (2026-10-19, P4). The newest
      one let a board with one card days behind look current. Adds oldest and
@@ -343,12 +459,13 @@
   /* The line's shape before its numbers: the same words with typical-width
      figures, for a reader with a saved state, so the page holds the space
      the line will take (2026-10-19 phone audit: the homepage moved down
-     70 to 170px when it arrived). The page shows it hidden (.pl-wait). */
+     70 to 170px when it arrived). The page shows it hidden (.pl-wait). The longest
+     common shape: "the latest delayed trade" and the company count (Nov 10 2026). */
   function placeholder(st, crops) {
     var l = [];
     (crops || []).forEach(function (crop) {
       var c = (CROPS[crop] || [])[0];
-      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the Oct 00 settle. <span class=\"pl-s\">The median of 000 elevators, Oct 00.</span>");
+      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the latest delayed trade. <span class=\"pl-s\">The median of 000 elevators, 00 companies, Oct 00.</span>");
     });
     return l.length ? l.join('<br>') + ' <a href="/cash-bids" tabindex="-1">Bids near you &rarr;</a>' : '';
   }
@@ -359,7 +476,7 @@
       (b.when ? '. <span class="pl-s">' + esc(b.when) + '.</span>' : '.') + ' <a href="/cash-bids">All bids near you &rarr;</a>';
   }
 
-  /* THE HEADLINE CONTRACT (2026-11-04, Sig's screenshot): ONE choice for every
+  /* THE HEADLINE CONTRACT (2026-11-04, the owner's screenshot): ONE choice for every
      headline corn and soybean futures price. It is <crop>-nearby, the month
      scripts/fetch_prices.py add_nearby picks: the nearest live month, rolled at
      CBOT first notice day (Nov '26 soybeans to Jan '27 from Oct 30; Dec '26
@@ -385,8 +502,8 @@
   }
   /* THE NEXT HARVEST CONTRACT: the Dec corn or Nov soybeans after the headline
      month. Dec '26 corn while Dec '26 is the headline is Dec '27; Nov soybeans
-     with Jan '27 the headline is Nov '27 (Sig, Oct 1: never two cards of one
-     contract; Nov 4: never a month past first notice). A card or ticker slot
+     with Jan '27 the headline is Nov '27 (Oct 1: never two cards of one
+ contract; Nov 4: never a month past first notice). A card or ticker slot
      for "new crop" reads this and names the month. Twin: seed_static.py
      new_crop_quote (and futures.js newCropKey). -> {key, q, label} or null. */
   var HARVEST = { corn: 'dec', beans: 'nov' };
@@ -410,7 +527,7 @@
     return { key: key, q: d, label: label(d.ticker) || null };
   }
 
-  var api = { headline: headline, harvest: harvest, stamp: stamp, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, change: change, pairGuard: pairGuard, shortStamp: shortStamp, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, ovnWindow: ovnWindow, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
@@ -425,6 +542,9 @@
     el.innerHTML = h; el.className += ' pl-wait'; el.setAttribute('aria-hidden', 'true'); el.hidden = false;
   };
   function settle(el, h) {
+    /* the line keeps at least the box it held, so a shorter line (a settle instead of "the latest
+       delayed trade") never pulls the page up (CLS sweep, Nov 10 2026) */
+    if (el.classList.contains('pl-wait') && h) { var hh = el.getBoundingClientRect().height; if (hh > 0) el.style.minHeight = hh + 'px'; }
     el.classList.remove('pl-wait'); el.removeAttribute('aria-hidden');
     if (h) { el.innerHTML = h; el.hidden = false; } else { el.hidden = true; el.innerHTML = ''; }
   }
@@ -495,8 +615,10 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', folds); else folds();
 
   var css = doc.createElement('style');
-  css.textContent = '.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
-    '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
+  css.textContent = '.pl-line.pl-wait{visibility:hidden}.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:var(--r-md);font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
+    '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.ovn-hold #hero-ovn,.ovn-hold #hero-ovn[hidden]{display:block!important;min-height:2.4em}@media(min-width:521px){.ph-price .ph-ovn{width:26rem;max-width:100%}}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
   (doc.head || doc.documentElement).appendChild(css);
+  /* the overnight box (ovnWindow above): held from the first paint in the hours a price file can carry the line */
+  try { if (ovnWindow(new Date())) doc.documentElement.classList.add('ovn-hold'); } catch (e) { }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this);

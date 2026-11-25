@@ -1,11 +1,10 @@
 name: Morning report
-# Morning report.
 
 on:
   schedule:
     - cron: '40 11,12 * * *'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 04"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -15,7 +14,7 @@ on:
         default: false
 
 concurrency:
-  group: morning-report
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 04' && !(contains(github.event.workflow_run.display_title, ' morning-report.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('morning-report-{0}', github.run_id) || 'morning-report' }}
   cancel-in-progress: false
 
 permissions:
@@ -23,7 +22,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 04' || (contains(github.event.workflow_run.display_title, ' morning-report.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -72,7 +73,6 @@ jobs:
           sparse-checkout: |
             /scripts/
             /data/*.json
-            /TODO-SIG.md
             /test/fixtures/today-bids-index-*.json.gz
             /.github/actions/engine/
             /.github/engine-paths
@@ -109,6 +109,12 @@ jobs:
           RAW_BRANCH: private-data
           RAW_SOFT: '1'
         run: bash scripts/pull_raw.sh private/ledger/tests/latest.json
+      - name: Get the to-do list (private repo)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh private/todo.md
       - name: Build and send
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -127,6 +133,7 @@ jobs:
           FROM_NAME: ${{ secrets.FROM_NAME }}
           FORMS_TO: ${{ secrets.FORMS_TO }}
           SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
+          TODO_EDIT_URL: ${{ vars.TODO_EDIT_URL }}
           SNAPSHOT: .morning-report/counts.json
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
         run: python3 scripts/morning_report.py

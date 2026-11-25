@@ -100,11 +100,15 @@
   }
   /* Nearest first, one row per elevator for this crop. An elevator whose
      best posted bid sits in a later period than its nearest one is read
-     first: it is known to post a later month. */
+     first: it is known to post a later month.
+     Nov 20, 2026: a premium row (Plenish, white corn: components/bid-filter.js
+     gradeOk) is not a board's grain to hold, and bestPeriod is only set when the
+     best row is the same commodity (bids-network.js bestFor). */
   function candidates(snap, crop, skip, max) {
-    var seen = {}, out = [];
+    var seen = {}, out = [], BF = window.AG && window.AG.bidFilter;
     (snap && snap.bids || []).forEach(function (r) {
       if (r.crop !== crop || !r.place || seen[r.place] || (skip && skip[r.place])) return;
+      if (!BF || !BF.gradeOk || !BF.gradeOk(r, { wheatClasses: true })) return;
       seen[r.place] = 1;
       out.push(r);
     });
@@ -375,7 +379,7 @@
     if (!ds.length) return '';
     return esc(' We read the boards of the ' + state.read.length + ' nearest elevator' + (state.read.length === 1 ? '' : 's') + ', out to ' + Math.round(Math.max.apply(null, ds)) + ' miles.');
   }
-  /* 2026-11-04 (site panel, skeptic row 7): a read that failed (the network
+  /* 2026-11-04 (site review, row 7): a read that failed (the network
      or every board did not answer) used to come back as an empty list and
      print "No elevator we read near 50010 posts a later bid", blaming the
      elevators for our own failed read. A failed read now says so. */

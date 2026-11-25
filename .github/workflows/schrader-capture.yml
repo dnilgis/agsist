@@ -1,12 +1,10 @@
 name: schrader-capture
-# schrader-capture.
 
 on:
   schedule:
     - cron: "43 19 * * 1"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 13"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -18,7 +16,9 @@ permissions:
   contents: read
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 13' || (contains(github.event.workflow_run.display_title, ' schrader-capture.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -151,10 +151,15 @@ jobs:
           git add data/land/auctions/schrader.json
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: Schrader auction results $(date -u +%F) [skip ci]"
-          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
 
-  # Land auction firms (Sig, Nov 8, 2026): raw results pages only, nothing read or published yet.
   firms-seen:
     needs: gate
     if: needs.gate.outputs.go == '1'
@@ -302,5 +307,11 @@ jobs:
           git add data/land/auctions/
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: land auction firms results $(date -u +%F) [skip ci]"
-          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }

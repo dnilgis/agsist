@@ -11,7 +11,7 @@
 
    The page says which crop it is before loading this file:
      <script>window.AGSIST_FUTURES='corn'</script>
-     <script src="/components/futures.js?v=1"></script>
+     <script src="/components/futures.js?v=40"></script>
    Prices print through components/util.js (AG.px), which loads in the head. */
 (function(){
 'use strict';
@@ -26,12 +26,12 @@ var MONTH_TIPS={
    on the page: quartiles at 25 and 75, halves at 50. "Mid-range" is not one of them
    (it was printed at the 74th percentile, audit N13, Oct 17). */
 function bandOf(pct){return pct<25?'lower quartile':pct<50?'lower half':pct<75?'upper half':'upper quartile';}
-function zoneOf(pct){return pct<25?'lower quartile: historically a weak pricing window':pct<50?'lower half':pct<75?'upper half':'upper quartile: near recent highs';}
+function zoneOf(pct){return pct<25?'lower quartile':pct<50?'lower half':pct<75?'upper half':'upper quartile: near recent highs';}
 
 var CROPS={
   corn:{
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
-    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
+    emoji:'',
     carry:'corn',
     tiles:[{nc:['corn','dec'],alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{root:'beans',name:'Soybeans',sym:'ZS',p:'p-beans',c:'c-beans',g:true},{root:'wheat',name:'Wheat',sym:'ZW',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
@@ -54,7 +54,7 @@ var CROPS={
         var bz=document.getElementById('bz'+(cornBu<4?0:cornBu<4.75?1:cornBu<5.5?2:3));
         if(bz)bz.classList.add('active');
       }
-      renderRatio(data,function(r){return r<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored: historically the stronger per-acre plant':r<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Neutral zone: local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored: soybeans historically pay more per acre';});
+      renderRatio(data,function(r){return r<2.4?'Corn favored: historically the stronger per-acre plant':r<2.6?'Neutral zone: local costs and rotation should decide':'Beans favored: soybeans historically pay more per acre';});
       // S2: new-crop at a glance: the corn-dec benchmark (the next live Dec, which
       // rolls on its own; the label is read from its ticker). Hidden when the key is missing.
       var cornDec=q[newCropKey('corn','dec',q)]||q['corn-dec'];
@@ -164,7 +164,7 @@ var CROPS={
 
   wheat:{
     key:'wheat',label:'Wheat',root:'ZW',stats:'wheat',ga:'wheat',progressKey:null,
-    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>',
+    emoji:'',
     // Forward curve and carry window: components/storesell.js forwardCurve /
     // carryWindow, from the dated contracts on file (Dec '26 to May '27 on
     // 2026-10-11). Jul '27 on is next year's crop: plotted, never in the carry.
@@ -294,7 +294,55 @@ var CROPS={
 };
 
 /* the pure helpers, for test/futures-one-quote.test.mjs */
-window.AgsistFuturesPure={nearbyOf:nearbyOf,amt:amt,wheatProgressRows:wheatProgressRows};
+/* RP prices, one source for every line that prints them (2026-11-12: the
+   "RP projected price" line printed the harvest price once it was final, and
+   the gap to the board was measured from it). The projected price prints as
+   the projected price. A final harvest price is its own labelled line with
+   its own gap. RP guarantees use the higher of the two, said in words.
+   rp = {projected, harvest, harvestFinal, contract, window}; bq = the board
+   in dollars, or null. */
+function rpGap(v,bq){
+  if(bq==null||v==null)return null;
+  var g=v-bq;
+  return {g:g,level:AG.px.quarters(g*100)===0,txt:(Math.abs(g)>=1?AG.px.priceDollars(Math.abs(g)):AG.px.move(Math.abs(g)*100)),dir:g>0?'above':'below'};
+}
+function rpPrices(rp,bq){
+  if(!rp)return null;
+  var pj=(rp.projected!=null)?Number(rp.projected):null;
+  var hv=(rp.harvestFinal&&rp.harvest!=null)?Number(rp.harvest):null;
+  var ct=rp.contract?AG.px.contract(rp.contract):null;
+  var o={proj:null,harv:null,higher:null};
+  if(pj!=null)o.proj={label:'RP projected price',price:pj,contract:ct,window:rp.window||null,gap:rpGap(pj,bq)};
+  if(hv!=null)o.harv={label:'Harvest price (final)',price:hv,contract:ct,from:'the October average of '+(ct?ct+' ':'')+'futures',gap:rpGap(hv,bq)};
+  if(pj!=null&&hv!=null)o.higher=hv>pj?'harvest':(hv<pj?'projected':'same');
+  return (o.proj||o.harv)?o:null;
+}
+function rpBridgeHtml(rp,bq,pendingWord){
+  var o=rpPrices(rp,bq);if(!o)return '';
+  function gapHtml(g){return g.level?'level with the board':'<span class="rp-gap '+(g.g>=0?'sc-f-val up':'sc-f-val dn')+'">'+g.txt+'</span> '+g.dir+' the board';}
+  var L='';
+  if(o.proj){
+    L+='<strong>'+o.proj.label+':</strong> <strong>'+AG.px.priceDollars(o.proj.price)+'</strong>'+(o.proj.contract?' ('+o.proj.contract+(o.proj.window?', '+o.proj.window+' avg':'')+')':'');
+    if(bq!=null)L+=', today’s board '+AG.px.priceDollars(bq)+(o.proj.gap.level?', level with the board.':', '+gapHtml(o.proj.gap)+'.');
+    else L+='.';
+  }
+  if(o.harv){
+    L+=(L?' ':'')+'<strong>'+o.harv.label+':</strong> <strong>'+AG.px.priceDollars(o.harv.price)+'</strong>, from '+o.harv.from+(o.harv.gap?', '+gapHtml(o.harv.gap):'')+'.';
+  }
+  L+=' Your revenue guarantee is your APH yield times your coverage level times the higher of the projected and harvest prices'+(o.higher==='harvest'?'; this year that is the harvest price.':o.higher==='projected'?'; this year that is the projected price.':'.');
+  if(!o.harv){
+    if(rp.running!=null){L+=' Harvest price so far: <strong>'+AG.px.priceDollars(rp.running)+'</strong>, the running average of '+rp.days+(rp.daysTotal?' of '+rp.daysTotal:'')+' October trading days (<a href="/harvest-price-tracker">harvest price tracker</a>).';}
+    else if(rp.harvestPending&&pendingWord){L+=' <span style="opacity:.7">'+pendingWord+'</span>';}
+  }
+  return L;
+}
+/* One pace rule (Nov 24, 2026), twin of scripts/pace_rule.py, which the Daily reads. A gap in whole points
+   against the prior year or the 5-year average is "even" only at zero; any other gap says its points. The
+   Daily printed "2 points behind" for 94% against 96% while this card said "Even with the 5-year average"
+   for any gap up to 3. test/pace-rule.test.mjs runs both readers over test/fixtures/pace-rule/cases.json. */
+function paceState(gap){return gap===0?'even':gap<0?'behind':'ahead';}
+function pacePoints(gap){var n=Math.abs(gap);return n+(n===1?' point':' points');}
+window.AgsistFuturesPure={nearbyOf:nearbyOf,amt:amt,wheatProgressRows:wheatProgressRows,rpPrices:rpPrices,rpBridgeHtml:rpBridgeHtml,paceState:paceState,pacePoints:pacePoints};
 var CROP=CROPS[window.AGSIST_FUTURES];
 if(!CROP)return;
 var CROP_KEY=CROP.key;
@@ -490,12 +538,28 @@ function renderCropProgress(data){
     var pace=document.getElementById('crop-plant-pace');
     if(pace&&d.planting_prev_year!=null){
       var diff=d.planting_pct-d.planting_prev_year;
-      if(Math.abs(diff)<=3){pace.textContent='On pace: even with prior year';pace.className='crop-pace onpace';}
-      else if(diff<0){pace.textContent='Behind pace: '+Math.abs(diff)+' points vs prior year';pace.className='crop-pace behind';}
-      else{pace.textContent='Ahead of pace: '+diff+' points vs prior year';pace.className='crop-pace ahead';}
+      var ps=paceState(diff);
+      if(ps==='even'){pace.textContent='On pace: even with prior year';pace.className='crop-pace onpace';}
+      else if(ps==='behind'){pace.textContent='Behind pace: '+pacePoints(diff)+' vs prior year';pace.className='crop-pace behind';}
+      else{pace.textContent='Ahead of pace: '+pacePoints(diff)+' vs prior year';pace.className='crop-pace ahead';}
       pace.style.display='block';
     }else if(pace){pace.style.display='none';}
   }else if(plantSec){plantSec.style.display='none';}
+  /* Harvest (Nov 10 2026): the card read the condition week (Oct 11) while the
+     hero read the newest week in the same file (Nov 1, harvest). In harvest the newest week is
+     the harvest week, shown in the progress bar, and the condition says the week it was rated. */
+  var hv=cropHarvestWeek(d);
+  if(hv&&plantSec){
+    plantSec.style.display='block';
+    var hl=plantSec.querySelector('.crop-sec-lbl');if(hl)hl.textContent='Harvest progress';
+    var hf=document.getElementById('crop-plant-fill');if(hf)hf.style.width=d.harvest_pct+'%';
+    var hp=document.getElementById('crop-plant-bar-pct');if(hp)hp.textContent=d.harvest_pct+'%';
+    var hb=d.harvest_5yr_avg!=null?d.harvest_5yr_avg:d.harvest_prev_year,hw=d.harvest_5yr_avg!=null?'5-year average':'prior year';
+    var hpw=document.getElementById('crop-plant-prev');if(hpw)hpw.innerHTML=hb!=null?'Same week, '+hw+': <span class="v">'+hb+'%</span>':'';
+    var hpc=document.getElementById('crop-plant-pace');
+    if(hpc&&hb!=null){var hd=d.harvest_pct-hb,hs=paceState(hd);hpc.textContent=hs==='even'?'Even with the '+hw:pacePoints(hd)+' '+hs+(hs==='ahead'?' of':'')+' the '+hw;hpc.className='crop-pace '+(hs==='even'?'onpace':hs);hpc.style.display='block';}
+    else if(hpc)hpc.style.display='none';
+  }
 
   // Good/Excellent section
   var geSec=document.getElementById('crop-ge-sec');
@@ -529,14 +593,21 @@ function renderCropProgress(data){
     var prevYrEl=document.getElementById('crop-ge-prev-yr');if(prevYrEl)prevYrEl.textContent='';
   }
 
-  // As-of stamp
+  var gl=geSec&&geSec.querySelector('.crop-sec-lbl');
+  if(gl)gl.textContent='Crop condition (good + excellent)'+(hv&&d.report_date&&d.report_date<hv&&d.good_excellent!=null?', last rated week ending '+cropWeekLabel(d.report_date):'');
+
+  // As-of stamp: the newest week on the card, the same week the hero names
   var asof=document.getElementById('crop-asof');
   if(asof){
-    var stamp=d.report_date||data.report_date||data.updated;
-    if(window.AgAsOf&&data.updated)asof.innerHTML=(d.report_date||data.report_date?'Week ending '+(d.report_date||data.report_date)+' \u00b7 ':'')+AgAsOf.html(data.updated,'usda');
-    else if(stamp)asof.textContent='Updated '+stamp;
+    var wk=hv||d.report_date||data.report_date,stamp=wk||data.updated;
+    if(window.AgAsOf&&data.updated)asof.innerHTML=(wk?'Week ending '+cropWeekLabel(wk)+' \u00b7 ':'')+AgAsOf.html(data.updated,'usda');
+    else if(stamp)asof.textContent='Updated '+(wk?cropWeekLabel(wk):stamp);
   }
 }
+/* the harvest week when the file carries harvest progress newer than (or as new as) the condition week, else null */
+function cropHarvestWeek(d){return d&&d.harvest_pct!=null&&/^\d{4}-\d{2}-\d{2}$/.test(d.harvest_date||'')&&(!d.report_date||d.harvest_date>=d.report_date)?d.harvest_date:null;}
+/* "2026-11-08" -> "Nov 8" */
+function cropWeekLabel(iso){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||'');return m?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+(+m[3]):String(iso||'');}
 
 
 // ============ COT POSITIONING (CFTC Disaggregated) ============
@@ -785,8 +856,8 @@ function loadWasde(){
         if(p.length!==3)return false;
         var dt=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
         if(isNaN(dt.getTime()))return false;
-        var today=new Date();today.setHours(0,0,0,0);
-        var dd=Math.round((dt-today)/86400000);
+        /* today and tomorrow by the Central calendar, not the reader's clock (Nov 10 2026) */
+        var tc=ctISODate(new Date()).split('-'),dd=Math.round((Date.UTC(+p[0],+p[1]-1,+p[2])-Date.UTC(+tc[0],+tc[1]-1,+tc[2]))/86400000);
         if(dd<0)return false;
         wEl.textContent=name+' · '+MN[dt.getMonth()]+' '+dt.getDate()+' · '+(dd===0?'today':dd===1?'tomorrow':'in '+dd+' days');
         maybeFlagWasdeImminence(dd);
@@ -981,21 +1052,19 @@ function computeScorecard(){
     var _cp=Math.round(cot.pct);
     factors.push({lbl:'Fund Positioning',val:_cp+ord(_cp)+' pct since '+cot.since,cls:'nu',meter:cot.pct,det:cot.crowded?'crowded '+cot.crowded+' (share of open interest)':(cot.word||'')+', not crowded'});
   }
-  // 4. Seasonal: from /data/price-stats.json seasonality; row omitted entirely when data is unavailable
-  if(window.__agsistSeas&&window.__agsistSeas.length===12){
-    var mo=new Date().getMonth();
-    var sv=window.__agsistSeas[mo];
-    factors.push({lbl:'Seasonal Tendency',val:sv+'/100',cls:'nu',meter:sv,det:seasWin()});
-  }
+  // 4. (Nov 18, 2026) no seasonal score here: the old one ranked a month on the continuous front-month, whose
+  //    July to September roll made corn's August low. The seasonal chart below shows the one-contract figure.
   // 5. RP projected price (crop insurance), only when harvest-prices has this crop.
   //    It is a price, not a floor: the guarantee is APH yield times coverage
   //    times the higher of the projected and harvest prices.
   //    Measured against the quote the page leads with (the nearby contract).
   var fq=frontQuote(window.__agsistLastQ);
-  if(rp&&rp.floor!=null){
-    var _bq=(fq&&fq.close!=null)?fq.close/100:null;
-    var _gap=(_bq!=null)?(rp.floor-_bq):null;
-    factors.push({lbl:'RP projected price',val:AG.px.priceDollars(rp.floor),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?(AG.px.quarters(_gap*100)===0?'level with today’s board':amt(_gap*100)+' '+(_gap>0?'above':'below')+' today’s board'):('projected '+(rp.window||'')+' avg'))});
+  var _rpo=rpPrices(rp,(fq&&fq.close!=null)?fq.close/100:null);
+  if(_rpo){
+    [_rpo.proj,_rpo.harv].forEach(function(x,ix){
+      if(!x)return;var g=x.gap;
+      factors.push({lbl:x.label,val:AG.px.priceDollars(x.price),cls:(g?(g.g>=0?'up':'dn'):'nu'),meter:(g?Math.max(0,Math.min(100,50+g.g*40)):100),det:(g?(g.level?'level with today’s board':amt(g.g*100)+' '+g.dir+' today’s board'):(ix===0?('projected '+(rp.window||'')+' avg'):'October average'))});
+    });
   }
   // composite descriptive situation (NOT a recommendation)
   var sit='';
@@ -1042,17 +1111,10 @@ function renderScorecard(){
   // RP revenue-floor bridge
   var rpEl=document.getElementById('sc-rp');
   if(rpEl){
-    if(sc.rp&&sc.rp.floor!=null){
-      var bq=(sc.priceCents!=null)?sc.priceCents/100:null;
-      var L='<strong>RP projected price:</strong> <strong>'+AG.px.priceDollars(sc.rp.floor)+'</strong>'+(sc.rp.contract?' ('+AG.px.contract(sc.rp.contract)+(sc.rp.window?', '+sc.rp.window+' avg':'')+')':'');
+    var _rb=sc.rp?rpBridgeHtml(sc.rp,(sc.priceCents!=null)?sc.priceCents/100:null,CROP.rpHarvestWord):'';
+    if(_rb){
       /* the board is a futures price, printed to the quarter cent like the hero; it is not "the cash market" */
-      if(bq!=null){var g=sc.rp.floor-bq;L+=', today’s board '+AG.px.priceDollars(bq)+(AG.px.quarters(g*100)===0?', level with the board.':', <span class="rp-gap '+(g>=0?'sc-f-val up':'sc-f-val dn')+'">'+(Math.abs(g)>=1?AG.px.priceDollars(Math.abs(g)):AG.px.move(Math.abs(g)*100))+'</span> '+(g>0?'above':'below')+' the board.');}
-      L+=' Your revenue guarantee is your APH yield times your coverage level times the higher of the projected and harvest prices.';
-      /* 2026-10-15: "still setting" while harvest-prices.json already held the
-         running average (corn $4.93, 10 of 22 days). Say it, and where it is tracked. */
-      if(sc.rp.running!=null){L+=' Harvest price so far: <strong>'+AG.px.priceDollars(sc.rp.running)+'</strong>, the running average of '+sc.rp.days+(sc.rp.daysTotal?' of '+sc.rp.daysTotal:'')+' October trading days (<a href="/harvest-price-tracker">harvest price tracker</a>).';}
-      else if(sc.rp.harvestPending){L+=' <span style="opacity:.7">'+CROP.rpHarvestWord+'</span>';}
-      rpEl.innerHTML=L; rpEl.style.display='block';
+      rpEl.innerHTML=_rb; rpEl.style.display='block';
       try{if(typeof gaEvent==='function')gaEvent('rp_floor_shown',{crop:CROP_KEY});else if(window.gtag)gtag('event','rp_floor_shown',{crop:CROP_KEY});}catch(e){}
     } else { rpEl.style.display='none'; }
   }
@@ -1251,10 +1313,12 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
      Baring Elevator MO "Organic Yellow Corn" $11.50 was the highest checked bid
      in the sample for 13 of 50 grid ZIPs. With no filter script on the page
      nothing is picked at all: no number beats a wrong one. */
+  /* Nov 20, 2026: and a CURRENT delivery (BF.isPlainCurrent, the one rule): a
+     next-year harvest or a month 3+ out is never the best bid. */
   var BF=window.AG&&window.AG.bidFilter;
-  if(!BF)return null;
-  var plain=[];
-  for(var q=0;q<cropBids.length;q++){if(BF.canSetBest(cropBids[q]))plain.push(cropBids[q]);}
+  if(!BF||!BF.isPlainCurrent)return null;
+  var plain=[],bnow=new Date();
+  for(var q=0;q<cropBids.length;q++){if(BF.isPlainCurrent(cropBids[q],bnow))plain.push(cropBids[q]);}
   if(plain.length===0)return null;
   cropBids=plain;
 
@@ -1381,14 +1445,44 @@ function findBestBidForCrop(bids,nearestGridResult,cropKey){
 }
 
 
-/* The network's own count (data/elevator-counts.json `coverage`, the one counts file; copied from the file the
-   homepage reads), in place of the old "samples 50 ZIP locations" line. No
-   file, no number: the sentence reads fine without it. */
-function netCount(box){fetch('/data/elevator-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.coverage;if(!k||typeof k.read!=='number'||typeof k.elevators!=='number'||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.read.toLocaleString('en-US')+' of the '+k.elevators.toLocaleString('en-US')+' elevators it knows are read directly)';});}).catch(function(){});}
+/* The network's own count: the site's one elevator count (data/elevator-counts.json `bids.elevators`,
+   elevators with a current bid), the same field every page prints. No file, no number: the sentence reads fine without it. */
+function netCount(box){fetch('/data/elevator-counts.json').then(function(r){return r.ok?r.json():null;}).then(function(c){var k=c&&c.bids;if(!k||typeof k.elevators!=='number'||!(k.elevators>0)||!box)return;Array.prototype.forEach.call(box.querySelectorAll('.net-count'),function(e){e.textContent=' ('+k.elevators.toLocaleString('en-US')+' elevators with a current bid)';});}).catch(function(){});}
 
-/* The seasonal factor's label names the window the index was built on
-   (price-stats.json seasonality_years: 2022-2025 is 4 years, not "5-yr"). */
-function seasWin(){var s=window.__agsistSeasS,y=s&&s.seasonality_years;return (y&&y.length===2?'weekly closes '+y[0]+'–'+y[1]+' ('+(y[1]-y[0]+1)+' years)':'weekly closes')+', indexed 0–100';}
+/* The seasonal chart (Nov 18, 2026): price-stats.json seasonality_pct, by calendar month the percent a weekly close
+   sat above or below its year's mean, each year read from ONE contract (scripts/build_price_percentile.py). Drawn
+   only for that method: a continuous front-month series is never drawn (its roll from one contract to the next made
+   corn's August low). Twin of seasDraw in cattle-futures-prices.html. Returns true when drawn. */
+function seasDraw(s,ch,cm){
+  var P=s&&s.seasonality_pct,y=s&&s.seasonality_years;
+  if(!s||s.seasonality_method!=='one-contract-calendar-year'||!P||P.length!==12||!y||y.length!==2)return false;
+  for(var i=0;i<12;i++)if(typeof P[i]!=='number'||!isFinite(P[i]))return false;
+  var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function pc(v){return (v>0?'+':v<0?'\u2212':'')+Math.abs(v).toFixed(1)+'%';}
+  var mx=0;P.forEach(function(v){mx=Math.max(mx,Math.abs(v));});
+  var top=[1,2,3,4,5,6,8,10,12,15,20,25,30,40,50].filter(function(t){return t>=mx;})[0]||Math.ceil(mx);
+  var hi=0,lo=0;P.forEach(function(v,i){if(v>P[hi])hi=i;if(v<P[lo])lo=i;});
+  var yy=y[0]+'-'+String(y[1]).slice(2);
+  var cols=P.map(function(v,i){var h=(Math.abs(v)/top*50).toFixed(1)+'%';
+    return '<div class="seas-col'+(i===cm?' cur':'')+'" title="'+MOS[i]+': '+pc(v)+' from that year\u2019s mean" style="position:relative;justify-content:flex-end">'+
+      '<div style="position:relative;flex:1;width:100%"><div class="seas-bar" style="position:absolute;left:0;right:0;'+(v>=0?'bottom:50%;border-radius:2px 2px 0 0':'top:50%;border-radius:0 0 2px 2px')+';height:'+h+'"></div></div>'+
+      '<div class="seas-mo">'+MOS[i]+'</div></div>';}).join('');
+  ch.setAttribute('role','img');
+  ch.setAttribute('aria-label','What '+yy+' did, percent from each year\u2019s mean by month: highest '+MOS[hi]+' '+pc(P[hi])+', lowest '+MOS[lo]+' '+pc(P[lo]));
+  ch.style.height='96px';ch.style.alignItems='stretch';
+  ch.innerHTML='<div aria-hidden="true" style="display:flex;flex-direction:column;justify-content:space-between;font-size:.7rem;color:var(--text-dim);padding:0 4px 18px 0;text-align:right;white-space:nowrap"><span>+'+top+'%</span><span>0%</span><span>\u2212'+top+'%</span></div>'+
+    '<div style="flex:1;display:flex;gap:3px;position:relative"><div aria-hidden="true" style="position:absolute;left:0;right:0;top:calc((100% - 18px) / 2);border-top:1px solid var(--border)"></div>'+cols+'</div>';
+  var wrap=ch.closest?ch.closest('.seas-wrap'):null,t=wrap&&wrap.querySelector('.seas-title'),n=wrap&&wrap.querySelector('.seas-note');
+  if(t)t.textContent='What '+yy+' did';
+  if(n)n.textContent='Highest '+MOS[hi]+' ('+pc(P[hi])+'), lowest '+MOS[lo]+' ('+pc(P[lo])+')';
+  return true;
+}
+function seasCap(s){
+  var y=s.seasonality_years,c=s.seasonality_contract==='December'?'December contract':'contract for January of the next year';
+  return 'Percent above or below the year\u2019s mean, by month: weekly closes of the '+c+' in each calendar year '+y[0]+' to '+y[1]+
+    ' (Yahoo Finance), each set against that year\u2019s mean close, then the mean for each month (n='+(s.seasonality_n||'?')+' weeks). '+
+    (y[1]-y[0]+1)+' years is a short window: what these years did, not a forecast.';
+}
 
 function fmtBidTime(ts){
   try{
@@ -1699,6 +1793,9 @@ function initZipPrompt(){
 }
 
 
+/* "2026-11-10": the calendar date in Central time (the exchange's and the site's clock) */
+function ctISODate(d){try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;});if(p.year&&p.month&&p.day)return p.year+'-'+p.month+'-'+p.day;}catch(e){}return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+
 // ============ DAILY BRIEFING STRIP ============
 // Fetches /data/daily.json and populates the top strip if today's briefing exists.
 // Schema: {date, headline, subheadline, lead, teaser}
@@ -1707,13 +1804,12 @@ function loadBriefingStrip(){
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){
       if(!d||!d.date||!d.headline)return;
-      var today=new Date().toISOString().slice(0,10);
-      if(d.date!==today)return;
+      if(d.date!==ctISODate(new Date()))return;  /* the Central date, not UTC (UTC is tomorrow from 6 or 7 pm CT) */
       var strip=document.getElementById('brief-strip');
       var hd=document.getElementById('brief-hd');
       var teaser=document.getElementById('brief-teaser');
       if(strip&&hd&&teaser){
-        /* Audit 2026-07-29 (Sig): NO emoji in reader copy: the briefing pipeline
+        /* Audit 2026-07-29: NO emoji in reader copy: the briefing pipeline
            still emits them (daily.json), so scrub anything it feeds this strip.
            Surrogate-pair class = all astral emoji; BMP ranges = misc symbols/dingbats.
            Plain arrows are outside these ranges and survive. */
@@ -1905,22 +2001,28 @@ function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.t
 // The hero and the lead tile use the nearest dated contract (<crop>-nearby)
 // when the pipeline publishes it with a price, else the continuous most-active
 // series, labeled "Most-active (ZC)" and never "Front Month".
-/* "the Oct 16 settle" | "the last trade as of 9:15 am CT" | "today's quote (Oct 17, 1:46 am)" */
+/* "the Oct 16 settle" | "the delayed quote read 9:15 am CT" | "the last trade at the 1:20 pm CT bell" |
+   "the overnight trade read 11:45 pm CT" | "today's quote (Oct 17, 1:46 am)" (AgPxStamp.stampParts) */
 function pxWhat(q,fetched,ctf){
-  var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'';
-  if(/ settle$/.test(s))return 'the '+s;
-  if(/^Last trade/.test(s))return 'the l'+s.slice(1);
-  if(/^Overnight trade/.test(s))return 'the overnight trade'+s.slice(15);
+  var p=window.AgPxStamp&&AgPxStamp.stampParts&&q?AgPxStamp.stampParts(q,fetched):null;
+  if(p&&p.kind==='settle')return 'the '+p.at+' settle';
+  if(p&&p.kind==='read')return 'the delayed quote read '+p.at;
+  if(p&&p.kind==='bell')return 'the last trade at the '+p.at+' bell';
+  if(p&&p.kind==='overnight')return 'the overnight trade read '+p.at;
   return 'today\u2019s quote'+(fetched&&ctf?' ('+ctf(fetched)+')':'');
 }
 /* The hero line's moment, in the baked seed's words (seed_static.py quote_when,
-   state_words): "Settle Oct 16" | "Last trade as of 10:42 am CT" | "Last quote".
+   state_words): "Settle Oct 16" | "Read 10:42 am CT, delayed" | "Last trade, 1:20 pm CT bell" | "Last quote".
+   (The settle a change is from is named in the sentence under the hero, below, kept short here: one line at 390 px.)
    Night audit Oct 19, 2026: it called a Friday settle "refreshed" in session
    on a Sunday, and an answer engine can quote that as a live price. */
 function exchWhen(q,fetched){
-  var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'',m=/^(.*) settle$/.exec(s);
-  if(m)return 'Settle '+m[1];
-  if(/^(Last|Overnight) trade/.test(s))return s;
+  /* short: the hero line held one line with "Last trade Oct 19, 10:42 a.m. CT"; the delay is under the price (heroFresh) */
+  var p=window.AgPxStamp&&AgPxStamp.stampParts&&q?AgPxStamp.stampParts(q,fetched):null,k=p&&p.kind;
+  if(k==='settle')return 'Settle '+p.at;
+  if(k==='read')return 'Read '+p.at+', delayed';
+  if(k==='bell')return 'Last trade, '+p.at+' bell';
+  if(k==='overnight')return 'Overnight trade read '+p.at;
   return 'Last quote';
 }
 /* the price stamp: price-local.js when it is on the page, asof.js otherwise */
@@ -1991,14 +2093,17 @@ AG.json('/data/prices.json')
          62 px on a phone, CLS about 0.2 (phone audit, Oct 19, 2026). */
       var __sn=document.querySelector('.px-seed-note');
       if(__sn){
-        var __s=window.AgPxStamp?AgPxStamp.stamp(front,data.fetched):'',__m=/^(.*) settle$/.exec(__s),__t=/^(?:Last|Overnight) trade as of (.*)$/.exec(__s),__u=/^Updated (.*)$/.exec(__s);
-        var __v=__m?'settled at':__t?(/^Overnight/.test(__s)?'traded overnight near':'last traded near'):'last quoted near',__w=__m?__m[1]:__t?__t[1]:__u?__u[1]:'';
+        var __p=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(front,data.fetched):null,__k=__p&&__p.kind;
+        var __v=__k==='settle'?'settled at':__k==='overnight'?'traded overnight near':__k==='read'||__k==='bell'?'last traded near':'last quoted near',__w=__p?(__k==='read'||__k==='overnight'?'read '+__p.at:__k==='bell'?'the '+__p.at+' bell'+(__p.vs?', change from the '+__p.vs+' settle':''):__p.at):'';
         var __cr={corn:'corn',beans:'soybeans',wheat:'wheat'}[CROP_KEY]||CROP.label.toLowerCase();
         __sn.style.minHeight=__sn.offsetHeight+'px';
-        __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; as of '+__w:'')+'.';
+        __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; '+(__k==='settle'||__k==='updated'?'as of ':__k==='bell'?'at ':'')+__w:'')+'.';
       }
-      var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
-      /* 2026-10-20 (Sig): the overnight electronic trade, when the file has one,
+      /* after the bell the change names its settle where the line has room: "▼ −¼¢ (−0.06%) vs Nov 10" (AgPxStamp.change) */
+      var hc=chgTxt(front.netChange,front.pctChange,front.roll),__hp=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(front,data.fetched):null;
+      if(hc.t&&__hp&&__hp.kind==='bell'&&__hp.vs)hc.t+=' vs '+__hp.vs;
+      setEl('hero-chg',hc.t,hc.c);
+      /* 2026-10-20: the overnight electronic trade, when the file has one,
          beside the settle (price-local.js overnight). Titles keep the settle. */
       heroOvernight(front);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}
@@ -2100,7 +2205,7 @@ loadPrices();
    scorecard and announces it with an "agsist-seas" event. */
 (function(){var KEY=CROP.stats,QK=CROP_KEY;function $(i){return document.getElementById(i);}function m(v,md){return AG.px.priceDollars(v,{mode:md});}function ord(n){var v=n%100;if(v>=10&&v<=20)return "th";return {1:"st",2:"nd",3:"rd"}[n%10]||"th";}function band(p){return p<10?"historically very low: near a 5-year bottom":p<25?"historically low: below most of the last 5 years":p<45?"below the 5-year midpoint":p<=55?"right around the 5-year midpoint":p<75?"above the 5-year midpoint":p<90?"historically high: above most of the last 5 years":"historically very high: near a 5-year peak";}function ct(iso){try{return new Date(iso).toLocaleString("en-US",{timeZone:"America/Chicago",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" CT";}catch(e){return String(iso);}}function J(u){return AG.json(u).catch(function(){return null;});}
   /* 5-yr bar = ONE measure: the dot sits at the percentile the sentence prints (share of weekly closes at or below the price), not at (price-low)/(high-low). When price-stats.json carries the weekly history (hist), today's live quote is ranked against it so the bar and the hero show the same price; otherwise the stored position is shown and dated. */
-  Promise.all([J("/data/price-stats.json"),J("/data/prices.json")]).then(function(a){var d=a[0],p=a[1],s=d&&d[KEY];if(s&&s.seasonality&&s.seasonality.length===12){window.__agsistSeas=s.seasonality;window.__agsistSeasN=s.seasonality_n||s.n||null;window.__agsistSeasS=s;try{window.dispatchEvent(new Event("agsist-seas"));}catch(e){}}if(!s||s.pct==null)return;var w=$("rng5-wrap");if(!w)return;var qs=(p&&p.quotes)||{},q=qs[QK+"-nearby"]||qs[QK]||null,live=(q&&q.close!=null)?q.close/100:null;var h=s.hist,cur,pct,n,lo,hi,note;if(h&&h.length>=29&&live!=null){var c=1;lo=live;hi=live;for(var i=0;i<h.length;i++){if(h[i]<=live)c++;if(h[i]<lo)lo=h[i];if(h[i]>hi)hi=h[i];}n=h.length+1;pct=Math.round(100*c/n);cur=live;note="Ranks "+pxWhat(q,p.fetched,ct)+" ("+m(live)+") against the prior "+h.length+" weekly closes.";}else{pct=s.pct;cur=s.cur;n=s.n;lo=s.lo;hi=s.hi;note="5-yr position as of the "+(d.updated?ct(d.updated):"last")+" update ("+m(s.cur)+"), not today’s live quote.";}pct=Math.max(0,Math.min(100,pct));$("rng5-lo").textContent="5-yr low "+m(lo,"down");$("rng5-hi").textContent="5-yr high "+m(hi,"up");$("rng5-cur").textContent=m(cur)+" · "+pct+ord(pct)+" pct";$("rng5-fill").style.width=pct+"%";$("rng5-dot").style.left="calc("+pct+"% - 6px)";$("rng5-read").textContent="At the "+pct+ord(pct)+" percentile of the last "+(s.years||5)+" years: "+band(pct)+". n = "+n+" weekly closes, continuous front-month (Yahoo Finance, delayed, not CME settlements). "+note;w.style.display="";});})();
+  Promise.all([J("/data/price-stats.json"),J("/data/prices.json")]).then(function(a){var d=a[0],p=a[1],s=d&&d[KEY];if(s&&s.seasonality_method==="one-contract-calendar-year"&&s.seasonality_pct&&s.seasonality_pct.length===12){window.__agsistSeasS=s;try{window.dispatchEvent(new Event("agsist-seas"));}catch(e){}}if(!s||s.pct==null)return;var w=$("rng5-wrap");if(!w)return;var qs=(p&&p.quotes)||{},q=qs[QK+"-nearby"]||qs[QK]||null,live=(q&&q.close!=null)?q.close/100:null;var h=s.hist,cur,pct,n,lo,hi,note;if(h&&h.length>=29&&live!=null){var c=1;lo=live;hi=live;for(var i=0;i<h.length;i++){if(h[i]<=live)c++;if(h[i]<lo)lo=h[i];if(h[i]>hi)hi=h[i];}n=h.length+1;pct=Math.round(100*c/n);cur=live;note="Ranks "+pxWhat(q,p.fetched,ct)+" ("+m(live)+") against the prior "+h.length+" weekly closes.";}else{pct=s.pct;cur=s.cur;n=s.n;lo=s.lo;hi=s.hi;note="5-yr position as of the "+(d.updated?ct(d.updated):"last")+" update ("+m(s.cur)+"), not today’s live quote.";}pct=Math.max(0,Math.min(100,pct));$("rng5-lo").textContent="5-yr low "+m(lo,"down");$("rng5-hi").textContent="5-yr high "+m(hi,"up");$("rng5-cur").textContent=m(cur)+" · "+pct+ord(pct)+" pct";$("rng5-fill").style.width=pct+"%";$("rng5-dot").style.left="calc("+pct+"% - 6px)";$("rng5-read").textContent="At the "+pct+ord(pct)+" percentile of the last "+(s.years||5)+" years: "+band(pct)+". n = "+n+" weekly closes, continuous front-month (Yahoo Finance, delayed, not CME settlements). "+note;w.style.display="";});})();
 
 
 /* RP revenue floor from data/harvest-prices.json, corn and soybeans. This ran
@@ -2118,11 +2223,10 @@ loadPrices();
     if(!row)return;
     var pj=(row.projected&&row.projected.price!=null)?Number(row.projected.price):null;
     var hv=(row.harvest&&row.harvest.price!=null)?Number(row.harvest.price):null;
-    var floor=(pj!=null&&hv!=null)?Math.max(pj,hv):(pj!=null?pj:hv);
-    if(floor==null)return;
+    if(pj==null&&hv==null)return;
     var hs=row.harvest&&row.harvest.status;
     window.__agsistMR=window.__agsistMR||{};
-    window.__agsistMR.rpCtx={floor:floor,projected:pj,harvest:hv,contract:row.contract||null,window:(row.projected&&row.projected.window)||null,harvestPending:(hv==null&&(hs==='pending'||hs==='running')),cropYear:d.crop_year||null,
+    window.__agsistMR.rpCtx={projected:pj,harvest:(hs==='final'?hv:null),harvestFinal:(hs==='final'&&hv!=null),contract:row.contract||null,window:(row.projected&&row.projected.window)||null,harvestPending:(hv==null&&(hs==='pending'||hs==='running')),cropYear:d.crop_year||null,
       running:(hs==='running'&&row.harvest.running_avg!=null&&row.harvest.series&&row.harvest.series.length)?Number(row.harvest.running_avg):null,
       days:(row.harvest&&row.harvest.series)?row.harvest.series.length:null,daysTotal:(row.harvest&&row.harvest.days_total)||null};
     try{renderScorecard();}catch(e){}
@@ -2134,23 +2238,18 @@ loadPrices();
 
 // TRADINGVIEW: fully decoupled from prices, loads independently, degrades gracefully
 document.addEventListener('DOMContentLoaded',function(){
-  // S7: seasonal chart driven by /data/price-stats.json seasonality (stashed by the
-  // 5-yr range code as window.__agsistSeas). No data: the card stays hidden;
-  // nothing invented.
-  function seasCap(s){if(!s)return null;var y=s.seasonality_years;if(s.seasonality_method==='calendar-year-detrended'&&y&&y.length===2){return 'Weekly closes for whole calendar years '+y[0]+'–'+y[1]+', each divided by its own year’s average, then averaged by month and scaled 0–100 (0 = weakest month, 100 = strongest; n='+(s.seasonality_n||'?')+' weeks). Continuous front-month (Yahoo Finance), not roll-adjusted. '+(y[1]-y[0]+1)+' years is a short window: a description of these years, not a forecast.';}return 'Average weekly close by calendar month over a rolling '+(s.years||5)+'-yr window, scaled 0–100 (n='+s.n+' weeks). Raw levels, not detrended, and the window starts and ends mid-year, so in a trending market the months sampled from the earliest or latest year read low or high for that reason alone. A description of these years, not a forecast.';}
+  // S7: seasonal chart from /data/price-stats.json (stashed by the 5-yr range code as window.__agsistSeasS,
+  // seasDraw above). No clean data: the chart stays hidden and the fold says so; nothing invented.
   function renderSeasonal(){
-    var seas=window.__agsistSeas;
+    var s=window.__agsistSeasS;
     var wrap=document.getElementById('seas-wrap');
     var ch=document.getElementById('seas-chart');
-    if(!wrap||!ch||!seas||seas.length!==12)return;
-    var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var cm=new Date().getMonth();
-    ch.innerHTML='';
-    seas.forEach(function(v,i){var c=document.createElement('div');c.className='seas-col'+(i===cm?' cur':'');c.title=MOS[i]+': '+v+'/100';c.innerHTML='<div style="flex:1"></div><div class="seas-bar" style="height:'+Math.max(4,v*.5)+'px"></div><div class="seas-mo">'+MOS[i]+'</div>';ch.appendChild(c);});
+    if(!wrap||!ch||!s)return;
+    if(!seasDraw(s,ch,new Date().getMonth()))return;
     var capEl=document.getElementById('seas-caption');
-    var capTx=seasCap(window.__agsistSeasS);if(capEl&&capTx)capEl.textContent=capTx+CROP.seasSuffix;
+    if(capEl)capEl.textContent=seasCap(s)+CROP.seasSuffix;
     wrap.style.display='block';
-    try{renderScorecard();}catch(e){}
+    var none=document.getElementById('seas-none');if(none)none.hidden=true;
   }
   window.addEventListener('agsist-seas',renderSeasonal);
   renderSeasonal();

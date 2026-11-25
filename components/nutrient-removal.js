@@ -377,8 +377,9 @@
     (root.AgFertPick ? root.AgFertPick.load() : getJson('/data/fertilizer-prices.json')).then(function (data) {
       var pr = data ? nutrientPrices(data) : { n: null, p: null, k: null };
       if (!data) noPrices(); else { fillPrices(pr, data); fillTable(pr); }
+      d.documentElement.classList.remove('nr-wait');
       calc(pr);
-    });
+    }, function () { d.documentElement.classList.remove('nr-wait'); });
   }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', start); else start();
 })(typeof window !== 'undefined' ? window : this);

@@ -2,14 +2,6 @@
  "note": "Facilities that could not be matched to a single record. Each has its own record.",
  "keys": [
   {
-   "key": "basis:AL|AGREX INC|MONTGOMERY",
-   "rule": "name+town",
-   "candidates": [
-    "ebwks7pd6k",
-    "en061m4d0g"
-   ]
-  },
-  {
    "key": "basis:CO|CHS HIGH PLAINS|FLEMING",
    "rule": "exact",
    "candidates": [
@@ -43,19 +35,319 @@
    ]
   },
   {
-   "key": "basis:IA|21ST CENTURY COOP|CUMBERLAND",
-   "rule": "name+town",
-   "candidates": [
-    "ef4dg3azm5",
-    "ejtncvxey4"
-   ]
-  },
-  {
    "key": "basis:IA|ADM|CLINTON",
    "rule": "exact",
    "candidates": [
     "edhq6zphvs",
     "ewepys0tvk"
+   ]
+  },
+  {
+   "key": "basis:IA|GOLD-EAGLE COOPERATIVE|CLARION",
+   "rule": "exact",
+   "candidates": [
+    "eg6t6kbk54",
+    "eh4rg9gctr"
+   ]
+  },
+  {
+   "key": "basis:IA|GOLD-EAGLE COOPERATIVE|CORWITH",
+   "rule": "exact",
+   "candidates": [
+    "ec84fg1n59",
+    "emjrppph0b"
+   ]
+  },
+  {
+   "key": "basis:IA|HEARTLAND CO-OP|EARLHAM",
+   "rule": "exact",
+   "candidates": [
+    "e0ntq9maee",
+    "eykrn5wx1m"
+   ]
+  },
+  {
+   "key": "basis:ID|SCOULAR|JEROME",
+   "rule": "name+town",
+   "candidates": [
+    "e4ctwp3tkv",
+    "emp9s8ata3"
+   ]
+  },
+  {
+   "key": "basis:IL|ADM|DECATUR",
+   "rule": "exact",
+   "candidates": [
+    "e6b9deqk60",
+    "ezk9c693bk"
+   ]
+  },
+  {
+   "key": "basis:IL|ADM|MENDOTA",
+   "rule": "exact",
+   "candidates": [
+    "e9psn3gxa7",
+    "eez9c6888c",
+    "eyrz5j15bp"
+   ]
+  },
+  {
+   "key": "basis:IL|ADM|OTTAWA",
+   "rule": "exact",
+   "candidates": [
+    "e0ddh16vw0",
+    "exqrqchhw2"
+   ]
+  },
+  {
+   "key": "basis:IL|ADM|QUINCY",
+   "rule": "exact",
+   "candidates": [
+    "ehsn6zrwvd",
+    "etf659gm5h"
+   ]
+  },
+  {
+   "key": "basis:IL|BUNGE|GRIGGSVILLE",
+   "rule": "exact",
+   "candidates": [
+    "ebfpq0xzyj",
+    "emd4txdbwq"
+   ]
+  },
+  {
+   "key": "basis:IL|PEARL CITY ELEVATOR, INC.|BAILEYVILLE",
+   "rule": "name+town",
+   "candidates": [
+    "e6m8m33m3v",
+    "ed2ct982e9"
+   ]
+  },
+  {
+   "key": "basis:IL|PEARL CITY ELEVATOR, INC.|PEARL CITY",
+   "rule": "name+town",
+   "candidates": [
+    "e3j64zn749",
+    "ef7wxjzrp7"
+   ]
+  },
+  {
+   "key": "basis:IL|TOTAL GRAIN MARKETING|SHELBYVILLE",
+   "rule": "exact",
+   "candidates": [
+    "e45mfbvb9a",
+    "egf2jv2mby"
+   ]
+  },
+  {
+   "key": "basis:IN|ADM|EVANSVILLE",
+   "rule": "exact",
+   "candidates": [
+    "e6ww04b964",
+    "e6x85mnctq",
+    "e80dyfmczn",
+    "eq8sa2gcdd"
+   ]
+  },
+  {
+   "key": "basis:IN|ADM|MOUNT VERNON",
+   "rule": "exact",
+   "candidates": [
+    "efa0p76q9r",
+    "er40jez9s5"
+   ]
+  },
+  {
+   "key": "basis:KS|ADM|COPELAND",
+   "rule": "exact",
+   "candidates": [
+    "epswp9tmc6",
+    "etcc6ba9br"
+   ]
+  },
+  {
+   "key": "basis:KS|CHS UNITED PLAINS AG|TRIBUNE",
+   "rule": "exact",
+   "candidates": [
+    "e9eyt6bb9x",
+    "enh36pe1vm"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|ADA",
+   "rule": "name+town",
+   "candidates": [
+    "e1ec0f3ee4",
+    "e8sda156r4"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|BREWSTER",
+   "rule": "name+town",
+   "candidates": [
+    "e52fwrp213",
+    "erc8sp6es1"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|CULLISON",
+   "rule": "name+town",
+   "candidates": [
+    "e18xz4nmd5",
+    "e8ybs5pds6"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|GREENSBURG",
+   "rule": "name+town",
+   "candidates": [
+    "e85fy6sd6j",
+    "ehavf1fg02"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|LINCOLN",
+   "rule": "name+town",
+   "candidates": [
+    "es2zvacxnv",
+    "exmvtrsxm2"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|MINNEAPOLIS",
+   "rule": "name+town",
+   "candidates": [
+    "e18xbsx09t",
+    "eceavazs87"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|MONUMENT",
+   "rule": "name+town",
+   "candidates": [
+    "e6pns2r1eq",
+    "ewd3bng9e4"
+   ]
+  },
+  {
+   "key": "basis:MN|ADM|MARSHALL",
+   "rule": "exact",
+   "candidates": [
+    "e0ae1wsea8",
+    "e198njsmjh"
+   ]
+  },
+  {
+   "key": "basis:MN|STATELINE COOPERATIVE|BLUE EARTH",
+   "rule": "exact",
+   "candidates": [
+    "efzmk6c591",
+    "ehkebqrcqy"
+   ]
+  },
+  {
+   "key": "basis:MO|ADM|ST. LOUIS",
+   "rule": "exact",
+   "candidates": [
+    "e05nkfpn51",
+    "e26wdzhm0q"
+   ]
+  },
+  {
+   "key": "basis:MT|SCOULAR|BUTTE",
+   "rule": "name+town",
+   "candidates": [
+    "ea620m6q46",
+    "exg3et1gg9"
+   ]
+  },
+  {
+   "key": "basis:ND|FINLEY FARMERS GRAIN & ELEVATOR|COOPERSTOWN, ND",
+   "rule": "name+town",
+   "candidates": [
+    "e2szc1zqgy",
+    "ecy06re57f"
+   ]
+  },
+  {
+   "key": "basis:ND|FINLEY FARMERS GRAIN & ELEVATOR|FINLEY, ND",
+   "rule": "name+town",
+   "candidates": [
+    "e4xqr5hk77",
+    "emb3a76r2r"
+   ]
+  },
+  {
+   "key": "basis:NE|ADM|FREMONT",
+   "rule": "exact",
+   "candidates": [
+    "e5rgq90b00",
+    "ec0m7jfj41",
+    "ejm528j17p"
+   ]
+  },
+  {
+   "key": "basis:NE|ADM|LINCOLN",
+   "rule": "exact",
+   "candidates": [
+    "ebsk8p46t6",
+    "er9td1a63t"
+   ]
+  },
+  {
+   "key": "basis:NE|CHS HOLDREGE|HOLDREGE",
+   "rule": "exact",
+   "candidates": [
+    "eg1y3n2vx9",
+    "erddqm149k"
+   ]
+  },
+  {
+   "key": "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|CHAPPELL",
+   "rule": "exact",
+   "candidates": [
+    "er5mv869f2",
+    "eyyn5bc94h"
+   ]
+  },
+  {
+   "key": "basis:NE|SCOULAR|BRANDON",
+   "rule": "name+town",
+   "candidates": [
+    "ea9zedtzkg",
+    "ezh97amhcm"
+   ]
+  },
+  {
+   "key": "basis:OH|SCOULAR|COVINGTON",
+   "rule": "name+town",
+   "candidates": [
+    "er1k41bjt4",
+    "ev06b7ffk2"
+   ]
+  },
+  {
+   "key": "basis:OH|THE ANDERSONS|TOLEDO",
+   "rule": "exact",
+   "candidates": [
+    "e4d7rggwnn",
+    "e808z400aw"
+   ]
+  },
+  {
+   "key": "basis:AL|AGREX INC|MONTGOMERY",
+   "rule": "name+town",
+   "candidates": [
+    "ebwks7pd6k",
+    "en061m4d0g"
+   ]
+  },
+  {
+   "key": "basis:IA|21ST CENTURY COOP|CUMBERLAND",
+   "rule": "name+town",
+   "candidates": [
+    "ef4dg3azm5",
+    "ejtncvxey4"
    ]
   },
   {
@@ -148,35 +440,11 @@
    ]
   },
   {
-   "key": "basis:IA|GOLD-EAGLE COOPERATIVE|CLARION",
-   "rule": "exact",
-   "candidates": [
-    "eg6t6kbk54",
-    "eh4rg9gctr"
-   ]
-  },
-  {
-   "key": "basis:IA|GOLD-EAGLE COOPERATIVE|CORWITH",
-   "rule": "exact",
-   "candidates": [
-    "ec84fg1n59",
-    "emjrppph0b"
-   ]
-  },
-  {
    "key": "basis:IA|GREEN PLAINS|SHENANDOAH",
    "rule": "name+town",
    "candidates": [
     "e1jsgd3tg1",
     "ejxj2y0mhh"
-   ]
-  },
-  {
-   "key": "basis:IA|HEARTLAND CO-OP|EARLHAM",
-   "rule": "exact",
-   "candidates": [
-    "e0ntq9maee",
-    "eykrn5wx1m"
    ]
   },
   {
@@ -234,14 +502,6 @@
    "candidates": [
     "e7zdda3qme",
     "eb43mfw0cs"
-   ]
-  },
-  {
-   "key": "basis:IA|LINN COOP OIL COMPANY|ALBURNETT",
-   "rule": "name+town",
-   "candidates": [
-    "e5mp0qxwa3",
-    "e7ppqmvm5p"
    ]
   },
   {
@@ -327,42 +587,10 @@
    ]
   },
   {
-   "key": "basis:IL|ADM|DECATUR",
-   "rule": "exact",
-   "candidates": [
-    "e6b9deqk60",
-    "ezk9c693bk"
-   ]
-  },
-  {
-   "key": "basis:IL|ADM|MENDOTA",
-   "rule": "exact",
-   "candidates": [
-    "e9psn3gxa7",
-    "eez9c6888c",
-    "eyrz5j15bp"
-   ]
-  },
-  {
-   "key": "basis:IL|ADM|OTTAWA",
-   "rule": "exact",
-   "candidates": [
-    "e0ddh16vw0",
-    "exqrqchhw2"
-   ]
-  },
-  {
-   "key": "basis:IL|ADM|QUINCY",
-   "rule": "exact",
-   "candidates": [
-    "ehsn6zrwvd",
-    "etf659gm5h"
-   ]
-  },
-  {
    "key": "basis:IL|ADM GRAIN|DECATUR",
    "rule": "name+town",
    "candidates": [
+    "e04f2r51hd",
     "e6b9deqk60",
     "ezk9c693bk"
    ]
@@ -372,23 +600,8 @@
    "rule": "name+town",
    "candidates": [
     "e0ddh16vw0",
+    "ekbzj3fbfa",
     "exqrqchhw2"
-   ]
-  },
-  {
-   "key": "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA",
-   "rule": "name+town",
-   "candidates": [
-    "e30jm2y0nd",
-    "ep34r1a79j"
-   ]
-  },
-  {
-   "key": "basis:IL|BUNGE|GRIGGSVILLE",
-   "rule": "exact",
-   "candidates": [
-    "ebfpq0xzyj",
-    "emd4txdbwq"
    ]
   },
   {
@@ -461,14 +674,6 @@
    "candidates": [
     "e18fb80w74",
     "eh0g1b90er"
-   ]
-  },
-  {
-   "key": "basis:IL|LEGACY GRAIN COOPERATIVE|BLUE MOUND",
-   "rule": "name+town",
-   "candidates": [
-    "e5fmzap0ev",
-    "e6xydgm3bz"
    ]
   },
   {
@@ -560,14 +765,6 @@
    ]
   },
   {
-   "key": "basis:IL|PREMIER COOPERATIVE - IL|CHAMPAIGN",
-   "rule": "name+town",
-   "candidates": [
-    "e9db7c07p8",
-    "eefg1h4nqg"
-   ]
-  },
-  {
    "key": "basis:IL|PREMIER COOPERATIVE - IL|FAIRMOUNT",
    "rule": "name+town",
    "candidates": [
@@ -632,14 +829,6 @@
    ]
   },
   {
-   "key": "basis:IL|TOTAL GRAIN MARKETING|SHELBYVILLE",
-   "rule": "exact",
-   "candidates": [
-    "e45mfbvb9a",
-    "egf2jv2mby"
-   ]
-  },
-  {
    "key": "basis:IL|WESTERN GRAIN MARKETING - FS|ASHLAND",
    "rule": "name+town",
    "candidates": [
@@ -673,24 +862,6 @@
    ]
   },
   {
-   "key": "basis:IN|ADM|EVANSVILLE",
-   "rule": "exact",
-   "candidates": [
-    "e6ww04b964",
-    "e6x85mnctq",
-    "e80dyfmczn",
-    "eq8sa2gcdd"
-   ]
-  },
-  {
-   "key": "basis:IN|ADM|MOUNT VERNON",
-   "rule": "exact",
-   "candidates": [
-    "efa0p76q9r",
-    "er40jez9s5"
-   ]
-  },
-  {
    "key": "basis:IN|AGREX INC|PERU",
    "rule": "name+town",
    "candidates": [
@@ -705,14 +876,6 @@
     "e3erkf0cbj",
     "ecvg9htabz",
     "emvnj9jpnw"
-   ]
-  },
-  {
-   "key": "basis:KS|ADM|COPELAND",
-   "rule": "exact",
-   "candidates": [
-    "epswp9tmc6",
-    "etcc6ba9br"
    ]
   },
   {
@@ -756,30 +919,6 @@
    ]
   },
   {
-   "key": "basis:KS|CHS UNITED PLAINS AG|TRIBUNE",
-   "rule": "exact",
-   "candidates": [
-    "e9eyt6bb9x",
-    "enh36pe1vm"
-   ]
-  },
-  {
-   "key": "basis:KS|COMARK EQUITY ALLIANCE LLC|HILLSBORO",
-   "rule": "name+town",
-   "candidates": [
-    "e4n3mtbs8b",
-    "etxn3fjbzm"
-   ]
-  },
-  {
-   "key": "basis:KS|COMARK EQUITY ALLIANCE LLC|WELLINGTON",
-   "rule": "name+town",
-   "candidates": [
-    "ecsg64stej",
-    "eqrwysh0ts"
-   ]
-  },
-  {
    "key": "basis:KS|PRODUCER AG|ARGONIA",
    "rule": "name+town",
    "candidates": [
@@ -820,11 +959,11 @@
    ]
   },
   {
-   "key": "basis:KS|TURON MILL & ELEVATOR, INC.|TURON",
+   "key": "basis:MI|STAR OF THE WEST MILLING CO. - CHARLOTTE|CHARLOTTE",
    "rule": "name+town",
    "candidates": [
-    "ek6pq1kgxx",
-    "ekczh06wkj"
+    "e7958730yw",
+    "eg1ns30ptt"
    ]
   },
   {
@@ -836,52 +975,12 @@
    ]
   },
   {
-   "key": "basis:MI|STAR OF THE WEST MILLING CO. - CHARLOTTE|CHARLOTTE",
-   "rule": "name+town",
-   "candidates": [
-    "e7958730yw",
-    "eg1ns30ptt"
-   ]
-  },
-  {
-   "key": "basis:MN|ADM|MARSHALL",
-   "rule": "exact",
-   "candidates": [
-    "e0ae1wsea8",
-    "e198njsmjh"
-   ]
-  },
-  {
-   "key": "basis:MN|FARMWARD COOPERATIVE|COMFREY",
-   "rule": "name+town",
-   "candidates": [
-    "e7t0e7g2zj",
-    "ef6z244jkx"
-   ]
-  },
-  {
    "key": "basis:MN|FARMWARD COOPERATIVE|MORGAN",
    "rule": "name+town",
    "candidates": [
     "enks2cphxw",
     "evppn7g6w7",
     "ewpvvge45n"
-   ]
-  },
-  {
-   "key": "basis:MN|FARMWARD COOPERATIVE|MORTON",
-   "rule": "name+town",
-   "candidates": [
-    "ebbsgf74h9",
-    "etnpn76gn0"
-   ]
-  },
-  {
-   "key": "basis:MN|FARMWARD COOPERATIVE|SPRINGFIELD",
-   "rule": "name+town",
-   "candidates": [
-    "e1ddkdprca",
-    "et07x5zmbj"
    ]
   },
   {
@@ -925,22 +1024,6 @@
    ]
   },
   {
-   "key": "basis:MN|STATELINE COOPERATIVE|BLUE EARTH",
-   "rule": "exact",
-   "candidates": [
-    "efzmk6c591",
-    "ehkebqrcqy"
-   ]
-  },
-  {
-   "key": "basis:MO|ADM|ST. LOUIS",
-   "rule": "exact",
-   "candidates": [
-    "e05nkfpn51",
-    "e26wdzhm0q"
-   ]
-  },
-  {
    "key": "basis:MO|AGRISERVICES OF BRUNSWICK|BRUNSWICK",
    "rule": "name+town",
    "candidates": [
@@ -954,14 +1037,6 @@
    "candidates": [
     "ea51wc4kmz",
     "esj608cre3"
-   ]
-  },
-  {
-   "key": "basis:MO|JBS LIVE PORK|CENTRALIA",
-   "rule": "name+town",
-   "candidates": [
-    "e5vkdkh4qx",
-    "exhd279234"
    ]
   },
   {
@@ -1070,35 +1145,20 @@
    ]
   },
   {
-   "key": "basis:NE|ADM|FREMONT",
-   "rule": "exact",
-   "candidates": [
-    "e5rgq90b00",
-    "ec0m7jfj41",
-    "ejm528j17p"
-   ]
-  },
-  {
-   "key": "basis:NE|ADM|LINCOLN",
-   "rule": "exact",
-   "candidates": [
-    "ebsk8p46t6",
-    "er9td1a63t"
-   ]
-  },
-  {
    "key": "basis:NE|ADM GRAIN|FREMONT",
    "rule": "name+town",
    "candidates": [
     "e5rgq90b00",
     "ec0m7jfj41",
-    "ejm528j17p"
+    "ejm528j17p",
+    "er13t2t8e3"
    ]
   },
   {
    "key": "basis:NE|ADM GRAIN|LINCOLN",
    "rule": "name+town",
    "candidates": [
+    "e7sten68p9",
     "ebsk8p46t6",
     "er9td1a63t"
    ]
@@ -1112,14 +1172,6 @@
    ]
   },
   {
-   "key": "basis:NE|CENTRAL VALLEY AG|DAYKIN",
-   "rule": "name+town",
-   "candidates": [
-    "etkr0abr2r",
-    "ewmhgbzwhx"
-   ]
-  },
-  {
    "key": "basis:NE|CENTRAL VALLEY AG|YORK",
    "rule": "name+town",
    "candidates": [
@@ -1128,27 +1180,11 @@
    ]
   },
   {
-   "key": "basis:NE|CHS HOLDREGE|HOLDREGE",
-   "rule": "exact",
-   "candidates": [
-    "eg1y3n2vx9",
-    "erddqm149k"
-   ]
-  },
-  {
    "key": "basis:NE|FARMERS COOP OF DORCHESTER|BARNESTON",
    "rule": "name+town",
    "candidates": [
     "e8vfr09zac",
     "edfgfbp9nd"
-   ]
-  },
-  {
-   "key": "basis:NE|FARMERS COOP OF DORCHESTER|BEATRICE",
-   "rule": "name+town",
-   "candidates": [
-    "esvtgcjxv8",
-    "etbzjsj9wx"
    ]
   },
   {
@@ -1165,22 +1201,6 @@
    "candidates": [
     "e1mgsacpwf",
     "ezgsht4rp8"
-   ]
-  },
-  {
-   "key": "basis:NE|FARMERS UNION COOPERATIVE CO.|FRIEND",
-   "rule": "name+town",
-   "candidates": [
-    "eakd3f0f6z",
-    "eft4nkw8qj"
-   ]
-  },
-  {
-   "key": "basis:NE|FRENCHMAN VALLEY FARMERS COOPERATIVE, INC.|CHAPPELL",
-   "rule": "exact",
-   "candidates": [
-    "er5mv869f2",
-    "eyyn5bc94h"
    ]
   },
   {
@@ -1232,22 +1252,6 @@
    ]
   },
   {
-   "key": "basis:OH|LEGACY FARMERS COOP|DEFIANCE",
-   "rule": "name+town",
-   "candidates": [
-    "ee0zt2qhkf",
-    "ehkwgkze5c"
-   ]
-  },
-  {
-   "key": "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE CORNERS",
-   "rule": "name+town",
-   "candidates": [
-    "ea2xyw2922",
-    "ejx99j1dkp"
-   ]
-  },
-  {
    "key": "basis:OH|SUNRISE COOPERATIVE|BOTKINS",
    "rule": "name+town",
    "candidates": [
@@ -1261,14 +1265,6 @@
    "candidates": [
     "e0h4cc7vj4",
     "edhshddh7n"
-   ]
-  },
-  {
-   "key": "basis:OH|THE ANDERSONS|TOLEDO",
-   "rule": "exact",
-   "candidates": [
-    "e4d7rggwnn",
-    "e808z400aw"
    ]
   },
   {
@@ -1298,27 +1294,11 @@
    ]
   },
   {
-   "key": "basis:SD|AGTEGRA|REDFIELD",
-   "rule": "name+town",
-   "candidates": [
-    "epxy1rk8zr",
-    "ermemxz12n"
-   ]
-  },
-  {
    "key": "basis:SD|WHEATON DUMONT CO-OP|BRITTON",
    "rule": "name+town",
    "candidates": [
     "ef60e9htpe",
     "ejkadef0a1"
-   ]
-  },
-  {
-   "key": "basis:WI|ALCIVIA|MENOMONIE",
-   "rule": "name+town",
-   "candidates": [
-    "e9mzrqaz1e",
-    "eqajyk0dhh"
    ]
   },
   {
@@ -1336,14 +1316,6 @@
     "e9n4wy87cd",
     "erhnt55182",
     "ewpde3r46e"
-   ]
-  },
-  {
-   "key": "basis:WI|MEDFORD COOPERATIVE|MEDFORD",
-   "rule": "name+town",
-   "candidates": [
-    "eaptfre4ay",
-    "ew7m06c83v"
    ]
   },
   {
@@ -1469,14 +1441,6 @@
    ]
   },
   {
-   "key": "dir:19988",
-   "rule": "name+town",
-   "candidates": [
-    "e5fmzap0ev",
-    "e6xydgm3bz"
-   ]
-  },
-  {
    "key": "dir:84258",
    "rule": "company+0.5mi",
    "candidates": [
@@ -1558,27 +1522,11 @@
    ]
   },
   {
-   "key": "dir:87779",
-   "rule": "name+town",
-   "candidates": [
-    "ecsg64stej",
-    "eqrwysh0ts"
-   ]
-  },
-  {
    "key": "dir:86955",
    "rule": "company+0.5mi",
    "candidates": [
     "e3x5sbp3vg",
     "eb7xh4t0yy"
-   ]
-  },
-  {
-   "key": "dir:16319",
-   "rule": "name+town",
-   "candidates": [
-    "ek6pq1kgxx",
-    "ekczh06wkj"
    ]
   },
   {
@@ -1606,14 +1554,6 @@
    ]
   },
   {
-   "key": "dir:87432",
-   "rule": "name+town",
-   "candidates": [
-    "e7t0e7g2zj",
-    "ef6z244jkx"
-   ]
-  },
-  {
    "key": "dir:86890",
    "rule": "name+town",
    "candidates": [
@@ -1635,14 +1575,6 @@
    "candidates": [
     "e24zaemv4y",
     "eyz4hvhz50"
-   ]
-  },
-  {
-   "key": "dir:86443",
-   "rule": "name+town",
-   "candidates": [
-    "eakd3f0f6z",
-    "eft4nkw8qj"
    ]
   },
   {
@@ -1675,14 +1607,6 @@
    "candidates": [
     "evcjbxkf23",
     "evv5h159ze"
-   ]
-  },
-  {
-   "key": "dir:85036",
-   "rule": "name+town",
-   "candidates": [
-    "ee0zt2qhkf",
-    "ehkwgkze5c"
    ]
   },
   {
@@ -1742,14 +1666,6 @@
    "candidates": [
     "e7t68ykjth",
     "ect85b2fvt"
-   ]
-  },
-  {
-   "key": "dir:28586",
-   "rule": "name+town",
-   "candidates": [
-    "eaptfre4ay",
-    "ew7m06c83v"
    ]
   },
   {

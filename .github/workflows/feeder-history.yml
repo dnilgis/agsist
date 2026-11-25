@@ -1,5 +1,4 @@
 name: Feeder index history (dispatch only)
-# Feeder index history (dispatch only).
 
 on:
   workflow_dispatch:

@@ -8,6 +8,35 @@ Disallow: /test/
 # Buyer and seller names stay out of search; county summaries hold no names.
 Disallow: /data/land/
 Allow: /data/land/*/summary.json
+# The farm sale map's pin files (section and town points): out of search too.
+Disallow: /data/land-sales/map/
+
+# Tool views reached by a query string: each is the same page drawn for one ZIP, county, slot or swath, and each
+# page names its clean address as canonical. Crawlers spent their visits on thousands of these instead of the
+# pages themselves. The clean pages (/prf, /prf/<state>, /arc-plc/<state>/<county>, /cash-bids/<state>/<town>,
+# /hail-map/<state> ...) stay open; a rule here ends at "?", so it never covers a page path.
+Disallow: /prf?
+Disallow: /fast-facts?
+Disallow: /arc-plc?
+Disallow: /rain-print?
+Disallow: /cash-bids?
+Disallow: /store-or-sell?
+Disallow: /rain-radar?
+Disallow: /field-scout?
+Disallow: /newsletter-block
+Disallow: /sponsor-apply
+Disallow: /hail-map?
+Disallow: /prf-sponsor?
+# Nov 19, second pass: the same kind of view on six more pages, each linked from thousands of generated pages
+# (the county radar link, the printable ARC/PLC sheet, the list-your-elevator form filled in for one elevator, the Daily
+# sign-up, the lease form for one state, the farm sale map for one state). /custom-rates?st= stays open: a state with
+# no page of its own is only there.
+Disallow: /rain?
+Disallow: /arc-plc/sheet?
+Disallow: /list-your-elevator?
+Disallow: /daily?
+Disallow: /cash-lease?
+Disallow: /land-sales/?
 
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml

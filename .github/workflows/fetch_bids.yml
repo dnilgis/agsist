@@ -1,5 +1,4 @@
 name: Fetch Grain Bids
-# Fetch Grain Bids.
 
 on:
   schedule:
@@ -18,6 +17,11 @@ on:
         default: false
       bid_snapshot:
         description: 'Save today''s bid snapshot to the raw branch now (replaces today''s file)'
+        type: boolean
+        required: false
+        default: false
+      basis_log:
+        description: 'Save finished basis days and aged rows to the private log now'
         type: boolean
         required: false
         default: false
@@ -45,10 +49,19 @@ jobs:
         env:
           FORCE: ${{ github.event.inputs.force }}
           DRY: ${{ github.event.inputs.dry_run }}
+          SNAP: ${{ github.event.inputs.bid_snapshot }}
+          EVENT: ${{ github.event_name }}
         run: |
           python3 - <<'PY'
           import json, os, datetime as dt
+          from zoneinfo import ZoneInfo
           skip = "0"
+          ct = dt.datetime.now(ZoneInfo("America/Chicago"))
+          business = ct.isoweekday() <= 5 and 700 <= ct.hour * 100 + ct.minute < 1800
+          by_hand = "true" in (os.environ.get("FORCE"), os.environ.get("DRY"), os.environ.get("SNAP"))
+          if os.environ.get("EVENT") == "workflow_dispatch" and not business and ct.minute >= 15 and not by_hand:
+              skip = "1"
+              print("off-hours (nights and weekends, Central): only the first dispatch of each hour fetches; this one stops here")
           try:
               f = json.load(open("data/bids.json")).get("fetched", "")
               age = (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(f.replace("Z", "+00:00"))).total_seconds() / 60
@@ -107,9 +120,45 @@ jobs:
           python3 scripts/dev/quiet.py basis-join -- python scripts/build_basis_join.py || echo "::warning::basis join not rebuilt this run"
           python3 scripts/dev/quiet.py join-report -- python scripts/join_report.py || true
 
+      - name: River key for the elevator ids
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          if git diff --quiet -- data/ids/elevators.json && [ -f data/ids/river.json ]; then echo "river key: elevators unchanged"; exit 0; fi
+          r="$RUNNER_TEMP/river"; mkdir -p "$r"
+          for f in docks waterways; do
+            GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -H "Accept: application/vnd.github.raw" \
+              "repos/dnilgis/feedbag/contents/river/$f.json?ref=raw" > "$r/$f.json" 2>/dev/null \
+              || { echo "river key: no river/$f.json on raw yet (river-pull.yml not run); the last river key stays"; exit 0; }
+          done
+          python3 scripts/dev/quiet.py river-key -- python scripts/river_key.py --river-dir "$r" \
+            || echo "::warning::river key not rebuilt this run; the last one stays"
+
       - name: Elevator contacts for the homepage card
         continue-on-error: true
         run: python3 scripts/dev/quiet.py elevator-contacts -- python scripts/build_elevator_contacts.py
+
+      - name: Save finished basis days to the private log
+        if: github.event.inputs.dry_run != 'true'
+        continue-on-error: true
+        env:
+          BASIS_LOG: ${{ github.event.inputs.basis_log }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: |
+          mkdir -p private
+          rm -rf private/ledger/basis-log private/basis-log-confirmed.txt private/basis-aged-confirmed.txt private/basis-log-pending.txt
+          h=$(date -u +%H)
+          if [ "$BASIS_LOG" != true ] && [ "$h" != 05 ] && [ "$h" != 06 ]; then
+            echo "basis log: saved in the 05 and 06 UTC runs, or when basis_log is set"; exit 0
+          fi
+          bash scripts/pull_raw.sh private/ledger/basis-log || { echo "::warning::basis log: the private copy was not read; nothing saved, nothing aged"; exit 0; }
+          python3 scripts/basis_log_private.py sync
+          if [ -s private/basis-log-pending.txt ]; then
+            mapfile -t files < private/basis-log-pending.txt
+            RAW_KEEP=1 bash scripts/push_raw.sh "basis log $(date -u +%F)" "${files[@]}" || { echo "::warning::basis log: new files not saved to the private branch; the next run tries again"; exit 0; }
+          fi
 
       - name: Keep the basis history
         continue-on-error: true
@@ -139,7 +188,8 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add data/bids.json data/basis data/basis-sparklines data/elevator-directory.json
-          git add data/ids/elevators.json data/ids/elevator-ids.json data/ids/ambiguous.json data/ids/board-parents.json 2>/dev/null || true
+          git add data/ids/elevators.json data/ids/elevator-ids.json data/ids/ambiguous.json data/ids/board-parents.json data/ids/companies.json 2>/dev/null || true
+          [ -f data/ids/river.json ] && git add data/ids/river.json || true
           [ -d data/ids/basis-join ] && git add -A data/ids/basis-join || true
           [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
           [ -d data/bids-prev ] && git add -A data/bids-prev || true
@@ -147,8 +197,14 @@ jobs:
           [ -d data/elevator-contacts ] && git add -A data/elevator-contacts || true
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git pull --rebase origin main
-          git push
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
 
       - name: Start the site deploy
         if: ${{ !cancelled() && github.event.inputs.dry_run != 'true' }}

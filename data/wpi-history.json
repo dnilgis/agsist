@@ -151,7 +151,13 @@
       "metric": "2026/27 corn yield",
       "expected": 178.1,
       "actual": 178.5,
-      "nass_correction": {"id": "nass-crop-production-2026-09-11-corn-yield", "printed": 178.5, "corrected": 178.8, "notice_date": "2026-10-23", "source": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php"},
+      "nass_correction": {
+        "id": "nass-crop-production-2026-09-11-corn-yield",
+        "printed": 178.5,
+        "corrected": 178.8,
+        "notice_date": "2026-10-23",
+        "source": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php"
+      },
       "unit": "bu/acre",
       "reaction": ""
     },
@@ -255,6 +261,69 @@
       "unit": "mil bu",
       "reaction": "Dec KC wheat finished 17\u00a2 lower at $7.19\u00bc and Chicago spot wheat 12\u00a2 lower that day, as DTN's report review printed them on Oct 9, 2026. AGSIST keeps no wheat settles to check these against.",
       "reaction_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/09/october-wasdes-shocking-rise-corn"
+    },
+    {
+      "date": "2026-11-10",
+      "report": "November WASDE",
+      "metric": "2026/27 corn yield",
+      "expected": 180.3,
+      "actual": 179.6,
+      "unit": "bu/acre",
+      "reaction": ""
+    },
+    {
+      "date": "2026-11-10",
+      "report": "November WASDE",
+      "metric": "2026/27 soybean yield",
+      "expected": 53.5,
+      "actual": 53.3,
+      "unit": "bu/acre",
+      "reaction": ""
+    },
+    {
+      "date": "2026-11-10",
+      "report": "November WASDE",
+      "metric": "2026/27 corn ending stocks",
+      "expected": 1.84,
+      "actual": 1.758,
+      "unit": "bil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-11-10",
+      "report": "November WASDE",
+      "metric": "2026/27 soybean ending stocks",
+      "expected": 331,
+      "actual": 300,
+      "unit": "mil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-11-10",
+      "report": "November WASDE",
+      "metric": "2026/27 wheat ending stocks",
+      "expected": 746,
+      "actual": 743,
+      "unit": "mil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-11-10",
+      "report": "November WASDE",
+      "metric": "2026/27 corn production",
+      "expected": 15.961,
+      "actual": 15.893,
+      "unit": "bil bu",
+      "reaction": ""
+    },
+    {
+      "date": "2026-11-10",
+      "report": "November WASDE",
+      "metric": "2026/27 soybean production",
+      "expected": 4597,
+      "actual": 4574,
+      "unit": "mil bu",
+      "reaction": ""
     }
   ]
 }

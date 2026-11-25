@@ -1,4 +1,4 @@
-/* components/home-worth.js -- the home page's "Worth a look" strip (Sig, Nov 2, 2026),
+/* components/home-worth.js -- the home page's "Worth a look" strip (Nov 2, 2026),
    right under the three jobs. Three cards:
      1. Rain Print: the promo card from components/rain-print-promo.js, which keeps its own
         wording and dates (the Christmas order-by date from data/rain-print.json). Its

@@ -5,7 +5,62 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
- * v5.65 (2026-11-04): PRIVATE SPONSOR REPORTS (Sig, Nov 4: "move the codes to feedbag").
+ * v5.72 (2026-11-25): RAIN GAUGE WAITLIST KEEPS WHERE AND HOW MANY. /notice with topic rain-gauge also takes
+ *   fips (a state FIPS of 2 digits or a county FIPS of 5, state code real, else dropped), n ("1", "2-5" or "6+")
+ *   and biz (true: "for my customers"), kept on note:<email>.t["rain-gauge"] next to zip and note; src (the
+ *   page kind: rain-county, rain-hub, rain-print, else rain-gauge; kept only from that list) is the existing source field, 60 chars.
+ *   Asked again, n, biz and fips are taken when given. /notice-list returns fips, n, biz on those rows. /count
+ *   gains gauge {total, gauges_min, customers, with_zip, n:<1|2-5|6+|unsaid>, st:<state FIPS>, src:<source>},
+ *   flat counts only (no address, no ZIP, no county), read by scripts/stats_ingest.py and scripts/gauge_count.py.
+ *   No price field, no new binding, no new secret. Every other route answers exactly as before.
+ * v5.71 (2026-11-24): LEASE NOTICE REMINDER. /notice takes one more topic, lease:<st>:<YYYY-MM-DD>:
+ *   one email about two weeks before that state's farm lease termination notice deadline (the ask on
+ *   /cash-lease). Iowa, Kansas and Ohio only, and the date must be that state's deadline: September 1
+ *   for Iowa and Ohio, 30 days before March 1 for Kansas (January 30, January 31 in a leap year), still
+ *   ahead and within about 13 months. Each season is its own topic, so a reader is mailed once a season
+ *   and asks again for the next. Same record as every notice: note:<email>.t[topic] = {ts, src}; no
+ *   ZIP or place. GET /notice-list?topic=lease: lists them for scripts/send_lease_notice.py.
+ *   No new binding or secret. Every other route and topic answers as before.
+ * v5.70 (2026-11-13): GA BURST DAMPING, A BACKSTOP. GET /ga-ok also answers {"ok":false} for an
+ *   hour to a network and place (request.cf.asn plus request.cf.city, else region, else country;
+ *   never an address) that sends more than GA_BURST_MAX fresh calls in one minute. The main cuts
+ *   are the cloud check here and the reading bar in components/ga-gate.js (2026-11-13); this only
+ *   catches a burst bunched in one minute, one network and one place, which the stats on file
+ *   (daily, no hour) can neither show nor rule out. The count lives in this isolate's memory only,
+ *   so it is approximate: Cloudflare runs many isolates and they share nothing, so a spread burst
+ *   counts lower than it is, and a restart forgets it. One fixed log line per trip, when its hold
+ *   ends, with the number of calls refused in the hold. No new binding or secret. Every other
+ *   route answers as before.
+ * v5.69 (2026-11-13): HARVEST FUEL RELIEF NOTICE. /notice takes one more topic, hfr: one email when
+ *   USDA posts Harvest Fuel Relief payment rates or sign-up dates (the ask on /harvest-fuel-relief). Same
+ *   record as every notice: note:<email>.t.hfr = {ts, src}, no Daily unless the reader ticks the box. The
+ *   topic is a fixed word, validated like rain-gauge and milk-month; a made-up variant (hfr:x) is refused.
+ *   GET /notice-list?topic=hfr lists it for whoever mails it; /count notices {hfr: n} counts it; no
+ *   address leaves the Worker. /notice-unsubscribe with &topic=hfr names the list and stops only it.
+ *   No new binding or secret. Every other route and topic answers as before.
+ * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
+ *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
+ *   wire from the invoice we email at booking, and that the ad goes live the day payment arrives
+ *   (live on receipt). GET /count also answers people: the addresses on each list on the day it is
+ *   asked (the Daily, hail alerts, a watch with a confirmed entry, a notice topic), each once, as one
+ *   number; a watch address still waiting to confirm is not counted, and no address is sent.
+ *   No new binding or secret. Every other route answers as before.
+ * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
+ *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)
+ *   in one fixed shape (rows of USDA's figure against the trade, counts, the WASDE balance lines,
+ *   whether the result is complete) and nothing else; a rehearsal writes a separate test record. GET
+ *   /report-live (?test=1 for the rehearsal's) answers {ok, live} for /usda-calendar, the homepage
+ *   card and the report-day email, so they show the result before the commit reaches the site.
+ *   No new binding or secret. Every other route answers as before.
+ * v5.66 (2026-11-09): A FAILED EMAIL JOB START IS KEPT ON THE ORDER. The Stripe webhook and
+ *   /rp-order/approve write dispatch {at, job} on the order record after starting
+ *   rp-buyer-email.yml ("started", "no token", "HTTP 401", "failed"), and /rp-order/list
+ *   carries it. Before, the result went only into the 200 answer: an expired GH_DISPATCH_TOKEN
+ *   lost every order's email with no trace. The hourly rp-design-email run now starts the job
+ *   for a paid order unmailed after 60 minutes, or emails the owner, once per order: POST
+ *   /rp-order/guarded {key} marks the order (guarded {at, session}) before it acts, like
+ *   /rp-order/alerted, and /rp-order/list carries it. Every other route answers as before.
+ * v5.65 (2026-11-04): PRIVATE SPONSOR REPORTS (Nov 4).
  *   GET /sponsor-report?r=<slug>-<token> answers that sponsor's report from KV
  *   (spr:<slug>), compared in constant time; a retired token answers 410
  *   {changed: true}, anything else a bare 404; always Cache-Control no-store.
@@ -19,20 +74,20 @@
  *   token and report; keep those copies private like the rest of the export. Every
  *   other route answers as before.
  * v5.64 (2026-11-04): GIFT CARD PREPAID IS STORED, NOT GUESSED FROM THE CLOCK. Every
- *   /rp-gift/issue path (Sig's card, already_redeemed, a paid order's card, a void reissue)
+ *   /rp-gift/issue path (the owner's card, already_redeemed, a paid order's card, a void reissue)
  *   writes prepaid true or false on the record, and that key alone decides "already paid
  *   for". The old rule (redeemed_ts === issued_ts) now reads only a card with no prepaid key,
  *   one issued before v5.40. A card a reader redeemed in the millisecond it was issued (a fast
  *   test runner, Nov 4) answers "This card was used on <date>." as it should. Every route
  *   answers as before otherwise.
- * v5.63 (2026-11-04): FRAME COLOR (Sig, Nov 4: oak or black, oak picked first, same price).
+ * v5.63 (2026-11-04): FRAME COLOR (Nov 4: oak or black, oak picked first, same price).
  *   POST /rp-order and kind rain-print-order (so /rp-gift/redeem too) take an optional
  *   frame_color, "oak" or "black", kept on a framed12x18 order only (dropped for the
  *   others, and a bad value is dropped, never an error). /rp-order/list answers
  *   frame_color for a framed order: the one on record, else "black" (every framed print
  *   sold before Nov 4 was black, and a page without the choice still says black), or ""
  *   for a framed order made from Stripe alone after Nov 4 (no press came, so the color is
- *   not known: Sig asks the buyer). fulfill_url carries &frame=<color> (before &serial) for a
+ * not known: the owner asks the buyer). fulfill_url carries &frame=<color> (before &serial) for a
  *   framed order. A client without the field works exactly as before.
  * v5.62 (2026-11-03): RP_DESIGN_EMAIL_LIVE and RP_BUYER_EMAIL_LIVE now come from the
  *   [vars] in wrangler.api.toml and wrangler.subs.toml ("1"), not the dashboard. No code change.
@@ -41,12 +96,11 @@
  *   survey is on /custom-rates (scripts/send_custom_rates_notice.py, cash-rent.yml,
  *   repo variable CUSTOMRATES_NOTICE_LIVE). Asked again after it was sent, it starts over,
  *   as rent: does.
- * v5.60 (2026-10-29): NO OPEN-METEO GEOCODER (Sig, Oct 29: its terms count an
- *   ad-supported site as commercial use). The hay board's ZIP point comes from the
+ * v5.60 (2026-10-29): NO OPEN-METEO GEOCODER (Oct 29: its terms count an
+ * ad-supported site as commercial use). The hay board's ZIP point comes from the
  *   bids repo's ZIP table, then the same points on agsist.com/data/places/zip/
  *   (scripts/build_places.py); a ZIP in neither is no point, as before.
- * v5.59 (2026-10-28): SIG'S DESK (desk.html, Sig Oct 28: "a singular place for
- *   all things agsist"). Two routes, Bearer LIST_TOKEN only (a ?token= in the
+ * v5.59 (2026-10-28): SIG'S DESK (desk.html, Oct 28). Two routes, Bearer LIST_TOKEN only (a ?token= in the
  *   address is refused), CORS for agsist.com as the other desks:
  *     GET  /desk         counts the worker already holds, in one answer: the
  *          Daily (total, joined in 7 days and 24 h, unsubscribes, where they
@@ -67,10 +121,10 @@
  *          of who paid: it lives here, never in the public repo, and is in
  *          the monthly /export like every other key. 400 rows at most.
  *   Every other route answers exactly as before. No new binding or secret.
- * v5.58 (2026-10-28): MILK PRICE DAY (Sig, Oct 28: dairy board build 5, the
- *   list, the sender and the switch). /notice takes one more topic, milk-month,
+ * v5.58 (2026-10-28): MILK PRICE DAY (Oct 28: dairy board build 5, the
+ * list, the sender and the switch). /notice takes one more topic, milk-month,
  *   asked on /milk-prices: one email when USDA announces the month's Class
- *   prices (scripts/send_milk_month.py, .github/workflows/dairy.yml). One list,
+ *   prices (scripts/send_milk_month.py,.github/workflows/dairy.yml). One list,
  *   no place in the topic. It recurs, so it keeps mo like rain-month:
  *     mo   "YYYY-MM", the class month mailed, written by POST /notice-mark
  *          {email, topic, month}. A milk-month mark needs month there (a real
@@ -95,36 +149,36 @@
  *   form's fields ({name, type, value, label}) when the page has any (no
  *   other route's page has, so their JSON is as before). Rate limited.
  *   Nothing logged. No new binding or secret.
- * v5.56 (2026-10-27): YOUR COUNTY THIS WEEK (Sig, Oct 27: lines inside the existing
- *   Daily, no new list, sender or cron). POST /subscribe (JSON or form) and /notice
+ * v5.56 (2026-10-27): YOUR COUNTY THIS WEEK (Oct 27: lines inside the existing
+ * Daily, no new list, sender or cron). POST /subscribe (JSON or form) and /notice
  *   with daily:true take one more optional field, cw, read like reports (a boolean
  *   or the words a form sends): the reader ticked "Thursdays, what changed in my
  *   county" in the Daily ask. The box is never pre-ticked. Not given = the stored
  *   value is left alone. Kept on sub:<email> only when true, so every other record
  *   is byte-for-byte what it was; /list?format=json adds cw:true to those rows and
  *   /count adds daily_county_week (a count). A /daily-elev save keeps it.
- * v5.55 (2026-10-23): MONTHLY LAND SALE EMAIL (Sig, Oct 23: new list, sender
- *   and schedule approved). /notice takes one more topic, landsales:<ZIP>:
+ * v5.55 (2026-10-23): MONTHLY LAND SALE EMAIL (Oct 23: new list, sender
+ * and schedule approved). /notice takes one more topic, landsales:<ZIP>:
  *   <miles>, a 5-digit ZIP (not 00000) and a radius of 10, 25 or 50, asked
  *   beside the recorded sales (Field Scout, the comp report, Fast Facts, the
  *   Atlas county pages): one email on the 3rd of each month with the farm
  *   sales recorded the month before within that radius
- *   (scripts/send_land_alert.py, .github/workflows/land-alert.yml). A reader
+ *   (scripts/send_land_alert.py,.github/workflows/land-alert.yml). A reader
  *   may keep more than one ZIP or radius (each its own topic, NOTE_MAX caps).
  *   It recurs, so it keeps one more field:
  *     mo   "YYYY-MM", the newest month mailed, written by POST /notice-mark
  *          {email, topic, month}. A landsales topic needs month there (a real
  *          month, 2000 to next year); mo never moves back.
  *   /notice-list returns mo on the rows that have it. The stop link carries
- *   no ZIP (BUILD-RULES 10): /notice-unsubscribe with &topic=landsales asks
+ *   no ZIP (build rule 10): /notice-unsubscribe with &topic=landsales asks
  *   "Stop the monthly land sale email for this address?" and stops every
  *   landsales topic of that address, nothing else. Every other topic and
  *   route answers exactly as before. No new binding and no new secret.
- * v5.54 (2026-10-23): MONTHLY COUNTY RAIN (Sig, Oct 23: new list, sender
- *   and schedule approved). /notice takes one more topic, rain-month:<county
+ * v5.54 (2026-10-23): MONTHLY COUNTY RAIN (Oct 23: new list, sender
+ * and schedule approved). /notice takes one more topic, rain-month:<county
  *   FIPS> (5 digits with a real state code, as rainyear), asked on the county
  *   rain pages: one email on the 2nd of each month with that county's month
- *   just ended (scripts/send_rain_month.py, .github/workflows/rain-monthly.yml).
+ *   just ended (scripts/send_rain_month.py,.github/workflows/rain-monthly.yml).
  *   It recurs, so it keeps one more field:
  *     mo   "YYYY-MM", the newest month mailed, written by POST /notice-mark
  *          {email, topic, month}. A rain-month topic needs month there (a
@@ -133,13 +187,13 @@
  *   &topic=rain-month:<fips> asks "Stop the monthly rain email for this
  *   county?" and stops that one county. Every other topic and route answers
  *   exactly as before. No new binding and no new secret.
- * v5.53 (2026-10-22): AGSIST.COM ADDRESSES (Sig, Oct 22). The void gift card
+ * v5.53 (2026-10-22): AGSIST.COM ADDRESSES (Oct 22). The void gift card
  *   answer says write to sig@agsist.com; no farmers1st.com address is left.
- * v5.52 (2026-10-22): NEW HOME, agsist-api.dnilgis.workers.dev (Sig, Oct 22,
- *   after Cloudflare support said a new Worker on the account is his call).
+ * v5.52 (2026-10-22): NEW HOME, agsist-api.dnilgis.workers.dev (Oct 22,
+ * after Cloudflare support said a new Worker on the account is his call).
  *   The same code deploys as the new Worker agsist-api (workers/wrangler.api
- *   .toml, the same KV) and, until it is retired, as agsist-subs
- *   (wrangler.subs.toml). Every page now calls the new host. Sig sets fresh
+ *.toml, the same KV) and, until it is retired, as agsist-subs
+ *   (wrangler.subs.toml). Every page now calls the new host. The owner sets fresh
  *   UNSUB_SECRET and LIST_TOKEN values on the new Worker, so a stop link
  *   signed with the old secret no longer checks out: every stop route
  *   (/unsubscribe, /alert-, /notice-, /watch-, /elevator-watch- and
@@ -149,7 +203,7 @@
  *   the agsist.com front door adds its own stop line). Nothing is changed
  *   and each status stays as it was (a k= stop link 403, an e= one 200). Confirm
  *   links still answer "That link isn't valid." No new binding, no new secret.
- * v5.51 (2026-10-22): LONGER RAIN PRINT SHORT LINKS (Sig, Oct 22). A new
+ * v5.51 (2026-10-22): LONGER RAIN PRINT SHORT LINKS (Oct 22). A new
  *   POST /rp-short id is the first 8 letters of the code's hash, not 5: the
  *   sealed QR copies on agsist.com (scripts/build_rp_sealed.mjs) can only be
  *   opened by guessing an id, and 32^8 = 1.1e12 guesses is years where 32^5
@@ -157,7 +211,7 @@
  *   back (it may be printed); GET /rp-short/<id> reads 5 to 8 letters as
  *   before. An 8-letter id that holds another code is a 409 (no growth past
  *   8). No new binding, no new secret.
- * v5.50 (2026-10-22): A LATE ELEVATOR SAVE KEEPS ITS OWN TIME (Sig, Oct 22).
+ * v5.50 (2026-10-22): A LATE ELEVATOR SAVE KEEPS ITS OWN TIME (Oct 22).
  *   POST /elev/save takes entered_at (ISO or ms): when the manager pressed
  *   Save on agsist.com/post. A save kept on the phone while this worker was
  *   blocked arrives later; it is stored with that time (bids_updated_at,
@@ -166,7 +220,7 @@
  *   before the listing's newest change is a 409 {newer:true} and stores
  *   nothing. More than 31 days old, or not a time: 400. Without entered_at:
  *   now, as before. No new binding, no new secret.
- * v5.48 (2026-10-22): FRONT DOOR ON AGSIST.COM (Sig, Oct 22; BUILD-RULES 11).
+ * v5.48 (2026-10-22): FRONT DOOR ON AGSIST.COM (Oct 22; build rule 11).
  *   No emailed link points at this host any more: every link goes to
  *   https://agsist.com/e?a=<route>&<the same signed params> (e.html, GitHub
  *   Pages), and that page asks this worker from the reader's browser.
@@ -179,7 +233,7 @@
  *   A line holding an address is left out of the JSON. A link that is not
  *   valid answers ok:false. No secret is set: a 503 in JSON. Old worker links
  *   (already in inboxes) work exactly as before. No new binding or secret.
- * v5.47 (2026-10-22): RAIN PRINT TAKES ORDERS THROUGH AN OUTAGE (BUILD-RULES
+ * v5.47 (2026-10-22): RAIN PRINT TAKES ORDERS THROUGH AN OUTAGE (the build rules
  *   14, after the Oct 21 block). The page now goes to Stripe whatever this
  *   worker does; this version makes the records from Stripe afterward and
  *   keeps them right under a burst. No new route, binding or secret.
@@ -194,7 +248,7 @@
  *     reads Stripe for at least the whole days window, so payments made
  *     while this worker was out are found even after Stripe stops retrying.
  *   - Refs take RPH-<10> and GIFT-RPH-<10>: the page's hash of a long
- *     design's code when no short link could be had; the design went to Sig
+ *     design's code when no short link could be had; the design went to the owner
  *     by the backup form (design_by "backup form").
  *   - Serials: /rp-order/list settles them across every record in the order
  *     paid: a serial held by an earlier record is taken off a later one, and
@@ -228,8 +282,8 @@
  *   (already in inboxes) work exactly as before. Nothing is logged. No new
  *   binding and no new secret. scripts/email_links.py builds the links and
  *   refuses a message with an address in any link.
- * v5.45 (2026-10-21): READER COUNTS BY AREA (Sig, Oct 21: the insight
- *   machine's collection jobs, "counts only"). New route GET /count-area
+ * v5.45 (2026-10-21): READER COUNTS BY AREA (Oct 21: the insight
+ * machine's collection jobs, "counts only"). New route GET /count-area
  *   ?part=<daily|alerts|watch|ewatch|pwatch|notices|rp_designs|rp_orders>
  *   [&cursor=][&limit=] (Bearer LIST_TOKEN only; 403 otherwise and whenever
  *   ?token= is in the address; no-store). Read-only. One page of one list,
@@ -246,7 +300,7 @@
  *   (scripts/reader_area_counts.py, in morning-report.yml) adds the pages up
  *   and withholds every cell under 3 before anything is saved. Every other
  *   route answers as before. No new secret.
- * v5.44 (2026-10-21): TWO STANDING LISTS ON /notice (Sig, Oct 21). /notice
+ * v5.44 (2026-10-21): TWO STANDING LISTS ON /notice (Oct 21). /notice
  *   takes two more topics, both recurring and both their own list, apart from
  *   the Daily (a reader can have either without AGSIST Daily):
  *     reports  the report-day email alone ("USDA vs the trade", the WASDE
@@ -268,7 +322,7 @@
  *   {h24, d7, cleanup_h24, cleanup_d7}}. unsubs {daily, alerts} is unchanged.
  *   Every other route and topic answers exactly as before. No new binding and
  *   no new secret.
- * v5.43 (2026-10-20): EMAIL ME THIS DESIGN (Sig, "do all"). New routes only;
+ * v5.43 (2026-10-20): EMAIL ME THIS DESIGN. New routes only;
  *   every other route answers as before. No new binding and no new secret;
  *   one new optional variable, RP_DESIGN_EMAIL_LIVE.
  *   POST /rp-remind (public, publicGate, RATE 5 an hour, 20 a day per
@@ -278,8 +332,8 @@
  *     rpr:<hmac16(email)>:<hmac16(email|code)> = {email, code, ref, ts, src,
  *     sent, reminded, done}, 7 days. The same email and design again changes
  *     nothing (dup). At most 5 designs an address at a time. A new one starts
- *     .github/workflows/rp-design-email.yml (GH_DISPATCH_TOKEN; a dry run,
- *     every email to Sig, unless RP_DESIGN_EMAIL_LIVE is "1"). daily:true
+ *.github/workflows/rp-design-email.yml (GH_DISPATCH_TOKEN; a dry run,
+ * every email to the owner, unless RP_DESIGN_EMAIL_LIVE is "1"). daily:true
  *     also joins AGSIST Daily as /subscribe does.
  *   GET /rp-remind/list (Bearer LIST_TOKEN only): the live ones, with
  *     stop_t = hmac16("rp-remind-stop|" + key) for the stop link.
@@ -289,7 +343,7 @@
  *     (a paid order matched, too late, or stopped).
  *   GET /rp-remind/stop?k=&t= asks; POST to it marks done (why "stopped").
  *   scripts/rp_design_email.py sends both emails; the log prints counts only.
- * v5.42 (2026-10-20): YOUR ELEVATORS IN AGSIST DAILY (Sig). New routes only;
+ * v5.42 (2026-10-20): YOUR ELEVATORS IN AGSIST DAILY. New routes only;
  *   every existing route answers as before. No new binding and no new secret.
  *   A Daily record (sub:<email>) may carry el: up to 6 elevator ids, each the
  *   8-hex FNV-1a of the bids network's place key ("operator|branch|city|state",
@@ -308,18 +362,16 @@
  *   POST /daily-elev/set {k, ids, forget} -> {ok, n}: ids replace el (6 at
  *     most, 8 hex each, no repeats); forget:true also deletes the key. The
  *     address never leaves the worker on these routes.
- * v5.41 (2026-10-20): UNSUBSCRIBE COUNTS for Sig's morning email. A POST to
+ * v5.41 (2026-10-20): UNSUBSCRIBE COUNTS for the owner's morning email. A POST to
  *   /unsubscribe or /alert-unsubscribe that removed a real record also writes
  *   unsx:<daily|alerts>:<reader|cleanup>:<ms>:<rand> ("" value, no address,
  *   kept 8 days); cleanup is scripts/list_hygiene.py (its User-Agent) removing
  *   a bounced address. GET /count adds unsubs {daily, alerts: {h24, d7,
  *   cleanup_h24, cleanup_d7}}. Every other route answers as before.
- * v5.40 (2026-10-20): GIFT CARDS GO OUT BY EMAIL (Sig: "the gift card option
- *   should provide explanation as to what the receiver is getting and how to
- *   redeem easily"; no more card links sent by hand). POST /rp-gift/issue
+ * v5.40 (2026-10-20): GIFT CARDS GO OUT BY EMAIL (no more card links sent by hand). POST /rp-gift/issue
  *   (Bearer LIST_TOKEN, as before) also takes {order_key, to, message}: the
  *   paid record of a this-year gift (rpo:..., ref GIFT-...) gets its card,
- *   locked to the record's design (a GIFT-RPS-<id> is looked up in rps:),
+ *   locked to the record's design (a GIFT-RPS-<id> is looked up in rps),
  *   product from the record, order_ref the Stripe session id, ships January,
  *   status redeemed with prepaid true (the address was given at Stripe
  *   checkout, so the receiver has nothing to fill in). The record keeps
@@ -330,7 +382,7 @@
  *   gift card email sent, once, like /rp-order/mailed (409 before the card).
  *   /rp-order/list adds gift_card {no, last4, at} (never the code) and
  *   gift_mailed. /rp-gift/check and /rp-gift/card add prepaid (also true for a
- *   card Sig issued as already redeemed); /rp-gift/redeem answers a prepaid
+ * card the owner issued as already redeemed); /rp-gift/redeem answers a prepaid
  *   card 409 "This gift is already paid for and on its way. There is nothing
  *   to fill in." Every other route answers as before. No new secret.
  * v5.39 (2026-10-20): MONTHLY BACKUP. New route GET /export (Bearer
@@ -344,33 +396,33 @@
  *   under 1,000 KV operations; values are read 50 at a time and a page stops
  *   early past 8 MB of values (the cursor then resumes inside the KV page).
  *   no-store, never cached. scripts/backup/backup-agsist.ps1 reads it once a
- *   month to Sig's SSD. No new binding and no new secret; every other route
+ *   month to the owner's SSD. No new binding and no new secret; every other route
  *   answers as before.
- * v5.38 (2026-10-20): THE DIGITAL FILES GO OUT ON APPROVAL (Sig). POST
+ * v5.38 (2026-10-20): THE DIGITAL FILES GO OUT ON APPROVAL. POST
  *   /rp-order/delivered {key, how} (Bearer LIST_TOKEN only): the files email
  *   for an approved, paid digital file went out (scripts/rp_buyer_email.py,
- *   how "email"), or the files were too big to attach and Sig sends them
+ *   how "email"), or the files were too big to attach and the owner sends them
  *   (how "hand"). Kept as delivered {at, session, how}, never the address it
  *   went to; once per record (again: already). Refused for a print (409 "not
  *   a digital file") or a record not approved (409). /rp-order/list adds
  *   delivered. No new secret, binding or variable.
- * v5.37 (2026-10-20): THE PROOF IS THE EMAIL (Sig). POST /rp-order/approve {k, t}
+ * v5.37 (2026-10-20): THE PROOF IS THE EMAIL. POST /rp-order/approve {k, t}
  *   (public, publicGate, RATE): k is the record key, t = hmac16("rp-approve|" + k)
  *   with UNSUB_SECRET; a right pair on a paid record sets approved {at} once
- *   (again: already, same time) and starts the email job for Sig's "approved"
+ *   (again: already, same time) and starts the email job for 
  *   alert. Wrong or missing t: 403. /rp-order/list adds approved, approve_t,
  *   approved_alerted and approval_overdue (proof mailed 3 business days ago,
  *   Mon to Fri, no answer; never approved for the buyer). POST
- *   /rp-order/approved-alerted {key} marks Sig's approval alert. No new secret.
+ *   /rp-order/approved-alerted {key} marks the owner's approval alert. No new secret.
  * v5.36 (2026-10-20), part 2: ORDER ALERTS. POST /rp-order/stripe is Stripe's webhook
  *   (checkout.session.completed when paid, checkout.session.async_payment_succeeded),
  *   checked with the new secret STRIPE_WEBHOOK_SECRET (Stripe-Signature, HMAC
  *   SHA-256, 5 minutes' tolerance; 400 otherwise). It marks the press paid
  *   (paid.via "webhook"), hands a print its serial, keeps a paid session with
  *   no press as its own record (no_press), once per session (rpo-ev:<id>),
- *   and starts .github/workflows/rp-buyer-email.yml when GH_DISPATCH_TOKEN is
+ *   and starts.github/workflows/rp-buyer-email.yml when GH_DISPATCH_TOKEN is
  *   set (RP_BUYER_EMAIL_LIVE = "1" lets the buyer email reach buyers; else a
- *   dry run). POST /rp-order/alerted {key} marks Sig's alert sent, like
+ *   dry run). POST /rp-order/alerted {key} marks the owner's alert sent, like
  *   /rp-order/mailed. The poll in /rp-order/list stays as the backup.
  *   New optional secrets STRIPE_WEBHOOK_SECRET, GH_DISPATCH_TOKEN; variable
  *   RP_BUYER_EMAIL_LIVE. Every other route answers as before.
@@ -389,8 +441,8 @@
  *     paid Checkout Session's client_reference_id matches is marked paid
  *     (amount, time, session id; never the customer); the rest say "pay
  *     pressed". A paid print or framed print gets the next serial (rpo-serial
- *     counter, never 0; 0 is Sig's test print; with no counter stored the first is
- *     No. 0002, as No. 0001 is his wife's print) and keeps it. fulfill_url is
+ * counter, never 0; 0 is the owner's test print; with no counter stored the first is
+ * No. 0002, as No. 0001 is his wife's print) and keeps it. fulfill_url is
  *     the design link with maker=1 (and serial=N for a print).
  *   POST /rp-order/mailed {key} (Bearer LIST_TOKEN only): the buyer's email
  *     for this paid record went out (scripts/rp_buyer_email.py); kept as
@@ -410,7 +462,7 @@
  * v5.34 (2026-10-20): A BOARD SIG PASTES BY HAND. New routes only; every
  *   existing route answers exactly as before. No new binding and no new secret.
  *   NEW Cooperative's site puts a Cloudflare bot check in front of the bids
- *   reader, which does not try to get past it. Sig opens their public bid page
+ *   reader, which does not try to get past it. The owner opens their public bid page
  *   in his own browser and pastes it into elev-admin.html; the page reads the
  *   table and sends the rows as printed.
  *   POST /elev/admin/paste  Bearer LIST_TOKEN {site, locations: [{name, rows:
@@ -430,8 +482,8 @@
  *   {"ok":false}: false when Cloudflare puts the request on a cloud, hosting
  *   or data center network (request.cf.asn in CLOUD_ASNS, or a hosting word
  *   in request.cf.asOrganization). components/ga-gate.js loads Google
- *   Analytics only on true (Sig, Oct 20: readers anywhere count, data centers
- *   do not). Nothing is logged or stored, no IP is read. Private, max-age
+ *   Analytics only on true (Oct 20: readers anywhere count, data centers
+ * do not). Nothing is logged or stored, no IP is read. Private, max-age
  *   3600; CORS for agsist.com only. Every other route answers as before.
  *   No new binding and no new secret.
  * v5.32 (2026-10-20): RENT NOTICE, EVERY YEAR. POST /notice with a rent:<st>
@@ -439,8 +491,8 @@
  *   now, src}, no sent. scripts/send_rent_notice.py reads it unchanged (the
  *   first release after ts). The page remembers rent:<st>:<year> and asks
  *   again the next year. Every other route and topic answers as before.
- * v5.31 (2026-10-19): the Daily sponsor tier id is "daily" (Sig: never the old
- *   name). POST /sponsor-apply takes tier page|supporter|daily; every other
+ * v5.31 (2026-10-19): the Daily sponsor tier id is "daily" (never the old
+ * name). POST /sponsor-apply takes tier page|supporter|daily; every other
  *   route answers exactly as before. No new binding and no new secret.
  * v5.30 (2026-10-18): THE HAY BOARD (agsist.com/haymow). New routes only;
  *   every existing route answers exactly as before. No new binding and no new
@@ -456,8 +508,8 @@
  *   POST /hay/post    publicGate, 4 KB, honeypot, RATE 3 an hour, 10 a day
  *     per address, 300 for everyone. Tags stripped; a link, or a phone or
  *     email in the note or name, is refused. Repeated text or all caps is
- *     stored as held (not shown) until Sig clears it. -> {id, key, status, exp}
- *   POST /hay/mine, /hay/edit, /hay/renew, /hay/delete {id, key, ...}: the
+ *     stored as held (not shown) until the owner clears it. -> {id, key, status, exp}
+ *   POST /hay/mine, /hay/edit, /hay/renew, /hay/delete {id, key,...}: the
  *     poster's own post. edit checks every field again; renew adds 30 days,
  *     at most 60 days ahead.
  *   GET  /hay/feed?lat&lng&mi&kind  live posts WITHOUT phone or email
@@ -466,10 +518,10 @@
  *   POST /hay/contact {id}  the name, phone and email of one live post (RATE
  *     20 an hour, 60 a day per address), so contacts are never in the feed.
  *   POST /hay/report {id, why}  one report per address; 3 from different
- *     addresses hide the post until Sig clears it.
+ *     addresses hide the post until the owner clears it.
  *   GET  /hay/admin/list[?new=1], POST /hay/admin/hide {id},
  *     /hay/admin/clear {id}, /hay/admin/mark {ids}: Bearer LIST_TOKEN only.
- *     scripts/form_digest.py mails Sig the new and newly hidden posts (public
+ *     scripts/form_digest.py mails the owner the new and newly hidden posts (public
  *     text only) and marks them.
  * v5.29 (2026-10-17): PRF GRID INDEX NOTICE. /notice takes one more topic,
  *   prf:<grid id> (an email each time USDA RMA posts a final PRF index for a
@@ -477,7 +529,7 @@
  *   is a whole number, no leading zero, 6196 to 34941, on RMA's quarter-degree
  *   lattice over the 48 states (row 20 to 116, column 21 to 251 of 300).
  *   This topic recurs, so it keeps two more fields:
- *     after  "YYYY-II" (II = 01 Jan-Feb .. 11 Nov-Dec), the newest final
+ *     after  "YYYY-II" (II = 01 Jan-Feb.. 11 Nov-Dec), the newest final
  *            interval the page showed when the reader asked; optional, kept
  *            from the first ask only;
  *     iv     the newest interval mailed (or skipped as already out),
@@ -563,7 +615,7 @@
  *     optional) and page. Same publicGate, 16 KB cap, rate limits, honeypot,
  *     year-long storage and digest as the other kinds; /count forms gains
  *     prf-sponsor. Nothing is published from an inquiry and no price is
- *     sent: Sig replies, and a sale is a line in data/prf-sponsors.json.
+ *     sent: the owner replies, and a sale is a line in data/prf-sponsors.json.
  * v5.21 (2026-10-13): AN ELEVATOR ASKS TO POST ITS OWN BIDS. One new form
  *   kind on POST /form and two new admin routes; every existing route answers
  *   exactly as before. No new binding and no new secret.
@@ -575,7 +627,7 @@
  *     bids network directory id the link came from, known:... or reg:...,
  *     200, optional) and page. Same origin check, 16 KB cap, rate limits,
  *     honeypot, year-long storage and digest as the other kinds; /count forms
- *     gains elevator-listing. Nothing is published from a request: Sig calls
+ *     gains elevator-listing. Nothing is published from a request: the owner calls
  *     the elevator, then makes the listing on elev-admin.html.
  *   GET  /elev/admin/requests  Bearer LIST_TOKEN: every elevator-listing post
  *     with its key and status (pending | created | dismissed), newest first.
@@ -586,13 +638,13 @@
  *   route answers exactly as before. No new binding and no new secret. An
  *   elevator keeps its own listing from a private phone link
  *   https://agsist.com/post?k=<key> (post.html, components/elev-post.js);
- *   Sig adds elevators from elev-admin.html.
+ *   The owner adds elevators from elev-admin.html.
  *   elev:<id> = {id, name, town, state, zip, lat, lon, active, contact
  *     {name, phone}, email (private, never in the feed), hours {text,
  *     harvest}, closed_until, note (140 at most), bids [{crop, period, start,
  *     end, futures, basis}] (12 rows at most), bids_updated_at,
  *     info_updated_at, created_at}.
- *   elevkey:<hmac16(UNSUB_SECRET, "elev|" + key)> = id, with {id} as list()
+ *   elevkey:<hmac16(UNSUB_SECRET, "elev|" + key)> = id, with {id} as list
  *     metadata. The key (24 random base32 characters) is never stored.
  *   POST /elev/admin/create, /elev/admin/rekey, /elev/admin/active and
  *     GET /elev/admin/list take "Authorization: Bearer LIST_TOKEN" only.
@@ -613,8 +665,8 @@
  *   {ok:false} and the page draws its usual sample. Every other route answers
  *   exactly as before. No new binding and no new secret.
  * v5.18 (2026-10-13): RAIN GAUGE WAITING LIST. /notice takes one more topic,
- *   "rain-gauge" (updates on the rain gauge Sig is designing, from
- *   /rain-gauge). With that topic only, an optional 5-digit zip and an
+ *   "rain-gauge" (updates on the rain gauge the owner is designing, from
+ * /rain-gauge). With that topic only, an optional 5-digit zip and an
  *   optional one-line note (what the reader wants the gauge to do, control
  *   characters stripped, 280 characters at most) are kept on the topic:
  *   note:<email>.t["rain-gauge"] = {ts, src, zip?, note?}. /notice-list
@@ -623,11 +675,11 @@
  *   counts it. scripts/send_notice.py has no template for it, so nothing
  *   is mailed. No new binding and no new secret.
  * v5.17 (2026-10-13): RAIN PRINT BUSINESS MINIMUM 5. kind rain-print-business
- *   takes quantity 5 to 500 (was 10 to 500), Sig's decision; nothing else
+ *   takes quantity 5 to 500 (was 10 to 500), a product decision; nothing else
  *   changes. 4 and under still answer "invalid quantity".
  * v5.16 (2026-10-13): RAIN PRINT GIFT CARDS. New routes only; every existing
  *   route answers exactly as before. No new binding and no new secret: the
- *   records live in the SUBS KV, signed with UNSUB_SECRET, and Sig's routes
+ *   records live in the SUBS KV, signed with UNSUB_SECRET, and the owner's routes
  *   take LIST_TOKEN. A card is only issued after the giver has paid.
  *   Code: RP-XXXX-XXXX-XXXX, 11 random Crockford base32 characters (0-9 A-Z
  *     without I L O U, from crypto.getRandomValues) and a mod-37 check
@@ -642,17 +694,17 @@
  *     replaces, replaced_by}. Indexes rpg-ref:<order_ref> and
  *     rpg-by:<hmac16("rp-gift-by|" + email)> list record keys; rpg-n counts
  *     cards for "No. 0007".
- *   POST /rp-gift/issue   Sig only: "Authorization: Bearer <LIST_TOKEN>"
+ *   POST /rp-gift/issue   the owner only: "Authorization: Bearer <LIST_TOKEN>"
  *     (?token= is refused on these routes). JSON {product, order_ref, kind,
  *     giver {name, email}, to, from_line, message, lock {design_code, edit},
  *     ships, already_redeemed}. Answers {code, card_url, no, last4, key};
  *     card_url = https://agsist.com/rp-gift?c=CODE&k=hmac16("rp-gift-card|"
  *     + CODE). A locked card for this year or later ships "january" unless
  *     ships is given.
- *   POST /rp-gift/void    Sig only. {code | key, reason, force, reissue}.
+ *   POST /rp-gift/void    the owner only. {code | key, reason, force, reissue}.
  *     A used card needs force:true. reissue:true issues a new code with the
  *     same giver, words and order (lost codes) and answers its card_url.
- *   GET  /rp-gift/find?order_ref= | ?email=   Sig only. The cards on file
+ *   GET  /rp-gift/find?order_ref= | ?email=   the owner only. The cards on file
  *     (last4, status, dates), never a code.
  *   GET  /rp-gift/card?c=&k=   the printable card's fields, message included;
  *     404 without the right k. no-store.
@@ -669,12 +721,12 @@
  *     form:rain-print-order post with gift_card "RP-...-X2F4 (No. 7)",
  *     gift_card_paid, gift_card_order, gift_card_from (gift_card_upgrade when
  *     the choice is above what was paid; gift_january for a January card),
- *     so the hourly digest mails Sig, then status redeemed. Each redeem also
+ *     so the hourly digest mails the owner, then status redeemed. Each redeem also
  *     writes rpg-used:<record id>:<ts>:<key>; a second one sets
  *     gift_card_twice "yes" on the order. 409 when used
  *     ("This card was used on Dec 28, 2026."), 410 when void. KV has no
  *     compare-and-swap: two redeems at different edges inside about a minute
- *     could both pass; the digest flags the same card twice and Sig honours
+ *     could both pass; the digest flags the same card twice and the owner honours
  *     the first. A redeem that dies while pending frees the card after 2 min.
  * v5.15 (2026-10-13): /rp-short also takes a v2 Rain Print design code
  *   ("2|place|station|year|LPCSX|name[|day|label]...[|dedication]": the style
@@ -715,11 +767,11 @@
  *   - One rate limit for all of them (RATE): per client IP (IPv6 by /64, kept
  *     only as an HMAC) an hour and a day, and a daily total per route that
  *     guards the Gmail sending cap. One KV key per accepted post under
- *     rlq:<route>:<day>:, counted with one list(); the hourly number is also
+ *     rlq:<route>:<day>:, counted with one list; the hourly number is also
  *     held exactly inside each isolate. 429 when over. /form keeps its v5.8
  *     counter (8 an hour) as well.
  *   - /list?format=json and /count read the daily list from KV key metadata
- *     (written with every sub: record from now on) with get() only for older
+ *     (written with every sub: record from now on) with get only for older
  *     records. &limit= / &cursor= give one page and X-Next-Cursor; without
  *     them the answer is byte-for-byte what it was.
  *   - /sponsor-apply counts open applications from sapp-by:<email>, not by
@@ -738,7 +790,7 @@
  *     or it is refused (400) and the page falls back to its written email.
  *     Other requests are kept with verified yes/no and r. The Subject is
  *     built here. Make k for a link with:
- *       python3 -c "import hmac,hashlib,sys;print(hmac.new(sys.argv[1].encode(),('sponsor-portal|'+sys.argv[2]).lower().encode(),hashlib.sha256).hexdigest()[:16])" "$UNSUB_SECRET" <slug>-<token>
+ *       python3 -c "import hmac,hashlib,sys;print(hmac.new(sys.argv[1].encode,('sponsor-portal|'+sys.argv[2]).lower.encode,hashlib.sha256).hexdigest[:16])" "$UNSUB_SECRET" <slug>-<token>
  * v5.12 (2026-10-12): RAIN PRINT BUSINESS QUOTES AND GIFT NOTES. One new form
  *   kind on POST /form and one new optional field on rain-print-order; every
  *   existing route answers exactly as before. kind rain-print-business (the
@@ -775,8 +827,8 @@
  *   POST /unsubscribe (the daily) also removes note:<email>, so its "No more
  *   emails" stays true. No new binding and no new secret.
  * v5.10 (2026-10-11): RAIN PRINT PRODUCTS AND GIFTS. kind rain-print-order's
- *   choice is now digital | print12x18 | framed12x18 (Sig prints and frames
- *   12 x 18 himself; the 18 x 24 poster, print18x24, is no longer accepted).
+ *   choice is now digital | print12x18 | framed12x18 (the owner prints and frames
+ * 12 x 18 himself; the 18 x 24 poster, print18x24, is no longer accepted).
  *   address is required for the print and the framed print. It also takes a
  *   gift order: this year's print, ordered now and made after January 1 once
  *   NOAA's December numbers are in. New optional fields: gift_january (true,
@@ -802,13 +854,13 @@
  *   gets 403/404/405/5xx or no answer from this route sends to Formspree
  *   instead (components/form-post.js), so the pages work the same before this
  *   is deployed.
- *   POST /form  JSON {kind, ...fields, _gotcha}. kind = claim |
+ *   POST /form  JSON {kind,...fields, _gotcha}. kind = claim |
  *     sponsor-feedback | atlas-feedback; each has its own field list, lengths
  *     and required fields (FORM_KINDS). Unknown fields are dropped. Body at
  *     most 16 KB. Origin must be agsist.com. At most 8 posts per IP an hour
  *     across all three (the IP is kept only as an HMAC, for two hours).
  *     Stored under form:<kind>:<ms>:<rand> for a year. Nothing is sent from
- *     here; scripts/form_digest.py mails Sig.
+ *     here; scripts/form_digest.py mails the owner.
  *   GET  /form-list?token=[&kind=][&new=1]  the stored posts, newest last.
  *   POST /form-mark?token=  {keys:[...]} the digest job marks posts it mailed.
  *   GET  /count gains forms:{claim, sponsor-feedback, atlas-feedback}: counts.
@@ -829,7 +881,7 @@
 /**
  * v5.5 (2026-10-07): SELF-SERVE SPONSOR SIGN-UP. New routes only; every
  *   existing route answers exactly as before. The sponsor-apply page posts an
- *   application; nothing goes public until Sig approves it.
+ *   application; nothing goes public until the owner approves it.
  *   POST /sponsor-apply  JSON {tier: page|supporter|daily, slot, company,
  *     contact, email, phone, headline, body, url, logo (data:image/png|jpeg|
  *     webp;base64, <= 250 KB decoded), terms:true}. Stored pending under
@@ -837,8 +889,8 @@
  *     applications per address. Nothing is sent from here.
  *   GET/POST /sponsor-confirm?i=&t=   the applicant's double opt-in; GET shows a
  *     button and changes nothing, POST confirms. 14 days, like the watches.
- *   GET/POST /sponsor-decide?i=&d=&t=  Sig's links: d = approve | decline | end.
- *     The token is HMAC(id|sd|d), so only the email Sig receives can act.
+ *   GET/POST /sponsor-decide?i=&d=&t=  the owner's links: d = approve | decline | end.
+ *     The token is HMAC(id|sd|d), so only the email the owner receives can act.
  *   GET  /sponsor-apps?token=          every application, no logo bytes, for
  *     scripts/sponsor_apply.py.
  *   GET  /sponsor-logo?token=&i=       one application's logo data URL.
@@ -996,6 +1048,53 @@ function json(obj, status, extra) {
     status: status || 200,
     headers: Object.assign({ "Content-Type": "application/json" }, extra || {}),
   });
+}
+
+// v5.70 GA burst damping (Nov 13), a backstop: the main cuts are the cloud check below and the
+// gate's reading bar. A network and place (cf.asn plus cf.city, else cf.region, else cf.country;
+// no address is read) that sends more than GA_BURST_MAX fresh /ga-ok calls in one minute is answered
+// false for an hour. Per isolate, in memory: approximate by design (isolates share nothing, a
+// restart forgets), and a fixed one-minute window can let up to twice the limit through across
+// its edge. Calls already refused as a cloud network are not counted. At most GA_BURST_KEYS buckets
+// are kept; expired ones go first, then the oldest. One log line per trip, when the hold ends (on
+// the bucket's next call or when it is pruned): fixed words and the number of calls refused.
+const GA_BURST_MAX = 20;
+const GA_BURST_WINDOW_MS = 60 * 1000;
+const GA_BURST_HOLD_MS = 60 * 60 * 1000;
+const GA_BURST_KEYS = 5000;
+const gaBursts = new Map();
+function gaBurstKey(cf) {
+  const place = (cf && (cf.city || cf.region || cf.country)) || "";
+  return String(Number(cf && cf.asn) || 0) + "|" + String(place).slice(0, 80).toLowerCase();
+}
+function gaBurstEnd(b) {
+  // fixed words and one count; no network, place or address
+  if (b.hold) console.log("subs worker: ga-ok burst hold ended; calls refused in the hold:", b.refused);
+}
+function gaBurstPrune(now) {
+  for (const [k, b] of gaBursts) {
+    if (b.hold <= now && now - b.start >= GA_BURST_WINDOW_MS) { gaBurstEnd(b); gaBursts.delete(k); }
+  }
+  while (gaBursts.size >= GA_BURST_KEYS) gaBursts.delete(gaBursts.keys().next().value);
+}
+function gaBurstOk(cf, now) {
+  const key = gaBurstKey(cf);
+  let b = gaBursts.get(key);
+  if (b && b.hold > now) { b.refused++; return false; }
+  if (!b || now - b.start >= GA_BURST_WINDOW_MS) {
+    if (b) gaBurstEnd(b);
+    else if (gaBursts.size >= GA_BURST_KEYS) gaBurstPrune(now);
+    gaBursts.delete(key);
+    b = { start: now, n: 0, hold: 0, refused: 0 };
+    gaBursts.set(key, b);
+  }
+  b.n++;
+  if (b.n > GA_BURST_MAX) {
+    b.hold = now + GA_BURST_HOLD_MS;
+    b.refused = 1;
+    return false;
+  }
+  return true;
 }
 
 // v5.33 GA gate. Cloud, hosting and data center networks by ASN, checked
@@ -1280,7 +1379,7 @@ const RATE = {
   // v5.14: new Rain Print short links only (a repeat of a known code is free).
   // No mail; the daily total bounds KV writes (two per new id).
   // v5.25: 200 an hour and 600 a day per address. Each redraw while someone
-  // designs makes a new id, so one busy designer (Sig testing his own print)
+  // designs makes a new id, so one busy designer (the owner testing his own print)
   // hit 60 in an hour and lost the QR and the print files. The day's total
   // for everyone is unchanged and still bounds KV writes.
   "/rp-short": [200, 600, 600],
@@ -1486,7 +1585,7 @@ const LIST_TOPICS = ["reports", "cot"];
 const LIST_ASK = { reports: "Stop the WASDE and report-day emails for this address?", cot: "Stop Funds this week for this address?" };
 const LIST_DONE = { reports: "Stopped. No more WASDE or report-day emails.", cot: "Stopped. No more Funds this week emails." };
 // v5.55: the monthly land sale email. A topic names the reader's ZIP and radius;
-// the stop link names only the list ("landsales"), never the ZIP (BUILD-RULES 10).
+// the stop link names only the list ("landsales"), never the ZIP (build rule 10).
 const LAND_MILES = [10, 25, 50];
 const LAND_ALL = "landsales";
 const LAND_ASK = "Stop the monthly land sale email for this address?";
@@ -1505,11 +1604,31 @@ const landMonth = rainMonth;   // v5.55: a landsales month follows the same rule
 const MILK_MONTH = "milk-month";
 const MILK_MONTH_ASK = "Stop the milk price day email for this address?";
 const MILK_MONTH_DONE = "Stopped. No more milk price day emails.";
+// v5.69: hfr, the Harvest Fuel Relief rates and sign-up dates email (one list, no month or place in the topic)
+const HFR = "hfr";
+const HFR_ASK = "Stop the Harvest Fuel Relief email for this address?";
+const HFR_DONE = "Stopped. No more Harvest Fuel Relief emails.";
 const CR_STATES = new Set("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy".split(" "));
+// v5.71: lease:<st>:<YYYY-MM-DD>, the farm lease notice deadline reminder. The date is the state's
+// own deadline in that year (scripts/send_lease_notice.py DEADLINE): Iowa and Ohio September 1,
+// Kansas 30 days before March 1.
+function leaseDeadline(st, y) {
+  if (st === "ia" || st === "oh") return Date.UTC(y, 8, 1);
+  if (st === "ks") return Date.UTC(y, 2, 1) - 30 * 864e5;
+  return null;
+}
+// v5.72: the rain gauge waitlist's structured fields. fips is a state (2 digits) or a county (5) with a real state code.
+function gaugeFips(v) {
+  const x = String(v == null ? "" : v).trim();
+  return /^\d{2}(\d{3})?$/.test(x) && RAIN_ST_FIPS.has(+x.slice(0, 2)) ? x : "";
+}
+const GAUGE_SRC = new Set(["rain-gauge", "rain-county", "rain-hub", "rain-print"]);
+function gaugeCount(v) { const x = String(v == null ? "" : v).trim(); return x === "1" || x === "2-5" || x === "6+" ? x : ""; }
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
   if (t === MILK_MONTH) return t;   // v5.58
+  if (t === HFR) return t;   // v5.69
   // v5.55: landsales:<ZIP>:<10|25|50>
   const ls = /^landsales:(\d{5}):(\d{2})$/.exec(t);
   if (ls) return ls[1] !== "00000" && LAND_MILES.includes(+ls[2]) ? t : null;
@@ -1518,6 +1637,14 @@ function noticeTopic(v, anyDate) {
   // state's next custom rate survey is on /custom-rates (scripts/send_custom_rates_notice.py)
   const cr = /^customrates:([a-z]{2})$/.exec(t);
   if (cr) return CR_STATES.has(cr[1]) ? t : null;
+  // v5.71: lease:<st>:<YYYY-MM-DD>, the state's own deadline, still ahead (a day of slack), within ~13 months
+  const ld = /^lease:([a-z]{2}):(\d{4})-(\d{2})-(\d{2})$/.exec(t);
+  if (ld) {
+    const want = leaseDeadline(ld[1], +ld[2]);
+    if (want === null || new Date(want).toISOString().slice(0, 10) !== t.slice(9)) return null;
+    if (!anyDate && (want < Date.now() - 864e5 || want > Date.now() + 400 * 864e5)) return null;
+    return t;
+  }
   const pg = /^prf:(\d+)$/.exec(t);
   if (pg) return prfGridOk(pg[1]) ? t : null;
   // v5.54: rain-month:<county FIPS>, the monthly county rain email
@@ -1691,21 +1818,21 @@ const FORM_KINDS = {
     // v5.63: oak or black, a framed print only (a bad value is dropped, not refused)
     frame_color: [5, false, "rpframe"],
   },
-  // v5.12: Rain Print business quotes (rain-print.html#rp-biz). Sig emails back a quote and proofs.
+  // v5.12: Rain Print business quotes (rain-print.html#rp-biz). The owner emails back a quote and proofs.
   "rain-print-business": {
     business: [120, true], name: [80, true], email: [254, true, "email"], phone: [30],
     quantity: [3, true, "rpqty"], product: [10, true, "rpbproduct"], towns: [20000, true, "text"],
     ship: [10, true, "rpbship"], note_all: [300, false, "text"], notes: [2000, false, "text"], page: [60],
     logo: [12, false, "rplogo"],   // v5.23: for the note card or the prints
   },
-  // v5.21: an elevator asks to post its own bids (list-your-elevator.html). Sig confirms by phone first.
+  // v5.21: an elevator asks to post its own bids (list-your-elevator.html). The owner confirms by phone first.
   "elevator-listing": {
     elevator: [120, true], town: [80, true], state: [2, true, "state"], zip: [5, true, "zip5"],
     name: [80, true], role: [80, true], phone: [30, true, "phone"], email: [254, true, "email"],
     crops: [120, true, "crops"], how: [10, true, "elhow"], note: [600, false, "text"],
     dir_id: [200, false, "dirid"], page: [60],
   },
-  // v5.22: a business asks about sponsoring PRF in one or more states (prf-sponsor.html). Sig replies with a price.
+  // v5.22: a business asks about sponsoring PRF in one or more states (prf-sponsor.html). The owner replies with a price.
   "prf-sponsor": {
     business: [120, true], name: [80, true], email: [254, true, "email"], phone: [30, false, "phone"],
     states: [200, true, "prfstates"], line: [120], website: [320, false, "url"], message: [1000, false, "text"], page: [60],
@@ -1967,7 +2094,7 @@ async function rplKeep(env, id) {
     const m = got.metadata && typeof got.metadata === "object" ? got.metadata : {};
     if (m.kept) return;
     await env.SUBS.put("rpl:" + id, got.value, { metadata: Object.assign({}, m, { kept: Date.now() }) });
-  } catch (e) { /* the order is stored; Sig still has the link until the logo's 400 days run out */ }
+  } catch (e) { /* the order is stored; the owner still has the link until the logo's 400 days run out */ }
 }
 
 // v5.16: RAIN PRINT GIFT CARDS. A card is a code RP-XXXX-XXXX-XXXX: 11
@@ -2057,7 +2184,7 @@ function rpgPublic(r) {
 }
 // v5.40: set at issue (the giver gave the address at checkout): nothing for the receiver to fill in.
 // v5.64: every card issued since stores prepaid true or false, and that key decides. Only a card
-// with no prepaid key (issued before v5.40; Sig's already-redeemed cards then had redeemed_ts ===
+// with no prepaid key (issued before v5.40; the owner's already-redeemed cards then had redeemed_ts ===
 // issued_ts) falls back to the times. A clock match is never read on a record that has the key: a
 // reader's redeem in the issuing millisecond is a used card, not a paid one (CI, Nov 4).
 function rpgPrepaid(r) {
@@ -2065,7 +2192,7 @@ function rpgPrepaid(r) {
   if (Object.prototype.hasOwnProperty.call(r, "prepaid")) return r.prepaid === true;
   return !!r.issued_ts && r.redeemed_ts === r.issued_ts;
 }
-// Sig's issue body -> the record's fields, or {error}.
+// The owner's issue body -> the record's fields, or {error}.
 function rpgIssueClean(b) {
   const product = String(b.product || "");
   if (!RP_CHOICES.includes(product)) return { error: "product must be one of " + RP_CHOICES.join(", ") };
@@ -2109,7 +2236,7 @@ async function rpgIndex(env, k, recKey) {
   if (!a.includes(recKey)) a.push(recKey);
   await env.SUBS.put(k, JSON.stringify(a.slice(-50)));
 }
-// Writes a new card. Sig only (the caller has checked the token).
+// Writes a new card. The owner only (the caller has checked the token).
 async function rpgIssue(env, f, extra) {
   let code = "", key = "";
   for (let i = 0; i < 5 && !code; i++) {
@@ -2117,7 +2244,7 @@ async function rpgIssue(env, f, extra) {
     if ((await env.SUBS.get(k)) === null) { code = c; key = k; }
   }
   if (!code) return null;
-  const no = (Number(await env.SUBS.get("rpg-n")) || 0) + 1;   // Sig alone issues, one at a time
+  const no = (Number(await env.SUBS.get("rpg-n")) || 0) + 1;   // The owner alone issues, one at a time
   await env.SUBS.put("rpg-n", String(no));
   const now = Date.now(), last4 = code.slice(-4);
   const rec = Object.assign({ v: 1 }, f, { status: "issued", prepaid: false, issued_ts: now, no, last4,
@@ -2278,7 +2405,7 @@ async function elevBody(req) {
   if (!b || typeof b !== "object" || Array.isArray(b)) return { error: "bad json", status: 400 };
   return { b };
 }
-// v5.34: a board Sig pastes by hand. See the header.
+// v5.34: a board the owner pastes by hand. See the header.
 const PASTE_SITES = {
   newcoop: { name: "NEW Cooperative", page: "https://www.newcoop.com/cash-bids",
              source: "posted from NEW Cooperative's public bid page" },
@@ -2374,7 +2501,7 @@ function elevCreateClean(b) {
 
 // v5.13 (M4): THE SPONSOR APPROVAL BOX. The proof code is readable in the public repo and
 // a portal link's r= can be forwarded (v5.65: no longer in the repo), so neither proves who is asking.
-// Sig's portal link now also carries k = hmac16("sponsor-portal|" + r) under
+// The owner's portal link now also carries k = hmac16("sponsor-portal|" + r) under
 // UNSUB_SECRET (sponsor-report.html?r=<slug>-<token>&k=<16 hex>), and the page
 // posts r and k with every request. An Approval without a k that matches its
 // r is refused (400), so the page falls back to its written-out email, which
@@ -2484,7 +2611,7 @@ async function unsubCounts(env) {
 }
 
 // ---------- v5.59: GET /desk and the sponsor payment ledger (desk.html) ----------
-// One read for Sig's desk: counts the worker already holds, bundled so the
+// One read for the owner's desk: counts the worker already holds, bundled so the
 // page never receives a reader's address, name, town, ZIP or message. Every
 // part is read on its own and a part that fails says why in its own place
 // ({error}); the rest still answers. Notice topics are summed by family (the
@@ -2687,10 +2814,25 @@ async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
   // v5.44: the standing lists, with where each reader signed up
   const lists = {};
+  // v5.72: the rain gauge waitlist, counts only (flat so the counts file keeps it)
+  const gauge = { total: 0, gauges_min: 0, customers: 0, with_zip: 0 };
   for (const l of LIST_TOPICS) lists[l] = { n: 0, by_source: {}, unsubs: { h24: 0, d7: 0, cleanup_h24: 0, cleanup_d7: 0 } };
   for (const k of keys) {
     let r = null;
     try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    const gx = r && r.t && r.t["rain-gauge"];
+    if (gx) {
+      const bump = (key) => { gauge[key] = (gauge[key] || 0) + 1; };
+      gauge.total++;
+      if (gx.biz) gauge.customers++;
+      if (gx.zip) gauge.with_zip++;
+      const gn = gaugeCount(gx.n);
+      bump("n:" + (gn || "unsaid"));
+      gauge.gauges_min += gn === "6+" ? 6 : gn === "2-5" ? 2 : 1;
+      const fp = gaugeFips(gx.fips);
+      bump("st:" + (fp ? fp.slice(0, 2) : "unknown"));
+      bump("src:" + (String(gx.src || "").toLowerCase().replace(/[^a-z0-9:_-]/g, "").slice(0, 30) || "(none)"));
+    }
     for (const t of Object.keys((r && r.t) || {})) {
       by[t] = (by[t] || 0) + 1;
       if (lists[t]) {
@@ -2708,7 +2850,27 @@ async function noticeCounts(env) {
     if (age <= 864e5) o[pre + "h24"]++;
     if (age <= 7 * 864e5) o[pre + "d7"]++;
   }
-  return { notice: keys.length, notices: by, lists };
+  return { notice: keys.length, notices: by, lists, gauge };
+}
+
+// v5.68: unique addresses across every list, for the one "on our lists" figure. Counts only.
+// The Daily (sub:), hail alerts (alert:) and notice topics (note:) hold only addresses that are on the
+// list; a watch (watch:, ewatch:, pwatch:) also holds addresses still waiting to confirm (pend only), so
+// a watch address counts only when its record has a confirmed entry in w.
+const PEOPLE_ON = ["sub:", "alert:", "note:"];
+const PEOPLE_WATCH = ["watch:", "ewatch:", "pwatch:"];
+async function peopleCount(env) {
+  const seen = new Set();
+  const add = (k, pre) => { const e = k.slice(pre.length).trim().toLowerCase(); if (e.includes("@")) seen.add(e); };
+  for (const pre of PEOPLE_ON) for (const k of await listKeys(env, pre)) add(k, pre);
+  for (const pre of PEOPLE_WATCH) {
+    for (const k of await listKeys(env, pre)) {
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (r && r.w && typeof r.w === "object" && Object.keys(r.w).length) add(k, pre);
+    }
+  }
+  return seen.size;
 }
 
 async function formCounts(env) {
@@ -2755,7 +2917,7 @@ function rpoClean(b) {
 /* v5.63: a framed order's frame color for the list. Every framed print sold
    before Nov 4 was black, and a page without the choice still says black, so
    a record without one reads "black"; one made from Stripe alone after that
-   (no press came) is not known, "" (Sig asks the buyer). null: not framed. */
+   (no press came) is not known, "" (the owner asks the buyer). null: not framed. */
 const RPO_FRAME_SINCE_MS = Date.UTC(2026, 10, 4);
 function rpoFrame(r) {
   if (!r || r.product !== "framed12x18") return null;
@@ -2798,7 +2960,7 @@ async function rpoPut(env, k, r) {
   const exp = Math.max(Math.floor(Date.now() / 1000) + 120, Math.floor((r.ts || Date.now()) / 1000) + RPO_TTL_S);
   await env.SUBS.put(k, JSON.stringify(r), { expiration: exp });
 }
-// No counter stored yet: last = 1. No. 0001 is already Sig's wife's print (Sig, Oct 17), so the first paid print is No. 0002.
+// No counter stored yet: last = 1. No. 0001 is already the owner's wife's print (Oct 17), so the first paid print is No. 0002.
 const RPO_SERIAL_START_LAST = 1;
 async function rpoSerialLast(env) {
   try { const v = JSON.parse(await env.SUBS.get("rpo-serial")); return v && Number.isInteger(v.last) && v.last >= 0 ? v.last : RPO_SERIAL_START_LAST; }
@@ -2881,7 +3043,7 @@ async function rpoList(env, days) {
   const dup = (r) => !!(r.paid && r.paid.session && bySession.get(r.paid.session) !== r);
   /* v5.47: SERIALS ARE UNIQUE. KV has no atomic add, so two webhooks at once
      (a burst of orders) can each read the same counter. This pass, which is
-     what Sig's alert, the email job and the Today page all read, is the one
+     what the owner's alert, the email job and the Today page all read, is the one
      place serials are settled: across every record, in the order paid, a
      serial already held by an earlier one is taken off the later one, and
      every paid print without one gets the next after the highest in use (or
@@ -2916,10 +3078,12 @@ async function rpoList(env, days) {
       design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
       dedication: r.dedication, gift: !!r.gift, frame_color: rpoFrame(r), status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
       approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
+      dispatch: r.dispatch || null,   // v5.66: the last start of the email job for this order {at, job}
+      guarded: r.guarded || null,     // v5.66: the hourly guard acted on it once (POST /rp-order/guarded)
       delivered: r.delivered || null,   // v5.38: the digital files went out (rp_buyer_email.py)
       // v5.40: the gift card issued for this order (never the code here) and the buyer's card email
       gift_card: r.gift_card ? { no: r.gift_card.no, last4: r.gift_card.last4, at: r.gift_card.at } : null, gift_mailed: r.gift_mailed || null,
-      // the proof went out 3 business days ago and no answer: Sig's Today page flags it (never approved for the buyer)
+      // the proof went out 3 business days ago and no answer: the owner's Today page flags it (never approved for the buyer)
       approval_overdue: !!(r.paid && r.mailed && !r.approved && rpoBizDaysSince(r.mailed.at, now) >= RPO_APPROVE_WAIT_BIZ),
       serial: r.serial || null, serial_next: serialNext, fulfill_url: rpoFulfill(r, r.serial || serialNext),
     };
@@ -2927,7 +3091,7 @@ async function rpoList(env, days) {
   return { stripe, serial_last: last, orders: out };
 }
 
-// ---------- v5.36: the Stripe webhook (Sig: "alerts whenever an order is placed") ----------
+// ---------- v5.36: the Stripe webhook ----------
 // POST /rp-order/stripe, from Stripe only: the Stripe-Signature header is
 // checked against STRIPE_WEBHOOK_SECRET (HMAC SHA-256 of "<t>.<body>", any v1,
 // t within RPO_WH_TOLERANCE_S of now). A paid checkout.session.completed or a
@@ -2953,12 +3117,91 @@ async function stripeSigProblem(header, raw, secret, nowS) {
   const want = await hmacHex(secret, t + "." + raw);
   return v1.some(v => safeEq(v, want)) ? "" : "bad signature";
 }
+// ---------- v5.67: THE REPORT-DAY RESULT ----------
+// One record per kind: rlive:live (what the pages and the email read) and
+// rlive:test (the rehearsal). The shape is fixed and every string is plain text;
+// scripts/report_live.py validate() holds the same rules.
+const RLIVE_MAX_BYTES = 12000;
+const RLIVE_SKEW_S = 300;
+const RLIVE_SAFE = /^[A-Za-z0-9 .,\/()%+:&'$-]*$/;
+const RLIVE_KEY = /^[a-z0-9_]{1,40}$/;
+const RLIVE_TOP = ["v", "test", "complete", "release", "report", "generated", "counts", "big", "rows", "balance"];
+const RLIVE_ROW = ["key", "label", "unit", "actual", "expected", "low", "high", "usda_current", "surprise", "gap_pct", "context"];
+const RLIVE_BAL = ["crop", "my", "prev_month", "stocks", "stocks_prev", "price", "price_prev"];
+const RLIVE_GRADES = ["bullish", "bearish", "in line", ""];
+const rliveKeys = (o, want) => o && typeof o === "object" && !Array.isArray(o)
+  && Object.keys(o).length === want.length && want.every((k) => Object.prototype.hasOwnProperty.call(o, k));
+const rliveNum = (v) => v === null || (typeof v === "number" && Number.isFinite(v) && Math.abs(v) <= 1e9);
+const rliveText = (v, n) => typeof v === "string" && v.length <= n && RLIVE_SAFE.test(v);
+// -> "" when the record is one this route keeps, else why not
+function rliveProblem(p, nowMs) {
+  if (!p || typeof p !== "object" || Array.isArray(p) || Object.keys(p).some((k) => !RLIVE_TOP.includes(k))) return "shape";
+  if (p.v !== 1 || typeof p.test !== "boolean" || typeof p.complete !== "boolean") return "version";
+  if (typeof p.release !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(p.release)) return "release";
+  const rel = Date.parse(p.release + "T00:00:00Z");
+  if (!Number.isFinite(rel)) return "release";
+  const today = Date.parse(new Date(nowMs).toISOString().slice(0, 10) + "T00:00:00Z");
+  const days = Math.round((rel - today) / 864e5);
+  if (p.test ? (days < -400 || days > 1) : Math.abs(days) > 1) return "release";
+  if (!rliveText(p.report, 60) || p.report.length < 3) return "report";
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(String(p.generated))) return "generated";
+  const c = p.counts;
+  if (!rliveKeys(c, ["metrics", "in_line", "ungraded"]) || !Object.values(c).every((n) => Number.isInteger(n) && n >= 0 && n <= 60)) return "counts";
+  if (!Array.isArray(p.rows) || !Array.isArray(p.balance) || p.rows.length > 40 || p.balance.length > 3 || !(p.rows.length || p.balance.length)) return "rows";
+  for (const r of p.rows) {
+    if (!rliveKeys(r, RLIVE_ROW) || typeof r.key !== "string" || !RLIVE_KEY.test(r.key)) return "row";
+    if (!rliveText(r.label, 80) || !rliveText(r.unit, 16) || !rliveText(r.context, 80)) return "row text";
+    if (!RLIVE_GRADES.includes(r.surprise)) return "row grade";
+    if (!["actual", "expected", "low", "high", "usda_current", "gap_pct"].every((k) => rliveNum(r[k])) || r.actual === null) return "row number";
+  }
+  if (p.big !== null && !p.rows.some((r) => r.key === p.big)) return "big";
+  for (const b of p.balance) {
+    if (!rliveKeys(b, RLIVE_BAL) || !["corn", "soybeans", "wheat"].includes(b.crop)) return "balance";
+    if (!/^(\d{4}\/\d{2})?$/.test(String(b.my)) || !/^([A-Z][a-z]{2})?$/.test(String(b.prev_month))) return "balance";
+    if (!["stocks", "stocks_prev", "price", "price_prev"].every((k) => rliveNum(b[k]))) return "balance";
+  }
+  return "";
+}
+async function rlivePost(env, req) {
+  const h = { "Cache-Control": "no-store" };
+  if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET) return json({ ok: false, error: "temporarily unavailable" }, 503, h);
+  const raw = await req.text();
+  if (raw.length > RLIVE_MAX_BYTES) return json({ ok: false, error: "too big" }, 413, h);
+  const ts = Number(req.headers.get("X-Report-Ts"));
+  const sig = String(req.headers.get("X-Report-Sig") || "");
+  const nowMs = Date.now();
+  if (!Number.isInteger(ts) || Math.abs(nowMs / 1000 - ts) > RLIVE_SKEW_S || !/^[0-9a-f]{64}$/.test(sig)) return json({ ok: false }, 403, h);
+  const key = await hmacHex(env.UNSUB_SECRET, "report-live|v1");
+  if (!safeEq(sig, await hmacHex(key, ts + "." + raw))) return json({ ok: false }, 403, h);
+  let p;
+  try { p = JSON.parse(raw); } catch (e) { return json({ ok: false, error: "bad json" }, 400, h); }
+  const why = rliveProblem(p, nowMs);
+  if (why) return json({ ok: false, error: why }, 400, h);
+  const k = p.test ? "rlive:test" : "rlive:live";
+  const old = await env.SUBS.get(k, "json").catch(() => null);
+  if (old && !p.test && typeof old.release === "string" && old.release > p.release) return json({ ok: false, error: "older" }, 409, h);
+  if (old && old.release === p.release) {
+    if (String(old.generated) > p.generated) return json({ ok: false, error: "older" }, 409, h);
+    if (old.complete === true && !p.complete) return json({ ok: false, error: "partial" }, 409, h);   // complete stays complete
+    // a copy with fewer figures replaces the kept one only when it is newer and complete
+    const fewer = Array.isArray(old.rows) && p.rows.length < old.rows.length;
+    if (fewer && !(p.complete && String(old.generated) < p.generated)) return json({ ok: false, error: "fewer" }, 409, h);
+  }
+  const rec = Object.assign({}, p, { received: new Date(nowMs).toISOString().slice(0, 19) + "Z" });
+  await env.SUBS.put(k, JSON.stringify(rec), { expirationTtl: (p.test ? 14 : 60) * 86400 });
+  return json({ ok: true, release: p.release, rows: p.rows.length }, 200, h);
+}
+async function rliveGet(env, url, req) {
+  const test = url.searchParams.get("test") === "1";
+  const live = await env.SUBS.get(test ? "rlive:test" : "rlive:live", { type: "json", cacheTtl: 30 }).catch(() => null);
+  return json({ ok: true, live: live || null }, 200, Object.assign({ "Cache-Control": "public, max-age=10" }, cors(req)));
+}
 /* v5.47: the record for a paid session with no press on record, from Stripe's
    own: the key comes from the session (rpo:<created ms>:<8 hex of SHA-256 of
    the session id>), so the webhook, a retry of it and the poll all write the
    same record, never two. A design code as the ref is the whole design: its
    link, place, year, style and name are read from it. RPS- opens through the
-   short link; RPH- has no design here (it came to Sig by the backup form).
+   short link; RPH- has no design here (it came to the owner by the backup form).
    Nothing about the buyer. */
 async function rpoFromSession(s) {
   const ts = s.created * 1000;
@@ -2987,13 +3230,13 @@ async function rpoWebhookSession(env, x) {
     if (r && typeof r === "object") { r.key = k; recs.push(r); }
   }
   if (recs.some(r => r.paid && r.paid.session === s.id)) { await env.SUBS.put(evKey, "1", { expirationTtl: RPO_TTL_S }); return { already: true }; }
-  // paid with no press on record (a bare payment link, or the press post was lost): kept so Sig still sees it (v5.47: rpoFromSession)
+  // paid with no press on record (a bare payment link, or the press post was lost): kept so the owner still sees it (v5.47: rpoFromSession)
   const hit = rpoMatch(recs, s) || await rpoFromSession(s);
   hit.paid = rpoPaid(s, "webhook");
   /* A print's serial at once, for the alert. v5.47: the next after the
      counter or the highest on record, whichever is higher, and a counter
      write KV refuses (one write a second to a key, a burst) leaves it to
-     the list pass, which settles every serial (rpoList) before Sig sees one. */
+     the list pass, which settles every serial (rpoList) before the owner sees one. */
   if (RPO_PRINTS.includes(hit.product) && !hit.serial) {
     const top = recs.reduce((m, r) => Math.max(m, Number.isInteger(r.serial) ? r.serial : 0), 0);
     hit.serial = Math.max(await rpoSerialLast(env), top) + 1;
@@ -3004,10 +3247,14 @@ async function rpoWebhookSession(env, x) {
   await env.SUBS.put(evKey, "1", { expirationTtl: RPO_TTL_S });
   return { key: k };
 }
-// Starts .github/workflows/rp-buyer-email.yml (Sig's alert and the buyer email) at once.
-// Needs GH_DISPATCH_TOKEN (a fine-grained token on dnilgis/agsist, Actions read and write);
-// without it the job waits for its next run. RP_BUYER_EMAIL_LIVE = "1" lets buyer emails go
-// to buyers; anything else is a dry run (every email to Sig only).
+// Starts.github/workflows/rp-buyer-email.yml (the owner's alert and the buyer email) at once.
+// Needs GH_DISPATCH_TOKEN (a fine-grained token on dnilgis/agsist, Actions read and write).
+// That workflow has no schedule: without a token, or when GitHub refuses it (an expired token
+// answers "HTTP 401"), nothing starts the job here. v5.66: the result is kept on the order record
+// (dispatch {at, job}), and the hourly rp-design-email run (scripts/rp_design_email.py) starts the
+// job for a paid order still unmailed after 60 minutes, or emails the owner when it cannot.
+// RP_BUYER_EMAIL_LIVE = "1" lets buyer emails go to buyers; anything else is a dry run (every
+// email to the owner only).
 async function rpoDispatch(env) {
   if (typeof env.GH_DISPATCH_TOKEN !== "string" || !env.GH_DISPATCH_TOKEN) return "no token";
   try {
@@ -3018,6 +3265,17 @@ async function rpoDispatch(env) {
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
   } catch (e) { return "failed"; }
+}
+// v5.66: the last dispatch for this order, kept on its record (never a token or an address), so a
+// failed start ("HTTP 401", "no token", "failed") shows on /rp-order/list instead of only in a 200
+// answer Stripe never reads again. A write that fails leaves the order as it was.
+async function rpoKeepDispatch(env, k, job) {
+  try {
+    const r = JSON.parse(await env.SUBS.get(k));
+    if (!r) return;
+    r.dispatch = { at: new Date().toISOString(), job: String(job || "failed").slice(0, 40) };
+    await rpoPut(env, k, r);
+  } catch (e) { /* the order stands; the hourly check still sees it unmailed */ }
 }
 
 // ---------- v5.43: Email me this design ----------
@@ -3121,7 +3379,7 @@ function hayEnum(v, list, field, need) {
   if (!list.includes(s)) return { error: (s ? "invalid " : "missing ") + field };
   return { v: s };
 }
-// Text that is posted but held for Sig: repeated letters or words, or shouting.
+// Text that is posted but held for the owner: repeated letters or words, or shouting.
 function hayHeld(s) {
   if (!s) return "";
   if (/(.)\1{7,}/.test(s)) return "repeated text";
@@ -3265,7 +3523,7 @@ async function hayRoute(req, env, url, path) {
       Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req)));
   }
 
-  // Sig only: Bearer LIST_TOKEN, never ?token=.
+  // The owner only: Bearer LIST_TOKEN, never ?token=.
   if (path.startsWith("/hay/admin/")) {
     const bearer = /^Bearer\s+(\S+)\s*$/i.exec(req.headers.get("Authorization") || "");
     if (!bearer || !env.LIST_TOKEN || !safeEq(bearer[1], env.LIST_TOKEN)) return json({ ok: false }, 403, c);
@@ -3404,9 +3662,17 @@ async function handle(req, env) {
         region_code: String(cf.regionCode || "").slice(0, 3), lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 }, 200, h);
     }
 
+    // v5.67: the report-day result (scripts/report_live.py).
+    if (path === "/report-live") {
+      if (req.method === "GET") return rliveGet(env, url, req);
+      if (req.method === "POST") return rlivePost(env, req);
+      return json({ ok: false }, 405, cors(req));
+    }
+
     // v5.33: may this visit load Google Analytics? Network type only; nothing kept.
+    // v5.70: and not a burst from one network and city (gaBurstOk: counts in memory, no address).
     if (path === "/ga-ok" && req.method === "GET") {
-      return json({ ok: gaOk(req.cf) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
+      return json({ ok: gaOk(req.cf) && gaBurstOk(req.cf, Date.now()) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
     }
 
     // v5.65: one sponsor's private report (sponsor-report.html). 404 with no detail for
@@ -3479,7 +3745,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       const topic = noticeTopic(b.topic);
       if (!topic) return json({ ok: false, error: "invalid topic" }, 400, cors(req));
-      const src = String(b.source || "").slice(0, 60);
+      let src = String(b.source || "").slice(0, 60);
+      if (topic === "rain-gauge" && !GAUGE_SRC.has(src)) src = "rain-gauge";   // v5.72: the page kinds that ask, else the gauge page itself
       let r = null;
       try { const v = await env.SUBS.get("note:" + email); r = v ? JSON.parse(v) : null; } catch (e) { r = null; }
       if (!r || typeof r !== "object" || !r.t || typeof r.t !== "object") r = { ts: Date.now(), t: {} };
@@ -3497,6 +3764,11 @@ async function handle(req, env) {
         const z = subZip(b.zip), nt = oneLine(b.note, NOTE_TEXT_MAX);
         if (z) r.t[topic].zip = z;
         if (nt) r.t[topic].note = nt;
+        // v5.72: where the ask was (state or county FIPS), how many gauges, and "for my customers"
+        const fp = gaugeFips(b.fips), gn = gaugeCount(b.n);
+        if (fp) r.t[topic].fips = fp;
+        if (gn) r.t[topic].n = gn;
+        if (subBool(b.biz) === true) r.t[topic].biz = true;
       }
       // v5.29: a prf topic keeps the newest interval the page showed, from the first ask
       if (topic.startsWith("prf:") && !r.t[topic].after) {
@@ -3519,7 +3791,7 @@ async function handle(req, env) {
       if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
-        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : one === MILK_MONTH ? MILK_MONTH_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
+        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : one === MILK_MONTH ? MILK_MONTH_ASK : one === HFR ? HFR_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
           "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
@@ -3543,6 +3815,7 @@ async function handle(req, env) {
         if (one === LAND_ALL) return htmlPage(LAND_DONE);
         if (one && one.startsWith("rain-month:")) return htmlPage(RAIN_MONTH_DONE);
         if (one === MILK_MONTH) return htmlPage(MILK_MONTH_DONE);   // v5.58
+        if (one === HFR) return htmlPage(HFR_DONE);   // v5.69
         return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
       }
     }
@@ -3857,6 +4130,9 @@ async function handle(req, env) {
         ewatch: (await listKeys(env, "ewatch:")).length,
         pwatch: (await listKeys(env, "pwatch:")).length,
         watch: (await listKeys(env, "watch:")).length,
+        // v5.68: people on any list, each address once (the Daily, hail alerts, elevator watch, price
+        // targets, county watch and every notice topic). A count only; no address leaves the Worker.
+        people: await peopleCount(env),
         by_source: bySource,
         // v5.13: whether UNSUB_SECRET is set on this Worker. A boolean, never the value.
         secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,
@@ -3888,6 +4164,9 @@ async function handle(req, env) {
           const row = { email: k.slice(5), topic, ts: v && v.ts || null, src: v && v.src || "", sent: v && v.sent || null };
           if (v && v.zip) row.zip = v.zip;     // v5.18: rain-gauge only
           if (v && v.note) row.note = v.note;
+          if (v && v.fips) row.fips = v.fips;      // v5.72: rain-gauge only
+          if (v && v.n) row.n = v.n;
+          if (v && v.biz) row.biz = true;
           if (v && v.after) row.after = v.after;   // v5.29: prf only
           if (v && v.iv) row.iv = v.iv;
           if (v && v.mo) row.mo = v.mo;            // v5.54 rain-month, v5.55 landsales, v5.58 milk-month
@@ -3947,7 +4226,7 @@ async function handle(req, env) {
         }
       }
       // v4.1 (2026-07-20): open CORS like /list — the endpoint is already
-      // token-gated, and Sig's local subscriber dashboard reads it in-browser.
+      // token-gated, and the owner's local subscriber dashboard reads it in-browser.
       return json(await lidAttach(env, out), 200, { "Access-Control-Allow-Origin": "*" });   // v5.46: lid
     }
 
@@ -4402,12 +4681,12 @@ async function handle(req, env) {
         if (req.method !== "POST")
           return htmlPage("Confirm your AGSIST ad: " + what,
             "<form method=post><button style=\"font-size:16px;padding:10px 18px\">Yes, send it to Sig</button></form>" +
-            "<p>Your first month is free. Nothing runs until Sig has looked at it.</p>");
+            "<p>Nothing runs until we have looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions. Your ad goes live the day your payment arrives.</p>");
         r.status = "confirmed"; r.cts = Date.now();
         await env.SUBS.put("sapp:" + id, JSON.stringify(r));
         return htmlPage("Thanks. Sig has your ad.",
-          "<p>He reviews every ad himself, usually the same day, and you'll get an email when it's live. " +
-          "Your free month starts the day it runs.</p>");
+          "<p>He reviews every ad himself, usually the same day, and emails you the invoice. Pay it by check or bank wire. " +
+          "Your ad goes live the day your payment arrives, and you'll get an email when it's live.</p>");
       }
       const ok = SAPP_DECISIONS[d].from.includes(r.status);
       if (!ok) return htmlPage("Nothing to do: this application is " + escHtml(r.status) + ".");
@@ -4447,7 +4726,7 @@ async function handle(req, env) {
       const raw = /^[0-9a-f]{12}$/.test(id) ? await env.SUBS.get("sapp:" + id) : null;
       if (!raw) return json({ ok: true, skipped: true });
       const r = JSON.parse(raw), set = b.set || {};
-      // The job may move only these steps. Approve, decline and end are Sig's.
+      // The job may move only these steps. Approve, decline and end are the owner's.
       const MOVES = { approved: ["live"], ending: ["ended"], pending: ["expired"] };
       if (set.status !== undefined) {
         if (!(MOVES[r.status] || []).includes(set.status)) return json({ ok: false, error: "bad move" }, 409);
@@ -4563,7 +4842,7 @@ async function handle(req, env) {
     }
 
     // ---------- v5.16: Rain Print gift cards ----------
-    // Sig only: issue, void (and reissue), find. The token must come as
+    // The owner only: issue, void (and reissue), find. The token must come as
     // "Authorization: Bearer"; ?token= is refused here so it never sits in a URL.
     const sig = !!bearer && authed;
     const ac = cors(req);   // the admin page on agsist.com reads these answers
@@ -4592,7 +4871,7 @@ async function handle(req, env) {
       const out = await areaPage(env, part, String(url.searchParams.get("cursor") || ""), limit);
       return json(Object.assign({ ok: true, part }, out), 200, ns);
     }
-    // v5.65: the sponsor report job writes each report here; Sig's desk lists them. Bearer only.
+    // v5.65: the sponsor report job writes each report here; the owner's desk lists them. Bearer only.
     if (path === "/sponsor-report/put" || path === "/sponsor-report/list" || path === "/sponsor-report/drop") {
       const ns = Object.assign({ "Cache-Control": "no-store" }, ac);
       if (!sig || url.searchParams.has("token")) return json({ ok: false }, 403, ns);
@@ -4612,7 +4891,7 @@ async function handle(req, env) {
       const put = await sprPut(env, b);
       return json(put.ok ? put : { ok: false, error: put.error }, put.ok ? 200 : 400, ns);
     }
-    // v5.59: Sig's desk (desk.html). Bearer only; a ?token= in the address is refused outright.
+    // v5.59: the owner's desk (desk.html). Bearer only; a ?token= in the address is refused outright.
     if (path === "/desk" || path === "/desk/ledger") {
       const ns = Object.assign({ "Cache-Control": "no-store" }, ac);
       if (!sig || url.searchParams.has("token")) return json({ ok: false }, 403, ns);
@@ -4747,7 +5026,7 @@ async function handle(req, env) {
     // only if the key is still ours. Two redeems at one edge cannot both pass;
     // two at different edges inside KV's propagation window (up to about a
     // minute) could. Both orders then carry the same gift_card in the digest,
-    // which flags it, and Sig honours the first.
+    // which flags it, and the owner honours the first.
     if (path === "/rp-gift/redeem" && req.method === "POST") {
       const c = cors(req);
       if (!rpgMemOk(req)) return json({ ok: false, error: "too many requests; try again later" }, 429, c);
@@ -4824,7 +5103,7 @@ async function handle(req, env) {
       await env.SUBS.put("rpo:" + ts + ":" + rnd, JSON.stringify(Object.assign({ ts }, v.rec)), { expirationTtl: RPO_TTL_S });
       return json({ ok: true }, 200, c);
     }
-    // Sig only: Bearer LIST_TOKEN, never ?token=. The Today page on agsist.com reads these.
+    // The owner only: Bearer LIST_TOKEN, never ?token=. The Today page on agsist.com reads these.
     if (path === "/rp-order/list" && req.method === "GET") {
       if (!sig) return json({ ok: false }, 403, ac);
       const d = Number(url.searchParams.get("days") || 14);
@@ -4853,7 +5132,9 @@ async function handle(req, env) {
       const done = await rpoWebhookSession(env, x);
       if (done.error) return json({ ok: false, error: done.error }, 400);
       if (done.already) return json({ ok: true, already: true }, 200);
-      return json({ ok: true, job: await rpoDispatch(env) }, 200);
+      const job = await rpoDispatch(env);
+      if (done.key) await rpoKeepDispatch(env, done.key, job);
+      return json({ ok: true, job }, 200);
     }
     // v5.37: the buyer approves the proof (rain-print-approve.html posts {k, t}). publicGate has run.
     // Idempotent: a second approve answers already with the first time.
@@ -4871,14 +5152,16 @@ async function handle(req, env) {
       if (r.approved) return json({ ok: true, already: true, at: r.approved.at, product: r.product }, 200, c);
       r.approved = { at: new Date().toISOString() };
       await rpoPut(env, k, r);
-      const job = await rpoDispatch(env);   // Sig's "approved" alert goes out from the same email job
+      const job = await rpoDispatch(env);   //  alert goes out from the same email job
+      await rpoKeepDispatch(env, k, job);
       return json({ ok: true, already: false, at: r.approved.at, product: r.product, job: job === "started" ? "started" : "later" }, 200, c);
     }
-    // v5.36: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
+    // v5.36: the owner's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
     // v5.37: /rp-order/approved-alerted, the same for his "approved, make it" alert.
     // v5.40: /rp-order/gift-mailed, the buyer's gift card email (only once the card is on the record).
-    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted" || path === "/rp-order/gift-mailed") && req.method === "POST") {
-      const what = { "/rp-order/mailed": "mailed", "/rp-order/alerted": "alerted", "/rp-order/approved-alerted": "approved_alerted", "/rp-order/gift-mailed": "gift_mailed" }[path];
+    // v5.66: /rp-order/guarded, the hourly paid-unmailed guard acted on this order (scripts/rp_design_email.py), once.
+    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted" || path === "/rp-order/gift-mailed" || path === "/rp-order/guarded") && req.method === "POST") {
+      const what = { "/rp-order/mailed": "mailed", "/rp-order/alerted": "alerted", "/rp-order/approved-alerted": "approved_alerted", "/rp-order/gift-mailed": "gift_mailed", "/rp-order/guarded": "guarded" }[path];
       if (!sig) return json({ ok: false }, 403, ac);
       let b = null;
       try { b = await req.json(); } catch (e) { b = null; }
@@ -4895,7 +5178,7 @@ async function handle(req, env) {
       await rpoPut(env, k, r);
       return json({ ok: true, already: false, [what]: r[what] }, 200, ac);
     }
-    // v5.38: the files email for an approved digital file went out (or Sig sends them by hand), once.
+    // v5.38: the files email for an approved digital file went out (or the owner sends them by hand), once.
     if (path === "/rp-order/delivered" && req.method === "POST") {
       if (!sig) return json({ ok: false }, 403, ac);
       let b = null;
@@ -5010,7 +5293,7 @@ async function handle(req, env) {
     }
 
     // ---------- v5.20: the elevator portal ----------
-    // Sig only. Bearer LIST_TOKEN, never ?token= (sig, from the gift card block above).
+    // The owner only. Bearer LIST_TOKEN, never ?token= (sig, from the gift card block above).
     if (path.startsWith("/elev/admin/")) {
       if (!sig) return json({ ok: false }, 403, ac);
       if (path === "/elev/admin/list" && req.method === "GET") {
@@ -5037,7 +5320,7 @@ async function handle(req, env) {
         out.sort((a, b) => (b.ts || 0) - (a.ts || 0));
         return json({ ok: true, requests: out }, 200, Object.assign({ "Cache-Control": "no-store" }, ac));
       }
-      // v5.34: a board Sig pasted by hand. Its own size cap, larger than elevBody's.
+      // v5.34: a board the owner pasted by hand. Its own size cap, larger than elevBody's.
       if (path === "/elev/admin/paste" && req.method === "POST") {
         if (Number(req.headers.get("Content-Length") || 0) > PASTE_MAX_BYTES) return json({ ok: false, error: "too large" }, 413, ac);
         let raw = "";
@@ -5160,7 +5443,7 @@ async function handle(req, env) {
     }
 
     // Public: every listing that is turned on, never an email or a key.
-    // v5.34: what Sig pasted, public: the elevator's own posted numbers.
+    // v5.34: what the owner pasted, public: the elevator's own posted numbers.
     if (path.startsWith("/elev/paste/") && req.method === "GET") {
       const site = path.slice("/elev/paste/".length);
       const h = Object.assign({ "Cache-Control": "public, max-age=60" }, cors(req));

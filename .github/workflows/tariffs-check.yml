@@ -1,11 +1,10 @@
 name: Tariff data check
-# Tariff data check.
 
 on:
   push:
+    branches: [main]
     paths:
       - 'data/tariffs.json'
-      - 'scripts/check_tariffs.py'
       - '.github/workflows/tariffs-check.yml'
   workflow_dispatch:
 
@@ -15,6 +14,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:

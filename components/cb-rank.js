@@ -187,7 +187,8 @@ var MON_START=/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?(?![a-
 function yy(t){return t.length===2?2000+(+t):+t;}
 function titleMon(t){t=String(t||'');return t.charAt(0).toUpperCase()+t.slice(1,3).toLowerCase();}
 function deliveryText(delivery,period){
-  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s+/g,' ').trim();
+  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s*\([FGHJKMNQUVXZ]\)\s*$/,'')
+    .replace(/\s+/g,' ').trim().replace(/\.+$/,'').trim().replace(/^([A-Za-z]{3})-(\d{2})$/,'$1 $2');
   var per=String(period||''),m,i;
   if((m=/^([A-Za-z]{3})[A-Za-z]*\.?\s*'?(\d{2}|\d{4})$/.exec(lab))&&MONTHS.indexOf(titleMon(m[1]))>=0)
     return titleMon(m[1])+' '+yy(m[2]);
@@ -233,7 +234,41 @@ function deliveryText(delivery,period){
     }
     if(sy)return (per.indexOf('new')===0?'New crop':'Old crop')+' '+sy[1];
   }
+  /* only months, month initials and dates ("O/N27", "DEC-JAN 2027", "20261130"): the network's period */
+  if(lab&&monthsOnly(lab,per))return deliveryText('',per)||lab;
   return lab;
+}
+var MON_WORD=/^(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*$/i;
+/* Twin of build_cash_bid_pages._months_only(): the label says nothing but the network's own period. */
+function monthsOnly(lab,per){
+  var m1=/^(\d{4})-(\d{2})$/.exec(per||''),m2=/^(\d{4})-(\d{2})\/(\d{4})-(\d{2})$/.exec(per||''),y0,a0,y1,a1,i;
+  if(m1){y0=y1=+m1[1];a0=a1=+m1[2];}else if(m2){y0=+m2[1];a0=+m2[2];y1=+m2[3];a1=+m2[4];}else return false;
+  var len=(y1-y0)*12+a1-a0+1;
+  if(!(a0>=1&&a0<=12&&a1>=1&&a1<=12)||len<1||len>12)return false;
+  var span=[];for(i=0;i<len;i++)span.push((a0-1+i)%12);
+  var r=/^(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})$/.exec(lab);
+  if(r){
+    if(titleMon(r[2])!==MONTHS[span[0]]||titleMon(r[5])!==MONTHS[span[span.length-1]]||+r[3]!==y0||+r[6]!==y1)return false;
+    var last=a1===2?(y1%4===0?29:28):LAST_DAY[a1-1];
+    return +r[1]===1&&+r[4]===last;
+  }
+  var seq=[],nums=[],toks=lab.match(/[A-Za-z]+|\d+/g)||[],k,t;
+  for(k=0;k<toks.length;k++){
+    t=toks[k];
+    if(/^\d+$/.test(t))nums.push(t);
+    else if(MON_WORD.test(t))seq.push(['w',MONTHS.indexOf(titleMon(t.slice(0,3)))]);
+    else if(t.length===1||/^[JFMASOND]{3}$/.test(t))t.toUpperCase().split('').forEach(function(c){seq.push(['l',c]);});
+    else return false;
+  }
+  function fits(x,mi){return x[0]==='w'?x[1]===mi:MONTHS[mi].charAt(0)===x[1];}
+  if(seq.length&&!((seq.length===span.length&&seq.every(function(x,j){return fits(x,span[j]);}))||
+     (seq.length===2&&span.length>1&&fits(seq[0],span[0])&&fits(seq[1],span[span.length-1]))))return false;
+  var ok={};if(y0===y1){ok[String(y0)]=1;ok[String(y0).slice(2)]=1;}
+  for(k=0;k<nums.length;k++){
+    var n=nums[k];
+    if(!(ok[n]||(n.length===8&&m1&&n.slice(0,6)===String(y0)+(a0<10?'0':'')+a0)))return false;
+  }
+  return seq.length>0||!!(nums.length&&m1&&nums[0].length===8);
 }
 var FUT={},FUT_ROOTS={ZC:1,ZS:1,ZW:1,KE:1};
 /* data/prices.json -> {ZSX26:{price:12.9575,date:'2026-10-07'}}. Only dated
@@ -444,33 +479,13 @@ function markOutliers(items){
 }
 
 /* ── The name printed for an elevator and its place ───────────────────────
-   Twin of scripts/elevator_names.py (test/cashfix.test.mjs runs the same cases
-   through both). "Cash Bid JSI Site - Ag State" is a page title, not a name;
-   "Dewar, IA" printed beside its state read "Dewar, IA, IA". Exact fixes are in
-   data/elevator-names.json; until it loads, the general rules still apply. */
-var NAMES={operators:{},places:{}};
-var OP_HEAD=/^\s*(?:cash\s+bid\s+)?(?:jsi\s+site|iframe|current\s+grain\s+bids)\s*-\s*/i;
-var OP_TAIL=/\s*-\s*cash\s+bid\s+include\s*$/i;
-var ST_TAIL=new RegExp('(?:\\s*[,.]\\s*(?:'+('AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND '+
-  'OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY').split(' ').join('|')+'))+\\s*$','i');
-var OP_ARCHIVED=/^z(?=[A-Z])|\s*\.?\b(?:OLD|Old)$/g;
-function setNames(json){
-  NAMES={operators:(json&&json.operators)||{},places:(json&&json.places)||{}};
-  return NAMES;
-}
-function displayName(op){
-  var s=String(op||'').trim();
-  if(Object.prototype.hasOwnProperty.call(NAMES.operators,s))return NAMES.operators[s];
-  s=s.replace(OP_HEAD,'').replace(OP_TAIL,'').trim().replace(/,+$/,'').trim();
-  return s.replace(OP_ARCHIVED,'').trim();
-}
-function cleanPlace(p){
-  var s=String(p||'').trim();
-  if(Object.prototype.hasOwnProperty.call(NAMES.places,s))return NAMES.places[s];
-  s=s.replace(/^[{\s]+|[}\s]+$/g,'').replace(/[,\s]+$/,'').trim();
-  var out=s.replace(ST_TAIL,'').trim().replace(/,+$/,'').trim();
-  return out||s;
-}
+   components/elev-names.js holds the one name key (twin of
+   scripts/elevator_names.py; test/elev-names.test.mjs). Load it first. */
+var EN=root.elevNames||(typeof require==='function'?require('./elev-names.js'):null);
+function names(){return root.elevNames||EN;}
+function setNames(json){var n=names();return n?n.setNames(json):null;}
+function displayName(op){return names().displayName(op);}
+function cleanPlace(p){return names().cleanPlace(p);}
 
 var api={centralDay:centralDay,dayLabel:dayLabel,pairMonths:pairMonths,pairEnd:pairEnd,
   wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,parseContract:parseContract,deliveryText:deliveryText,setFutures:setFutures,

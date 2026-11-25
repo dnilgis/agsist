@@ -53,6 +53,8 @@
   var DAILY = ['pcpn', 'avgt', 'snow', 'maxt', 'mint'], POR = ['pcpn', 'avgt'];
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  // "of 76 full Junes": a month's own count, never "full years" beside the year rank's (2026-11-09, Houston 2017)
+  var MONTHS = ['Januaries', 'Februaries', 'Marches', 'Aprils', 'Mays', 'Junes', 'Julys', 'Augusts', 'Septembers', 'Octobers', 'Novembers', 'Decembers'];
   var DEG = '°F';
 
   // ---------- parsing ----------
@@ -297,7 +299,7 @@
     }
     if (!best) return ranked ? 'not remarkable: no month was the record or in the top 2% of its own history' : why;
     var val = key === 'rain' ? best.t.toFixed(2) + ' in' : best.t.toFixed(1) + DEG + ' average';
-    var label = cap((best.tied ? 'tied for ' : '') + (best.k > 1 ? ord(best.k) + ' ' : '') + word + ' ' + MONTH[best.m] + ' of ' + best.n + ' full years: ' + val);
+    var label = cap((best.tied ? 'tied for ' : '') + (best.k > 1 ? ord(best.k) + ' ' : '') + word + ' ' + MONTH[best.m] + ' of ' + best.n + ' full ' + MONTHS[best.m] + ': ' + val);
     var mm = ('0' + (best.m + 1)).slice(-2);
     return { date: T + '-' + mm + '-01', span: { from: T + '-' + mm + '-01', to: T + '-' + mm + '-' + dim(T, best.m) }, label: label,
       value: key === 'rain' ? best.t : Math.round(best.t * 10) / 10, unit: key === 'rain' ? 'in' : DEG, basis: { rank: best.k, tied: best.tied, of: best.n } };

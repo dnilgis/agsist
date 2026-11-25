@@ -1,254 +1,202 @@
-/* Self-serve sponsor sign-up (sponsor-apply.html), 2026-10-07; the rate card of Oct 29, 2026.
+/* The booking page (/sponsor), Nov 11, 2026: two spots, one business in each.
  *
  * Everything a buyer sees here is read, not typed:
- *   prices          data/rate-card.json (the one rate card; a State Sponsor's price by state)
- *   states offered  data/sponsor-slots.json (scripts/stamp_rates.py reads the ribbons; tier "state")
- *   slots taken     data/page-sponsors.json (sold ribbons)
- *   Daily slot      data/sponsors.json (a Daily Sponsor deal on file means it is spoken for)
- *   town pages      data/state-basis/<ST>.json (the town pages with a current bid), for a Featured elevator
- * The preview is drawn by window.AgsistSlots in components/loader.js, the same
- * code that draws a sold ribbon on the live site.
+ *   prices, terms               data/rate-card.json (sponsors pay by check or bank wire only, Nov 13, 2026:
+ *                               nothing on this page takes a card or links to a payment)
+ *   numbers                     data/sponsor-spots.json (proof.states: each state's own engaged visits, GA4's own window, updated each day)
+ *   sitewide taken              data/sponsor.json (the sitewide sponsor, active)
+ *   states taken                data/geo-sponsors.json (a live entry for that state)
  *
- * The application goes to the subs worker (/sponsor-apply), which stores tier
- * page|daily. The new tiers travel as tier "page" with a slot that names them
- * (scripts/sponsor_apply.py card_tier reads it back):
- *   State Sponsor      slot = one of the state's ribbons (cash-bids-<state> or rent-xx)
- *   Cash Bids Sponsor  slot = cash-bids
- *   Featured elevator  slot = fe-<st>-<town>   (the town page /cash-bids/<state>/<town>)
- * Nothing is published from here: the applicant confirms by email, Sig approves,
- * and scripts/sponsor_apply.py puts it live. If the worker cannot take it, the
- * form hands the same details to an email to Sig instead of losing them.
+ * The form ("Book this spot") goes to the subs worker (/sponsor-apply), which stores
+ * tier page|daily: the Sitewide Sponsor travels as tier "daily", a State Sponsor as tier "page"
+ * with the slot state-<xx> (scripts/sponsor_apply.py card_tier reads both back). Nothing
+ * is published from here: the applicant confirms by email, every ad is checked by hand, and it
+ * goes live the day the check or wire arrives (live on receipt). If the worker cannot take it, the form offers the same
+ * details as an email instead of losing them.
+ *
+ * ?sponsor-preview=1 shows the sitewide spot as taken (a picture of a sold spot) and sends nothing.
  */
 (function () {
   'use strict';
   var WORKER = 'https://agsist-api.dnilgis.workers.dev';
-  var MAX_LOGO = 250 * 1024;
   var $ = function (id) { return document.getElementById(id); };
   var form = $('spa-form');
   if (!form) return;
-  var S = { card: null, slots: [], taken: {}, fndReserved: false, logo: '', states: [], towns: {} };
+  var SLUGS = 'alabama:AL alaska:AK arizona:AZ arkansas:AR california:CA colorado:CO connecticut:CT delaware:DE florida:FL georgia:GA hawaii:HI idaho:ID illinois:IL indiana:IN iowa:IA kansas:KS kentucky:KY louisiana:LA maine:ME maryland:MD massachusetts:MA michigan:MI minnesota:MN mississippi:MS missouri:MO montana:MT nebraska:NE nevada:NV new-hampshire:NH new-jersey:NJ new-mexico:NM new-york:NY north-carolina:NC north-dakota:ND ohio:OH oklahoma:OK oregon:OR pennsylvania:PA rhode-island:RI south-carolina:SC south-dakota:SD tennessee:TN texas:TX utah:UT vermont:VT virginia:VA washington:WA west-virginia:WV wisconsin:WI wyoming:WY';
+  var STATES = SLUGS.split(' ').map(function (p) {
+    var kv = p.split(':');
+    return { code: kv[1], slug: kv[0], name: kv[0].split('-').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ') };
+  }).sort(function (a, b) { return a.name < b.name ? -1 : 1; });
+  var S = { card: null, spots: null, swTaken: false, taken: {} };
+  var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
+  /* ?ref=<slug> from an outreach link (lower case letters, digits and dashes, at most 40; anything else is
+     ignored, nothing is stored): it rides on every email link's subject and in the form's note. */
+  var REF = (/[?&]ref=([a-z0-9-]{1,40})(?:&|$)/.exec(location.search) || [])[1] || '';
+  function refMail(scope) {
+    if (!REF || !scope) return;
+    [].forEach.call(scope.querySelectorAll('a[href^="mailto:sig@agsist.com?subject="]'), function (a) {
+      if (a.hasAttribute('data-ref')) return;
+      var m = /^(mailto:sig@agsist\.com\?subject=)([^&]*)(.*)$/.exec(a.getAttribute('href'));
+      a.setAttribute('href', m[1] + m[2] + encodeURIComponent(': ' + REF) + m[3]);
+      a.setAttribute('data-ref', '1');
+    });
+  }
+  refMail(document);
 
   function get(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).catch(function () { return null; }); }
-  function tier() { var c = form.querySelector('input[name=tier]:checked'); return c ? c.value : ''; }
-  function card(t) { return S.card && (S.card.tiers || []).filter(function (z) { return z.id === t; })[0]; }
-  function soon(code) { var c = card('state'); return !!(c && (c.opens_soon || []).indexOf(code) >= 0); }
-  function priceNum(t, code) {
-    var x = card(t);
-    if (!x) return 0;
-    return (code && x.price_by_state && x.price_by_state[code]) || x.price_month;
-  }
-  function price(t, code) { var p = priceNum(t, code); return p ? '$' + p + '/mo' : ''; }
+  function tier(id) { return S.card && (S.card.tiers || []).filter(function (t) { return t.id === id; })[0]; }
+  function months() { return (S.card && S.card.year_months) || 10; }
+  function n(x) { return Number(x).toLocaleString('en-US'); }
+  function byCode(c) { return STATES.filter(function (s) { return s.code === c; })[0]; }
+  function statePrice(c) { var t = tier('state'); return t ? ((t.price_by_state && t.price_by_state[c]) || t.price_month) : 0; }
+  function soon(c) { var t = tier('state'); return !!(t && (t.opens_soon || []).indexOf(c) >= 0); }
+  function stateOpen(c) { return !!c && !soon(c) && !S.taken[c]; }
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function dayTxt(x) { var p = String(x || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
   function val(id) { return ($(id).value || '').trim(); }
-  function esc(s) { return String(s).replace(/[<&>"]/g, function (c) { return { '<': '&lt;', '&': '&amp;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-
-  Promise.all([get('/data/rate-card.json'), get('/data/sponsor-slots.json'), get('/data/page-sponsors.json'),
-               get('/data/sponsors.json')]).then(function (r) {
-    S.card = r[0];
-    S.slots = (r[1] && r[1].slots) || [];
-    var sold = (r[2] && r[2].slots) || {};
-    Object.keys(sold).forEach(function (k) { if (sold[k] && sold[k].active !== false) S.taken[k] = true; });
-    S.fndReserved = !!(r[3] && (r[3].sponsors || []).some(function (s) {
-      return s && s.active !== false && s.billing && s.billing.tier === 'daily';
-    }));
-    ['state', 'cashbids', 'elevator', 'daily'].forEach(function (t) {
-      var el = form.querySelector('[data-price="' + t + '"]');
-      var lo = priceNum(t), hi = lo;
-      var c = card(t);
-      if (c && c.price_by_state) Object.keys(c.price_by_state).forEach(function (k) { hi = Math.max(hi, c.price_by_state[k]); });
-      if (el) el.innerHTML = lo ? (hi > lo ? '$' + lo + ' to $' + hi + '/mo' : '$' + lo + '/mo') + ' &middot; first month free' : '-';
-    });
-    if (S.fndReserved) $('spa-fnd-note').textContent = 'In talks with one business. Apply and you are next in line.';
-    if (S.taken['cash-bids']) $('spa-cb-note').textContent = 'Taken. Apply and you are next in line.';
-    buildStates();
-    fillStates();
-    fillElevStates();
-    var q = new URLSearchParams(location.search);
-    var slot = q.get('slot') || '', want = q.get('tier') || '';
-    var se = S.slots.filter(function (s) { return s.id === slot; })[0];
-    /* an older link (tier=page or tier=supporter) lands on the tier its slot is sold under now */
-    if (!card(want)) want = se && se.tier ? se.tier : 'state';
-    /* a link to a held or taken state does not pick it: the first open state stays chosen */
-    if (want === 'state' && se && se.state && stateOf(se.state) && !soon(se.state) && !stateTaken(stateOf(se.state))) $('spa-state').value = se.state;
-    var radio = form.querySelector('input[name=tier][value="' + want + '"]');
-    if (radio) radio.checked = true;
-    loadTowns();
-    sync();
-  });
-
-  /* One entry per state that has a State Sponsor ribbon: its code, its name and its ribbons. */
-  function buildStates() {
-    var by = {};
-    S.slots.forEach(function (s) {
-      if (s.tier !== 'state' || !s.state) return;
-      var e = by[s.state] || (by[s.state] = { code: s.state, name: '', ids: [], bids: '' });
-      e.ids.push(s.id);
-      var m = /^\/cash-bids\/([a-z-]+)$/.exec(s.page || '');
-      if (m) e.bids = m[1];
-      if (!e.name) e.name = String(s.name || '').replace(/ cash (?:bids|rent)$/, '');
-    });
-    S.states = Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return a.name < b.name ? -1 : 1; });
+  function today() {
+    try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
+    catch (e) { return new Date().toISOString().slice(0, 10); }
   }
-  function stateOf(code) { return S.states.filter(function (e) { return e.code === code; })[0]; }
-  function stateTaken(e) { return e.ids.some(function (id) { return S.taken[id]; }); }
 
-  function fillStates() {
-    var sel = $('spa-state'), html = '';
-    S.states.forEach(function (e) {
-      var off = soon(e.code) || stateTaken(e);
-      html += '<option value="' + e.code + '"' + (off ? ' disabled' : '') + '>' + esc(e.name) + ' &middot; ' +
-        (soon(e.code) ? 'opens soon' : stateTaken(e) ? 'taken' : price('state', e.code)) + '</option>';
+  function fillSelect(sel, withBlank) {
+    var html = withBlank ? '<option value="">Pick a state</option>' : '';
+    STATES.forEach(function (s) {
+      var p = statePrice(s.code);
+      var note = soon(s.code) ? 'opens soon' : S.taken[s.code] ? 'taken' : (p ? '$' + p + ' a month' : '');
+      html += '<option value="' + s.code + '"' + (soon(s.code) || S.taken[s.code] ? (withBlank ? '' : ' disabled') : '') + '>' +
+        s.name + (note ? ' · ' + note : '') + '</option>';
     });
     sel.innerHTML = html;
-    var first = sel.querySelector('option:not([disabled])');
-    if (first) sel.value = first.value;
   }
 
-  function fillElevStates() {
-    var sel = $('spa-elev-state'), html = '';
-    S.states.forEach(function (e) { if (e.bids) html += '<option value="' + e.code + '">' + esc(e.name) + '</option>'; });
-    sel.innerHTML = html;
+  function stateLine(c) {
+    var s = byCode(c), el = $('sp-state-live');
+    if (!s) { el.textContent = 'Pick a state to see its numbers and price.'; return; }
+    /* the state's own engaged visits over GA4's own window, updated each day (data/sponsor-spots.json proof.states); state-level only */
+    var ps = (S.spots && S.spots.proof && S.spots.proof.states) || {};
+    var e = ps.engaged && ps.engaged[c];
+    var nums = typeof e === 'number' && e > 0 && ps.start && ps.end
+      ? n(e) + ' engaged visits from ' + s.name + ' readers, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + ' (' + n(Math.round(e / (ps.days || 30))) + ' a day). '
+      : '';
+    var p = statePrice(c);
+    el.innerHTML = '<b>' + s.name + ':</b> ' + nums +
+      (soon(c) ? 'This state opens soon' + (p ? ', at $' + n(p) + ' a month or $' + n(p * months()) + ' a year.' : '.') : S.taken[c] ? 'Taken right now.' : p ? '$' + n(p) + ' a month or $' + n(p * months()) + ' a year.' : '');
   }
 
-  /* The town pages with a current bid, from the same file the state's bid table reads. */
-  function loadTowns() {
-    var code = $('spa-elev-state').value, sel = $('spa-town');
-    if (!code) return;
-    if (S.towns[code]) { fillTowns(code); return; }
-    sel.innerHTML = '<option value="">Loading town pages&hellip;</option>';
-    get('/data/state-basis/' + code + '.json').then(function (d) {
-      var seen = {}, list = [];
-      ((d && d.rows) || []).forEach(function (r) {
-        var town = r[2], path = r[3];
-        if (path && /^\/cash-bids\/[a-z-]+\/[a-z0-9][a-z0-9-]*$/.test(path) && !seen[path]) { seen[path] = 1; list.push([town, path]); }
-      });
-      list.sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
-      S.towns[code] = list;
-      if ($('spa-elev-state').value === code) fillTowns(code);
-    });
-  }
-  function fillTowns(code) {
-    var sel = $('spa-town'), list = S.towns[code] || [];
-    sel.innerHTML = list.length ? list.map(function (t) { return '<option value="' + esc(t[1]) + '">' + esc(t[0]) + '</option>'; }).join('')
-      : '<option value="">No town pages loaded. Email Sig your town.</option>';
-    $('spa-town-note').textContent = list.length ? 'Town pages with a current bid. Your box goes on your own town’s page.'
-      : 'The town list did not load. Send the form anyway and name your town in the headline, or email Sig.';
-    sync();
-  }
-
-  /* The slot the worker stores (see the top of this file). */
-  function slotFor(t) {
-    if (t === 'cashbids') return 'cash-bids';
-    if (t === 'state') {
-      var e = stateOf($('spa-state').value);
-      if (!e) return '';
-      return e.ids.filter(function (id) { return id.indexOf('cash-bids-') === 0; })[0] || e.ids[0];
+  function setButtons(spot, open, c) {
+    var box = document.querySelector('[data-btns="' + spot + '"]'), st = document.querySelector('[data-status="' + spot + '"]');
+    if (!box) return;
+    box.hidden = !open;
+    if (st) {
+      st.hidden = open;
+      st.innerHTML = open ? '' : spot === 'sitewide'
+        ? 'Taken right now. <a href="mailto:sig@agsist.com?subject=AGSIST%20sitewide%20spot">Ask to be next.</a>'
+        : (c && soon(c) ? 'This state opens soon.' : 'Taken right now.') + ' <a href="mailto:sig@agsist.com?subject=AGSIST%20state%20spot">Ask to be next.</a>';
+      refMail(st);
     }
-    if (t === 'elevator') {
-      var code = $('spa-elev-state').value, path = $('spa-town').value || '';
-      var m = /^\/cash-bids\/[a-z-]+\/([a-z0-9][a-z0-9-]{0,50})$/.exec(path);
-      return code && m ? 'fe-' + code.toLowerCase() + '-' + m[1] : '';
-    }
-    return '';
-  }
-  function where(t) {
-    if (t === 'state') { var e = stateOf($('spa-state').value); return e ? e.name : ''; }
-    if (t === 'elevator') { var o = $('spa-town').selectedOptions && $('spa-town').selectedOptions[0]; return o && o.value ? o.textContent + ' (' + o.value + ')' : ''; }
-    if (t === 'cashbids') return '/cash-bids';
-    return '';
   }
 
-  function sync() {
-    var t = tier();
+  function syncState() {
+    var c = $('sp-state').value;
+    stateLine(c);
+    setButtons('state', !c || stateOpen(c), c);
+  }
+
+  function pick(spot, c) {
+    var r = form.querySelector('input[name=tier][value="' + spot + '"]');
+    if (r) r.checked = true;
+    if (c && stateOpen(c)) $('spa-state').value = c;
+    syncForm();
+  }
+
+  function syncForm() {
+    var t = (form.querySelector('input[name=tier]:checked') || {}).value;
     $('spa-state-row').hidden = t !== 'state';
-    $('spa-elev-row').hidden = t !== 'elevator';
-    var c = card(t), code = t === 'state' ? $('spa-state').value : '';
-    $('spa-state-pitch').textContent = (t === 'state' && c) ? c.placement : '';
-    var p = price(t, code) || 'the monthly price above';
-    $('spa-terms-text').textContent = 'I understand: the first month is free. On day 30 I get a report and a yes or no email; no reply means the ad comes down and nothing is owed. If I say yes, an invoice each month for ' + p +
-      ', month to month. Sig reviews every ad and can decline one.';
-    ['spa-headline', 'spa-body'].forEach(function (id) {
-      var el = $(id), n = form.querySelector('[data-for="' + id + '"]');
-      if (n) { n.textContent = el.value.length + ' / ' + el.maxLength; n.classList.toggle('over', el.value.length > el.maxLength - 10); }
+  }
+
+  Promise.all([get('/data/rate-card.json'), get('/data/sponsor-spots.json'), get('/data/sponsor.json'), get('/data/geo-sponsors.json')]).then(function (r) {
+    S.card = r[0]; S.spots = r[1];
+    var sp = r[2];
+    S.swTaken = preview || !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser);
+    var day = today();
+    ((r[3] && r[3].sponsors) || []).forEach(function (e) {
+      if (!e || e.active !== true || !Array.isArray(e.states)) return;
+      if (e.start && e.start > day) return;
+      if (e.end && e.end < day) return;
+      e.states.forEach(function (c) { S.taken[c] = true; });
     });
-    preview();
-  }
-
-  function preview() {
-    var box = $('spa-preview'), t = tier(), slots = window.AgsistSlots;
-    var company = val('spa-company') || 'Your business', link = val('spa-url') || 'https://example.com';
-    if (!/^https?:\/\//i.test(link)) link = 'https://' + link;
-    if (!slots) { box.innerHTML = '<p class="spa-small">Preview loads with the page.</p>'; return; }
-    if (t === 'state' || t === 'cashbids') {
-      box.innerHTML = '<aside class="ag-sponsor-ribbon ag-sponsor-ribbon--sold">' + slots.ribbon({
-        company: company, headline: val('spa-headline') || 'Your headline here', body: val('spa-body'),
-        url: link, logo: S.logo }, slotFor(t) || 'page') + '</aside>';
-      $('spa-preview-lbl').textContent = t === 'cashbids' ? 'On Cash Bids near me, in place of the "Sponsor this page" line:'
-        : 'On the ' + (where('state') || 'state') + ' cash bids page, its town pages and its cash rent page:';
-    } else if (t === 'elevator') {
-      box.innerHTML = '<p class="spa-small">Sig builds your box with you from what you send here: your logo, phone and a &ldquo;call to sell&rdquo; line on your town page, labeled Sponsored. It never changes bid order or any bid. You approve it before it runs.</p>';
-      $('spa-preview-lbl').textContent = 'Featured elevator' + (where('elevator') ? ': ' + where('elevator') : '') + ':';
-    } else {
-      box.innerHTML = '<p class="spa-small">The Daily Sponsor card runs in every briefing and at the top of the homepage. Sig builds it with you from what you send here, and you approve the final version before it runs.</p>';
-      $('spa-preview-lbl').textContent = 'Daily Sponsor card:';
-    }
-  }
-
-  $('spa-logo').addEventListener('change', function () {
-    var f = this.files && this.files[0];
-    S.logo = '';
-    msg('');
-    if (!f) { sync(); return; }
-    if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { this.value = ''; msg('The logo must be a PNG, JPG or WebP image.', true); sync(); return; }
-    if (f.size > MAX_LOGO) { this.value = ''; msg('That logo is ' + Math.round(f.size / 1024) + ' KB. Please use one under 250 KB.', true); sync(); return; }
-    var rd = new FileReader();
-    rd.onload = function () { S.logo = String(rd.result || ''); sync(); };
-    rd.readAsDataURL(f);
-  });
-  form.addEventListener('input', sync);
-  form.addEventListener('change', function (e) {
-    if (e.target.id === 'spa-elev-state') { loadTowns(); return; }
-    if (e.target.id !== 'spa-logo') sync();
+    fillSelect($('sp-state'), true);
+    fillSelect($('spa-state'), false);
+    var q = new URLSearchParams(location.search);
+    var want = String(q.get('state') || '').toUpperCase();
+    var slot = q.get('slot') || '';
+    var m = /^(?:cash-bids|rent)-([a-z-]+)$/.exec(slot);
+    if (!byCode(want) && m) { var bs = STATES.filter(function (s) { return s.slug === m[1] || s.code.toLowerCase() === m[1]; })[0]; if (bs) want = bs.code; }
+    if (byCode(want)) $('sp-state').value = want;
+    var first = $('spa-state').querySelector('option:not([disabled])');
+    if (first) $('spa-state').value = first.value;
+    setButtons('sitewide', !S.swTaken, '');
+    syncState();
+    var t = q.get('tier');
+    if (t === 'sitewide' || t === 'daily') pick('sitewide');
+    else pick('state', byCode(want) ? want : '');
+    if (S.swTaken) { var sr = form.querySelector('input[name=tier][value="sitewide"]'); if (sr) { sr.disabled = true; if (sr.checked) pick('state'); } }
   });
 
-  function msg(t, err) { var m = $('spa-msg'); m.textContent = t; m.className = 'spa-msg' + (err ? ' err' : ''); }
+  $('sp-state').addEventListener('change', syncState);
+  form.addEventListener('change', syncForm);
+  [].forEach.call(document.querySelectorAll('[data-invoice]'), function (a) {
+    a.addEventListener('click', function () {
+      var spot = a.getAttribute('data-invoice');
+      pick(spot, spot === 'state' ? $('sp-state').value : '');
+    });
+  });
 
-  function fallbackMail(p, t) {
-    var c = card(t);
-    var lines = ['Placement: ' + (c ? c.name : t) + (where(t) ? ' (' + where(t) + ')' : ''), 'Business: ' + p.company, 'Website: ' + p.url,
-      'Headline: ' + (p.headline || ''), 'Copy: ' + (p.body || ''), 'Contact: ' + p.contact, 'Phone: ' + (p.phone || ''), 'Email: ' + p.email,
-      '', '(Logo: I will attach it to this email.)'];
-    return 'mailto:sig@agsist.com?subject=' + encodeURIComponent('AGSIST ad: ' + p.company) +
+  function msg(t, err) { var m = $('spa-msg'); m.textContent = t; m.className = 'sp-msg full' + (err ? ' err' : ''); }
+
+  function fallbackMail(p, what) {
+    var lines = ['Spot: ' + what, 'How I pay: ' + p.pay, 'Business: ' + p.company, 'Link: ' + p.url, 'Ad line: ' + p.headline,
+      'Name: ' + p.contact, 'Phone: ' + (p.phone || ''), 'Email: ' + p.email];
+    if (REF) lines.push('Ref: ' + REF);
+    return 'mailto:sig@agsist.com?subject=' + encodeURIComponent('AGSIST sponsor spot: ' + p.company + (REF ? ': ' + REF : '')) +
       '&body=' + encodeURIComponent(lines.join('\n'));
   }
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var t = tier(), slot = slotFor(t);
-    var p = { tier: t === 'daily' ? 'daily' : 'page', slot: t === 'daily' ? '' : slot, company: val('spa-company'), url: val('spa-url'),
-      headline: val('spa-headline'), body: val('spa-body'),
-      contact: val('spa-contact'), phone: val('spa-phone'), email: val('spa-email'), logo: S.logo,
-      terms: $('spa-terms').checked, _gotcha: (form.querySelector('[name=_gotcha]') || {}).value || '' };
+    var t = (form.querySelector('input[name=tier]:checked') || {}).value || '';
+    var c = t === 'state' ? $('spa-state').value : '';
+    var s = byCode(c);
+    /* check or bank wire only (Nov 13, 2026): the one choice is how often we invoice */
+    var pay = (form.querySelector('input[name=pay]:checked') || {}).value === 'year' ? 'yearly invoice, check or bank wire' : 'monthly invoice, check or bank wire';
+    var p = { tier: t === 'sitewide' ? 'daily' : 'page', slot: t === 'state' && s ? 'state-' + s.code.toLowerCase() : '',
+      company: val('spa-company'), url: val('spa-url'), headline: val('spa-headline'), body: 'How I pay: ' + pay + (REF ? '. Ref: ' + REF : ''),
+      contact: val('spa-contact'), phone: val('spa-phone'), email: val('spa-email'), logo: '',
+      terms: $('spa-terms').checked, _gotcha: (form.querySelector('[name=_gotcha]') || {}).value || '', pay: pay };
     var miss = [];
-    if (!t || !card(t)) miss.push('a placement');
-    if (t === 'state') { var se = stateOf($('spa-state').value); if (!se || soon(se.code) || stateTaken(se)) miss.push('an open state'); }
-    if (t === 'cashbids' && S.taken['cash-bids']) miss.push('a placement that is open');
-    if (t === 'elevator' && !slot) miss.push('your town page');
+    if (t !== 'sitewide' && t !== 'state') miss.push('a spot');
+    if (t === 'sitewide' && S.swTaken) miss.push('a spot that is open');
+    if (t === 'state' && !stateOpen(c)) miss.push('an open state');
     if (p.company.length < 2) miss.push('your business name');
-    if (!p.url) miss.push('your website');
-    if (p.headline.length < 3) miss.push('a headline');
     if (!p.contact) miss.push('your name');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(p.email)) miss.push('a working email');
-    if (!p.terms) miss.push('a tick in the terms box');
+    if (p.headline.length < 3) miss.push('an ad line');
+    if (!p.url) miss.push('your link');
+    if (!p.terms) miss.push('a tick in the box');
     if (miss.length) { msg('Almost there. Please add ' + miss.join(', ') + '.', true); return; }
+    if (preview) { msg('Preview: nothing was sent.'); return; }
+    var what = t === 'sitewide' ? 'Sitewide Sponsor' : 'State Sponsor, ' + (s ? s.name : '');
     var go = $('spa-go');
-    go.disabled = true; msg('Sending…');
-    fetch(WORKER + '/sponsor-apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })
+    go.disabled = true; msg('Sending...');
+    var body = {}; for (var k in p) if (k !== 'pay') body[k] = p[k];
+    fetch(WORKER + '/sponsor-apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().catch(function () { return { ok: false, http: r.status }; }).then(function (j) { j.http = r.status; return j; }); })
       .then(function (j) {
         if (j && j.ok === true) {
           form.hidden = true; $('spa-done-email').textContent = p.email; $('spa-done').hidden = false;
           try { if (typeof gtag === 'function') gtag('event', 'sponsor_apply', { tier: t, slot: p.slot || t }); } catch (x) {}
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          $('book').scrollIntoView({ behavior: 'smooth' });
           return;
         }
         if (j && j.error && j.http !== 404) { go.disabled = false; msg(j.error.charAt(0).toUpperCase() + j.error.slice(1) + '.', true); return; }
@@ -257,9 +205,9 @@
       .catch(function () {
         go.disabled = false;
         var m = $('spa-msg');
-        m.className = 'spa-msg err';
+        m.className = 'sp-msg full err';
         m.innerHTML = 'The form could not reach our server just now. Nothing is lost: <a href="' +
-          fallbackMail(p, t).replace(/"/g, '&quot;') + '">send these details to Sig by email</a> instead, or call 715-797-2428.';
+          fallbackMail(p, what).replace(/"/g, '&quot;') + '">send these details by email</a> instead, or call 715-797-2428.';
       });
   });
 })();

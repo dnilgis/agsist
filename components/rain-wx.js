@@ -1,5 +1,4 @@
-/* The weather fold on a county rain page (Sig, Nov 4, 2026: "show any other measured meteorological
- * data, such as YTD GDUs, weather extremes of note").
+/* The weather fold on a county rain page (Nov 4, 2026).
  *
  * The page bakes only the fold's one-line summary (scripts/build_county_rain.py wx_fold). This file
  * fills the fold from data/rain/wx/<st>.json (scripts/fetch_rain_weather.py), one small file per state,
@@ -50,7 +49,7 @@
       if (!x) return "";
       var v = x[0] === "m" ? NOPE : x[0] === 0 ? (spring ? "none Jan 1 to Jun 30" : "none yet through " + a) : "on " + md(x[0]);
       if (x.length > 2) ns[x[2]] = 1;
-      return t + DEG + " " + v + (x.length > 2 ? " (usual: " + (x[1] === 0 ? "none" : md(x[1])) + ")" : "");
+      return t + DEG + " " + v + (x.length > 2 ? " (typical: " + (x[1] === 0 ? "none" : md(x[1])) + ")" : "");
     }
     function fline(k, parts) {
       parts = parts.filter(Boolean);
@@ -65,8 +64,8 @@
     });
     out.push('<ul class="rc-list">' + L.join("") + "</ul>");
     out.push('<p class="rc-fine">Corn GDDs: each day&rsquo;s high and low held between 50' + DEG + " and 86" + DEG +
-      ", averaged, minus 50, the standard corn method, added from May 1. The average and the usual dates are this station&rsquo;s own 1991 to 2020 record" +
-      (nk.length ? "; a usual freeze date is the middle year of " + nk.join(" or ") + " years" : "") + ". " +
+      ", averaged, minus 50, the standard corn method, added from May 1. The average and the typical dates are this station&rsquo;s own 1991 to 2020 record" +
+      (nk.length ? "; a typical freeze date is the middle year of " + nk.join(" or ") + " years" : "") + ". " +
       "Of note: against every year of this station&rsquo;s record, only with 20 or more full years and no gap since the year named. " +
       "A figure with more than 5% of its days not reported is not shown. NOAA daily records through RCC-ACIS.</p>");
     return out.join("");

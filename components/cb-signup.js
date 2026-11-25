@@ -100,6 +100,38 @@
     return 'The ' + what + ' did not go through' + (res.status >= 400 ? ' (error ' + res.status + ')' : '') + '. Nothing was saved. Try again in a minute.';
   }
 
+  /* ONE LINE (2026-11-09, /cash-bids): "Email me these every morning", an
+     email field and a button, with the ZIP carried along. A ZIP the page already
+     has is not asked again; with none (a reader who has not searched yet) the ZIP
+     field shows, because the morning email cannot be sent without it. The price
+     alert and its crop select sit behind a closed "More options". The same form
+     wiring runs, so the worker routes, source tag and checks do not change. A
+     reader already on the Daily gets the price alert open instead. */
+  function compactHtml(id, onDaily, zipIn, crops) {
+    return '<section class="cbs cbs-1" aria-labelledby="' + id + '-h">'
+      + '<h2 class="cbs-h" id="' + id + '-h">' + (onDaily ? 'Get a price alert by email' : 'Email me these every morning') + '</h2>'
+      + '<form class="cbs-f" novalidate>'
+      + (onDaily ? '' : '<div class="cbs-opt" hidden><input type="checkbox" class="cbs-d" checked aria-label="Every morning: the top corn and soybean bids within 50 mi"></div>')
+      + (zipIn ? '<div class="cbs-opt cbs-zrow"><label class="cbs-ck" for="' + id + '-z">ZIP</label>'
+        + '<input type="tel" class="cbs-zip" id="' + id + '-z" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="ZIP code"></div>' : '')
+      + '<div class="cbs-row"><label class="cbs-sr" for="' + id + '-e">Email address</label>'
+      + '<input type="email" class="cbs-em" id="' + id + '-e" autocomplete="email" inputmode="email" placeholder="Email address" aria-describedby="' + id + '-m">'
+      + '<button type="submit" class="cbs-go">Email me</button></div>'
+      + '<details class="cbs-more"' + (onDaily ? ' open' : '') + '><summary>More options</summary>'
+      + '<div class="cbs-opt"><label class="cbs-ck" for="' + id + '-p"><input type="checkbox" class="cbs-p" id="' + id + '-p"' + (onDaily ? ' checked' : '') + '>'
+      + '<span>Tell me when</span></label>'
+      + '<select class="cbs-crop" aria-label="Crop">' + crops.map(function (c) { return '<option value="' + c + '">' + NAMES[c] + '</option>'; }).join('') + '</select>'
+      + '<span>within ' + MILES + ' mi pays $</span>'
+      + '<input type="number" class="cbs-price" inputmode="decimal" step="0.01" min="1" max="32" aria-label="Price you want, dollars a bushel">'
+      + '</div>'
+      + '<p class="cbs-note">A price alert checks the elevators whose own bid boards we read, and starts once you confirm it by email.</p>'
+      + '</details>'
+      + '<p class="cbs-ok" role="status"></p>'
+      + '<p class="cbs-msg" id="' + id + '-m" role="alert"></p>'
+      + '<p class="cbs-note">Free. ' + (onDaily ? '' : 'The morning email is AGSIST Daily: these bids first, then the markets. ') + 'Every email has an unsubscribe link.</p>'
+      + '</form></section>';
+  }
+
   function draw(el) {
     if (el.getAttribute('data-cbs-ready')) return;
     var id = 'cbs' + (++seq);
@@ -118,7 +150,8 @@
     });
     var onDaily = signedUp();
     var near = place ? esc(place) : 'you';
-    var h = '<section class="cbs" aria-labelledby="' + id + '-h">'
+    var compact = el.hasAttribute('data-compact');
+    var h = compact ? compactHtml(id, onDaily, zipIn, crops) : '<section class="cbs" aria-labelledby="' + id + '-h">'
       + '<h2 class="cbs-h" id="' + id + '-h">' + (place ? 'Get ' + esc(place) + ' bids by email' : 'Get the bids near you by email') + '</h2>'
       + '<form class="cbs-f" novalidate>'
       + '<div class="cbs-opt"' + (onDaily ? ' hidden' : '') + '><label class="cbs-ck"><input type="checkbox" class="cbs-d"' + (onDaily ? '' : ' checked') + '>'
@@ -150,6 +183,7 @@
     var em = form.querySelector('.cbs-em'), msg = form.querySelector('.cbs-msg'), go = form.querySelector('.cbs-go');
     var okEl = form.querySelector('.cbs-ok');
     var where = form.querySelector('.cbs-where'), zipTouched = false;
+    var zrow = zf && form.querySelector('.cbs-zrow');
     var saved = store('cba_email'); if (saved && EMAIL_RE.test(saved)) em.value = saved;
     function hint() { price.placeholder = o.top[crop.value] || ''; }
     hint();
@@ -160,18 +194,21 @@
       if (!zf || zipTouched) return;
       var v = String(o.zipIn.value || '').replace(/\D/g, '').slice(0, 5);
       zf.value = v;
+      if (zrow) zrow.hidden = /^\d{5}$/.test(v);
       if (where) where.textContent = /^\d{5}$/.test(v) ? 'ZIP ' + v : 'your ZIP';
     }
     if (zf) {
       syncZip();
       ['input', 'change'].forEach(function (ev) { o.zipIn.addEventListener(ev, syncZip); });
       zf.addEventListener('input', function () {
-        zipTouched = true;
+        zipTouched = true; if (zrow) zrow.hidden = false;
         var v = zipNow(); if (where) where.textContent = /^\d{5}$/.test(v) ? 'ZIP ' + v : 'your ZIP';
       });
     }
     function bad(field, text) {
       msg.textContent = text;
+      var dt = field && field.closest && field.closest('details'); if (dt) dt.open = true;
+      if (field && field.closest('[hidden]')) field.closest('[hidden]').hidden = false;
       if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
       return false;
     }

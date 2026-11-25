@@ -336,7 +336,7 @@
     return best;
   }
 
-  /* Irrigated hay valued under non-irrigated (Sig, Oct 20; Anderson County, TX: $168 against $224).
+  /* Irrigated hay valued under non-irrigated (Oct 20; Anderson County, TX: $168 against $224).
      names: the state's uses in order; vals: the county value for each (null where not offered); use: the
      index shown. When the use is an irrigated hay line and its non-irrigated twin is worth more, returns
      { irr, non }, else null. No reason is given: USDA sets the values. */

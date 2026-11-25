@@ -1,13 +1,10 @@
 name: Monthly county rain email
-# Monthly county rain email.
 
-# topic rain-month:<fips>; scripts/send_rain_month.py). Sig approved the list,
-# The 2nd, 14:41 UTC (morning in Central), the one schedule Sig approved.
 on:
   schedule:
     - cron: "41 14 2 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 12"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -34,7 +31,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 12' || (contains(github.event.workflow_run.display_title, ' rain-monthly.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -114,26 +113,36 @@ jobs:
           python scripts/check_seo.py
           python scripts/check_site_budget.py
 
-      - name: Newsletter block
-        continue-on-error: true
-        run: |
-          python scripts/build_newsletter_block.py --selftest
-          python scripts/build_newsletter_block.py
-
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/atlas/pct
-          git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
-          git add -A data/newsletter 2>/dev/null || true
-          python scripts/generated_sets.py dependents rain --stage || true
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          N=$(ls data/rain/*.json 2>/dev/null | wc -l)
-          git commit -q -m "data: county rain ($N states)"
+          SAVE=$RUNNER_TEMP/rain-save; rm -rf "$SAVE"; mkdir -p "$SAVE/og"
+          git ls-files -m -o --exclude-standard -- data/rain ':!data/rain/stories' | while IFS= read -r f; do [ -f "$f" ] && echo "$f"; done > "$SAVE/changed.txt" || true
+          git ls-files -d -- data/rain ':!data/rain/stories' > "$SAVE/removed.txt"
+          echo "data/rain files this run wrote: $(wc -l < "$SAVE/changed.txt"), removed: $(wc -l < "$SAVE/removed.txt")"
+          tar -cf "$SAVE/rain.tar" -T "$SAVE/changed.txt"
+          cp img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json "$SAVE/og/" 2>/dev/null || true
           for i in 1 2 3 4 5; do
-            git rebase --abort 2>/dev/null || true
-            if python3 scripts/generated_sets.py pull-rebase rain --autostash && git push -q; then exit 0; fi
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            tar -xf "$SAVE/rain.tar"
+            xargs -r rm -f < "$SAVE/removed.txt"
+            python3 scripts/fetch_county_rain.py --normalize-source
+            cp "$SAVE"/og/* img/og/ 2>/dev/null || true
+            python3 scripts/dev/quiet.py rain-pages -- python scripts/build_county_rain.py
+            python3 scripts/dev/quiet.py rain-pages-check -- python scripts/build_county_rain.py --check
+            python3 scripts/dev/quiet.py atlas-pages -- python scripts/build_atlas_pages.py && python3 scripts/dev/quiet.py atlas-budget -- python scripts/check_site_budget.py && python3 scripts/dev/quiet.py atlas-seo -- python scripts/check_seo.py || { echo "::warning::The Atlas pages did not build or check; the rain data and pages go out alone and the cash bid pages job rebuilds the Atlas."; git checkout -q HEAD -- farmland-atlas farmland-atlas.html sitemap-atlas.xml; { git checkout -q HEAD -- data/pointers/farmland-atlas.json 2>/dev/null || rm -f data/pointers/farmland-atlas.json; }; git clean -fdq -- farmland-atlas; python3 scripts/dev/quiet.py budget-no-atlas -- python scripts/check_site_budget.py && python3 scripts/dev/quiet.py seo-no-atlas -- python scripts/check_seo.py || { echo "::error::The budget or SEO check fails without the Atlas too: a page this run built is wrong, so nothing is committed."; exit 1; }; }
+            python3 scripts/dev/quiet.py place-pct -- python scripts/build_place_pct.py
+            python3 scripts/dev/quiet.py cross-links -- python scripts/cross_links.py --stamp
+            git add -A data/atlas/pct
+            git add -A data/rain data/pointers rain rain.html sitemap-rain.xml img/og/rain.jpg img/og/rain-??.jpg img/og/rain-cards.json prf farmland-atlas arc-plc 2>/dev/null || true
+            git add -A farmland-atlas.html sitemap-atlas.xml
+            python scripts/generated_sets.py dependents rain farmland-atlas --stage || true
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            N=$(ls data/rain/*.json 2>/dev/null | wc -l)
+            git commit -q -m "data: county rain ($N states)"
+            if git push -q origin HEAD:main; then echo "pushed on attempt $i"; exit 0; fi
             sleep $((20 * i))
           done
           echo "push failed after 5 attempts"; exit 1

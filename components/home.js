@@ -32,10 +32,12 @@ try {
     var dotEl=document.getElementById('cot-'+key+'-dot'),minEl=document.getElementById('cot-'+key+'-min'),maxEl=document.getElementById('cot-'+key+'-max');
     var net=d.net,prev=d.prev,min52=d.min52,max52=d.max52,range=(max52-min52)||1;
     var isLong=net>=0;
-    /* 2026-09-25 audit: /cot labels a net inside +/-5,000 contracts FLAT; this row said SHORT for wheat at -3,674. Same threshold, same word. */
-    var isFlat=Math.abs(net)<5000;
+    /* Nov 10: one side word for the glance line and this row (cotSide). The
+       glance said "About even" for corn (the analysis file's side) while this row
+       said LONG +8.8k for the same net. */
+    var isFlat=cotSide(key,d)==='flat';
     if(netEl){netEl.textContent=fmtK(net);netEl.style.color=isFlat?'var(--text-muted)':isLong?'var(--green)':'var(--red)';}
-    if(dirEl){dirEl.textContent=isFlat?'FLAT':isLong?'LONG':'SHORT';dirEl.className='cot-dir '+(isFlat?'':isLong?'long':'short');dirEl.style.color=isFlat?'var(--text-muted)':'';}
+    if(dirEl){dirEl.textContent=isFlat?'About even':isLong?'Long':'Short';dirEl.className='cot-dir '+(isFlat?'':isLong?'long':'short');dirEl.style.color=isFlat?'var(--text-muted)':'';}
     if(chgEl&&prev!=null){var chg=net-prev;chgEl.textContent=(chg>=0?'\u25b2':'\u25bc')+fmtK(Math.abs(chg)).replace(/^[+\u2212-]/,'');chgEl.className='cot-chg '+(chg>0?'up':chg<0?'dn':'nc');}
     if(minEl)minEl.textContent=fmtKShort(min52);if(maxEl)maxEl.textContent=fmtKShort(max52);
     var zeroPct=Math.max(0,Math.min(100,((0-min52)/range)*100));
@@ -93,18 +95,43 @@ try {
   }
   /* WAVE3-L: after a failed cot.json there are no rows to put back. */
   window.AGSIST_COT={rows:COT_ROWS,render:function(){if(window.AGSIST_COT.failed)return;placeCOT(window.AGSIST_COT._d);glance(window.AGSIST_COT._d);}};
-  /* AT A GLANCE (2026-11-04; short rows 2026-11-05, Sig: "KISS"): the top three
+  /* AT A GLANCE (2026-11-04; short rows 2026-11-05): the top three
      markets in the reader's order (the crop picker reorders COT_ROWS), one short
      row each (components/cot-glance.js row(): market | long or short | change,
      the cells /cot's table prints; the rank is on /cot), each opening /cot on that market's
      52-week chart. The rank and the weight word come with cot-analysis.json for
      the same report; until then the row carries neither rather than guess. */
   var COT_GLANCE=3;
+  /* The side, one rule for every COT line on this page: the analysis file's side
+     when it is for the same week (it calls a net small for its market "flat"),
+     else a net inside 5,000 contracts is flat (/cot's rule), else its sign.
+     key: the row id (corn, beans, ...) or the cot.json key. */
+  function cotSide(key,d){
+    var k=key;COT_ROWS.forEach(function(r){if(r.id===key)k=r.k;});
+    var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];
+    if(c&&c.date&&window.AGSIST_COT&&window.AGSIST_COT._d&&cotIso(c.date)===cotIso(window.AGSIST_COT._d.report_date)&&c.side)return c.side==='flat'?'flat':(c.net!=null?(c.net>0?'long':'short'):c.side);
+    var n=d&&d.net;if(typeof n!=='number')return '';
+    return Math.abs(n)<5000?'flat':n>0?'long':'short';
+  }
   function glance(data){
     var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data||!G.rows)return;
     var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
     var rs=G.rows(data,COT_CX,keys);if(!rs.length)return;
-    ul.innerHTML=rs.map(function(r){return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+r.pos+'</span><span class="cot-gl-r">'+r.chg+'</span></a></li>';}).join('');
+    /* Nov 19 (owner, a 390 px screenshot): the right cell was clipped ("−31,423 con...") and a
+       reader could not tell what "About even" and the signed figure were. The columns are named in
+       the header row above the list (Funds' net position | Change in the week); the position cell
+       prints the net with its side ("Short 22,628" over "about even"; the header names the unit) and the
+       change cell the signed change over "sold" or "bought". "About even" is the side word for the
+       NET (cotSide: inside the flat band), never for the change. Each row's link reads as one
+       sentence to a screen reader. Every cell wraps inside its column: nothing is cut off at 320 px. */
+    var SW={flat:'about even'},M=G.MINUS||'\u2212';
+    function n0(v){return Math.abs(Math.round(v)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+    ul.innerHTML=rs.map(function(r){var sd=cotSide(r.key,data[r.key]),f=G.facts?G.facts(r.key,data,COT_CX):null;if(!f)return '';
+      var net=f.net,side=net>0?'Long':net<0?'Short':'Even',w=sd==='flat'?SW.flat:f.flip?'flipped':f.weight||'';
+      var pv=net===0?'Even':side+' '+n0(net),ps=w;
+      var c=f.chg,cv=c==null?'':c===0?'0':(c>0?'+':M)+n0(c),cs=c==null?'':c===0?'no change':c>0?'bought':'sold';
+      var say=r.name+': funds net '+(net===0?'even':(net>0?'long ':'short ')+n0(net)+' contracts')+(w&&w!=='flipped'?', '+w:w==='flipped'?', flipped':'')+(c==null?'':c===0?'; no change in the week':'; '+cs+' a net '+n0(c)+' in the week');
+      return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'" aria-label="'+say+'"><b class="cot-gl-n">'+r.name+'</b><span class="cot-gl-p"><span class="cot-gl-v">'+pv+'</span><small>'+ps+'</small></span><span class="cot-gl-r"><span class="cot-gl-v">'+cv+'</span><small>'+cs+'</small></span></a></li>';}).join('');
     ul.removeAttribute('aria-busy');
     var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
   }
@@ -117,20 +144,15 @@ try {
   function cotIso(s){var d=new Date(String(s||'')+(/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))?'T12:00:00':''));return isNaN(d)?'':d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
   function cxFor(k,data){var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];return (c&&c.date&&data&&cotIso(c.date)===cotIso(data.report_date))?c:null;}
   function rankTxt(c){var cr=c.crowd,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);if(p==null)return '';
-    if(c.crowded&&cr&&cr.word)return cr.word+', crowded '+c.crowded;   /* "bottom 1%", never "0th" */
-    var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct'+(c.crowded?', crowded '+c.crowded:'');}
-  /* 2026-11-05 (checker on #334): the verdict reads every market in the analysis
-     file (AgCotGlance.crowdedLine, the same `crowded` field the glance lines use),
-     not the four rows the old grains and cattle badges read, so it can never say
-     "No market crowded" while meal, hogs or milk is crowded. */
-  function verdict(el,lv,data){
-    if(!el)return;if(lv)lv.hidden=true;
-    var G=window.AgCotGlance,v=G&&G.crowdedLine(data,COT_CX);
-    if(!v){el.hidden=true;return;}
-    el.hidden=false;
-    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure), across all '+v.markets+' markets.';
-    el.className='cot-verdict '+(v.state==='none'?'mixed':v.state);
-    el.textContent=v.text;
+    /* No "crowded" (the crowding verdict was dropped Nov 6); the measured rank only. */
+    if(c.crowded&&cr&&cr.word)return cr.word;   /* "bottom 1%", never "0th" */
+    var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct';}
+  /* Nov 10: the crowding verdict was dropped everywhere on Nov 6; the home
+     badge no longer prints one and its verdict code is gone (the shared verdict in
+     cot-glance.js stays for /cot until it follows). */
+  function verdict(el,lv){
+    /* no crowding verdict on home (Nov 6): the badge stays hidden */
+    if(lv)lv.hidden=true;if(el)el.hidden=true;
   }
   function rankRows(data){
     COT_ROWS.forEach(function(r){
@@ -145,7 +167,8 @@ try {
   /* The crowding badges and rank lines: drawn again once cot-analysis.json
      arrives (it loads when the COT card comes near the screen; see below). */
   function cxPaint(data){
-    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'),data);
+    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'));
+    if(data)COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
     rankRows(data);
     glance(data);
   }
@@ -455,7 +478,7 @@ try {
    as is, so there is one filter, not a second copy here that drifts. */
 var MAX_CARDS=4;
 function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text-dim)':'#ef4444';}
-function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'218,165,32':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
+function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'218,165,32':n>=30?'140,140,130':'239,68,68';return'rgb('+rgb+')';}
 function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'';if(d<1)return'Today';if(d<2)return'Tomorrow';if(d<=30)return Math.round(d)+'d left';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
 var TIER_COLORS={1:'color:var(--green);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06)',2:'color:var(--gold);border-color:rgba(var(--gold-rgb),.25);background:rgba(var(--gold-rgb),.06)',3:'color:var(--blue);border-color:rgba(91,163,224,.25);background:rgba(91,163,224,.06)'};
 var TIER_LABELS={1:'DIRECT AG',2:'TRADE / ENERGY',3:'MACRO'};
@@ -777,7 +800,7 @@ window.hydrateDaily = function(data) {
   function escHtml(s){return(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   /* A top story's publisher link, fit to show a reader, else ''. Same test as
      generate_daily.safe_story_link and daily.html storyLink: https only, no
-     shared host (BUILD-RULES 11), no user part, no spaces, at most 800 chars. */
+     shared host (build rule 11), no user part, no spaces, at most 800 chars. */
   function storyLink(u){
     u=(u==null?'':String(u)).trim();
     if(!u||u.length>800||/\s/.test(u)||u.slice(0,8).toLowerCase()!=='https://')return'';
@@ -814,7 +837,7 @@ window.hydrateDaily = function(data) {
   // v5.1: the one thresholded action, in the block the takeaway used to hold.
   // A daily.json from before the cut has no action and shows its takeaway
   // under the old label instead, so the block never goes blank on upload day.
-  /* 2026-10-09, Sig: the prediction bot is out of the Daily for now; it
+  /* 2026-10-09: the prediction bot is out of the Daily for now; it
      lives on /scorecard. An issue whose action is the bot's call (bot_call
      present) shows no action, and the box hides. */
   var takeaway=(data.bot_call?'':(data.action||'')).trim();
@@ -892,7 +915,7 @@ window.hydrateDaily = function(data) {
       if(tz&&dIso)age=Math.round((Date.parse(tz+'T12:00:00Z')-Date.parse(dIso+'T12:00:00Z'))/864e5);
       var tdd='AGSIST Daily, '+(dOk?months[d.getMonth()]+' '+d.getDate():dateStr);
       if(age>2&&dOk)tdd='Latest issue: '+months[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear();
-      setHTML('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> '+tdd);
+      setHTML('daily-teaser-date',tdd);
       var tAct=document.querySelector('#daily-teaser .teaser-action')||document.querySelector('.teaser-action');
       if(tAct&&age>=1)tAct.textContent=(age>2?'Read it':'Read the latest briefing')+' \u2193';
     }catch(e){}
@@ -1120,7 +1143,7 @@ window.hydrateDaily = function(data) {
   }
 
   // v4.1: sponsor block, filled state plus the collapsed teaser credit.
-  // 2026-10-11 (Sig, "tone it down"): only a PAID sponsor draws anything. No
+  // 2026-10-11: only a PAID sponsor draws anything. No
   // sponsor, sponsor:false or the house ad -> the block, the credit and the
   // strip all stay hidden. There is no empty-state billboard any more.
   var sp=data.sponsor,spEl=el('daily-sponsor'),spFilled=el('dsp-filled'),spTeaser=el('daily-teaser-sponsor');
@@ -1162,20 +1185,8 @@ window.hydrateDaily = function(data) {
         if(spHref){spTeaser.href=spHref;spTeaser.target='_blank';spTeaser.rel='sponsored noopener';spTeaser.setAttribute('data-sponsor-click','daily-briefing');}
         else{spTeaser.removeAttribute('target');spTeaser.removeAttribute('rel');spTeaser.removeAttribute('data-sponsor-click');spTeaser.href='/sponsor';}
       }
-      /* The homepage sponsor strip, outside the fold. Same fields and the same
-         tagged homepage link as the ad above; measured as its own slot. The
-         teaser pill would say the same name a line higher, so it steps aside. */
-      var tw=el('idx1-sponsor-wrap'),tb=el('idx1-sponsor'),tE=window.AgsistAd?window.AgsistAd.esc:escHtml;
-      if(tw&&tb){
-        var tHead=sp.headline||sp.tagline||'',tCta=sp.cta_text||'Learn more',tExt=/^https?:/i.test(spHref);
-        tb.setAttribute('data-sponsor-slot','homepage-top');
-        tb.innerHTML='<span class="ag-sponsor-tag">Sponsor</span>'+
-          (sp.logo?'<span class="idx1-sp-logo"><img src="'+tE(sp.logo)+'" alt="'+tE(spNm+' logo')+'" width="56" height="28" loading="lazy" decoding="async" onerror="this.parentNode.remove()"></span>':'')+
-          '<span class="idx1-sp-txt"><strong>'+tE(spNm)+'</strong>'+(tHead?' <span class="idx1-sp-head">'+tE(tHead)+'</span>':'')+'</span>'+
-          (spHref?' <a class="idx1-sp-cta" href="'+tE(spHref)+'" rel="sponsored noopener"'+(tExt?' target="_blank"':'')+' data-sponsor-click="homepage-top">'+tE(tCta)+' &rarr;</a>':'');
-        tw.hidden=false;
-        if(spTeaser){spTeaser.style.display='none';if(spTeaser.parentNode&&spTeaser.parentNode.classList.contains('s7-adrow'))spTeaser.parentNode.style.display='none';}
-      }
+      /* The homepage sponsor strip is retired (Nov 11, 2026): the sitewide line under the menu carries the
+         same sponsor on every page, so the strip would repeat the name. idx1-sponsor-wrap stays hidden. */
       // Inline attribution above greeting — paid state
       if(spAttr&&spNm){
         spAttr.style.display='inline-flex';
@@ -1438,11 +1449,18 @@ var CFG={wheat:{g:1},oats:{g:1},meal:{},cattle:{tk:1},feeders:{tk:1},hogs:{tk:1}
   /* WAVE1-C 2026-10-03. own: geo.js has no PRICE_MAP entry for these, so
      this script writes their price and ticker cells itself. cl: cents per
      pound (cotton). */
-  kcwheat:{g:1,own:1},mplswheat:{g:1,own:1},cotton:{cl:1,own:1},rice:{own:1}};
+  kcwheat:{g:1,own:1},mplswheat:{g:1,own:1},cotton:{cl:1,own:1},
+  /* Nov 12: rough rice trades in half cents a cwt; $18.64 for 18.635 was off the tick. tk prints it as traded. */
+  rice:{own:1,tk:1}};
 var TICK={corn:'Corn',beans:'Soybeans',wheat:'Chicago SRW wheat',kcwheat:'KC HRW wheat',mplswheat:'MGEX HRS wheat',oats:'Oats',cotton:'Cotton',rice:'Rough rice',cattle:'Live cattle',feeders:'Feeder cattle',hogs:'Lean hogs',milk:'Class III milk',meal:'Soybean meal'};
 /* WAVE1-C: the whole prices.json, for the keys geo.js does not hand over
    (absent quotes, withheld_keys, spreads). Null until it loads. */
 var D=null;
+/* Nov 24 2026: the ticker row is held unseen until its words are final (geo.js tickerReady). geo.js fills the prices,
+   then this script names each contract ("Corn Dec '26"), adds the date notes and drops the rows with no quote: two
+   rewrites that slid the row twice after the first paint. This script says when it is done (renderAll, once the
+   price file is in); it runs before geo.js (geo.js is deferred), so the hold is in place before any price lands. */
+if(document.querySelector('.prices-strip'))window.__tickerHold=true;
 /* Why a row has no quote, in words, when the file says nothing more. */
 var NOQ={mplswheat:'No quote: our price source does not carry this contract',
   cotton:'No quote yet: first price run pending',rice:'No quote yet: first price run pending',
@@ -1532,7 +1550,7 @@ function rangeFmt(k,v,dir){
   return c.bp?s+'%':c.nod?s:'$'+s;
 }
 /* WAVE1-C: own-key price text, and the em dash with its reason. */
-function ownPrice(k,q){var c=CFG[k];return c.g?null:c.cl?(+q.close).toFixed(2)+'\u00a2':'$'+(+q.close).toFixed(2);}
+function ownPrice(k,q){var c=CFG[k];return c.g?null:c.cl?(+q.close).toFixed(2)+'\u00a2':c.tk?AG.px.cash(+q.close):'$'+(+q.close).toFixed(2);}
 function whyNone(k){var w=D&&D.withheld_keys&&D.withheld_keys[k];return w?'Held back: '+w:(NOQ[k]||'No quote on file');}
 function renderMissing(row,k){
   var why=whyNone(k),pp=row.querySelector('.pc-price');
@@ -1568,11 +1586,26 @@ function noQuoteNote(){
    '' when the row matches the badge. */
 var MN3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function md(iso){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||'');return m?MN3[+m[2]-1]+' '+(+m[3]):'';}
+/* "1:05 pm CT" when q's last trade is from another minute than corn's B and corn's day session has ended
+   (B traded at or after the 1:20 pm CT bell, or B.settled), else ''. In session the badge says "Delayed",
+   not a time, so no row needs one. */
+function ownClock(q,B){
+  function hm(iso){var t=new Date(iso||'');if(isNaN(t.getTime()))return null;var p={};
+    new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit',hourCycle:'h23'}).formatToParts(t).forEach(function(x){p[x.type]=x.value;});
+    return {m:(+p.hour%24)*60+(+p.minute),t:((+p.hour%12)||12)+':'+p.minute+' '+(+p.hour<12?'am':'pm')+' CT'};}
+  var a=hm(q.close_time),b=hm(B.close_time);
+  if(!a||!b||a.m===b.m)return '';
+  return (B.settled||b.m>=13*60+20)?a.t:'';
+}
 function dtNote(k,q){
   if(!D||!D.quotes||!q||q.close==null)return '';
   var B=D.quotes['corn-nearby']||D.quotes.corn;if(!B)return '';
   var stale=q.stale===true||(D.stale_keys||[]).indexOf(k)>-1;
   var qd=q.settle_date&&q.close_kind==='settle'?q.settle_date:q.close_date,bd=B.settle_date&&B.close_kind==='settle'?B.settle_date:B.close_date;
+  /* Nov 12: after the grain bell the ticker badge says "As of 1:20 pm CT", the corn trade's time. A last trade
+     from another time (livestock 1:05 pm, milk 1:46 pm) carries its own, so no row wears corn's clock. */
+  var tn=(!stale&&q.close_kind==='last'&&B.close_kind==='last'&&qd===bd)?ownClock(q,B):'';
+  if(tn)return 'Last trade '+tn;
   if(!stale&&(q.close_kind||null)===(B.close_kind||null)&&qd===bd)return '';
   var dl=md(qd),t=q.close_kind==='settle'?(dl?dl+' settle':'Settle'):q.close_kind==='last'?'Last trade'+(dl?' '+dl:''):(dl?'As of '+dl:'');
   if(stale)t+=(t?', ':'')+'not updated this run';
@@ -1649,7 +1682,8 @@ function deferredChips(){
     if(chip&&!chip.textContent.trim()){var lb=cmByTicker(Q[p[1]]);if(lb)chip.textContent=lb;}
   });
 }
-function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);noQuoteNote();renderTicker();deferredChips();dress();}
+function renderAll(){qa('#f-prices .r7-row[data-r7k]').forEach(renderRow);noQuoteNote();renderTicker();deferredChips();dress();
+  if(D&&window.__tickerHold){window.__tickerHold=false;if(typeof window.tickerReady==='function')window.tickerReady();}}
 function schedule(){clearTimeout(timer);timer=setTimeout(renderAll,80);}
 /* Reader wording on the four key tiles and the ticker, applied after any
    writer. Every rewrite is idempotent, so the observers settle. */
@@ -1703,7 +1737,8 @@ function loadD(){
 function fallback(){
   AG.json('/data/prices.json').then(function(d){
     if(!d||have)return;var q=d.quotes||{};if(window.AgPxStamp&&AgPxStamp.roll)q=AgPxStamp.roll(q);
-    ['corn','beans','wheat','cattle'].forEach(function(c){var nb=q[c+'-nearby'];if(nb&&nb.close!=null)q[c]=nb;if(d.nearby&&d.nearby[c]&&d.nearby[c].label)NB[c]=d.nearby[c].label;});
+    /* Nov 12: every root with a front-month alias, as geo.js nearbySwap (KE=F was Mar '27 beside Dec '26's change) */
+    ['corn','beans','wheat','cattle','kcwheat','oats','meal','soyoil','feeders','hogs','milk'].forEach(function(c){var nb=q[c+'-nearby'];if(nb&&nb.close!=null)q[c]=nb;if(d.nearby&&d.nearby[c]&&d.nearby[c].label)NB[c]=d.nearby[c].label;});
     Q=q;have=true;renderAll();
   }).catch(function(){});
 }
@@ -1778,6 +1813,24 @@ try {
       if(y.close===x.close&&y.open===x.open&&y.netChange===x.netChange)hit=tickMonth(y.ticker);});
     return hit;
   }
+  /* Nov 12: a dated option (corn-dec, beans-nov) names one contract in its label, and the alert follows that
+     month (scripts/send_price_watch.py watched_key), never the alias after it rolls. On Nov 12 the file's
+     beans-nov was Nov '26, last trade Nov 13: a month that stops trading within 7 days is replaced by the same
+     month a year on when the file carries it, else the option is dropped.
+     -> {key:'beans-nov27', mon:"Nov '27"}, or null. deadFrom: AgPxStamp.deadFrom; todayIso: Central date. */
+  function paDated(q,k,deadFrom,todayIso){
+    var FC='FGHJKMNQUVXZ',M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function parse(x){var m=x&&x.close!=null&&/^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(x.ticker||''));return m?{i:FC.indexOf(m[1]),y:+m[2],t:x.ticker}:null;}
+    function yy(n){return ('0'+n).slice(-2);}
+    var root=k.split('-')[0],p=parse(q[k]);if(!p)return null;
+    var d=typeof deadFrom==='function'?deadFrom(p.t):null;
+    if(d&&todayIso&&(Date.parse(d+'T00:00:00Z')-Date.parse(todayIso+'T00:00:00Z'))/864e5<=7){
+      var n=parse(q[root+'-'+M[p.i].toLowerCase()+yy(p.y+1)]);
+      if(!n||n.i!==p.i)return null;
+      p=n;
+    }
+    return {key:root+'-'+M[p.i].toLowerCase()+yy(p.y),mon:M[p.i]+" '"+yy(p.y)};
+  }
   function ctStamp(iso){var d=new Date(iso);if(!iso||isNaN(d))return '';
     try{return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZone:'America/Chicago'})+' CT';}catch(e){return '';}}
   /* 34.75 cents -> "34 3/4" (the ticker's own way of writing eighths of a cent). */
@@ -1786,7 +1839,7 @@ try {
   window.__r7={pricesOnce:pricesOnce,contractOf:contractOf,ctStamp:ctStamp,cents:cents,tickMonth:tickMonth};
 
   /* COT: what price did since the positions were taken, on THE HEADLINE
-     CONTRACT (2026-11-04, Sig). It used the continuous front month (ZS=F), so
+     CONTRACT (2026-11-04). It used the continuous front month (ZS=F), so
      after soybeans rolled to Jan '27 at first notice (#320) the card said
      "front month (Nov '26)" under a page that headlines Jan '27; corn does the
      same on Nov 30. Now: the headline contract (AgPxStamp.headline, the
@@ -1824,6 +1877,9 @@ try {
      that today's price has not already crossed. */
   var BASE={'corn':'Corn, front month','corn-dec':'Corn','beans':'Soybeans, front month','beans-nov':'Soybeans','wheat':'Chicago SRW wheat, front month','cattle':'Live cattle, front month'};
   window.__r7paLabel=function(v){var o=document.querySelector('#pa-symbol option[value="'+v+'"]');return o?(o.getAttribute('data-short')||o.textContent):v;};
+  /* Nov 12: a dated option's alert id is made from its contract (beans-nov27), so Nov '26 and Nov '27 at one target
+     are two alerts, not one (the worker keeps the first of an id). null for a front-month option: its id stays as it was. */
+  window.__r7paKey=function(v){var o=document.querySelector('#pa-symbol option[value="'+v+'"]');return (o&&/-[a-z]{3}$/.test(v)&&o.getAttribute('data-key'))||null;};
   pricesOnce().then(function(pd){
     var sel=$('pa-symbol'),dir=$('pa-direction'),tgt=$('pa-target'),now=$('r7-pa-now');if(!sel||!pd||!pd.quotes)return;
     /* 2026-10-17: an expired month (Dec '26 after its last trade) rolls to the next live one, the
@@ -1835,18 +1891,22 @@ try {
        a duplicate; the dated one stays, because it does not roll. */
     [['corn','corn-dec'],['beans','beans-nov']].forEach(function(pr){var a=contractOf(q,pr[0]),b=contractOf(q,pr[1]);
       if(a&&a===b){var o=sel.querySelector('option[value="'+pr[0]+'"]');if(o){if(sel.value===pr[0])sel.value=pr[1];o.parentNode.removeChild(o);}}});
-    Array.prototype.forEach.call(sel.options,function(o){var k=o.value,mon=contractOf(q,k);if(!mon||!BASE[k])return;
-      var dated=/-[a-z]{3}$/.test(k);
+    var today='';try{today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(new Date());}catch(e){}
+    Array.prototype.slice.call(sel.options).forEach(function(o){var k=o.value,mon=contractOf(q,k);if(!mon||!BASE[k])return;
+      var dated=/-[a-z]{3}$/.test(k),dd=dated?paDated(q,k,PS&&PS.deadFrom,today):null;
+      if(dated&&!dd){if(sel.value===k)sel.selectedIndex=o.index?0:1;o.parentNode.removeChild(o);return;}
+      if(dd){mon=dd.mon;o.setAttribute('data-key',dd.key);}
       o.textContent=dated?BASE[k]+' '+mon:BASE[k]+' (now '+mon+', follows the roll)';
       o.setAttribute('data-short',dated?BASE[k]+' '+mon:BASE[k]);});
-    function ex(){var x=q[sel.value];
+    function key(){var o=sel.options[sel.selectedIndex];return (o&&o.getAttribute('data-key'))||sel.value;}
+    function ex(){var x=q[key()];
       if(!x||x.close==null){tgt.placeholder='Target';if(now)now.textContent='';return;}
       var p=x.close/(sel.value==='cattle'?1:100),step=sel.value==='cattle'?5:0.25;
       var t=dir.value==='above'?Math.floor(p/step+1)*step:Math.ceil(p/step-1)*step;
       tgt.placeholder=t.toFixed(2);
       /* Grains trade in quarter cents: $5.08\u00bd, not $5.08 (toFixed dropped the half). */
-      var nowTxt=sel.value==='cattle'?'$'+p.toFixed(2):AG.px.price(x.close);
-      if(now){var mon=contractOf(q,sel.value);var stamp=stampOf(x);now.textContent='Now '+nowTxt+(mon?', '+mon:'')+(stamp?' · '+stamp:'');}}
+      var nowTxt=sel.value==='cattle'?AG.px.cash(p):AG.px.price(x.close);   /* cattle to the tick: $218.975, not $218.98 */
+      if(now){var mon=contractOf(q,key());var stamp=stampOf(x);now.textContent='Now '+nowTxt+(mon?', '+mon:'')+(stamp?' · '+stamp:'');}}
     sel.addEventListener('change',ex);dir.addEventListener('change',ex);ex();
   });
 
@@ -1855,11 +1915,11 @@ try {
 
 /* ---- former inline block 14 ---- */
 try {
-/* 2026-10-06 (U13) folded the GDU and soil tiles on phones, Sep to Nov. 2026-11-04 (Sig: GDUs year round, less wasted
-   space): the GDU tile is in Season so far now (components/season-wx.js) and soil sits in the grid, so no fold. */
+/* 2026-10-06 (U13) folded the GDU and soil tiles on phones, Sep to Nov. 2026-11-04 (GDUs year round, less wasted
+ space): the GDU tile is in Season so far now (components/season-wx.js) and soil sits in the grid, so no fold. */
 } catch (e) { blockFailed(e); }
 /* ---- 2026-10-16: no location after a few seconds ----
-   2026-10-19 (Sig): never ask for the location on load. With no saved place
+   2026-10-19: never ask for the location on load. With no saved place
    this box shows at once, worded as an offer ("See the bids near you."),
    with a "Use my location" button; "Your location did not come through."
    only follows a tap that got no location (geo.js requestGeo).
@@ -1889,7 +1949,7 @@ try {
   function day(iso){var d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'});}
   /* One state, as lines. Only crops with a median (basis-states.json prints
      one at min_n elevators or more); a thinner crop is counted, not priced. */
-  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
   function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   window.__agsistNolocRows=function(doc,code){
     var s=doc&&doc.states&&doc.states[code];if(!s)return null;
@@ -1933,7 +1993,7 @@ try {
       var row=document.getElementById('bids-zip-row'),z=document.getElementById('bids-zip');
       if(row)row.style.display='block';if(z)z.focus();
     });
-    /* 2026-10-19 (Sig): the browser is asked only on this tap. geo.js
+    /* 2026-10-19: the browser is asked only on this tap. geo.js
        draws the bids over this box when a place lands, and says so here
        when none does. */
     box.querySelector('.hn-loc').addEventListener('click',function(){
@@ -1960,7 +2020,7 @@ try {
       var out=box.querySelector('.hn-out');if(out)out.innerHTML='<p class="hn-fine">State basis did not load. Your ZIP still works.</p>';
     });
   }
-  /* 2026-10-19 (Sig): nothing asks for the location on load any more, so a
+  /* 2026-10-19: nothing asks for the location on load any more, so a
      first visit with no saved place gets this box at once (home.js runs
      before first paint, so the card never shows the gray rows first). A
      saved place keeps the old wait, for a lookup that stalls. */

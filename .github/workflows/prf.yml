@@ -1,12 +1,11 @@
 name: prf
-# prf.
 
 on:
   schedule:
     - cron: "23 10 * * 3"
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: "37 16 2 12 *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 08"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -36,7 +35,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 08' || (contains(github.event.workflow_run.display_title, ' prf.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -62,6 +63,7 @@ jobs:
         run: >-
           python3 scripts/cron_gate.py tick --workflow prf.yml --max-lag 360
           --cron "23 10 * * 3"
+          --cron "37 16 2 12 *"
 
   prf:
     needs: gate

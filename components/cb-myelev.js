@@ -84,6 +84,9 @@
     catch(e){ return false; }
   }
   function has(key){ return read().some(function(i){ return i.key === key; }); }
+  /* A source system's archived-copy marks ("zShawnee Feed Old") never reach a card: the same cleaning the
+     results use (components/cb-rank.js displayName), applied to names read from a shard or saved earlier. */
+  function dn(n){ n = String(n || ''); try { return (window.cbRank && window.cbRank.displayName && window.cbRank.displayName(n)) || n; } catch (e) { return n; } }
   function keyOf(elev){
     if(!elev) return '';
     if(elev.place) return String(elev.place);
@@ -252,14 +255,17 @@
     return '';
   }
 
+  /* Town, state and contract fields; the facility goes through elevNames.basisName (components/elev-names.js). */
   function bhNorm(v){ return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ' '); }
 
   /* The day's change: bids-homepage.js fillChanges(), same file, same rule. */
-  function dayChange(prev, place, crop, period, cash, on){
+  /* com: the row's commodity. Nov 20, 2026: an entry of another commodity (the file's 4th field, written by
+     scripts/build_bids_prev.py) is never the day before: a plain-to-Plenish flip read as a 125-cent move. */
+  function dayChange(prev, place, crop, period, cash, on, com){
     var hist = prev && prev.rows && prev.rows[fnv(place + '|' + crop + '|' + period)];
     if(!Array.isArray(hist) || !on || cash == null) return null;
-    var p = null;
-    for(var h = 0; h < hist.length; h++){ if(hist[h] && hist[h][0] < on && hist[h][1] != null) p = hist[h]; }
+    var p = null, tag = String(com || '').toLowerCase().split(/\s+/).filter(Boolean).join(' ');
+    for(var h = 0; h < hist.length; h++){ if(hist[h] && hist[h][0] < on && hist[h][1] != null && (hist[h].length < 4 || com == null || hist[h][3] === tag)) p = hist[h]; }
     if(!p) return null;
     var d = (cash - p[1]) * 100, gap = p[0] < prevWeekday(on) || on !== lastWeekday(ctToday());
     var flat = Math.abs(d) < 0.125;
@@ -274,7 +280,7 @@
     var when = function(i){ return (i == null || i >= d.length) ? null : d[i]; };
     sh.r.forEach(function(r){
       var fc = String(f[r[0]] || '').split('|');
-      m[[bhNorm(fc[0]), bhNorm(fc[1]), bhNorm(sh.state), bhNorm(c[r[1]]), bhNorm(r[2]), bhNorm(r[3])].join('|')] =
+      m[[window.elevNames.basisName(fc[0]), bhNorm(fc[1]), bhNorm(sh.state), bhNorm(c[r[1]]), bhNorm(r[2]), bhNorm(r[3])].join('|')] =
         { cur:r[4], prev:r[5], since:when(r[6]), first:when(r[7]), last:when(r[8]) };
     });
     return m;
@@ -306,7 +312,7 @@
     return Promise.all([prevShard(st), basisShard(st), p.shard ? shard(p.shard) : null]).then(function(a){
       var prev = a[0], bm = basisMap(a[1]), sh = a[2], stale = false, facts = [];
       crops.forEach(function(c){
-        c.chg = dayChange(prev, p.place, c.crop, c.period, c.cash, on);
+        c.chg = dayChange(prev, p.place, c.crop, c.period, c.cash, on, c.commodity);
         /* The shard row this `now` came from: its contract and its read flag. */
         var row = null;
         if(sh && Array.isArray(sh.bids)) sh.bids.forEach(function(b){
@@ -314,7 +320,7 @@
         });
         if(row && row.stale === true) stale = true;
         if(row && bm){
-          var h = bm[[bhNorm(p.operator), bhNorm(p.city), bhNorm(st), bhNorm(CAT[c.crop]), bhNorm(row.futuresMonth || ''), bhNorm(row.delivery || '')].join('|')];
+          var h = bm[[window.elevNames.basisName(p.operator), bhNorm(p.city), bhNorm(st), bhNorm(CAT[c.crop]), bhNorm(row.futuresMonth || ''), bhNorm(row.delivery || '')].join('|')];
           var f = basisFact(h, c.basis);
           if(f){ f.crop = c.crop; facts.push(f); }
         }
@@ -322,7 +328,7 @@
       /* No usable row at all and the board's rows are flagged: say it was not reached. */
       if(!crops.length && sh && Array.isArray(sh.bids) && sh.bids.some(function(b){ return b && b.stale === true; })) stale = true;
       return { item:item, crops:crops, posted:posted(p.pricedAt), stale:stale, basis:basisLine(facts),
-               elev:{ facility:p.operator, city:p.city, town:p.town || p.city, state:p.state, commodities: crops.some(function(c){ return c.crop === 'corn'; }) ? { corn:[1] } : {} } };
+               elev:{ facility:dn(p.operator), city:p.city, town:p.town || p.city, state:p.state, commodities: crops.some(function(c){ return c.crop === 'corn'; }) ? { corn:[1] } : {} } };
     });
   }
   function basisLine(facts){
@@ -356,7 +362,7 @@
       if(p) return factsFromNetwork(item, p).then(function(f){ return (!f.crops.length && fed[item.key]) ? factsFromCard(item, fed[item.key]) : f; });
       if(fed[item.key]) return factsFromCard(item, fed[item.key]);
       var k = item.key.split('|');
-      return { item:item, crops:[], posted:null, stale:false, basis:'', elev:{ facility:item.name, city:k[2] || '', town:item.town, state:item.state, commodities:{} } };
+      return { item:item, crops:[], posted:null, stale:false, basis:'', elev:{ facility:dn(item.name), city:k[2] || '', town:item.town, state:item.state, commodities:{} } };
     });
   }
 
@@ -398,7 +404,7 @@
       }
       el.hidden = true; el.innerHTML = ''; return;
     }
-    Promise.all(items.map(function(it){ return factsFor(it).catch(function(){ return { item:it, crops:[], basis:'', elev:{ facility:it.name, state:it.state, commodities:{} } }; }); })).then(function(list){
+    Promise.all(items.map(function(it){ return factsFor(it).catch(function(){ return { item:it, crops:[], basis:'', elev:{ facility:dn(it.name), state:it.state, commodities:{} } }; }); })).then(function(list){
       if(m.seq !== seq) return;
       /* An alert form open in a row that is still listed: do not wipe what they typed. */
       var keys = items.map(function(i){ return i.key; }).join('\n'), busy = false;
@@ -451,8 +457,8 @@
   /* The homepage has no alert script of its own; Watch needs it. */
   function loadAlerts(){
     if(document.querySelector('script[src*="cb-alerts.js"]')) return;
-    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=2'; document.head.appendChild(l);
-    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=5'; s.defer = true;
+    var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/cb-alerts.css?v=3'; document.head.appendChild(l);
+    var s = document.createElement('script'); s.src = '/components/cb-alerts.js?v=9'; s.defer = true;
     s.onload = function(){ mounts.forEach(function(m){ m.force = true; draw(m); }); }; document.head.appendChild(s);
   }
   window.addEventListener('storage', function(e){ if(e.key === KEY) changed(); });

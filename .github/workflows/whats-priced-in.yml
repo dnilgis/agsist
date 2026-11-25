@@ -1,19 +1,16 @@
 name: Build What's Priced In
-# Build What's Priced In.
 
 on:
   push:
+    branches: [main]
     paths:
       - "data/wpi-estimates.json"
       - "data/wpi-history.json"
-      - "scripts/build_whats_priced_in.py"
       - "data/analyst-estimates.json"
-      - "scripts/report_bands.py"
   schedule:
-    - cron: "20 11 * * *"   # 11:20 UTC daily — rolls the "next report" card over as dates pass
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: "20 11 * * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 08"]
     types: [completed]
   workflow_dispatch:
 
@@ -22,7 +19,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 08' || (contains(github.event.workflow_run.display_title, ' whats-priced-in.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -53,6 +52,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     concurrency:
       group: whats-priced-in
       cancel-in-progress: false
@@ -94,7 +94,7 @@ jobs:
             cp /tmp/wpi.json "$FILE"
             python scripts/prerender_wpi_scorecard.py || true
             python scripts/bake_seo.py --page usda-calendar.html || true
-            git add "$FILE" cot.html index.html usda-calendar.html
+            git add "$FILE" cot.html index.html index1.html usda-calendar.html
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update what's priced in $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

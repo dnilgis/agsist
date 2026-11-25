@@ -1,6 +1,182 @@
 {
   "briefings": [
     {
+      "date": "2026-11-25",
+      "date_display": "Wednesday, November 25, 2026",
+      "headline": "Ohio soybeans basis firmed 5 cents in a week",
+      "teaser": "Ohio soybean basis firmed 5 cents on the week; January soybeans are down 8½ cents overnight.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-11-25",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-24",
+      "date_display": "Tuesday, November 24, 2026",
+      "headline": "Corn harvest reaches 94%; the five-year average is 96%",
+      "teaser": "A duty could cut Indian rice exports and shift buying toward other suppliers, including US rice.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 2,
+      "url": "/daily/2026-11-24",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-23",
+      "date_display": "Monday, November 23, 2026",
+      "headline": "Cattle on Feed shows placements below last year; corn up 3¾¢",
+      "teaser": "Cattle on Feed shows fewer placements; corn and beans edge up overnight before Crop Progress.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-23",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-22",
+      "date_display": "Sunday, November 22, 2026",
+      "headline": "Monday Crop Progress opens a holiday week; hogs near $52",
+      "teaser": "Crop Progress is Monday, Export Sales moves to Friday for Thanksgiving, and December hogs settled Friday at $52.60.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-22",
+      "market_closed": true
+    },
+    {
+      "date": "2026-11-21",
+      "date_display": "Saturday, November 21, 2026",
+      "headline": "Funds sold corn for a ninth straight week",
+      "teaser": "USDA systems hit by a breach; December corn ended the week down 11 cents at $4.34½.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-21",
+      "market_closed": true
+    },
+    {
+      "date": "2026-11-20",
+      "date_display": "Friday, November 20, 2026",
+      "headline": "Cash hogs fell to $36.70 in the Nov. 19 report",
+      "teaser": "Cash hogs fall $2.05 to $36.70 while December hog futures settled at $52.43.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-20",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-19",
+      "date_display": "Thursday, November 19, 2026",
+      "headline": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due",
+      "teaser": "Corn sits at $4.36½ after Wednesday's 2.5% drop; export sales due.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-19",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-18",
+      "date_display": "Wednesday, November 18, 2026",
+      "headline": "December lean hogs fell $2.25 Tuesday to $53.10",
+      "teaser": "Hog futures fell 4.1% Tuesday; corn and beans are lower overnight, and Illinois yields came in short.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-18",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-17",
+      "date_display": "Tuesday, November 17, 2026",
+      "headline": "Corn harvest reaches 88%; the five-year average is 92%",
+      "teaser": "Corn harvest is 88% done against a 92% average; December corn is up 3 cents overnight at $4.51¾.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-17",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-16",
+      "date_display": "Monday, November 16, 2026",
+      "headline": "Crude slips on supply glut fears; corn flat at $4.46 overnight",
+      "teaser": "Oil slips on glut talk despite new tanker hits; grains barely move before Crop Progress.",
+      "market_mood": "cautious",
+      "surprise_count": 1,
+      "sections": 2,
+      "url": "/daily/2026-11-16",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-15",
+      "date_display": "Sunday, November 15, 2026",
+      "headline": "USDA reports Monday and Thursday open a week of mild rain",
+      "teaser": "Crop Progress Monday and export sales Thursday headline the week; last week ran dry across farm states.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-15",
+      "market_closed": true
+    },
+    {
+      "date": "2026-11-14",
+      "date_display": "Saturday, November 14, 2026",
+      "headline": "Soybeans gain 3.2% on the week; cattle and hogs rise too",
+      "teaser": "Beans, cattle and hogs all finished the week higher; corn and wheat barely moved.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-14",
+      "market_closed": true
+    },
+    {
+      "date": "2026-11-13",
+      "date_display": "Friday, November 13, 2026",
+      "headline": "Corn, beans and wheat firm overnight after Thursday's drop",
+      "teaser": "Grains bounce overnight after a down day; hogs sit near $55 and USDA says cash hogs are far lower.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-13",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-12",
+      "date_display": "Thursday, November 12, 2026",
+      "headline": "Hogs near $56 as pork cutout slips; export sales due 7:30",
+      "teaser": "Futures hogs sit near $56 while cash hogs trade near $43, with export sales due this morning.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-11-12",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-11",
+      "date_display": "Wednesday, November 11, 2026",
+      "headline": "Corn slips 2½ cents to $4.46½ after Tuesday's yield cut",
+      "teaser": "Corn gives back 2½ cents after USDA's bigger yield cut; crude firms as Iran peace hopes fade.",
+      "market_mood": "cautious",
+      "surprise_count": 2,
+      "sections": 2,
+      "url": "/daily/2026-11-11",
+      "market_closed": false
+    },
+    {
+      "date": "2026-11-10",
+      "date_display": "Tuesday, November 10, 2026",
+      "headline": "WASDE prints at 11 CT; Dec corn is at $4.41½ overnight",
+      "teaser": "WASDE prints at 11 CT.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-11-10",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-09",
       "date_display": "Monday, November 9, 2026",
       "headline": "Crude slips 2.9% to $88.18 as Trump signals no new Iran strikes",
@@ -2756,6 +2932,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-09T11:48:12.050715+00:00",
-  "count": 241
+  "updated": "2026-11-25T13:49:16.585639+00:00"
 }

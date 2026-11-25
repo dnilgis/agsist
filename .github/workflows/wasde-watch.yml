@@ -1,4 +1,3 @@
-# WASDE watch: grade the report as it lands.
 
 name: WASDE watch — grade the report as it lands
 
@@ -6,7 +5,7 @@ on:
   schedule:
     - cron: "*/5 16-17 9-12 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 03"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -22,12 +21,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: wasde-watch
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 03' && !(contains(github.event.workflow_run.display_title, ' wasde-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('wasde-watch-{0}', github.run_id) || 'wasde-watch' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 03' || (contains(github.event.workflow_run.display_title, ' wasde-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       go: ${{ steps.g.outputs.go }}
     steps:
@@ -132,16 +133,16 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
+          git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf data/nowcast-direction.json \
+                  data/analyst-scorecard.json data/whats-priced-in.json \
+                  cot.html index.html index1.html usda-calendar.html 2>/dev/null || true
+          if [ -d data/wasde-history ]; then git add data/wasde-history; fi
+          if git diff --staged --quiet; then echo "No change."; exit 0; fi
+          git commit -m "wasde: graded the $(date -u +%Y-%m-%d) print"
           for i in 1 2 3 4 5; do
-            git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf data/nowcast-direction.json \
-                    data/analyst-scorecard.json data/whats-priced-in.json \
-                    cot.html index.html usda-calendar.html 2>/dev/null || true
-            if [ -d data/wasde-history ]; then git add data/wasde-history; fi
-            if git diff --staged --quiet; then echo "No change."; exit 0; fi
-            git commit -m "wasde: graded the $(date -u +%Y-%m-%d) print"
             if git push; then echo "Pushed on attempt $i."; exit 0; fi
             echo "Push race on attempt $i; rebasing..."
-            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || true
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || { echo "Rebase failed."; exit 1; }
             sleep $((RANDOM % 4 + 2))
           done
           echo "Failed to push after 5 attempts."; exit 1

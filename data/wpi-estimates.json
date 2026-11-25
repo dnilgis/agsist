@@ -31,7 +31,29 @@
    "estimate_low": 173.2,
    "estimate_avg": 177.8,
    "estimate_high": 182.1,
-   "nass_correction": {"id": "nass-crop-production-2026-09-11-corn-yield", "printed": 178.5, "corrected": 178.8, "notice_date": "2026-10-23", "source": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php", "field": "expectation", "note": "USDA correction, Oct 23, 2026: NASS corrected its September 11 Crop Production corn yield to 178.8 bu/acre, from 178.5 as first printed. The survey line above is as written before the October report; the October 9 forecast was graded against the trade average, not against September, so nothing here is regraded."}
+   "nass_correction": {
+    "id": "nass-crop-production-2026-09-11-corn-yield",
+    "printed": 178.5,
+    "corrected": 178.8,
+    "notice_date": "2026-10-23",
+    "source": "https://www.nass.usda.gov/Newsroom/Notices/2026/10-24-2026.php",
+    "field": "expectation",
+    "note": "USDA correction, Oct 23, 2026: NASS corrected its September 11 Crop Production corn yield to 178.8 bu/acre, from 178.5 as first printed. The survey line above is as written before the October report; the October 9 forecast was graded against the trade average, not against September, so nothing here is regraded."
+   }
+  },
+  {
+   "report": "November WASDE",
+   "date": "2026-11-10",
+   "time": "12:00 PM ET",
+   "commodity": "Corn",
+   "metric": "2026/27 corn yield",
+   "unit": "bu/acre",
+   "positioning_commodities": "corn soybeans",
+   "expectation": "USDA's last survey-based corn and soybean yields before January's annual figures. The trade looks for corn to come down from 181.2 to 180.3 bu/acre (range 173.2 to 183.1) and soybeans to rise from 53.1 to 53.5 (range 53.0 to 55.0). On 2026/27 ending stocks the trade averages 1.840 billion bushels for corn (range 1.698 to 1.969), 331 million for soybeans (280 to 370) and 746 million for wheat (730 to 769) (StoneX table of trade estimates, read 2026-11-09). The range bar below is the corn yield survey only.",
+   "_added": "2026-11-09, from the StoneX November WASDE estimates table (same numbers as data/analyst-estimates.json, PR #482). Date is WASDE_2026 in scripts/usda_dates.py.",
+   "estimate_low": 173.2,
+   "estimate_avg": 180.3,
+   "estimate_high": 183.1
   }
  ]
 }

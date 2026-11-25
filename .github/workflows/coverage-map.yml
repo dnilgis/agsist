@@ -1,18 +1,15 @@
 name: Coverage map — the elevator directory, drawn
-# Coverage map: the elevator directory, drawn.
 
 on:
   schedule:
     - cron: '38 12 * * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 09"]
     types: [completed]
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'scripts/build_coverage_map.mjs'
       - 'list-your-elevator.html'
 
 env:
@@ -20,7 +17,9 @@ env:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 09' || (contains(github.event.workflow_run.display_title, ' coverage-map.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -88,7 +87,11 @@ jobs:
           r=$(node -e "console.log(require('./data/elevator-coverage.json').counts.readers)")
           u=$(node -e "console.log(require('./data/elevator-coverage.json').counts.unreported)")
           git commit -m "coverage: $n of $r readers answered, $u did not, $k in the queue [skip ci]"
-          for i in 1 2 3; do
-            git push && break
-            git pull --rebase --autostash && sleep 3
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
           done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }

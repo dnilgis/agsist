@@ -1,12 +1,10 @@
 name: farmland-atlas
-# farmland-atlas.
 
 on:
   schedule:
-    - cron: "17 9 12 * *"      # 12th of each month, 09:17 UTC
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: "17 9 12 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 06"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -27,7 +25,7 @@ on:
         required: false
         default: ""
       reads_model:
-        description: "Model for the county reads. Blank = the ATLAS_READS_MODEL variable, else claude-haiku-5-5"
+        description: "Model for the county reads. Blank = the ATLAS_READS_MODEL variable, else CHECKER in scripts/claude_models.py"
         required: false
         default: ""
       reads_trial:
@@ -40,7 +38,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 06' || (contains(github.event.workflow_run.display_title, ' farmland-atlas.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read

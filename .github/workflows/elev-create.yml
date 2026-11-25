@@ -1,5 +1,4 @@
 name: Add elevator to portal
-# Add elevator to portal.
 
 on:
   workflow_dispatch:

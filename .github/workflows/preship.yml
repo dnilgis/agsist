@@ -1,5 +1,4 @@
 name: preship
-# preship.
 
 on:
   push:
@@ -20,6 +19,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: preship-${{ github.event.inputs.head || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'workflow_dispatch' }}
 
 jobs:
   preship:

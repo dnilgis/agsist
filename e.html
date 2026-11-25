@@ -13,15 +13,15 @@
   html,body{background:var(--bg)}
   body{margin:0;color:var(--text);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
   main{max-width:520px;margin:0 auto;padding:3.5rem 16px}
-  .tag{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .4rem}
+  .tag{font-size:.8rem;letter-spacing:0;text-transform:none;color:var(--muted);margin:0 0 .4rem}
   h1{font-size:1.5rem;line-height:1.25;margin:0 0 .8rem;overflow-wrap:anywhere}
   h1.ok{color:var(--ok)}
   p{color:var(--muted);margin:.5rem 0}
   a{color:var(--link)}
-  button{font:inherit;font-weight:600;padding:.7rem 1.2rem;border-radius:8px;border:0;background:var(--btn);color:#fff;cursor:pointer;min-height:44px}
+  button{font:inherit;font-weight:600;padding:.7rem 1.2rem;border-radius:var(--r-md);border:0;background:var(--btn);color:#fff;cursor:pointer;min-height:44px}
   button[disabled]{opacity:.6;cursor:default}
-  input{font:inherit;padding:.6rem .7rem;border:1px solid var(--muted);border-radius:8px;background:var(--bg);color:var(--text);width:8em;min-height:44px;box-sizing:border-box}
-  img{max-width:100%;height:auto;background:#fff;border-radius:6px}
+  input{font:inherit;padding:.6rem .7rem;border:1px solid var(--muted);border-radius:var(--r-md);background:var(--bg);color:var(--text);width:8em;min-height:44px;box-sizing:border-box}
+  img{max-width:100%;height:auto;background:#fff;border-radius:var(--r-md)}
 </style>
 </head>
 <body>
@@ -36,7 +36,7 @@
 <p><a href="/">agsist.com</a></p>
 <noscript><p>This page needs JavaScript. To stop emails, email <a href="mailto:news@agsist.com?subject=unsubscribe">news@agsist.com</a> with the word unsubscribe.</p></noscript>
 </main>
-<script src="/components/outbox.js?v=3"></script>
+<script src="/components/outbox.js?v=4"></script>
 <script>
 (function () {
   var WORKER = 'https://agsist-api.dnilgis.workers.dev';

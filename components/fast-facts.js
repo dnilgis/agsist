@@ -4,7 +4,7 @@
    components/manure-value.js, shared with /manure-value. */
 (function(){
 'use strict';
-/* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+/* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
 function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
 
 /* ─── TAB SYSTEM ─────────────────────────────────────────────────────── */
@@ -59,7 +59,7 @@ setTimeout(function(){if(!tabFromHash(true)){switchTab(document.querySelector('.
 var PRICES={};
 var ECO_TYPED={};   /* cost-builder boxes the reader typed in */
 /* data/fertilizer-prices.json (scripts/build_fert_prices.py): each product's
-   middle cash price posted by the co-ops Sig sent, nothing else. Every row
+   middle cash price posted by the co-ops the owner sent, nothing else. Every row
    names its co-ops, region and date, and every
    $/lb shown here says how it was worked out. Lime and K-Mag have no live
    source, so they are not priced here (the lime calculator takes your $/ton).
@@ -140,7 +140,7 @@ function loadFertPrices(){
       });
       wrap.appendChild(btn);
     });
-    /* one line of method, not a worked formula per product (Sig: undershare); each pill
+    /* one line of method, not a worked formula per product (undershare); each pill
        carries its own $/lb, price and dated source */
     var dv=document.getElementById('fert-deriv');
     if(!dv){dv=document.createElement('p');dv.id='fert-deriv';dv.className='fert-deriv';wrap.parentNode.insertBefore(dv,wrap.nextSibling);}
@@ -242,20 +242,20 @@ function loadGrainPrices(){
     else if(hc){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=hc.q.close_date||'';}
     fillCorn();
     var ebp=document.getElementById('eco-bean-price');if(hb&&ebp){ebp.textContent=fmtGrain(hb.q.close);unit('eco-bean-price',hb);} /* key is 'beans' in prices.json: 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
-    var ewp=document.getElementById('eco-wheat-price');if(q.wheat&&q.wheat.close&&ewp)ewp.textContent=fmtGrain(q.wheat.close);
+    var hw=hd('wheat'),ewp=document.getElementById('eco-wheat-price');if(hw&&ewp){ewp.textContent=fmtGrain(hw.q.close);unit('eco-wheat-price',hw);} /* the nearby month, named, not ZW=F */
     updateEcoCosts();
   }).catch(function(){calcNC();});
 }
 /* The reader's state: their last pick here ('fut' = futures only), else the
    state of their saved location. '' when neither is known: the box then asks
-   rather than guessing (Sig, Oct 16: state basis by default). */
+   rather than guessing (Oct 16: state basis by default). */
 function savedState(){
   try{var s=localStorage.getItem('agsist-ff-state');if(s)return s;}catch(e){}
   try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');if(w&&/^[A-Z]{2}$/.test(w.state||''))return w.state;}catch(e){}
   return '';
 }
-/* Your state in the notes under the N box (Sig, Oct 17: local from what is on
-   disk). Wisconsin: this is its own guide. Illinois: Illinois Extension runs
+/* Your state in the notes under the N box (Oct 17: local from what is on
+ disk). Wisconsin: this is its own guide. Illinois: Illinois Extension runs
    the Corn N Rate Calculator by region of Illinois and last crop (Illinois
    Extension, Feb 27, 2026). The fall line links straight to the reader's
    saved ZIP on /fall-nitrogen and to their state's rule there when that page
@@ -275,11 +275,11 @@ function localNotes(st){
     else if(st==='IL')h=h.replace(out,' In Illinois, Illinois Extension runs the same prices through the <a href="https://www.cornnratecalc.org/">Corn N Rate Calculator</a> by your region of Illinois and last crop (<a href="https://extension.illinois.edu/blogs/nutrient-loss-reduction/2026-02-27-how-mrtn-works-and-economics-behind-nitrogen-rates">how it works</a>).');
     note.innerHTML=h;
   }
-  var a=fall&&fall.querySelector('a[href^="/fall-nitrogen"]'),z=savedZip();
-  if(a){a.href='/fall-nitrogen'+(z?'?zip='+z:'');a.textContent=z?'Soil temps near '+z:'Soil temps near you';}
+  var a=fall&&fall.querySelector('a[href$="#fall-nitrogen"]'),z=savedZip();
+  if(a){a.href='/spray'+(z?'?zip='+z:'')+'#fall-nitrogen';a.textContent=z?'Soil temps near '+z:'Soil temps near you';}
   var r=fall&&document.getElementById('ans-fall-rule');
   if(fall&&!r&&FALL_RULE[st]){r=document.createElement('span');r.id='ans-fall-rule';fall.appendChild(r);}
-  if(r)r.innerHTML=FALL_RULE[st]?' &middot; <a href="/fall-nitrogen#rule-'+st+'">'+esc(BASIS[st]?BASIS[st].name:st)+' rule</a>':'';
+  if(r)r.innerHTML=FALL_RULE[st]?' &middot; <a href="/spray#rule-'+st+'">'+esc(BASIS[st]?BASIS[st].name:st)+' rule</a>':'';
 }
 function loadBasis(){
   getJSON('/data/basis-states.json').then(function(d){
@@ -322,15 +322,14 @@ function fillCorn(){
     var q=pj&&pj.quotes?pj.quotes:{};
     function g(id){return document.getElementById(id);}
     function dollarsBu(v){return v!=null?'$'+(parseFloat(v)/100).toFixed(2):null;}
-    var corn=q.corn&&q.corn.close?parseFloat(q.corn.close)/100:null;
-    var beans=q.beans&&q.beans.close?dollarsBu(q.beans.close):null;
-    var wheat=q.wheat&&q.wheat.close?dollarsBu(q.wheat.close):null;
-    if(corn||beans||wheat){
-      if(corn) g('fft-corn').textContent='$'+corn.toFixed(2);
-      if(beans) g('fft-beans').textContent=beans;
-      if(wheat) g('fft-wheat').textContent=wheat;
-      g('ff-strip').hidden=false;
-    }
+    /* 2026-11-10: each tile reads its nearby contract and names
+       the month. The bare key is Yahoo's continuous series: quotes.beans carried the
+       Jan '27 close beside the Nov '26 settle past first notice. */
+    var PS=window.AgPxStamp,near=function(c){var h=PS&&PS.headline?PS.headline(pj,c):null;if(h&&h.q&&h.q.close&&h.label)return h;var n=q[c+'-nearby'],lab=n&&n.ticker&&PS&&PS.label?PS.label(n.ticker):'';return n&&n.close&&lab?{q:n,label:lab}:null;};
+    var hc=near('corn'),hb=near('beans'),hw=near('wheat');
+    function tile(id,h){var e=g(id);if(!e||!h)return false;e.textContent=dollarsBu(h.q.close);var n=e.parentNode&&e.parentNode.querySelector('.n');if(n)n.textContent='CBOT '+h.label+', delayed';return true;}
+    var any=[tile('fft-corn',hc),tile('fft-beans',hb),tile('fft-wheat',hw)].some(Boolean);
+    if(any) g('ff-strip').hidden=false;
     // week card: what most of the Corn Belt is doing, hedged
     var wk=isoWeekNow();
     var W={
@@ -388,6 +387,8 @@ function calcNC(){
   function t(id,v){var e=g(id);if(e)e.textContent=v;}
   /* 2026-11-04 (site panel): the unit shows only beside a rate; "-lb N/ac" read as a negative rate */
   function rateUnit(on){var u=g('ans-unit');if(u)u.hidden=!on;}
+  /* no answer yet: the rate, range and ratio blocks hide and only the prompt shows (Nov 13: no empty boxes) */
+  function wait(on){var a=g('ff-ans');if(a)a.classList.toggle('ff-ans-wait',on);}
   var fertSel=g('nc-fert');if(!fertSel)return;
   var corn=parseFloat(g('nc-corn').value)||0;
   // The Custom option carries value="0", and 0 is falsy, so `||46` swallowed it and
@@ -405,7 +406,7 @@ function calcNC(){
   document.querySelectorAll('#nc-table td.act').forEach(function(td){td.classList.remove('act');});
   if(!(ton>0)||!(pct>0)){
     // No posted price for this form and none typed: say so rather than price at a made-up number.
-    t('nc-nlb','-');t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
+    wait(true);t('nc-nlb','-');t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
     t('ans-line',ton>0?'Type the % N of your product.':'Type your N price per ton (a co-op posted price fills in when there is one for this form).');
     t('ans-src','');
     return;
@@ -413,7 +414,7 @@ function calcNC(){
   var pplb=ton/(2000*pct/100);
   t('nc-nlb','$'+pplb.toFixed(2));
   if(!(corn>0)){
-    t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
+    wait(true);t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
     var sv=(g('ans-state')||{}).value||'';
     t('ans-line',!cornTyped&&sv===''?'Pick your state: the corn price is December futures less your state\u2019s elevator basis this week. Or pick Futures only, or type your own corn price.':'Type your corn price per bushel.');t('ans-src','');
     return;
@@ -421,14 +422,14 @@ function calcNC(){
   var ratio=pplb/corn;
   var A=window.AgA2809, r=A?A.nRate({row:rowKey(),ratio:ratio}):null;
   t('nc-ratio',ratio.toFixed(3));
-  if(!r){t('nc-col','-');t('ans-rate','-');rateUnit(false);return;}
+  if(!r){wait(true);t('nc-col','-');t('ans-rate','-');rateUnit(false);return;}
   var colTxt=r.col.toFixed(2);
   t('nc-col',colTxt);
   var thId='nth-'+colTxt.replace('0.','');var th=g(thId);if(th)th.classList.add('act');
   var ci=A.N_RATIOS.indexOf(r.col);
   var tr=document.querySelector('#nc-table tr[data-row="'+rowKey()+'"]');
   if(tr&&tr.children[ci+1])tr.children[ci+1].classList.add('act');
-  t('ans-rate',String(r.rate));rateUnit(true);
+  t('ans-rate',String(r.rate));rateUnit(true);wait(false);
   ecoFill('eco-n-rate',r.rate);ecoFill('eco-n-pplb',pplb.toFixed(2));
   if(!ECO_TYPED['eco-n-pplb']){var nl=g('eco-n-source-label');if(nl)nl.textContent=(isCustom?pct+'% N':fertSel.options[fertSel.selectedIndex].text)+' at $'+Math.round(ton)+'/ton';}
   if(typeof updateEcoCosts==='function')updateEcoCosts();

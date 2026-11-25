@@ -3,7 +3,7 @@
  *
  * The quote form posts the same kind as the business card on /rain-print
  * (rain-print-business, subs worker v5.12+, same fields and limits), with
- * page "/rain-print-business" so Sig can see where it came from.
+ * page "/rain-print-business" so the owner can see where it came from.
  *
  * Every price, tier and date (and the hero's starting price) comes from data/rain-print.json through the pure
  * business functions in components/rain-print.js (RainPrint.bizRows,
@@ -19,7 +19,7 @@
  *
  * The request goes to the AGSIST worker only, never to Formspree (form-post.js
  * WORKER_ONLY, 2026-10-19): a failed or silent worker leaves the form filled in
- * and says to call or text Sig, or try again.
+ * and says to call or text the owner, or try again.
  *
  * Analytics: rain_print_business {result, product, qty, placement:'landing'},
  * rp_business_cta {cta}, rp_business_template, rp_business_csv {result}.
@@ -56,7 +56,7 @@
   }
   function RP() { return root.RainPrint || null; }
 
-  /* The sample date (data/rain-print.json business_sample_by, Sig sets it; null shows nothing): through that
+  /* The sample date (data/rain-print.json business_sample_by, the owner sets it; null shows nothing): through that
      day, 'To see one before Christmas, order the sample by Nov 6.'; a bad date or a day past it, ''. */
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function sampleByLine(todayIso, by) {
@@ -140,7 +140,7 @@
     } catch (e) {}
   }
   /* What goes in the box: the file's own lines, blank lines dropped, the
-     header row kept so Sig can read the columns. null when it will not fit. */
+     header row kept so the owner can read the columns. null when it will not fit. */
   function listText(raw) {
     var t = String(raw || '').replace(/^﻿/, '').replace(/\r\n?/g, '\n').split('\n')
       .map(function (l) { return l.replace(/\s+$/, ''); }).filter(function (l) { return /[^,;\s]/.test(l); }).join('\n');
@@ -236,7 +236,7 @@
       : !(qn >= MIN && qn <= MAX) ? ['rb-qty', 'Put how many prints, from ' + MIN + ' to ' + MAX + '. For more than ' + MAX + ', put ' + MAX + ' and say how many in the notes.']
       : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
     /* PO number and invoice contact (2026-10-19): the worker keeps only the fields it knows (subs-worker.js
-       FORM_KINDS, unknown fields dropped), so they ride at the top of the notes, where Sig reads them. */
+       FORM_KINDS, unknown fields dropped), so they ride at the top of the notes, where the owner reads them. */
     var inv = invoiceLines($('rb-po').value, $('rb-inv-name').value, $('rb-inv-email').value);
     if (!bad && inv.bad) bad = ['rb-inv-email', 'Check the invoice email, or leave it empty.'];
     if (!bad && inv.text) {
@@ -270,9 +270,9 @@
       LOGO_ASK++; LOGO = null; syncLogo(); logoMsg('');
       try { out.firstChild.focus(); } catch (err) {}
     }).catch(function (err) {
-      /* The list never goes to Formspree (form-post.js WORKER_ONLY, Sig 2026-10-19): when the worker fails or
+      /* The list never goes to Formspree (form-post.js WORKER_ONLY, 2026-10-19): when the worker fails or
          goes quiet, everything stays filled in on the page and the reader calls or sends again. A worker that
-         only went quiet may still have it, so that case says so. Email to Sig stays as a second way. */
+         only went quiet may still have it, so that case says so. Email to the owner stays as a second way. */
       var slow = !!(err && err.slow);
       ga('rain_print_business', { result: slow ? 'slow' : 'fail', product: x.product, qty: qn, placement: 'landing' });
       var body = asText(x);

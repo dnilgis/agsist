@@ -1,46 +1,46 @@
 {
-  "fetched_at": "2026-11-08T13:50:37+00:00",
+  "fetched_at": "2026-11-20T03:43:30+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
-      "bytes": 258820,
+      "bytes": 296653,
       "changed": false,
-      "last_modified": "2026-10-31T19:00:38+00:00",
-      "sha256": "64c8855b7bc3436a258455eae3ad727f891b254e7e3cb7e2c029fd3fe1bec208",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_prcp.gif",
+      "last_modified": "2026-11-19T13:31:43+00:00",
+      "sha256": "f9f19f4e06d01966808bf01f12a1da521ec50f08817ce590388d87e62f7f0935",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_prcp.gif",
       "status": "ok",
-      "variant": "lead15"
+      "variant": "lead14"
     },
     "noaa_prcp_90day.gif": {
-      "bytes": 242821,
+      "bytes": 325750,
       "changed": false,
-      "last_modified": "2026-10-15T12:31:31+00:00",
-      "sha256": "94228712e6c4c3207e3fa081cd602689c256762a788607f8a0ab99d5b36bd63d",
+      "last_modified": "2026-11-19T13:31:42+00:00",
+      "sha256": "12cecd1a801646e34b49a895cea358d7072651b5202d59fb65b53cf18ea9e5ff",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_prcp.gif",
       "status": "ok"
     },
     "noaa_temp_30day.gif": {
-      "bytes": 224357,
+      "bytes": 289508,
       "changed": false,
-      "last_modified": "2026-10-31T19:00:38+00:00",
-      "sha256": "e4e54f042bb7d71fcce2ada383e2d3ff3212af587976fba79eeaa7c2ff0c3b20",
-      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/30day/off15_temp.gif",
+      "last_modified": "2026-11-19T13:31:43+00:00",
+      "sha256": "df138a66cb6910e830e61196dcffdc55a515c628ace247c0081bbf9328b83795",
+      "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead14/off14_temp.gif",
       "status": "ok",
-      "variant": "lead15"
+      "variant": "lead14"
     },
     "noaa_temp_90day.gif": {
-      "bytes": 233702,
+      "bytes": 289917,
       "changed": false,
-      "last_modified": "2026-10-15T12:31:31+00:00",
-      "sha256": "782ce96f43ed416b148465a84d03ea03088e78e750a368530d98d86c52ae32f1",
+      "last_modified": "2026-11-19T13:31:42+00:00",
+      "sha256": "c510c57f229fbb72d13a78a9885f1b4bfee9b7c160626ab67f2ce3b6564779fe",
       "source": "https://www.cpc.ncep.noaa.gov/products/predictions/long_range/lead01/off01_temp.gif",
       "status": "ok"
     },
     "usdm_latest.png": {
-      "bytes": 396692,
+      "bytes": 392976,
       "changed": false,
-      "data_valid": "2026-11-03",
-      "sha256": "5b0c847431ab7c2b803d5dcd5e683287b992024c88a4ca3aa54c16b962b12cba",
-      "source": "https://droughtmonitor.unl.edu/data/png/20261103/20261103_usdm.png",
+      "data_valid": "2026-11-17",
+      "sha256": "e41989b250236429a4647b30ab7bff972af431260da9dd226909deb8f310cf35",
+      "source": "https://droughtmonitor.unl.edu/data/png/20261117/20261117_usdm.png",
       "status": "ok"
     }
   }

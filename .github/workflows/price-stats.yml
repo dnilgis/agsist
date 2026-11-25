@@ -1,23 +1,24 @@
 name: Build Price Stats (5-year percentile)
-# Build Price Stats (5-year percentile).
 
 on:
   schedule:
-    - cron: '40 21 * * 1-5'   # 21:40 UTC weekdays (after CBOT settle)
+    - cron: '40 21 * * 1-5'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 14"]
     types: [completed]
   workflow_dispatch:
 permissions:
   contents: write
 
 concurrency:
-  group: price-stats
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 14' && !(contains(github.event.workflow_run.display_title, ' price-stats.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('price-stats-{0}', github.run_id) || 'price-stats' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 14' || (contains(github.event.workflow_run.display_title, ' price-stats.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -48,6 +49,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - name: Engine checkout
@@ -74,5 +76,11 @@ jobs:
           git config user.email "actions@github.com"
           git add data/price-stats.json corn-futures-prices.html soybean-futures-prices.html wheat-futures-prices.html cattle-futures-prices.html markets.html img/og
           git diff --staged --quiet || git commit -m "Update 5-year price stats"
-          git pull --rebase --autostash origin main || true
-          git push
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }

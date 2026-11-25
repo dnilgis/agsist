@@ -17,6 +17,12 @@
      The location is never sent anywhere.
    - "Run every number for your farm" opens when the link asks for the
      calculator, or when this device has numbers saved for this county.
+   - "Your check" (#your-check): crop, base acres and PLC yield in, the 2025
+     and 2026 dollars out (AgArcPay, mirrors pay_figure in the build). The
+     build writes the first crop at 100 base acres; nothing is stored or sent.
+     "Print my estimate" prints the page's own sheet (#estimate, print CSS):
+     what was typed and the four figures before and after the 5.7% cut.
+   - The crop switcher (.ap-tabs) shows one crop card at a time.
 
    window.AgArcFind (inRing, locate) is the math alone, for test/arc-plc.test.mjs.
    Mirrors in_ring and locate in scripts/build_arc_plc.py. */
@@ -61,6 +67,8 @@
   var WORD = { plc: 'PLC', arc: 'ARC-CO' };
   var TIER = { pick: 'Clear pick', lean: 'Leans', close: 'Close', ask: 'No answer yet' };
   var RS = '&rsquo;';
+  var BOR_WHY = ['Expected payments are not printed for this crop: it does not have enough of its own price history.', 'Expected payments are not printed for this crop: it does not have enough of its own price history.'];
+  var CAP_LINE = 'Too little price history for a clear pick: shown as Leans.';
   var IRR_NOTE = 'Figured with the county' + RS + 's all-practice PLC yield; an irrigated farm' + RS + 's own is often higher.';
   function unpackLv(p) {
     var a = String(p).split(',');
@@ -81,18 +89,16 @@
   function tier(w) { var s = shapeOf(w); return '<span class="ap-tier ap-tier-' + s + '"><svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#api-' + s + '"/></svg>' + TIER[s] + '</span>'; }
   function gapLine(v, c) {
     var w = v.w, lc = c.lc, y = c.ly, pl = /s$/.test(lc);
-    /* a borrowed spread (flag 64; 128: too few years of its own prices): no dollars (gap_line in the build script, money audit 3, 2026-10-19) */
+    /* no expected dollars (flag 64): the reason for this crop (flag 128: too few years of its own prices), and
+       "held at Leans" only where the borrowed swings lowered a clear pick (flag 512); gap_line in the build script */
     if ((v.f & 64) && (w === 'plc' || w === 'arc' || w === 'close' || w.indexOf('lean_') === 0)) {
-      var bw = (v.f & 128) ?
-        lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' too few years of ' + (pl ? 'their' : 'its') + ' own prices in FSA' + RS + 's tables, so ' +
-          (pl ? 'their' : 'its') + ' price swings are corn' + RS + 's, and the expected dollars would rest on them. We do not print them.' :
-        lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' no October futures history of ' + (pl ? 'their' : 'its') + ' own on file, so ' +
-          (pl ? 'their' : 'its') + ' price swings are borrowed from corn' + RS + 's, and the expected dollars would rest on them. We do not print them.';
+      var bw = c.bw || BOR_WHY[v.f & 128 ? 1 : 0];
       if (w === 'close') return 'Too close to call. ' + bw;
       var bs = w.indexOf('lean_') === 0 ? w.slice(5) : w, bo = bs === 'plc' ? 'arc' : 'plc';
       var bt = WORD[bs] + ' leads across the ' + v.n + ' price years we ran, but that swings from year to year.';
       if (v.f & 32) bt += ' ' + WORD[bo] + ' did not come out ahead in any of them.';
-      bt += ' ' + bw + (w.indexOf('lean_') === 0 ? ' So it stops at Leans.' : '');
+      bt += ' ' + bw;
+      if (v.f & 512) bt += ' ' + CAP_LINE;
       if (v.f & 2) bt += ' A futures-based price start gives a different answer, so it stops at Leans.';
       return bt;
     }
@@ -101,7 +107,7 @@
       var side = w.slice(5), other = side === 'plc' ? 'arc' : 'plc';
       var t = WORD[side] + ' comes out about $' + v.whole + ' more per base acre, but that swings from year to year.';
       if (v.f & 32) t += ' ' + WORD[other] + ' did not come out ahead in any of the ' + v.n + ' price years we ran.';
-      if (v.f & 1) t += ' ' + lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'borrow' : 'borrows') + ' corn' + RS + 's price swings, so ' + (pl ? 'they stop' : 'it stops') + ' at Leans.';
+      if (v.f & 512) t += ' ' + CAP_LINE;
       if (v.f & 2) t += ' A futures-based price start gives a different answer, so it stops at Leans.';
       return t;
     }
@@ -129,9 +135,15 @@
     var big = bigWord(w), tw = w, g = gapLine(v, c);
     if (w === 'mismatch') {
       /* ly: [big word, tier verdict, the answer, the benchmark as printed ('' when the reason does not apply)] */
+      /* flag 256: the PLC yield is under 60% of the benchmark (mm_why in the build); when the card's About the
+         same answer is a mismatch too, it is on the same side, so one flag serves both sentences */
+      var lo = v.f & 256;
       big = ly[0]; tw = ly[1];
-      g = !ly[3] ? ly[2] : sameW === 'mismatch' ? ly[2] + ' The county average PLC yield is above this ' + ly[3] + ' benchmark, so there is no one typical farm here.' :
-        'A PLC yield that high is above the ' + ly[3] + ' benchmark. ' + ly[2];
+      /* under 60% with one call across the range (ly[1] is a call): that call is not the same at the PLC yield itself (mm_why held) */
+      var held = lo && ly[1] !== 'mismatch';
+      g = !ly[3] ? ly[2] : sameW === 'mismatch' ? ly[2] + ' The county average PLC yield is ' + (lo ? 'under 60% of' : 'above') + ' this ' + ly[3] + ' benchmark' +
+        (held ? ', and the call there is not the same' : '') + ', so there is no one typical farm here.' :
+        (lo ? 'A PLC yield that low is under 60% of the ' : 'A PLC yield that high is above the ') + ly[3] + ' benchmark' + (held ? ', and the call there is not the same' : '') + '. ' + ly[2];
     }
     var oth = '';
     if (c.oth && v.wo) oth = '<p class="ap-oth"><b>' + c.oth + ' ground:</b> ' + (v.wo !== 'mismatch' ? low1(shortWord(v.wo)) : (R.ot || 'depends on your PLC yield')) + '.' + (c.oth === 'Irrigated' ? ' ' + IRR_NOTE : '') + '</p>';
@@ -143,11 +155,45 @@
   function cardOf(art, seg) {
     var lv = art.querySelector('.ap-lv'), rng = null;
     try { rng = JSON.parse(art.getAttribute('data-rng') || 'null'); } catch (e) {}
-    return { rng: rng, lc: art.getAttribute('data-lc'), cen: art.getAttribute('data-cen') || '', pu: art.getAttribute('data-pu'),
+    return { rng: rng, lc: art.getAttribute('data-lc'), bw: art.getAttribute('data-bw') || '', cen: art.getAttribute('data-cen') || '', pu: art.getAttribute('data-pu'),
       oth: art.getAttribute('data-oth') || '', irr: /^irr(:|$)/.test(lv.getAttribute('data-e') || ''),
       ly: seg.getAttribute('data-ly'), oy: seg.getAttribute('data-oy') };
   }
   w.AgArcCard = { level: level, unpack: unpackLv };
+
+  /* ---------------------------------------------------------- "Your check" (Nov 20, 2026; mirrors pay_figure, calc_note
+     and chk_money in scripts/build_arc_plc.py, same order of operations, so both round alike). x: one crop of the
+     section's data-pay; b: base acres; py: PLC yield. Nothing is stored or sent. */
+  function rnd2(v) {   /* the build's rnd(v, 2): round to 9 places, then half up to the cent */
+    var t = Math.round(v * 1e9) / 1e9;
+    return Math.floor(t * 100 + 0.5 + 1e-7) / 100;
+  }
+  function figure(x, b, py) {
+    function f(v) { return v == null ? null : rnd2(v); }
+    return { a25: x.r25a != null ? f(x.r25a * 0.85 * b) : null, p25: x.r25 != null ? f(x.r25 * py * 0.85 * b) : null,
+      a26: x.a26u != null ? f(x.a26u * b) : null, p26: x.f26 != null ? f(x.f26 * py * b) : null };
+  }
+  function money(v) {
+    var c = Math.round(rnd2(v) * 100), s = String(Math.floor(c / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return '$' + s + '.' + ('0' + (c % 100)).slice(-2);
+  }
+  function note(r) {
+    if (r.p25 == null) return '2025: no figure for this crop here. 2026: only the program the farm is enrolled in pays.';
+    var hi = Math.max(r.p25, r.a25 != null ? r.a25 : 0);
+    return '2025: the farm gets the higher one, ' + money(hi) + ', or ' + money(hi * (1 - 0.057)) + ' after the 5.7% sequestration cut. ' +
+      '2026: only the program the farm is enrolled in pays.';
+  }
+  /* "Print my estimate" (Nov 20, 2026; mirrors est_sheet in the build): the sheet's cells for crop x at b base acres and
+     PLC yield py, each figure before and after the 5.7% cut, or the crop's reason where the page prints no figure */
+  function sheet(x, b, py) {
+    var r = figure(x, b, py), wy = { a25: x.w25 || x.w25a || '', p25: x.w25 || '', a26: x.w || '', p26: x.w || '' }, out = {};
+    ['a25', 'p25', 'a26', 'p26'].forEach(function (n) {
+      out[n] = r[n] != null ? money(r[n]) : wy[n];
+      out[n + 's'] = r[n] != null ? money(r[n] * (1 - 0.057)) : wy[n];
+    });
+    return out;
+  }
+  w.AgArcPay = { figure: figure, money: money, note: note, rnd2: rnd2, sheet: sheet };
 
   if (!d || !d.querySelector) return;
 
@@ -178,6 +224,48 @@
       var note = d.querySelector('.ap-seg-note');
       if (note && note.getAttribute('data-' + lv)) note.textContent = note.getAttribute('data-' + lv);
     });
+  }
+
+  /* the five terms (Nov 20, 2026; GLOSS in the build marks each where it first shows): its note on hover, tap or focus */
+  var GLOSS = {
+    base: 'Base acres: the acres FSA assigns a farm for each crop, listed on its FSA-156EZ. ARC and PLC pay on 85% of them, whatever is planted.',
+    py: 'PLC yield: the farm' + RS + 's yield FSA pays PLC on, also on the FSA-156EZ. This page uses the county average until you type your own.',
+    seq: 'Sequestration: an across-the-board cut to federal farm payments, set each fiscal year. 5.7% is the rate reported for these payments.',
+    mya: 'Season-average price (MYA, marketing year average): USDA' + RS + 's national average of what farmers were paid for the crop over its marketing year.',
+    erp: 'Effective reference price: the price PLC is measured against, set by law each year: the statutory reference price, or 88% of recent ' +
+      'season-average prices if higher, up to 115% of the statutory price.'
+  };
+  w.AgArcGloss = GLOSS;
+  function glossary() {
+    var gs = d.querySelectorAll('.ap-g[data-g]');
+    for (var i = 0; i < gs.length; i++) {
+      var t = GLOSS[gs[i].getAttribute('data-g')];
+      if (!t || gs[i].querySelector('.ap-gt')) continue;
+      gs[i].setAttribute('tabindex', '0');
+      gs[i].insertAdjacentHTML('beforeend', '<span class="ap-gt" role="tooltip">' + t + '</span>');
+    }
+  }
+
+  /* the crop switcher (Nov 20, 2026): one card at a time; the build opens the first, so nothing moves on load.
+     A link to #corn or #crop-corn (the crop pages link that way) opens that crop's card. */
+  function tabs() {
+    var bar = d.querySelector('.ap-tabs');
+    if (!bar) return;
+    function pick(k, go) {
+      var card = d.getElementById('crop-' + k);
+      if (!card) return false;
+      var bs = bar.querySelectorAll('button[data-k]'), cs = d.querySelectorAll('.ap-crop'), i;
+      for (i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', bs[i].getAttribute('data-k') === k ? 'true' : 'false');
+      for (i = 0; i < cs.length; i++) cs[i].hidden = cs[i] !== card;
+      if (go && card.scrollIntoView) card.scrollIntoView({ block: 'nearest' });
+      return true;
+    }
+    bar.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('button[data-k]');
+      if (b) pick(b.getAttribute('data-k'), false);
+    });
+    var h = (location.hash || '').replace(/^#(crop-)?/, '');
+    if (/^[a-z_]+$/.test(h)) pick(h, true);
   }
 
   function finder() {
@@ -300,9 +388,12 @@
         for (var i = 0; f && i < localStorage.length; i++) { var k = localStorage.key(i); if (/^ap3:[fy]:/.test(k) && k.indexOf('|' + f) > 0) { want = true; break; } }
       } catch (e) {}
     }
-    if (want) run.open = true;
+    /* the full calculator sits in the fold at the bottom (Nov 20, 2026): opening it opens the fold too */
+    var fold = run.parentElement && run.parentElement.closest ? run.parentElement.closest('details') : null;
+    function open() { run.open = true; if (fold) fold.open = true; }
+    if (want) open();
     /* "Depends on your PLC yield: run it below" links to #run: open it when the link is followed */
-    d.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href="#run"]'); if (a) run.open = true; });
+    d.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href="#run"]'); if (a) open(); });
   }
 
   /* crop pages (/arc-plc/<crop>): each state's county links, filled from data/arc-plc/hub/<crop>.json when its list opens */
@@ -329,6 +420,60 @@
     });
   }
 
-  function boot() { levels(); finder(); runOpen(); hubs(); }
+  /* "Your check": crop, base acres and PLC yield in, the four dollar figures out (AgArcPay above). The build writes the
+     first crop at 100 base acres into the HTML, so the box keeps its size when this runs. */
+  function payCalc() {
+    var box = d.getElementById('your-check');
+    if (!box) return;
+    var X;
+    try { X = JSON.parse(box.getAttribute('data-pay') || '{}'); } catch (e) { return; }
+    function q(n) { return box.querySelector('[data-pc="' + n + '"]'); }
+    var sel = q('k'), bIn = q('b'), yIn = q('y');
+    function num(el) { var v = parseFloat(String(el.value).replace(/,/g, '')); return isFinite(v) && v >= 0 ? v : null; }
+    function show() {
+      var x = X[sel.value];
+      if (!x) return;
+      var b = num(bIn), py = num(yIn);
+      if (b == null || py == null) { q('note').textContent = 'Type base acres and a PLC yield, as numbers.'; return; }
+      var r = figure(x, b, py);
+      q('a25').textContent = r.a25 != null ? money(r.a25) : (x.w25 || x.w25a || '');
+      q('p25').textContent = r.p25 != null ? money(r.p25) : (x.w25 || '');
+      q('a26').textContent = r.a26 != null ? money(r.a26) : (x.w || '');
+      q('p26').textContent = r.p26 != null ? money(r.p26) : (x.w || '');
+      q('note').textContent = note(r);
+      fillSheet(x, b, py);
+    }
+    /* the print sheet (#estimate, est_sheet in the build) says what the calculator says, with what was typed */
+    function fillSheet(x, b, py) {
+      var sh = d.getElementById('estimate');
+      if (!sh) return;
+      var c = sheet(x, b, py), row = function (lab, y, s) {
+        return '<tr><th scope="row">' + lab + '</th><td data-es="a' + y + s + '">' + esc(c['a' + y + s]) + '</td><td data-es="p' + y + s + '">' + esc(c['p' + y + s]) + '</td></tr>';
+      };
+      sh.innerHTML = '<p class="ap-est-k">AGSIST ARC/PLC payment estimate</p><h2>' + esc(sh.getAttribute('data-c')) + '</h2>' +
+        '<p>Crop: <b data-es="n">' + esc(x.n) + '</b> &middot; Base acres: <b data-es="b">' + esc(bIn.value) + '</b> &middot; PLC yield: <b data-es="y">' + esc(yIn.value) +
+        '</b> ' + (x.u === 'lb' ? 'lb' : 'bu') + ' (as entered)</p>' +
+        '<table class="ap-chk"><thead><tr><th scope="col">Crop year</th><th scope="col">ARC-CO</th><th scope="col">PLC</th></tr></thead><tbody>' +
+        row('2025', 25, '') + row('2025 after the 5.7% cut', 25, 's') + row('2026 expected', 26, '') + row('2026 expected after a 5.7% cut', 26, 's') +
+        '</tbody></table><p>For 2025 the farm gets the higher program; for 2026 only the program it enrolls in pays. Before payment limits.</p>' +
+        '<p>Inputs: ' + esc(x.i ? x.i + '; ' : '') + '85% of base acres paid. ' + esc(sh.getAttribute('data-src')) + '. 5.7% is the sequestration rate reported for ' +
+        'these payments; it is set each fiscal year and can change.</p>' +
+        '<p><b>Estimate, not an FSA determination.</b> Your county FSA office has the official figures. ' + esc(sh.getAttribute('data-u')) + '</p>';
+    }
+    var pr = q('print');
+    if (pr) pr.addEventListener('click', function () { show(); w.print(); });
+    show();
+    sel.addEventListener('change', function () {
+      var x = X[sel.value];
+      if (!x) return;
+      yIn.value = x.py;
+      q('u').textContent = x.u === 'lb' ? 'lb' : 'bu';
+      show();
+    });
+    bIn.addEventListener('input', show);
+    yIn.addEventListener('input', show);
+  }
+
+  function boot() { levels(); glossary(); tabs(); finder(); runOpen(); hubs(); payCalc(); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : null);

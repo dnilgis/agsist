@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-11-futures-change-pair",
+ "date": "2026-11-11",
+ "title": "Futures changes match their price",
+ "line": "A day change is always the shown price against the settle before it. After the bell the stamp names that settle; a change we cannot pair is left off.",
+ "link": "/corn-futures-prices",
+ "rank": 3
+}

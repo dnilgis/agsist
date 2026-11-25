@@ -1,0 +1,126 @@
+/* fold/fields.css: the My fields tab of /rain, scoped to #p-fields; loads when the tab opens (components/page-tabs.js data-css) */
+#p-fields{--fr-bar:#2b8cbe}
+html[data-theme="dark"] #p-fields{--fr-bar:#4eb3d3}
+#p-fields .fr{max-width:860px;margin:0 auto;padding:.6rem 1rem 4rem}
+#p-fields .fr h2.fr-h1{font-size:clamp(1.3rem,4.3vw,1.8rem);line-height:1.2;margin:.1rem 0 .2rem;color:var(--text)}
+#p-fields .fr .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .6rem;min-height:1.25rem}
+#p-fields .fr p,#p-fields .fr li{line-height:1.5;color:var(--text-dim)}
+#p-fields .fr a{color:var(--text);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+/* the cards: the page holds n cards' room before its script runs (the head script sets --frn), and each card is drawn
+   as a skeleton with the same rows and lines it ends with, so nothing moves when the numbers land */
+/* measured Nov 20, 2026: a card is 37.4rem plus 6.03rem a row at 390 px, 29.5rem plus 3.81rem a row from 640 px; a saved field's card has
+   its Rename, Move and Remove buttons too (--frx is 1 for a saved list, 0 for a field link; measured Nov 24 inside the tab: 2.75rem more below
+   400 px, 2.8rem at 400 to 639 px, 0.7rem from 640 px) */
+#p-fields #fr-app{min-height:calc(var(--frn,1) * 37.5rem + var(--frr,4) * 6.05rem + (var(--frn,1) - 1) * .8rem + var(--frx,0) * var(--frn,1) * 2.8rem);display:grid;gap:.8rem;align-content:start}
+@media(min-width:640px){
+#p-fields #fr-app{min-height:calc(var(--frn,1) * 29.6rem + var(--frr,4) * 3.83rem + (var(--frn,1) - 1) * .8rem + var(--frx,0) * var(--frn,1) * .7rem)}
+}
+.fr-none #p-fields #fr-app{min-height:6rem}
+#p-fields .fr-empty{border:1px dashed var(--border);border-radius:var(--r-md);padding:.8rem;font-size:.92rem;margin:0}
+#p-fields .fr-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.7rem .6rem .6rem;min-width:0}
+#p-fields .fr-card[data-linked]{border-color:var(--gold)}
+#p-fields .fr-n{font-size:1.1rem;margin:0;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#p-fields .fr-where{font-size:.76rem;margin:.1rem 0 .35rem;color:var(--text-muted);min-height:2.3rem;line-height:1.15rem}
+#p-fields .fr-big{margin:0 0 .45rem;font-size:.82rem;min-height:2.6rem;line-height:1.3}
+#p-fields .fr-big b{display:block;font-family:var(--font-mono);font-size:1.6rem;color:var(--text);line-height:1.2;font-variant-numeric:tabular-nums}
+#p-fields .fr-t{display:grid;gap:0;border-top:1px solid var(--border)}
+#p-fields .fr-r{display:grid;grid-template-columns:1fr 1fr;column-gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
+#p-fields .fr-pl{grid-column:1/-1;font-size:.8rem;font-weight:700;color:var(--text);min-height:1.2rem}
+#p-fields .fr-hd{font-size:.72rem;color:var(--text-muted)}
+#p-fields .fr-hd .fr-pl{display:none}
+#p-fields .fr-hd .fr-v{font-weight:700}
+#p-fields .fr-v{min-width:0;font-size:.7rem;line-height:1.2;color:var(--text-muted)}
+/* a cell: the figure, the source label, its days (up to two lines at 390 px) */
+#p-fields .fr-r:not(.fr-hd) .fr-v{min-height:calc(1.35rem + 3 * .9rem)}
+#p-fields .fr-v b{display:block;font-family:var(--font-mono);font-size:1rem;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.35rem;white-space:nowrap}
+#p-fields .fr-v small{display:block;font-size:inherit;line-height:.9rem}
+@media(min-width:640px){
+#p-fields .fr-r{grid-template-columns:10rem 1fr 1fr}
+#p-fields .fr-pl{grid-column:auto;align-self:center}
+#p-fields .fr-hd .fr-pl{display:block}
+#p-fields .fr-r:not(.fr-hd) .fr-v{min-height:calc(1.35rem + 2 * .9rem)}
+}
+/* the preliminary mark sits up without growing the line (a plain sup made the row taller when it landed) */
+#p-fields .fr-p{font-family:inherit;font-size:.65rem;color:var(--gold);margin-left:.15rem;font-weight:700;vertical-align:baseline;position:relative;top:-.5em;line-height:0}
+#p-fields .fr-gauge,#p-fields .fr-fresh,#p-fields .fr-cells{font-size:.76rem;margin:.4rem 0 0;line-height:1.2rem}
+/* each line holds the most lines its longest text takes: 390 px below, 640 px and up after */
+#p-fields .fr-gauge{min-height:6rem}
+#p-fields .fr-fresh{min-height:3.6rem}
+#p-fields .fr-cells{min-height:3.6rem;color:var(--text-muted)}
+@media(min-width:640px){
+#p-fields .fr-gauge{min-height:3.6rem}
+#p-fields .fr-fresh{min-height:2.4rem}
+#p-fields .fr-cells{min-height:2.4rem}
+}
+#p-fields .fr-mine{font-size:.76rem;margin:.4rem 0 0;line-height:1.2rem;min-height:4.8rem;color:var(--text)}
+@media(min-width:640px){
+#p-fields .fr-mine{min-height:2.4rem}
+}
+#p-fields .fr-gform{display:flex;flex-wrap:wrap;gap:.4rem;align-items:flex-end;margin:.5rem 0 0;padding:.5rem;border:1px dashed var(--border);border-radius:var(--r-md)}
+#p-fields .fr-gform[hidden]{display:none}
+#p-fields .fr-gform label{font-size:.76rem;color:var(--text-dim);display:flex;flex-direction:column;gap:.15rem}
+#p-fields .fr-gform input{font:inherit;font-size:1rem;min-height:44px;padding:.3rem .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);width:9.5rem;box-sizing:border-box}
+#p-fields .fr-old{color:var(--gold)}
+#p-fields .fr-act{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 0}
+#p-fields .fr-act a,#p-fields .fr-act button,#p-fields .fr-btn{font:inherit;font-size:.86rem;min-height:44px;padding:0 .8rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--bg);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+#p-fields .fr-act a{font-weight:700}
+#p-fields .fr-btn.go,#p-fields .fr-act [data-act="save"]{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-weight:700}
+#p-fields .fr-count{font-size:.76rem;color:var(--text-muted);margin:.6rem 0 0;min-height:1.2rem}
+#p-fields .fr-msg{font-size:.86rem;min-height:1.3rem;margin:.4rem 0;color:var(--text-dim)}
+#p-fields .fr-msg.err{color:var(--gold)}
+#p-fields #fr-hist{margin-top:1rem}
+#p-fields #fr-hist.fr-off{display:none}
+html.fr-link #p-fields #fr-hist{display:block}
+/* a field link shows its history from first paint (the head script sets fr-link) */
+#p-fields #fr-hist h2,#p-fields .fr h2.fr-h2{font-size:1.05rem;margin:1.2rem 0 .4rem;color:var(--text)}
+#p-fields .fr-hbody{min-height:34rem}
+#p-fields .fr-yr{display:flex;gap:.4rem;margin:.3rem 0 .5rem}
+#p-fields .fr-yr button{font:inherit;font-size:.86rem;min-height:44px;padding:0 .9rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);color:var(--text);cursor:pointer}
+#p-fields .fr-yr button[aria-pressed="true"]{border-color:var(--gold);font-weight:700}
+#p-fields .fr-chart svg{display:block;width:100%;height:9rem;overflow:visible}
+#p-fields .fr-chart rect{fill:var(--fr-bar)}
+#p-fields .fr-chart line.g{stroke:var(--border);stroke-width:.5}
+#p-fields .fr-chart line.b{stroke:var(--text-muted);stroke-width:.6}
+#p-fields .fr-chart text{font-size:9px;fill:var(--text-muted)}
+#p-fields .fr-ax{font-size:.74rem;color:var(--text-muted);margin:.2rem 0 .6rem}
+#p-fields .fr-mt,#p-fields .fr-dt{border-collapse:collapse;font-size:.82rem;margin:.3rem 0}
+#p-fields .fr-mt th,#p-fields .fr-mt td,#p-fields .fr-dt th,#p-fields .fr-dt td{padding:.25rem .7rem .25rem 0;text-align:left;border-bottom:1px solid var(--border);color:var(--text-dim)}
+#p-fields .fr-mt td,#p-fields .fr-dt td{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+#p-fields .fr-days summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:.88rem;color:var(--text)}
+#p-fields .fr-err{border:1px dashed var(--border);border-radius:var(--r-md);padding:.7rem .8rem;font-size:.9rem}
+#p-fields .fr-form{margin-top:1.2rem;border:1px solid var(--border);border-radius:var(--r-lg);padding:.7rem .8rem}
+#p-fields .fr-form legend{font-weight:700;color:var(--text);padding:0 .3rem}
+#p-fields .fr-form label{display:block;font-size:.8rem;color:var(--text-dim);margin:.45rem 0 .15rem}
+#p-fields .fr-form input{font:inherit;font-size:1rem;width:100%;box-sizing:border-box;min-height:44px;padding:.35rem .6rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text)}
+#p-fields .fr-form .fr-row2{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+#p-fields #fr-map{height:260px;margin-top:.5rem;border:1px solid var(--border);border-radius:var(--r-md)}
+#p-fields #fr-map[hidden]{display:none}
+#p-fields .fr-form[data-mode="add"] #fr-cancel{display:none}
+#p-fields .fr-note{font-size:.84rem}
+@media print{
+html:has(.ptabs[data-on="fields"]>#p-fields) #site-header,html:has(.ptabs[data-on="fields"]>#p-fields) #site-footer,html:has(.ptabs[data-on="fields"]>#p-fields) .skip,html:has(.ptabs[data-on="fields"]>#p-fields) .ptab-bar,html:has(.ptabs[data-on="fields"]>#p-fields) .rc-top,html:has(.ptabs[data-on="fields"]>#p-fields) .rc-byline,html:has(.ptabs[data-on="fields"]>#p-fields) [data-next-root]{display:none!important}
+html:has(.ptabs[data-on="fields"]>#p-fields),html:has(.ptabs[data-on="fields"]>#p-fields) body{background:#fff!important;color:#000!important}
+#p-fields .fr-form,#p-fields .fr-act,#p-fields .fr-gform,#p-fields .fr-row2,#p-fields .fr-yr,#p-fields .fr-msg,#p-fields .fr-h2,#p-fields .fr-h2+ul,#p-fields .fr-note{display:none!important}
+#p-fields .fr-card{border-color:#999}
+#p-fields .fr .fr-v b,#p-fields .fr-n,#p-fields .fr h2.fr-h1,#p-fields .fr-mt td,#p-fields .fr-dt td{color:#000!important}
+#p-fields .fr-days table{display:table!important}
+#p-fields #fr-app{min-height:0!important}
+}
+/* below 400 px (375, 360, 320) a cell's days, the big line and the notes take a line or two more: hold them
+   (measured with a long gauge name, Nov 20); last in the sheet so it wins over the rules above */
+@media(max-width:399px){
+/* measured at 390 px (Nov 20): a card is 46.8rem plus 6.97rem a row with these holds */
+#p-fields #fr-app{min-height:calc(var(--frn,1) * 47rem + var(--frr,4) * 7rem + (var(--frn,1) - 1) * .8rem + var(--frx,0) * var(--frn,1) * 2.75rem)}
+.fr-none #p-fields #fr-app{min-height:6rem}
+#p-fields .fr-r:not(.fr-hd) .fr-v{min-height:calc(1.35rem + 4 * .9rem)}
+#p-fields .fr-big{min-height:4.3rem}
+#p-fields .fr-where{min-height:3.45rem}
+#p-fields .fr-gauge{min-height:8.4rem}
+#p-fields .fr-mine{min-height:6rem}
+#p-fields .fr-fresh{min-height:4.8rem}
+#p-fields .fr-cells{min-height:4.8rem}
+}
+/* the empty note takes a line more below 340 px (123 px at 320, measured Nov 24) */
+@media(max-width:339px){
+.fr-none #p-fields #fr-app{min-height:7.3rem}
+}

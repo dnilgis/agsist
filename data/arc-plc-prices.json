@@ -1,16 +1,16 @@
 {
- "taken": "2026-11-05T19:46:18Z",
+ "taken": "2026-11-24T06:01:06Z",
  "harvest": {},
  "futures": {
   "corn": {
    "key": "corn-dec27",
-   "price": 4.8375,
-   "date": "2026-11-05"
+   "price": 4.775,
+   "date": "2026-11-24"
   },
   "soybeans": {
    "key": "beans-nov27",
-   "price": 11.825,
-   "date": "2026-11-05"
+   "price": 11.755,
+   "date": "2026-11-24"
   }
  }
 }

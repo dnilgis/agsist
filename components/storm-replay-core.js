@@ -32,7 +32,7 @@
     clouds: { name: 'NOAA satellite', what: 'NOAA nowCOAST, GOES East/West infrared (NOAA NESDIS)', url: 'https://nowcoast.noaa.gov/' },
     swaths: { name: 'Radar hail estimate', what: 'NOAA MRMS MESH, hour by hour, via Iowa State mtarchive, drawn by AGSIST', url: '/hail-map' },
     reports: { name: 'NWS hail reports', what: 'National Weather Service Local Storm Reports via the Iowa Environmental Mesonet', url: 'https://mesonet.agron.iastate.edu/lsr/' },
-    rain: { name: 'Radar rain total', what: 'NOAA MRMS multi-sensor rain (radar and gauges), 24-hour total, read by AGSIST', url: '/rain-radar' },
+    rain: { name: 'Radar rain total', what: 'NOAA MRMS multi-sensor rain (radar and gauges), 24-hour total, read by AGSIST', url: '/rain#radar' },
     map: { name: 'Map', what: 'USGS The National Map', url: 'https://www.usgs.gov/programs/national-geospatial-program/national-map' }
   };
 

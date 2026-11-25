@@ -35,6 +35,54 @@
   var RADII = [10, 25, 50, 75, 100];
   var CROPS = ['corn', 'soybeans', 'wheat', 'sorghum', 'oats'];
   var NAMES = { corn:'Corn', soybeans:'Soybeans', wheat:'Wheat', sorghum:'Sorghum', oats:'Oats' };
+  /* A board's own commodity words as an alert prints them (scripts/send_elevator_watch.py wheat_words, the same
+     rule; both are run over one list of cases): no BOM, control character, emoji or colon; the vendor's
+     price-feed boilerplate gone ("Price Delayed 10 minutes", "Delayed", "Protein Premium Not Included"); the class
+     and protein kept; cut at 40 characters at a word boundary, never inside a bracket. */
+  var WW_SPACE = /[\t\n\r\u000b\u000c\u001c-\u001f\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000:]/gu;
+  var WW_DROP = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\u20e3\ufe00-\ufe0f\ufeff\ud800-\udfff\u00a9\u00ae\u2122\u203c\u2049\u2190-\u21ff\u2300-\u23ff\u25a0-\u27bf\u2900-\u297f\u2b00-\u2bff\u3030\u303d\u3297\u3299\u{1f000}-\u{1faff}\u{e0000}-\u{e007f}]/gu;
+  var WW_SEP = '[ ,;\\-\\u2013\\u2014/]*';
+  /* no u flag: ASCII-only matching, as re.ASCII in the Python twin. "Delayed Price" is a contract term and stays. */
+  var WW_NOISE = [new RegExp(WW_SEP + '\\bprice +delayed\\b(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'gi'),
+                  new RegExp(WW_SEP + '\\bdelayed\\b(?! +price\\b)(?: +\\d+ *(?:minutes?|mins?)\\b)?', 'gi'),
+                  new RegExp(WW_SEP + '(?:\\b(?:protein|premium|price|freight|fees?|dockage)\\b *)*\\bnot +included\\b', 'gi')];
+  var WW_PUNCT = /^[ ,;\-\u2013\u2014/&.]+|[ ,;\-\u2013\u2014/&.]+$/gu;
+  function wwTidy(s){
+    return s.replace(/ +/g, ' ').replace(/[(\[] *[)\]]/g, '').replace(/([(\[])[ ,;\-\u2013\u2014/]+/g, '$1')
+      .replace(/[ ,;\-\u2013\u2014/]+([)\]])/g, '$1').replace(/ +/g, ' ');
+  }
+  function wwClose(chars){
+    var pair = { ')': '(', ']': '[' }, stack = [], out = [];
+    chars.forEach(function(ch){
+      if(ch === '(' || ch === '['){ stack.push(out.length); out.push(ch); }
+      else if(ch === ')' || ch === ']'){ if(stack.length && out[stack[stack.length - 1]] === pair[ch]){ stack.pop(); out.push(ch); } }
+      else out.push(ch);
+    });
+    return (stack.length ? out.slice(0, stack[0]) : out).join('');
+  }
+  function wheatWords(raw){
+    var s = String(raw == null ? '' : raw).replace(WW_SPACE, ' ').replace(WW_DROP, '');
+    s = wwTidy(s);
+    WW_NOISE.forEach(function(rx){ s = wwTidy(s.replace(rx, '')); });
+    s = wwTidy(s).replace(WW_PUNCT, '');
+    var cps = Array.from(s), wrapped = /^wheat \((.+)\)$/i.exec(s);
+    if(cps.length > 40 && wrapped && wrapped[1].indexOf('(') < 0 && wrapped[1].indexOf(')') < 0){ s = wrapped[1]; cps = Array.from(s); }
+    if(cps.length > 40){
+      var head = cps.slice(0, 40);
+      if(cps[40] !== ' ' && head.indexOf(' ') >= 0) head = head.slice(0, head.lastIndexOf(' '));
+      cps = head;
+    }
+    return wwTidy(wwClose(cps)).replace(WW_PUNCT, '');
+  }
+  /* The crop as an alert names it (scripts/send_elevator_watch.py crop_words): a wheat row that is not
+     plain "Wheat" carries the board's own words, so a board posting DNS and HRW for one month says which
+     one the alert watches: "Wheat (DNS 14%)", or the words alone when they say wheat. */
+  function cropWords(r, lower){
+    var base = NAMES[r.crop] || r.crop, w = wheatWords(r.cword);
+    if(lower) base = base.toLowerCase();
+    if(r.crop !== 'wheat' || !w || w.toLowerCase() === 'wheat') return base;
+    return /wheat/i.test(w) ? w : base + ' (' + w + ')';
+  }
   /* components/bids-homepage.js PPU_BAND, scripts/send_elevator_watch.py PPU_BAND */
   var BAND = { corn:[2,12], soybeans:[6,32], wheat:[3,20], sorghum:[2,7], oats:[1,8] };
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -112,7 +160,7 @@
           var period = String(n.period || ''), end = period.split('/').pop();
           if(/^\d{4}-\d{2}/.test(end) && end.slice(0, 7) < month) return;
           var w = widFor(p.state, p.operator, p.city, crop);
-          var row = { place:p, crop:crop, period:period, plabel:periodLabel(period, n.delivery || ''),
+          var row = { place:p, crop:crop, cword:String(n.commodity || ''), period:period, plabel:periodLabel(period, n.delivery || ''),
                       cash:Math.round(cash * 100), basis:basisCents(n), pricedAt:p.pricedAt || '' };
           idx[w] = (w in idx) ? 'ambiguous' : row;
         });
@@ -233,13 +281,13 @@
       return;
     }
     if(!rows.length && !plainWid){
-      box.innerHTML = '<p class="cba-note">Alerts on this card are not available yet. They work on elevators whose own boards AGSIST reads direct, and this one’s prices come from a licensed feed the alert emails cannot read. The ZIP alert above the cards covers every elevator AGSIST reads near you.</p>';
+      box.innerHTML = '<p class="cba-note">Alerts on this card are not available yet. They work on elevators whose own boards AGSIST reads direct, and the alert emails cannot read this one’s prices yet. The ZIP alert above the cards covers every elevator AGSIST reads near you.</p>';
       return;
     }
     var h = '<form class="cba-form" novalidate><p class="cba-title">Email me about ' + esc(name) + '</p>';
     if(rows.length){
       h += '<div class="cba-row"><label class="cba-f"><span class="cba-k">Crop</span><select class="cba-crop">'
-        + rows.map(function(r, i){ return '<option value="' + i + '">' + NAMES[r.crop] + ', ' + esc(r.plabel || 'delivery not named') + '</option>'; }).join('')
+        + rows.map(function(r, i){ return '<option value="' + i + '">' + esc(cropWords(r)) + ', ' + esc(r.plabel || 'delivery not named') + '</option>'; }).join('')
         + '</select></label></div>'
         + '<p class="cba-now" aria-live="polite"></p>'
         + '<fieldset class="cba-kind"><legend class="cba-k">Tell me when</legend>'
@@ -275,7 +323,7 @@
       var em = form.querySelector('.cba-email'), email = (em.value || '').trim(), body;
       if(rows.length){
         var r = rows[+crop.value], kind = form.querySelector('input[name="' + id + '-k"]:checked').value;
-        var lead = r.place.operator + ', ' + (r.place.town || r.place.city || '') + ', ' + r.place.state + ': ' + r.crop + ' ' + r.plabel + ': ';
+        var lead = r.place.operator + ', ' + (r.place.town || r.place.city || '') + ', ' + r.place.state + ': ' + cropWords(r, true) + ' ' + r.plabel + ': ';
         body = { email:email, kind:kind, ewid:widFor(r.place.state, r.place.operator, r.place.city, r.crop), crop:r.crop, period:r.period, plabel:(r.plabel || r.period).slice(0, 40) };
         if(kind === 'cash'){
           var v = parseFloat(price.value);
@@ -312,18 +360,24 @@
     });
   }
   /* The same places scripts/send_zip_alert.py counts, highest cash first. */
+  /* Nov 20, 2026: only a plain current bid counts, as in the sender (components/bid-filter.js
+     isPlainCurrent, scripts/bid_rule.py): Plenish soybeans or a Harvest 2027 contract is never
+     "Highest now". Without the rule loaded, no row is shown as highest. */
   function zipRows(net, coord, crop, radius){
     var out = [], month = ctMonth(), now = Date.now();
-    if(!net || !coord) return out;
+    var BR = window.AG && window.AG.bidFilter && window.AG.bidFilter.isPlainCurrent ? window.AG.bidFilter : null;
+    if(!net || !coord || !BR) return out;
     net.data.places.forEach(function(p){
       if(!p || String(p.via || '').toLowerCase() === 'barchart' || (p.currency || 'USD') !== 'USD' || p.mappable === false) return;
       if(typeof p.lat !== 'number' || typeof p.lon !== 'number' || (p.lat === 0 && p.lon === 0)) return;
       var n = p.now && p.now[crop]; if(!n || typeof n.cash !== 'number') return;
       var cash = ppu(n.cash); if(!(cash >= BAND[crop][0] && cash <= BAND[crop][1])) return;
       var end = String(n.period || '').split('/').pop(); if(/^\d{4}-\d{2}/.test(end) && end.slice(0, 7) < month) return;
+      var nb = { commodity:n.commodity || crop, crop:crop, cash:n.cash, period:n.period };
+      if(!BR.isPlainCurrent(nb, now)) return;
       var t = Date.parse(p.pricedAt); if(isNaN(t) || now - t > MAX_AGE_H * 3600e3) return;
       var d = miles(coord, [p.lat, p.lon]); if(d > radius) return;
-      out.push({ name:p.operator, town:p.town || p.city || '', st:p.state, cash:Math.round(cash * 100), mi:d });
+      out.push({ name:p.operator, town:p.town || p.city || '', st:p.state, cash:Math.round(cash * 100), mi:d, dw:BR.deliveryWords(nb, now) });
     });
     out.sort(function(a, b){ return b.cash - a.cash || a.mi - b.mi; });
     return out;
@@ -386,7 +440,7 @@
       if(!rows.length){ nowEl.textContent = 'No board AGSIST reads direct posts ' + cSel.value + ' within ' + rSel.value + ' mi right now. The alert waits until one does.'; price.placeholder = ''; return; }
       var t = rows[0];
       price.placeholder = (t.cash / 100).toFixed(2);
-      var s = 'Highest now: ' + cash$(t.cash) + ' at ' + t.name + ', ' + t.town + ' (' + Math.round(t.mi) + ' mi). ' + rows.length + ' board' + (rows.length === 1 ? '' : 's') + ' in range.';
+      var s = 'Highest now: ' + cash$(t.cash) + (t.dw ? ' for ' + t.dw + ' delivery' : '') + ' at ' + t.name + ', ' + t.town + ' (' + Math.round(t.mi) + ' mi). ' + rows.length + ' board' + (rows.length === 1 ? '' : 's') + ' in range.';
       if(v >= 1 && Math.round(v * 100) <= t.cash) s += ' That price is already paid: you will get one email soon after you confirm.';
       nowEl.textContent = s;
     }

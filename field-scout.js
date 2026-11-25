@@ -25,22 +25,22 @@
   // full state name ↔ postal abbr (nominatim returns full names; data files key by abbr or FIPS)
   var N2A = {'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'};
 
-  // CDL crop code → {label, emoji, color}
+  // CDL crop code → {label, color}
   var CDL_CROPS = {
-    1:{l:'Corn',e:'🌽',c:'#ffd400'}, 5:{l:'Soybeans',e:'🫘',c:'#267300'},
-    24:{l:'Winter Wheat',e:'🌾',c:'#a87000'}, 23:{l:'Spring Wheat',e:'🌾',c:'#d8b056'},
-    36:{l:'Alfalfa',e:'🌿',c:'#ffa8e3'}, 37:{l:'Other Hay',e:'🌾',c:'#a5f28c'},
-    4:{l:'Sorghum',e:'🌾',c:'#ff9e0f'}, 21:{l:'Barley',e:'🌾',c:'#e2007d'},
-    28:{l:'Oats',e:'🌾',c:'#a05989'}, 61:{l:'Fallow',e:'🟫',c:'#bfbf7a'},
-    176:{l:'Grass/Pasture',e:'🟩',c:'#e8ffbf'}, 121:{l:'Developed',e:'🏘️',c:'#9c9c9c'},
-    111:{l:'Open Water',e:'💧',c:'#4970a3'}, 141:{l:'Deciduous Forest',e:'🌳',c:'#93cc93'},
-    190:{l:'Woody Wetlands',e:'🌲',c:'#7cafaf'}, 195:{l:'Herbaceous Wetlands',e:'🌾',c:'#7cafaf'},
-    2:{l:'Cotton',e:'🪴',c:'#ff2626'}, 3:{l:'Rice',e:'🌾',c:'#00a8e2'},
-    6:{l:'Sunflower',e:'🌻',c:'#ffff00'}, 10:{l:'Peanuts',e:'🥜',c:'#70a500'},
-    12:{l:'Sweet Corn',e:'🌽',c:'#dda50a'}, 42:{l:'Dry Beans',e:'🫘',c:'#a80000'},
-    53:{l:'Peas',e:'🟢',c:'#54ff00'}, 31:{l:'Canola',e:'🌼',c:'#d1ff00'}
+    1:{l:'Corn',c:'#ffd400'}, 5:{l:'Soybeans',c:'#267300'},
+    24:{l:'Winter Wheat',c:'#a87000'}, 23:{l:'Spring Wheat',c:'#d8b056'},
+    36:{l:'Alfalfa',c:'#ffa8e3'}, 37:{l:'Other Hay',c:'#a5f28c'},
+    4:{l:'Sorghum',c:'#ff9e0f'}, 21:{l:'Barley',c:'#e2007d'},
+    28:{l:'Oats',c:'#a05989'}, 61:{l:'Fallow',c:'#bfbf7a'},
+    176:{l:'Grass/Pasture',c:'#e8ffbf'}, 121:{l:'Developed',c:'#9c9c9c'},
+    111:{l:'Open Water',c:'#4970a3'}, 141:{l:'Deciduous Forest',c:'#93cc93'},
+    190:{l:'Woody Wetlands',c:'#7cafaf'}, 195:{l:'Herbaceous Wetlands',c:'#7cafaf'},
+    2:{l:'Cotton',c:'#ff2626'}, 3:{l:'Rice',c:'#00a8e2'},
+    6:{l:'Sunflower',c:'#ffff00'}, 10:{l:'Peanuts',c:'#70a500'},
+    12:{l:'Sweet Corn',c:'#dda50a'}, 42:{l:'Dry Beans',c:'#a80000'},
+    53:{l:'Peas',c:'#54ff00'}, 31:{l:'Canola',c:'#d1ff00'}
   };
-  function crop(code){ return CDL_CROPS[code] || {l:'Code '+code,e:'▦',c:'#666'}; }
+  function crop(code){ return CDL_CROPS[code] || {l:'Code '+code,c:'#666'}; }
 
   // ── State ───────────────────────────────────────────────────────────
   var map, drawnLayer, drawControl, satLayer, mapLayer, gpsMarker;
@@ -103,7 +103,7 @@
     map.on('zoomstart', dismissInvite);
     try{ map.getContainer().addEventListener('pointerdown', dismissInvite, { once:true }); }catch(e){}
 
-    // THE BASE MAP IS THE USGS NATIONAL MAP (Sig, Oct 29, 2026): public domain, no key, no
+    // THE BASE MAP IS THE USGS NATIONAL MAP (Oct 29, 2026): public domain, no key, no
     // account, so it cannot turn into a bill or a watermark (scripts/basemap-checks.mjs). The
     // satellite view is USGSImageryOnly (NAIP aerial photos, cached to level 16; closer zooms
     // stretch the level-16 tile), the map view is USGSTopo. Esri World Imagery (no account,
@@ -143,16 +143,13 @@
       if(tracing || activePoly) return;
       // a tap on a hail marker (or any interactive vector) is that, not a field
       try{ if(e.originalEvent && e.originalEvent.target && e.originalEvent.target.closest && e.originalEvent.target.closest('.leaflet-interactive')) return; }catch(err){}
+      // Nov 20, 2026 ("tap your field" works on the first try on a phone): zoomed out, a tap is
+      // never wasted, it zooms to that spot; zoomed in, a tap is the field on every device (the
+      // phone's confirm chip took a second tap). A stray drop is one tap away from gone:
+      // "Draw a different field" heads the read.
       if(map.getZoom() < TAP_MIN_ZOOM){
-        if(Date.now()-_zoomHintAt > 4000){ _zoomHintAt=Date.now(); flashHint('Zoom in to your field, then tap it'); }
-        return;
-      }
-      // TOUCH SAFETY (learned in the field, literally): on coarse pointers a bare
-      // tap shows a GHOST boundary + confirm chip instead of committing — stray
-      // thumbs and pinch-ends were dropping fields mid-conversation with a farmer.
-      // Tapping elsewhere just moves the ghost. Desktop keeps the instant drop.
-      if(window.matchMedia && matchMedia('(pointer: coarse)').matches){
-        showGhost(e.latlng.lat, e.latlng.lng);
+        map.setView(e.latlng, 15);
+        if(Date.now()-_zoomHintAt > 4000){ _zoomHintAt=Date.now(); flashHint('Now tap your field'); }
         return;
       }
       dropFieldBox(e.latlng.lat, e.latlng.lng);
@@ -381,7 +378,7 @@
     document.getElementById('fs-results').hidden=true;
     var _dk=document.getElementById('fs-deck'); if(_dk){ _dk.hidden=true; _dk.innerHTML=''; }
     var _pk=document.getElementById('fs-peek'); if(_pk){ _pk.hidden=true; _pk.innerHTML=''; }
-    document.documentElement.classList.remove('fs-has-peek');
+    document.documentElement.classList.remove('fs-has-peek', 'fs-field-open');
     _peek={};
     document.getElementById('fs-empty').hidden=false;
     setFieldChrome(false);
@@ -426,11 +423,29 @@
     var now=Date.now();
     arr.unshift({ id:now, name:(name||'Untitled').slice(0,40), pts:pts, acres:+polyAcres(activePoly).toFixed(1), notes:'', photos:[], editedAt:now });
     persistSavedFields(arr);
+    saveToFieldRain((name||'Untitled').slice(0,40), polyCentroid(activePoly));
     _activeFieldId = arr[0].id;        // start tracking this field for changed-since
     saveSnap(_activeFieldId, fieldSnapshot());  // baseline = current conditions
     renderSavedFields();
     renderNotesSectionInPlace();       // the "save this field first" hint becomes the real editor
     ga('field_saved', {});
+  }
+
+  // "Save this field" carries over to Field Rain (Nov 20, 2026): the field's center goes into
+  // /field-rain's own saved list (localStorage agsist-fields, this device only), by that page's
+  // rules (components/field-rain.js add: a US point to 4 decimals, a clean name of 40 characters,
+  // at most 20 fields, the same point and name kept once). Returns true when it is in the list.
+  var RAIN_KEY = 'agsist-fields', RAIN_MAX = 20;
+  function saveToFieldRain(name, c){
+    if(!c || !(isFinite(c.lat) && isFinite(c.lng) && c.lat>15 && c.lat<72 && c.lng>-180 && c.lng<-50)) return false;
+    var list=[];
+    try{ list=JSON.parse(localStorage.getItem(RAIN_KEY)||'[]'); if(!Array.isArray(list)) list=[]; }catch(e){ list=[]; }
+    var n=String(name==null?'':name).replace(/[\x00-\x1f<>]/g,'').replace(/\s+/g,' ').trim().slice(0,40)||'Field';
+    var lat=Math.round(c.lat*1e4)/1e4, lon=Math.round(c.lng*1e4)/1e4;
+    if(list.some(function(f){ return f && Math.abs(+f.lat-lat)<1e-4 && Math.abs(+f.lon-lon)<1e-4 && f.n===n; })) return true;
+    if(list.length>=RAIN_MAX) return false;
+    list.push({ id:'f'+Date.now().toString(36), n:n, lat:lat, lon:lon });
+    try{ localStorage.setItem(RAIN_KEY, JSON.stringify(list)); return true; }catch(e){ return false; }
   }
 
   // ── SCOUTING NOTES + PHOTOS (attached to a saved field, same localStorage row) ──
@@ -1009,6 +1024,9 @@
     try { map.fitBounds(poly.getBounds(), { padding:[40,40], maxZoom:16 }); } catch(e){}
     var cb=document.getElementById('fs-clear'); if(cb) cb.disabled=false;
     var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.add('has-field');
+    // the field's chrome goes on now, not when the read script lands: a shared link used to show the
+    // example button first and push the rail's notes down (a 0.013 shift at 1280, Nov 20, 2026)
+    document.documentElement.classList.add('fs-field-open');
     runAll(poly);
     if(src==='draw') ga('field_drawn', { acres: Math.round(polyAcres(poly)) });
   }
@@ -1100,7 +1118,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=24', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
+  var FS_READ_SRC='/field-scout-read.js?v=34', FS_EXTRAS_SRC='/field-scout-extras.js?v=9';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},
@@ -1188,7 +1206,7 @@
   function scrubTo(){ if(RM) return RM.scrubTo.apply(null, arguments); return fsLate(loadRead, 'scrubTo', arguments); }
   function toggleHail(){ if(RM) return RM.toggleHail.apply(null, arguments); return fsLate(loadRead, 'toggleHail', arguments); }
   // What's on and around this field (flood, wetlands, slope, energy, feedlots, easements): its own file
-  var FS_LAYERS_SRC='/field-scout-layers.js?v=3', _lyP=null, LY=null;
+  var FS_LAYERS_SRC='/field-scout-layers.js?v=4', _lyP=null, LY=null;
   function loadLayers(poly){
     var g=fieldGen;
     if(!_lyP) _lyP=fsScript(FS_LAYERS_SRC, '__fsLayers').then(function(f){ LY=LY||f(FSX); return LY; }, function(e){ _lyP=null; throw e; });

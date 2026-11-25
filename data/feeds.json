@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 99,
- "with_known_cadence": 99,
+ "count": 97,
+ "with_known_cadence": 97,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -51,22 +51,27 @@
    ],
    "written_by": [
     "Build Analyst Scorecard",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands"
    ],
    "touched_by": [
     "Build Analyst Scorecard",
     "Generate Daily Briefing",
     "Rebuild Call Scorecard",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "2 launches every day at about 6am Central",
+   "cadence": "1 launch every day at about 6am Central, and more on set days of each month",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "25 11 * * *",
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *"
    ],
    "max_gap_hours": 24.0,
@@ -92,6 +97,7 @@
     "county rain",
     "Fetch Crop Progress",
     "Dairy prices",
+    "Drought county week",
     "Bake farm-bill page",
     "farmland-atlas-pages",
     "Hail state pages \u2014 generate from monthly data",
@@ -152,33 +158,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/atlas/atlas.json",
-   "pages": [
-    "farmland-atlas.html"
-   ],
-   "written_by": [
-    "API jobs (one-time)",
-    "farmland-atlas"
-   ],
-   "touched_by": [
-    "Accuracy pass",
-    "API jobs (one-time)",
-    "farmland-atlas",
-    "State yield pages"
-   ],
-   "cadence": "1 launch monthly, on day 12 at about 4am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "17 9 12 * *"
-   ],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/atlas/more.json",
    "pages": [
     "farmland-atlas.html"
@@ -205,9 +184,7 @@
    "path": "data/audience.json",
    "pages": [
     "desk.html",
-    "sponsor-kit.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
@@ -238,9 +215,22 @@
     "cash-bid-pages"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
     "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
     "Daily site check",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Harvest price tracker",
+    "lrp",
+    "Build Price Stats (5-year percentile)",
+    "Monthly county rain email",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
@@ -255,34 +245,9 @@
    "why_quiet": null
   },
   {
-   "path": "data/bids-stats.json",
-   "pages": [
-    "index.html"
-   ],
-   "written_by": [
-    "Fetch Grain Bids"
-   ],
-   "touched_by": [
-    "Fetch Grain Bids",
-    "Sitemap lastmod"
-   ],
-   "cadence": "about every 60 minutes",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "7 * * * *"
-   ],
-   "max_gap_hours": 1.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/bids.json",
    "pages": [
-    "cash-bids.html",
-    "index.html"
+    "cash-bids.html"
    ],
    "written_by": [
     "Fetch Grain Bids"
@@ -293,6 +258,7 @@
     "Cash Bid Index",
     "cash-bid-pages",
     "county rain",
+    "Drought county week",
     "farmland-atlas-pages",
     "Fetch Grain Bids",
     "Hail state pages \u2014 generate from monthly data",
@@ -398,6 +364,7 @@
     "conditions.html"
    ],
    "written_by": [
+    "Clock",
     "cond-yield",
     "conditions"
    ],
@@ -405,12 +372,15 @@
     "Ag stocks",
     "Build Analyst Scorecard",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
+    "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-rent",
     "Cattle auction prices",
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -462,6 +432,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",
@@ -504,7 +476,9 @@
     "COT Release Watch",
     "Fetch COT Data",
     "Generate Daily Briefing",
+    "Friday Chart spec",
     "Rebuild Call Scorecard",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -542,6 +516,7 @@
    "touched_by": [
     "COT Release Watch",
     "Fetch COT Data",
+    "Friday Chart spec",
     "Rebuild Feed Manifest"
    ],
    "cadence": "10 launches on a fixed schedule at about 2pm, 3pm, 4pm Central",
@@ -607,6 +582,7 @@
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "COT Release Watch",
     "Fetch COT Data"
    ],
@@ -615,6 +591,8 @@
     "Build Analyst Scorecard",
     "ARC/PLC refresh",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
+    "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-bid-pages",
     "cash-rent",
@@ -622,6 +600,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -671,6 +650,7 @@
     "Rebuild Feed Manifest",
     "Rebuild Call Scorecard",
     "refs",
+    "Report day live: graded result within a minute",
     "RMA price discovery",
     "Rain Print Canada stations",
     "Rain Print design email",
@@ -679,6 +659,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Build State Stats (USDA NASS)",
@@ -719,6 +701,7 @@
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "conditions",
     "Fetch Crop Progress"
    ],
@@ -727,6 +710,8 @@
     "Build Analyst Scorecard",
     "ARC/PLC refresh",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
+    "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-bid-pages",
     "cash-rent",
@@ -734,6 +719,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -754,6 +740,7 @@
     "Fertilizer co-op posted prices",
     "fetch-fsa-arcplc",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Friday Chart spec",
     "Hail data refresh",
     "Hail state pages \u2014 generate from monthly data",
     "Harvest price tracker",
@@ -789,6 +776,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Build State Stats (USDA NASS)",
@@ -817,25 +806,6 @@
    "max_gap_hours": 127.7,
    "quiet": "weekly",
    "why_quiet": "USDA Crop Progress is a Monday afternoon release, in season only."
-  },
-  {
-   "path": "data/custom-rates/index.json",
-   "pages": [
-    "custom-rates.html"
-   ],
-   "written_by": [],
-   "touched_by": [
-    "Rebuild Feed Manifest"
-   ],
-   "cadence": "maintained by hand, not on a schedule",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
   },
   {
    "path": "data/daily-archive/index.json",
@@ -879,6 +849,7 @@
     "Daily site check",
     "Generate Daily Briefing",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Friday Chart spec",
     "Morning report"
    ],
    "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
@@ -923,9 +894,10 @@
     "Share images",
     "Sitemap lastmod",
     "Build State Stats (USDA NASS)",
+    "storage",
     "yield-panel"
    ],
-   "cadence": "5 launches on a fixed schedule at about 9am, 10am, 11am, 4pm Central",
+   "cadence": "1 launch on a fixed schedule at about 9am Central, and more on set days of each month",
    "curated": false,
    "planned": false,
    "external": false,
@@ -954,9 +926,10 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Fetch Prices"
+    "Fetch Prices",
+    "storage"
    ],
-   "cadence": "5 launches on a fixed schedule at about 9am, 10am, 11am, 4pm Central",
+   "cadence": "1 launch on a fixed schedule at about 9am Central, and more on set days of each month",
    "curated": false,
    "planned": false,
    "external": false,
@@ -996,12 +969,12 @@
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
-   "why_quiet": "Every elevator the bid network knows, read or not. The town page builder lists the ones it cannot read, with a link for the elevator to ask to post its own bids, and Sig's elevator desk matches each request against it. Unreachable means the town pages leave that list out and the desk says to check by hand; nothing breaks."
+   "why_quiet": "Every elevator the bid network knows, read or not. The town page builder lists the ones it cannot read, with a link for the elevator to ask to post its own bids, and the elevator desk matches each request against it. Unreachable means the town pages leave that list out and the desk says to check by hand; nothing breaks."
   },
   {
    "path": "data/drought/summary.json",
    "pages": [
-    "drought-monitor.html"
+    "rain.html"
    ],
    "written_by": [
     "Drought county week"
@@ -1026,31 +999,21 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "sponsor-kit.html"
+    "index.html"
    ],
    "written_by": [
     "cash-bid-pages"
    ],
    "touched_by": [
-    "ARC/PLC refresh",
     "cash-bid-pages",
     "conditions",
-    "Fetch COT Data",
-    "county rain",
     "Fetch Crop Progress",
     "Daily site check",
     "Dairy prices",
-    "Bake farm-bill page",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Harvest price tracker",
-    "lrp",
-    "Build Price Stats (5-year percentile)",
     "Fetch Prices",
-    "Monthly county rain email",
-    "Share images",
     "Sitemap lastmod",
-    "Build State Stats (USDA NASS)",
-    "yield-panel"
+    "storage"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
@@ -1078,7 +1041,8 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Fetch Prices"
+    "Fetch Prices",
+    "storage"
    ],
    "cadence": "1 launch every day at about 7am Central",
    "curated": false,
@@ -1147,8 +1111,8 @@
   {
    "path": "data/fall-nitrogen.json",
    "pages": [
-    "fall-nitrogen.html",
-    "planting-date.html"
+    "planting-date.html",
+    "spray.html"
    ],
    "written_by": [
     "Fall nitrogen soil temperature"
@@ -1194,6 +1158,7 @@
     "Rebuild Feed Manifest",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "storage",
     "yield-panel"
    ],
    "cadence": "maintained by hand, not on a schedule",
@@ -1233,7 +1198,7 @@
    "path": "data/fertilizer-prices.json",
    "pages": [
     "fertilizer.html",
-    "urea.html"
+    "spray.html"
    ],
    "written_by": [
     "Fertilizer co-op posted prices"
@@ -1422,8 +1387,10 @@
     "Fetch Prices",
     "Monthly county rain email",
     "Rebuild Feed Manifest",
+    "Report day live: graded result within a minute",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "storage",
     "Tools hub dates",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
@@ -1452,7 +1419,7 @@
    "touched_by": [
     "Hay prices"
    ],
-   "cadence": "2 launches every day at about 9am, 3pm Central",
+   "cadence": "1 launch monthly, on days 1 and 2 at about 9am Central, and more on set days of each month",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1473,6 +1440,7 @@
    "written_by": [],
    "touched_by": [
     "Bid change ledger (dispatch only)",
+    "Cron health",
     "Fetch Grain Bids",
     "Morning report",
     "Rebuild Feed Manifest"
@@ -1485,7 +1453,7 @@
    "crons": [],
    "max_gap_hours": null,
    "quiet": null,
-   "why_quiet": "Every board the bid network reads, with its last read and why it failed. Sig's Today list (desk/today.html, a tab of /desk) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
+   "why_quiet": "Every board the bid network reads, with its last read and why it failed. The Today list (desk/today.html, a tab of /desk) and the morning email build the day's hand-paste list from it. Unreachable means the Today list says so and shows the other items; nothing on the public site reads it."
   },
   {
    "path": "data/land-sales/lead.json",
@@ -1499,6 +1467,121 @@
     "Feed manifest \u2014 every published number is accounted for",
     "Land data (parcel services + transfers)",
     "Rebuild Feed Manifest"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/il.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/in.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/nj.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/vt.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/wi.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
    ],
    "cadence": "1 launch monthly, on day 3 at about 4am Central",
    "curated": false,
@@ -1988,7 +2071,8 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "The wire",
-    "Fetch Prices"
+    "Fetch Prices",
+    "storage"
    ],
    "cadence": "2 launches on a fixed schedule at about 5pm Central",
    "curated": false,
@@ -2006,8 +2090,8 @@
   {
    "path": "data/outlooks/manifest.json",
    "pages": [
-    "drought-monitor.html",
-    "index.html"
+    "index.html",
+    "rain.html"
    ],
    "written_by": [
     "Fetch Outlooks (NOAA + USDM)"
@@ -2031,8 +2115,7 @@
   {
    "path": "data/page-sponsors.json",
    "pages": [
-    "desk.html",
-    "sponsor.html"
+    "desk.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2050,49 +2133,27 @@
    "why_quiet": null
   },
   {
-   "path": "data/predictions-backtest.json",
-   "pages": [
-    "usda-calendar.html"
-   ],
-   "written_by": [
-    "Prediction bot \u2014 call and grade"
-   ],
-   "touched_by": [
-    "Prediction bot \u2014 call and grade"
-   ],
-   "cadence": "4 launches weekdays at about 2pm, 3pm, 5pm, 6pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "41 19 * * 1-5",
-    "41 20 * * 1-5",
-    "41 22 * * 1-5",
-    "41 23 * * 1-5"
-   ],
-   "max_gap_hours": 68.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/predictions.json",
    "pages": [
     "usda-calendar.html"
    ],
    "written_by": [
+    "Clock",
     "Prediction bot \u2014 call and grade"
    ],
    "touched_by": [
     "Ag stocks",
     "Build Analyst Scorecard",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
+    "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-rent",
     "Cattle auction prices",
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -2145,6 +2206,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",
@@ -2193,34 +2256,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/prf/climate-indices.json",
-   "pages": [
-    "prf.html"
-   ],
-   "written_by": [
-    "climate indices",
-    "prf"
-   ],
-   "touched_by": [
-    "climate indices",
-    "prf",
-    "Rebuild Feed Manifest",
-    "seasonal models"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 9am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "37 14 9 * *",
-    "23 10 * * 3"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": "monthly",
-   "why_quiet": "NOAA posts the PDO and AMO once a month, so the climate indices job runs on the 9th and the file moves only when a new month is out."
-  },
-  {
    "path": "data/prf/meta.json",
    "pages": [
     "index.html",
@@ -2235,13 +2270,14 @@
     "prf",
     "seasonal models"
    ],
-   "cadence": "1 launch on a fixed schedule at about 5am Central",
+   "cadence": "2 launches on a fixed schedule at about 5am, 11am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "23 10 * * 3"
+    "23 10 * * 3",
+    "37 16 2 12 *"
    ],
    "max_gap_hours": 168.0,
    "quiet": null,
@@ -2262,7 +2298,7 @@
     "prf",
     "seasonal models"
    ],
-   "cadence": "3 launches on a fixed schedule at about 5am, 9am, 10am Central",
+   "cadence": "4 launches on a fixed schedule at about 5am, 9am, 10am, 11am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2270,6 +2306,7 @@
    "crons": [
     "37 14 9 * *",
     "23 10 * * 3",
+    "37 16 2 12 *",
     "41 15 15 11,12 *"
    ],
    "max_gap_hours": 168.0,
@@ -2292,7 +2329,7 @@
     "prf",
     "Rebuild Feed Manifest"
    ],
-   "cadence": "3 launches on a fixed schedule at about 5am, 6am, 10am Central",
+   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 10am, 11am Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2300,39 +2337,12 @@
    "crons": [
     "47 15 * * 4",
     "17 11 * * 5",
-    "23 10 * * 3"
+    "23 10 * * 3",
+    "37 16 2 12 *"
    ],
    "max_gap_hours": 119.1,
    "quiet": "weekly",
    "why_quiet": "Checked Thursdays and Fridays; it changes when a source issues. The US Drought Monitor map comes out Thursday mornings, CPC's seasonal outlooks on the third Thursday of the month and the ENSO discussion on the second."
-  },
-  {
-   "path": "data/prf/seasonal-fc.json",
-   "pages": [
-    "prf.html"
-   ],
-   "written_by": [
-    "prf",
-    "seasonal models"
-   ],
-   "touched_by": [
-    "climate indices",
-    "prf",
-    "Rebuild Feed Manifest",
-    "seasonal models"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 10am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "23 10 * * 3",
-    "41 15 15 11,12 *"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": "seasonal",
-   "why_quiet": "The PRF test uses one forecast a year from each model, the one started in November, so the seasonal models job runs in mid November and mid December and the file sits still the rest of the year."
   },
   {
    "path": "data/price-stats.json",
@@ -2389,7 +2399,10 @@
     "Fetch Prices"
    ],
    "touched_by": [
+    "Accuracy pass",
+    "API jobs (one-time)",
     "ARC/PLC refresh",
+    "cash-bid-pages",
     "Cattle auction prices",
     "Cattle cash prices",
     "conditions",
@@ -2405,7 +2418,9 @@
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",
     "Rebuild Feed Manifest",
+    "Report day live: graded result within a minute",
     "Report day \u2014 USDA vs the trade email",
+    "storage",
     "Tools hub dates"
    ],
    "cadence": "every 15 minutes while CBOT trades, started by cron-job.org (the workflow's own hourly :11 cron is the fallback)",
@@ -2461,6 +2476,7 @@
     "gifts-for-farmers.html",
     "index.html",
     "rain-gauge.html",
+    "rain-print.html",
     "wedding-year-weather-gift.html"
    ],
    "written_by": [],
@@ -2494,13 +2510,12 @@
   {
    "path": "data/rate-card.json",
    "pages": [
-    "sponsor-kit.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [],
    "touched_by": [
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
@@ -2580,31 +2595,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/sponsor-slots.json",
-   "pages": [
-    "sponsor.html"
-   ],
-   "written_by": [
-    "cash-bid-pages"
-   ],
-   "touched_by": [
-    "cash-bid-pages",
-    "Rebuild Feed Manifest",
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "1 launch every day at about 7pm Central",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "19 */6 * * *"
-   ],
-   "max_gap_hours": 6.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/sponsor.json",
    "pages": [
     "desk.html",
@@ -2629,8 +2619,7 @@
    "path": "data/sponsors.json",
    "pages": [
     "desk.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2721,9 +2710,12 @@
    "touched_by": [
     "Accuracy pass",
     "cash-bid-pages",
+    "county rain",
+    "Drought county week",
     "farmland-atlas-pages",
     "farmland-atlas",
     "Hail data refresh",
+    "Monthly county rain email",
     "tenure"
    ],
    "cadence": "1 launch monthly, on day 15 at about 1am Central",
@@ -2775,6 +2767,7 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
+    "storage",
     "transport"
    ],
    "cadence": "1 launch Fridays at about 6am Central",
@@ -2838,11 +2831,12 @@
   {
    "path": "data/us-states.geo.json",
    "pages": [
-    "farmland-atlas.html",
     "hail-map.html",
     "list-your-elevator.html"
    ],
-   "written_by": [],
+   "written_by": [
+    "Fertilizer USDA AMS series"
+   ],
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
@@ -2851,6 +2845,7 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
+    "Fertilizer USDA AMS series",
     "Harvest price tracker",
     "lrp",
     "Build Price Stats (5-year percentile)",
@@ -2860,13 +2855,17 @@
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "maintained by hand, not on a schedule",
+   "cadence": "3 launches on a fixed schedule at about 10am, 3pm, 8pm Central",
    "curated": true,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "23 20 * * 5",
+    "23 1 * * 6",
+    "23 15 * * 1"
+   ],
+   "max_gap_hours": 101.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -2877,6 +2876,7 @@
    ],
    "written_by": [
     "bake crop tour",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "yield-panel"
    ],
@@ -2888,11 +2888,13 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
+    "Report day live: graded result within a minute",
+    "storage",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
     "yield-panel"
    ],
-   "cadence": "4 launches every day at about 4am, 8pm, 11pm Central",
+   "cadence": "2 launches every day at about 4am, 11pm Central, and more on set days of each month",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2900,6 +2902,9 @@
    "crons": [
     "20 9 * * *",
     "30 1 17-22 8 *",
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *",
     "24 4 * * *"
    ],
@@ -2933,6 +2938,7 @@
    ],
    "written_by": [
     "COT Release Watch",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -2946,16 +2952,21 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
     "Rebuild Call Scorecard",
+    "Report day live: graded result within a minute",
+    "storage",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "3 launches on a fixed schedule at about 6am Central",
+   "cadence": "2 launches on a fixed schedule at about 6am Central, and more on set days of each month",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "13,43 19-21 * * 1-5",
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *",
     "20 11 * * *"
    ],
@@ -2969,19 +2980,24 @@
     "index.html"
    ],
    "written_by": [
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands"
    ],
    "touched_by": [
     "COT Release Watch",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "1 launch every day Central",
+   "cadence": "4 launches on set days of each month at about 10am, 11am, 2pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *"
    ],
    "max_gap_hours": null,
@@ -2991,22 +3007,25 @@
   {
    "path": "data/yield-nowcast.json",
    "pages": [
-    "conditions.html",
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "cond-yield"
    ],
    "touched_by": [
     "Ag stocks",
     "Build Analyst Scorecard",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
+    "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-rent",
     "Cattle auction prices",
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -3057,6 +3076,8 @@
     "Share images",
     "Site usage (GA4 + Search Console, 90 days)",
     "Sitemap lastmod",
+    "Soil by county",
+    "Sponsor monthly email",
     "Sponsor reports \u2014 yesterday's numbers, from GA4",
     "state-rent-pages",
     "Stats ingest (GA4 + Search Console + Bing, private)",

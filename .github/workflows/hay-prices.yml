@@ -1,5 +1,4 @@
 name: Hay prices
-# Hay prices.
 
 on:
   workflow_dispatch:
@@ -11,9 +10,8 @@ on:
   schedule:
     - cron: '23 20 27-31 * *'
     - cron: '23 14 1,2 * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 13"]
     types: [completed]
 
 permissions:
@@ -21,7 +19,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 13' || (contains(github.event.workflow_run.display_title, ' hay-prices.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -53,6 +53,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     concurrency:
       group: hay-prices
       cancel-in-progress: false

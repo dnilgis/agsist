@@ -16,10 +16,9 @@
      "framed_christmas_cutoff"           the card's Christmas wording runs promote_from..this date
      "briefing_line": "..."              optional; the one line on /daily (null = none)
      "gauge_hook": {line, link}          the rain gauge's one line and link label, used wherever
-                                         the gauge is linked (Sig, 2026-10-23); missing or bad = no gauge line
+                                         the gauge is linked (2026-10-23); missing or bad = no gauge line
      "gauge_window": {from, until, rain_print_until}
-                                         "auto" (rain, weather, PRF, ARC/PLC and Fast Facts pages, Sig
-                                         2026-10-23): the gauge hook from..until inclusive; nothing after
+                                         "auto" (rain, weather, PRF, ARC/PLC and Fast Facts pages, 2026-10-23): the gauge hook from..until inclusive; nothing after
                                          rain_print_until and before from (Christmas Day); "see" any other day.
                                          A bad window leaves "auto" on "see".
 
@@ -32,9 +31,8 @@
    The Christmas card links /gifts-for-farmers (Rain Print first, then other
    gift ideas); the other two link /rain-print. While the Christmas wording
    runs (through the framed order-by date), the card moves up to the page's
-   empty [data-rp-card-early] marker, right under the homepage prices (Sig,
-   Oct 23); after that date it stays where the page put it.
-   xmasLine() is the order-by sentence on /gifts-for-farmers, from the two
+   empty [data-rp-card-early] marker, right under the homepage prices (Oct 23); after that date it stays where the page put it.
+   xmasLine is the order-by sentence on /gifts-for-farmers, from the two
    Christmas cutoffs in data/rain-print.json: Oct 1 through Dec 25 of the
    cutoff's year only, a plain date, never a countdown.
    "see" links /rain-print with the reader's saved ZIP and last year when the
@@ -42,7 +40,7 @@
    Off, out of the window, or on any failure, the element stays hidden and
    takes no space. No countdown, no badge, no pop-up. Clicks send one
    analytics event (rain_print_promo_click / rain_gauge_promo_click).
-   scripts/brief_email.py rain_print_line() applies the briefing rule to the email. */
+   scripts/brief_email.py rain_print_line applies the briefing rule to the email. */
 (function (root) {
   'use strict';
   var ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -99,7 +97,7 @@
     var dec24 = cut.slice(0, 4) + '-12-24';   // the cutoff's own December, so a stale cutoff never runs a gift line all next year
     if (cut && today > cut && today <= dec24 && typeof cfg.gift_card_title === 'string' && cfg.gift_card_title) {
       return { angle: 'gift', title: 'Still need a gift?', href: '/rain-print', cta: 'Make yours',
-        text: 'Give this year’s Rain Print. Print a gift card for under the tree now; the print ships in January, once the year is in.', price: price };
+        text: 'Give this year’s Rain Print. Print a card to give now, for under the tree; the print ships in January, once the year is in.', price: price };
     }
     return { angle: 'evergreen', title: 'A year of rain, printed for the wall', href: '/rain-print', cta: 'Make yours',
       text: 'Type your town and see every rain of the year at the nearest weather station, printed on 13 x 19 paper. Free to make.', price: price };
@@ -114,7 +112,7 @@
     if (today <= pc && today <= fc) return 'For Christmas delivery, order a framed print by ' + shortDate(fc) + ', a print by ' + shortDate(pc) + '.';
     if (today <= pc) return 'For Christmas delivery, order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.';
     if (today <= fc) return 'For Christmas delivery, order a framed print by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
-    return 'A past year ordered now ships after Christmas. The digital file still comes by email in 1 business day, or give this year\u2019s print: a gift card now, the print in January.';
+    return 'A past year ordered now ships after Christmas. The digital file still comes by email in 1 business day, or give this year\u2019s print: a card to give now, the print in January.';
   }
   // Where "see" points: the saved ZIP and last year when known, else the plain page.
   function seeHref(zip, today) {
@@ -140,7 +138,7 @@
     var st = doc.createElement('style'); st.id = 'rp-promo-css';
     st.textContent = '.rp-promo{margin:1.2rem 0 .8rem;font-size:.9rem;line-height:1.5;color:var(--text-dim)}' +
       '.rp-promo a{color:var(--brand);text-decoration:underline;text-underline-offset:2px}' +
-      '.rp-card{display:flex;align-items:center;gap:14px;margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);text-decoration:none;color:var(--text)}' +
+      '.rp-card{display:flex;align-items:center;gap:14px;margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);text-decoration:none;color:var(--text)}' +
       'a.rp-card:hover,a.rp-card:focus-visible{border-color:var(--brand)}' +
       'a.rp-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}' +
       '.rp-card-i{position:relative;flex:0 0 auto;width:132px}' +

@@ -3,7 +3,7 @@
  * rain-print-order, worker v5.9, same day).
  *
  * They post to AGSIST's own subs worker (POST /form, workers/subs-worker.js
- * v5.8), which stores them; scripts/form_digest.py mails Sig. Until Sig
+ * v5.8), which stores them; scripts/form_digest.py mails the owner. Until the owner
  * deploys that worker version the route does not exist, so whenever the
  * worker answers 403, 404, 405 or 5xx, does not answer, or the browser cannot
  * read the answer, or the worker does not know the form's kind yet (400
@@ -22,7 +22,7 @@
  *     refusal. For a plain HTML form that falls back by submitting itself.
  *     A worker that has not answered in 12 seconds counts as 'fallback'.
  *
- * WORKER_ONLY (2026-10-19, Sig): a kind that carries a business's customer
+ * WORKER_ONLY (2026-10-19): a kind that carries a business's customer
  * list never goes to Formspree. The business page promises "your list stays
  * with me", so when the worker fails or is silent the post rejects instead
  * (an Error with .workerOnly true, and .slow true when the worker only went
@@ -35,11 +35,21 @@
  * and the post goes to the worker on the next visit after it is back. Still
  * never to Formspree. Without outbox.js (or with storage blocked) it rejects
  * as before.
+ *
+ * LIVE HOST ONLY: nothing goes to Formspree
+ * unless the page is on agsist.com or www.agsist.com. Off the live host
+ * (a local copy or a preview) the Formspree step rejects with 'not sent' (.offsite true), so the page shows its own
+ * "nothing was sent" line and an outbox keeps the item.
+ * agsistFormPost.liveHost() says which it is.
  */
 (function () {
   'use strict';
   var WORKER = 'https://agsist-api.dnilgis.workers.dev/form';
   var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
+  var LIVE_HOSTS = { 'agsist.com': 1, 'www.agsist.com': 1 };
+  function liveHost() {
+    try { return LIVE_HOSTS[String(window.location.hostname).toLowerCase()] === 1; } catch (e) { return false; }
+  }
   var FALLBACK = { 403: 1, 404: 1, 405: 1 };
   // kinds with a customer list (rain-print-business: the towns box, names and addresses); see WORKER_ONLY above
   var WORKER_ONLY = { 'rain-print-business': 1 };
@@ -90,6 +100,7 @@
      left the button on "Sending..." for good. */
   var FORMSPREE_MS = 15000, SLOW_TAG = ' (sent after the site form was slow; may repeat)';
   function toFormspree(fields, slow) {
+    if (!liveHost()) { var off = new Error('not sent'); off.offsite = true; return Promise.reject(off); }
     var fd = new FormData();
     Object.keys(fields || {}).forEach(function (k) {
       if (fields[k] !== undefined && fields[k] !== null) fd.append(k, k === '_subject' && slow ? fields[k] + SLOW_TAG : fields[k]);
@@ -125,6 +136,7 @@
     });
   }
   post.WORKER_ONLY = WORKER_ONLY;
+  post.liveHost = liveHost;
   /* Straight to the backup form, for what the worker never takes (a Rain
      Print order record when the worker is out, 2026-10-22). Resolves
      {ok:true, via:'formspree'}, rejects when it didn't go. */

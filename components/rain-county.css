@@ -38,8 +38,10 @@
 .rc-t th:first-child, .rc-t td:first-child { text-align: left; }
 .rc-t td:first-child { white-space: normal; }
 .rc-t tbody th { text-align: left; font-weight: 400; white-space: normal; }
+/* the first header may wrap ("Borough or census area" would push the percent column off a 390 px screen) */
+.rc-t thead th:first-child { white-space: normal; }
 .rc-t td:first-child .rc-n, .rc-t th:first-child .rc-n { white-space: nowrap; }
-.rc-t thead th { color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); }
+.rc-t thead th { color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); vertical-align: bottom; }   /* a two-line first head sits every head on the rule (Nov 13) */
 .rc-t .rc-n { display: block; color: var(--text-muted); font-size: var(--fs-xs); }
 .rc-t abbr { text-decoration: none; }
 .rc-t-wide { max-width: none; }
@@ -47,7 +49,9 @@
 .rc-up { color: var(--green); }
 .rc-dn { color: var(--orange); }
 .rc-list { padding-left: 1.15rem; max-width: 46em; }
-.rc-list li { margin: 0 0 .35rem; }
+.rc-list li { margin: 0 0 .35rem; text-wrap: pretty; }
+/* the Near a record intro runs as wide as the page intro above it (.rc-answer: 40em of 1.18rem = 47.2rem) */
+.rc-rec-intro { max-width: 47.2rem; }
 .rc-cta { margin: 1.8rem 0 .5rem; padding: 1rem 1.1rem; border: 1px solid var(--border-g); border-radius: var(--r-lg); background: var(--surface); max-width: 46em; }
 .rc-cta h2 { margin: 0 0 .35rem; font-size: var(--fs-lg); }
 .rc-cta p { margin: 0 0 .7rem; color: var(--text-dim); }
@@ -57,19 +61,48 @@
 .rc-faq details { border-bottom: 1px solid var(--border); padding: .55rem 0; max-width: 46em; }
 .rc-faq summary { cursor: pointer; font-weight: 600; }
 .rc-faq p { margin: .45rem 0 0; color: var(--text-dim); }
-.rc-next { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
-.rc-next a.rc-nb { display: inline-block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
-.rc-next small { color: var(--text-muted); margin-left: .15rem; }
+.rc-next { max-width: 48rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
+/* a chip has no class of its own (Nov 19, 2026: 66 bytes a page); .rc and [href] outrank styles.css's underline on a classless link in a list */
+.rc .rc-next a[href] { display: block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
+.rc-next small { display: block; color: var(--text-muted); font-size: 14px; line-height: 1.35; }
+/* the Farm tools row (scripts/cross_links.py tools_row(False), Nov 19, 2026): ROW_STYLE here, once, not on every page */
+.xl-tools { font-size: .85rem; line-height: 1.8; margin: 18px 0; }
 .rc-states { columns: 3 14em; padding: 0; list-style: none; }
 .rc-states li { break-inside: avoid; padding: .3rem 0; }
 .rc-states small { color: var(--text-muted); }
 .rc-pick { margin: 0 0 1rem; }
 .rc-pick label { display: block; font-size: var(--fs-sm); color: var(--text-muted); }
 .rc-pr { display: flex; gap: .5rem; margin-top: .2rem; max-width: 30rem; }
-.rc-pick select, .rc-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
+.rc-pick select, .rc-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md,3px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
 .rc-pick select { flex: 1; min-width: 0; }
+/* Find a county (rain-find.js, Nov 12 2026): the matches sit over the page, the message line keeps its room */
+.rc-find { position: relative; padding-bottom: 1.3rem; }
+.rc-next + .rc-find { margin-top: 1.5rem; margin-bottom: 1rem; }
+.rc-find label { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: .1rem; }
+.rc-find-w { position: relative; flex: 1; min-width: 0; display: block; }
+.rc-find-w input { width: 100%; padding-right: 2.75rem; }
+.rc-find-w input::-webkit-search-cancel-button, .rc-find-w input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
+.rc-pick .rc-find-x { position: absolute; right: 0; top: 0; width: 2.75rem; min-width: 0; height: 2.75rem; display: flex; align-items: center; justify-content: center; background: none; border: 0; padding: 0; color: var(--text); cursor: pointer; border-radius: var(--r-md,3px); }
+.rc-pick .rc-find-x[hidden] { display: none; }
+.rc-pick .rc-find-x:hover { color: var(--text); }
+.rc-pick .rc-find-x:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.rc-pick input { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md,3px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .6rem; flex: 1; min-width: 0; }
+.rc-find-l { position: static; margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; padding: .25rem 0; list-style: none; background: var(--surface); border: 1px solid var(--brand); border-radius: var(--r-md,3px); box-shadow: none; max-height: min(22rem, 60vh); overflow-y: auto; }
+.rc-find-l[hidden] { display: none; }
+.rc-find-l li { padding: .6rem .65rem; cursor: pointer; min-height: 44px; box-sizing: border-box; }
+.rc-nw { white-space: nowrap; }
+.rc-more { display: block; text-wrap: balance; }
+.rc-s { display: inline-block; }
+.rc-find-l li:hover { background: var(--bg); }
+.rc-find-l li[aria-selected="true"] { background: var(--bg); color: var(--brand); box-shadow: inset 3px 0 0 var(--brand); }
+.rc-find-l small { display: block; margin-left: 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.35; }
+.rc-find-l li.rc-find-more { cursor: default; min-height: 0; font-size: 14px; line-height: 1.4; color: var(--text); border-top: 1px solid var(--border); padding: .5rem .75rem; }
+.rc-find-l li.rc-find-more:hover { background: none; color: var(--text); }
+.rc .rc-find-m { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; line-height: 1.3rem; color: var(--text-muted); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc-pick button:not(.rc-find-x) { background: var(--surface); color: var(--brand); }
+@media (min-width: 600px) { .rc-pick button:not(.rc-find-x) { min-width: 9.5rem; } }
 .rc-pick button { font-weight: 700; cursor: pointer; color: var(--brand); border-color: var(--brand); white-space: nowrap; padding: 0 1rem; }
-.rc-pick select:focus-visible, .rc-pick button:focus-visible, .rc-all summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.rc-pick input:focus-visible, .rc-pick select:focus-visible, .rc-pick button:focus-visible, .rc-all summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .rc-all summary { cursor: pointer; font-weight: 600; padding: .6rem 0; margin: .4rem 0; display: list-item; }
 .rc-byline { font-size: var(--fs-xs); color: var(--text-muted); margin: 1.8rem 0 0; padding-top: .9rem; border-top: 1px solid var(--border); max-width: 60em; }
 @media (max-width: 560px) {
@@ -84,6 +117,8 @@
   /* "Through" on phones: the county cell says "to Oct 9" when it differs */
   .rc-t-wide td:nth-child(6), .rc-t-wide th:nth-child(6) { display: none; }
 }
+/* the wide table says "to Nov 8" under a name only when its THROUGH column is off screen (phones, above): where the column shows, the note is said twice (Nov 13) */
+@media (min-width: 561px) { .rc-t-wide th:first-child .rc-n { display: none; } }
 /* the county's year as a Rain Print (components/rain-county-print.js draws it
    over the plain chart once the figure scrolls near). The sheet is white in
    both themes, like the print. */
@@ -92,7 +127,7 @@
 .rc-print-styles button { font: inherit; font-size: var(--fs-sm); min-height: 44px; padding: .3rem .85rem; border-radius: var(--r-pill); border: 1px solid var(--border-g); background: var(--surface); color: var(--text); cursor: pointer; }
 .rc-print-styles button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
 .rc-print-styles .rc-zoom { margin-left: auto; }
-.rc-print-on .rc-print-art { background: #fff; border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,.18); overflow: hidden; }
+.rc-print-on .rc-print-art { background: #fff; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
 .rc-print-on .rc-print-art svg { max-width: none; width: 100%; }
 /* a phone: the whole sheet fits; "Up close" shows it three times bigger to swipe across */
 .rc-print-zoom .rc-print-art { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -104,11 +139,11 @@
 .rc-sell .rc-fine { margin: .5rem 0 0; }
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
 .rc-sell .btn-secondary { border-color: var(--text-muted); }
-/* The county page's print up top, in the plain chart's place (Sig, Oct 28 2026). The plain chart ships inside
-   .rc-print-art as the no-JS fallback; the script replaces it with the print. While scripts run, the print's
-   box (3:2, the art's 1800 x 1200), its picker row and the longer of the two captions are held from the first
-   paint, so drawing the print moves nothing below it (the !important beats styles.css's [hidden] rule). Without scripts nothing is held: the chart shows as is; when the print cannot be drawn the script lets the room go
-   (.rc-print-off). */
+/* The county page's print up top (Oct 28 2026). While scripts run, the print's box (3:2, the art's 1800 x 1200), its picker
+   row and the longer of the two captions are held from the first paint, so drawing the print moves nothing below it (the
+   !important beats styles.css's [hidden] rule). Without scripts nothing is held. When the print cannot be drawn the script adds
+   .rc-print-off and the room is let go on a phone; wider it stays held, with the chart in the box (the chart block, from Nov 13,
+   is below). */
 .rc-print-top .rc-print-styles { margin-top: .4rem; }
 .rc-print-top .rc-print-art { box-sizing: content-box; border: 1px solid transparent; border-radius: 4px; }
 .rc-print-top figcaption { display: grid; }
@@ -119,3 +154,90 @@
   .rc-print-top:not(.rc-print-on):not(.rc-print-off) .rc-print-art svg { flex: 1 1 auto; }
   .rc-print-top:not(.rc-print-off) figcaption > span[hidden] { display: block !important; visibility: hidden; }
 }
+
+.rc-find .rc-pr { align-items: flex-start; }   /* the list opens inline under the input and pushes the page down (user-started) */
+.rc h2 { scroll-margin-top: 5.5rem; }
+.rc-find-w input:focus-visible { outline: none; border-color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }   /* the ring sits inside the box, so the open list lines up with its edges */
+.rc-find:has(.rc-find-l:not([hidden])) .rc-find-m { opacity: 0; }   /* the open list says the same */
+.rc-pick label { font-size: 16px; font-weight: 600; color: var(--text); }
+
+.rc-links a { display: inline-block; }   /* the link row breaks between links, not inside one (Nov 13, critic r11) */
+.rc-faq + .rc-byline { border-top: 0; }   /* the fold above already ends in the rule */
+@media (max-width: 560px) {
+  .rc-links .rc-dot { display: none; }   /* one link a line: a dot would separate nothing */
+  .rc-links a { display: flex; align-items: center; min-height: 44px; }   /* a stacked list: each link is a 44 px tap line */
+  .rc-states li { padding: .65rem 0; }   /* the state lists (All states, without a page): about 44 px a row */
+}
+.rc-none li small a { white-space: nowrap; }   /* each nearest-county link stays whole in "without a page" */
+
+/* The enhanced running-total chart (Nov 13 2026; components/rain-chart.js draws it, in the browser, from the page's own data- fields;
+   scripts/build_county_rain.py writes its first drawing inline, so a reader without scripts sees it and everyone sees it until the
+   component's exact drawing replaces it in the same room). Two designs, a phone one 400 wide and a wide one 640 wide, and two heights
+   each (a page with no NOAA normal has no key): the ratios below are those sizes, and test/rain-chart-enhanced.test.mjs keeps them equal
+   to what the component draws. A county page's chart is always the phone design (its inline drawing is that, and wider than a phone it
+   sits in the print's phone-shaped room), so the wide design is only for a chart on a page without a print.
+   ORDER (the owner, Nov 13; phones only, Oct 28's print-first stands above): up to 560 px, this file's own phone layout (the
+   max-width: 560px rules above), the chart comes first inside the print's figure, with its caption, and the print below it.
+   Wider, the print comes first as before: while it loads the chart sits over the print's reserved box (never an empty box), goes
+   when the print has drawn, and stays in the box if the print cannot be drawn (the box and the picker row are held, so nothing moves). */
+.rce { --rce-ink: var(--text, #161a18); --rce-mute: var(--text-muted, #5e6475); --rce-rain: var(--blue, #6f9fc2); --rce-dry: rgba(200,178,140,.30); --rce-wet: rgba(111,159,194,.30); --rce-dry-edge: rgba(200,178,140,.55); --rce-wet-edge: rgba(111,159,194,.6); max-width: 480px; margin: 0; } /* plain-look-ok: the dry and wet bands painted inside the rain chart, a data layer */
+[data-theme="light"] .rce { --rce-rain: #2b5c8a; --rce-mute: #4f5668; --rce-dry: #ece6de; --rce-wet: #e3ebf3; --rce-dry-edge: #cfc6ba; --rce-wet-edge: #b9c7d6; }
+.rce-f-ink { fill: var(--rce-ink); } .rce-f-mute { fill: var(--rce-mute); } .rce-f-rain { fill: var(--rce-rain); } .rce-f-dry { fill: var(--rce-dry); } .rce-f-wet { fill: var(--rce-wet); }
+.rce-s-ink { stroke: var(--rce-ink); } .rce-s-mute { stroke: var(--rce-mute); } .rce-s-rain { stroke: var(--rce-rain); } .rce-s-dryEdge { stroke: var(--rce-dry-edge); } .rce-s-wetEdge { stroke: var(--rce-wet-edge); }
+/* the inline drawing's strokes and text, as classes (page weight): baseline, normal, this year, swatch; headline, its second line, axis ends, the key's three rows, month letters */
+.rce-bl { fill: none; stroke: var(--rce-ink); stroke-width: 1.5; }
+.rce-nl { fill: none; stroke: var(--rce-mute); stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linejoin: round; }
+.rce-yl { fill: none; stroke: var(--rce-rain); stroke-width: 4.5; stroke-linejoin: round; stroke-linecap: round; }
+.rce-sw { stroke-width: 1; }
+.rce-h1 { fill: var(--rce-ink); font-weight: 700; } .rce-h2 { fill: var(--rce-ink); font-weight: 500; font-size: 25px; } .rce-ax { fill: var(--rce-mute); font-weight: 500; font-size: 23px; }
+.rce-k1 { fill: var(--rce-rain); font-weight: 700; } .rce-k2 { fill: var(--rce-mute); font-weight: 500; } .rce-k3 { fill: var(--rce-ink); font-weight: 700; }
+.rce-q { fill: var(--rce-mute); fill-opacity: .7; font-weight: 500; font-size: 23px; }
+.rce .rce-art svg { max-width: none; width: 100%; height: auto; display: block; overflow: visible; }
+.rce svg text { font-family: var(--font-body, system-ui, sans-serif); }
+.rce-top { margin: 0 0 .5rem; }
+.rc-print-top .rc-cap-print { margin-top: .4rem; }
+@media (scripting: enabled) {
+  .rce:not(.rce-off) .rce-art { aspect-ratio: 400 / 596; }
+  .rce-p:not(.rce-off) .rce-art { aspect-ratio: 400 / 488; }
+}
+@media (scripting: enabled) and (min-width: 561px) {
+  .rce:not(.rce-off) .rce-art { aspect-ratio: 640 / 658; }
+  .rce-p:not(.rce-off) .rce-art { aspect-ratio: 640 / 538; }
+}
+.rce-off { display: none; }
+/* a phone: the chart, its caption, then the print's picker, box and caption (the figure's caption is flattened so the chart's sits under the chart) */
+@media (max-width: 560px) {
+  .rc-print-top { display: flex; flex-direction: column; }
+  .rc-print-top > .rce-top { order: 0; }
+  .rc-print-top > figcaption { display: contents; }
+  .rc-print-top .rc-cap-chart { order: 1; display: block !important; margin: 0 0 .4rem; font-size: var(--fs-sm); color: var(--text-muted); }
+  .rc-print-top > .rc-print-styles { order: 2; }
+  .rc-print-top > .rc-print-art { order: 3; }
+  .rc-print-top .rc-cap-print { order: 4; }
+  /* rain-county-print.js hides the chart's caption when the print draws; on a phone the chart stays, so its caption does (over the held-room rule above) */
+  .rc-print-top:not(.rc-print-off) > figcaption > span.rc-cap-chart[hidden] { display: block !important; visibility: visible !important; }
+}
+/* wider, scripts on: the chart sits over the print's reserved box until the print has drawn, and stays in it if the print cannot be drawn */
+@media (min-width: 561px) and (scripting: enabled) {
+  .rc-print-top { display: grid; grid-template-columns: minmax(0, 1fr); }   /* grid before and after the print draws: block margins collapse and grid margins do not, so a switch would move the figure */
+  .rc-print-top > .rc-print-styles { grid-row: 1; }
+  .rc-print-top > .rc-print-art { grid-row: 2; grid-column: 1; }
+  .rc-print-top:not(.rc-print-on) > .rce-top { grid-row: 2; grid-column: 1; contain: size; overflow: hidden; margin: 0; display: flex; justify-content: center; }
+  .rc-print-top:not(.rc-print-on) > .rce-top .rce { max-width: none; height: 100%; display: flex; }
+  .rc-print-top:not(.rc-print-on) > .rce-top .rce .rce-art { height: 100%; aspect-ratio: auto; }
+  .rc-print-top:not(.rc-print-on) > .rce-top .rce-art svg { height: 100%; width: auto; max-width: 100%; }
+  .rc-print-top > figcaption { grid-row: 3; }
+  /* the print gave up: its box, its picker row and its caption stay held, with the chart in the box, so nothing moves */
+  .rc-print-top.rc-print-off .rc-print-art { aspect-ratio: 3 / 2; }
+  .rc-print-top.rc-print-off > .rc-print-styles[hidden] { display: flex !important; visibility: hidden; }
+  .rc-print-top.rc-print-off figcaption > span[hidden] { display: block !important; visibility: hidden; }
+}
+@media (min-width: 561px) { .rc-print-top.rc-print-on > .rce-top { display: none; } }
+/* Lately: the radar's last 24 hours and 7 days over the county (scripts/build_county_rain.py recent_box), one line. An
+   estimate looks like one: a dashed box with no fill and the word "estimate", above the solid observed figures. The numbers
+   are fixed width, so components/rain-recent.js can rewrite them and the time in place without moving the line. */
+.rc-now { border: 1px dashed var(--border-2, var(--border)); border-radius: var(--r-md); padding: .5rem .8rem; margin: 0 0 1rem; max-width: 40em; font-size: var(--fs-sm); line-height: 1.7; color: var(--text-muted); }
+.rc-now > b:first-child { color: var(--text); margin-right: .45rem; }
+.rc-now > i { display: inline-block; font-style: normal; font-size: var(--fs-xs); line-height: 1.4; border: 1px dashed currentColor; border-radius: var(--r-pill); padding: 0 .45rem; margin-right: .6rem; }
+.rc-now > b + b, .rc-now > i ~ b { display: inline-block; min-width: 5ch; text-align: right; font-family: var(--font-mono, monospace); font-size: 1.12rem; color: var(--text); }
+.rc-now time { white-space: nowrap; }

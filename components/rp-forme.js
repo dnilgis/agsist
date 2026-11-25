@@ -1,6 +1,6 @@
 /* components/rp-forme.js -- "Rather not fiddle with it?" on /rain-print
-   (Sig, 2026-10-30). A reader who would rather not make the print leaves a
-   name, a phone or email, the place and who it is for; Sig calls or writes,
+   (2026-10-30). A reader who would rather not make the print leaves a
+   name, a phone or email, the place and who it is for; the owner calls or writes,
    makes two or three versions with the page as usual, and emails the design
    links (?d=). The reader opens one and orders it the normal way; the proof
    email is where they approve it. No charge for the help.

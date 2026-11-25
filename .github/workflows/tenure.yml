@@ -1,12 +1,10 @@
 name: tenure
-# tenure.
 
 on:
   schedule:
     - cron: "25 6 15 2 *"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 05"]
     types: [completed]
   workflow_dispatch:
 
@@ -15,7 +13,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 05' || (contains(github.event.workflow_run.display_title, ' tenure.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -75,5 +75,11 @@ jobs:
           git add -A data/tenure data/field-scout 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: census land tenure (owned vs rented acres)"
-          git pull --rebase --autostash origin main || true
-          git push
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }

@@ -1,5 +1,4 @@
 name: Fertilizer USDA AMS series
-# Fertilizer USDA AMS series.
 
 on:
   workflow_dispatch:
@@ -12,9 +11,8 @@ on:
     - cron: '23 20 * * 5'
     - cron: '23 1 * * 6'
     - cron: '23 15 * * 1'
-  # cron above, by either trigger, do the work within 290 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 13"]
     types: [completed]
 
 permissions:
@@ -22,7 +20,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 13' || (contains(github.event.workflow_run.display_title, ' fertilizer-ams.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -55,6 +55,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     concurrency:
       group: fertilizer-ams
       cancel-in-progress: false
@@ -72,6 +73,8 @@ jobs:
         run: pip install pypdf==6.20.1
       - name: Selftest
         run: python scripts/fetch_fert_ams.py --selftest
+      - name: Selftest the state report files
+        run: python scripts/fetch_fert_reports.py --selftest
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: python scripts/fetch_fert_ams.py --probe
@@ -91,13 +94,18 @@ jobs:
         env:
           MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
         run: python scripts/fetch_prodcost_mars.py
+      - name: Fetch and write data/fert-prices/ (one file per USDA state report)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        env:
+          MARS_API_KEY: ${{ secrets.MARS_API_KEY }}
+        run: python scripts/fetch_fert_reports.py || echo "::warning title=Fertilizer reports::state report files not refreshed (the step failed); the last good files stay"
 
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json data/production-costs.json"
+          FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json data/production-costs.json data/fert-prices"
           rm -rf /tmp/fams && mkdir -p /tmp/fams
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/fams/ || true

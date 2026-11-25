@@ -1,5 +1,4 @@
-/* home-land.js: the home page's Farmland sales block (Sig, Nov 4, 2026: "my buddy didn't know that farm land
-   sales were on agsist, we need to fix that and make sure it is not missable"; "there is dead space on the home
+/* home-land.js: the home page's Farmland sales block (Nov 4, 2026; "there is dead space on the home
    page, maybe we can link it somehow with the unusual sales or something to get people's attention").
 
    One real recorded sale from data/land-sales/lead.json (scripts/build_land_sales.py lead_pick, LEAD_RULE):
@@ -13,7 +12,7 @@
    NO DATA (file missing, malformed, or no state has a lead): the baked plain words stay, the links still work.
    NO LAYOUT SHIFT: the baked words and the sale fill the same lines; css/home.css holds each line's room.
 
-   STALE: a state's sale more than 60 days past its window's end is withheld (fresh(), the page's own clock).
+   STALE: a state's sale more than 60 days past its window's end is withheld (fresh, the page's own clock).
    window.AgHomeLand = { pick, words } (test/home-land.test.mjs runs both in node on fixtures and a fake clock). */
 (function (root) {
   'use strict';
@@ -62,11 +61,13 @@
     return { lead: leads[have[0]], st: have[0], covered: sts.indexOf(mine) >= 0, mine: mine || '' };
   }
 
-  /* the words for each line */
+  /* the words for each line. Nov 12: the lead never says "Top" or "highest": the pick leaves out sales over twice
+     the state's middle and far outside their county's range (Illinois, Oct 30: 3 higher sales left out, so the
+     $21,000 shown was not the state's top price). The rule under "How this sale was picked" says how it was chosen. */
   function words(L, p) {
     var r = p.lead, name = NAMES[p.st] || p.st;
     var k = (p.mine && !p.covered && NAMES[p.mine] ? 'Not yet in ' + NAMES[p.mine] + '. ' : '')
-      + 'Top bare-land price in ' + name + ', 30 days to ' + day(r.window[1]);
+      + 'A recent farm sale in ' + name + ', 30 days to ' + day(r.window[1]);
     var pct = num(r.pct), med = num(r.med), n = num(r.n24);
     var vs = med && n ? ' ' + (pct == null || pct === 0 ? 'At' : Math.abs(pct) + '% ' + (pct > 0 ? 'above' : 'under'))
       + ' the county’s middle, ' + money(med) + ' (' + n + ' sales in 24 months).' : '';
@@ -94,7 +95,6 @@
     var v = document.getElementById('hl-v');
     if (v) { v.textContent = w.v.replace(/ an acre$/, ''); var u = document.createElement('span'); u.className = 'hl-u'; u.textContent = ' an acre'; v.appendChild(u); }
     var a = document.getElementById('hl-sale'); if (a) { a.setAttribute('href', w.href); a.setAttribute('data-st', p.st); }
-    if (w.rule) { txt('hl-rule', w.rule); var d = document.getElementById('hl-why'); if (d) d.classList.remove('hl-wait'); }
   }
 
   function go() {

@@ -1,5 +1,4 @@
 name: Bid change ledger (dispatch only)
-# Bid change ledger (dispatch only).
 
 on:
   workflow_dispatch:

@@ -1,5 +1,4 @@
 name: MESH partial — last 24h live layer
-# MESH partial: last 24h live layer.
 
 on:
   workflow_dispatch:
@@ -17,6 +16,7 @@ permissions:
 jobs:
   partial:
     runs-on: ubuntu-latest
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
         with:

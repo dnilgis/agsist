@@ -1,13 +1,10 @@
 name: Cash Bid Index
-# Cash Bid Index.
 
-# cash-bid-index.html. Schedule approved by Sig 2026-10-17: the 1st of each
 on:
   schedule:
     - cron: '23 11 1 * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 08"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -25,7 +22,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 08' || (contains(github.event.workflow_run.display_title, ' cash-bid-index.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -56,6 +55,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     concurrency:
       group: cash-bid-index
       cancel-in-progress: false

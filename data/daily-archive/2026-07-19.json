@@ -31,7 +31,7 @@
       "title": "Beans Get the Chinese Bid",
       "icon": "🫘",
       "body": "Soybeans closed at $12.04 nearby and $12.03 November, both up roughly a dollar and change on the week and at 93-94% of their 52-week range. The fuel on Friday was specific: USDA announced pre-open flash sales of 340,000 MT to China, 256,634 MT to Mexico, and 120,000 MT to unknown destinations before the bell. China's $17 billion annual U.S. ag purchase commitment through 2028, announced in May, is now showing up in repeated flash-sale execution rather than just diplomatic language. **Soybean oil also ran hard, gaining 5.0% to $74.81**, while meal gave back a dime to $320.20, meaning the market is pricing vegetable oil demand, not protein demand, as the marginal driver. The November contract at $12.03 is sitting at 94% of its 52-week range. Resistance is not far. A move through $12.20 next week would confirm the funds are adding, not just covering.",
-      "catalyst": "USDA pre-market flash sales: 340,000 MT soybeans to China plus 256,634 MT to Mexico, July 18.",
+      "catalyst": "USDA pre-market flash sales: 340,000 MT soybeans to China plus 256,634 MT to Mexico, July 17.",
       "bottom_line": "China is buying; oil share running; $12.20 is the line that opens the next leg.",
       "conviction_level": "high",
       "overnight_surprise": false,
@@ -117,7 +117,7 @@
     "text": "A patient man will eat ripe fruit.",
     "attribution": "African Proverb"
   },
-  "source_summary": "CME Group Friday settlement prices; USDA flash export sales July 18, 2026; Brownfield Ag News; StoneX/Arlan Suderman via Brownfield; Baker Hughes rig count; EIA Cushing inventory data; OilPrice.com; Feedstuffs; AgWeb; TheFencePost.",
+  "source_summary": "CME Group Friday settlement prices; USDA flash export sales July 17, 2026; Brownfield Ag News; StoneX/Arlan Suderman via Brownfield; Baker Hughes rig count; EIA Cushing inventory data; OilPrice.com; Feedstuffs; AgWeb; TheFencePost. (Corrected Nov 17, see the note below.)",
   "date": "Sunday, July 19, 2026",
   "meta": {
     "market_mood": "mixed",
@@ -202,12 +202,17 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "issue_number": 129,
   "generated_at": "2026-07-19T12:03:34.468308+00:00",
   "generator_version": "4.6.3",
   "surprise_count": 0,
   "surprises": [],
   "price_validation_clean": true,
   "market_closed": true,
-  "market_status_reason": "weekend"
+  "market_status_reason": "weekend",
+  "corrections": [
+    {
+      "date": "2026-11-17",
+      "text": "The sources dated USDA's flash export sales July 18, 2026, a Saturday. The sales were confirmed Friday morning, July 17, as the lead says. The date now says July 17."
+    }
+  ]
 }

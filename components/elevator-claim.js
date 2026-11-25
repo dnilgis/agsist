@@ -1,7 +1,7 @@
 /* "Fix your listing" (claim your board) on /list-your-elevator#claim; on /elevators until Oct 22, 2026. */
 /* ===== 2026-10-01 r7-claim: "Claim your board" form =====
    WHERE IT GOES (2026-10-11): AGSIST's subs worker (POST /form, kind claim)
-   through components/form-post.js; the digest job mails Sig. If the worker
+   through components/form-post.js; the digest job mails the owner. If the worker
    cannot take it (not deployed yet, down), the helper sends the same fields
    to the site's Formspree form, the one this used before. Fields:
    _subject, form, elevator, town, state, contact_name, role, email, phone,
@@ -172,7 +172,7 @@
       .then(function () {
         ga('claim_submit', { result: 'ok' });
         sec.classList.add('sent');
-        out.innerHTML = '<div class="cl-msg ok"><p><b>Sent.</b> Sig has your claim for ' + esc(x.elevator) +
+        out.innerHTML = '<div class="cl-msg ok"><p><b>Sent.</b> AGSIST has your claim for ' + esc(x.elevator) +
           ' in ' + esc(x.town) + ', ' + esc(x.state) + '.</p><p>He replies to ' + esc(x.email) +
           ' to confirm you work there. Nothing changes on the site until then.</p></div>';
         try { out.querySelector('.cl-msg').setAttribute('tabindex', '-1'); out.querySelector('.cl-msg').focus(); } catch (err) {}

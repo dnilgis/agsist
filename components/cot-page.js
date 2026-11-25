@@ -4,17 +4,17 @@
 'use strict';
 
 var CFG = [
-  {key:'corn',        label:'Corn',             short:'Corn',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>', color:'#d4a23f', group:'grains'},
-  {key:'beans',       label:'Soybeans',         short:'Beans',  emoji:'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg>', color:'#4aab4c', group:'grains'},
-  {key:'wheat',       label:'Wheat (SRW)',      short:'SRW',    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#5ba3e0', group:'grains'},
-  {key:'kcwheat',     label:'KC Wheat (HRW)',   short:'KC',     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#2fb5a5', group:'grains'},
-  {key:'mplswheat',   label:'Mpls Wheat (HRS)', short:'Mpls',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>', color:'#9b7cc4', group:'grains'},
-  {key:'soymeal',     label:'Soybean Meal',     short:'Meal',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-package"/></svg>', color:'#7ab87c', group:'crush'},
-  {key:'soyoil',      label:'Soybean Oil',      short:'Oil',    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg>', color:'#d8c24a', group:'crush'},
-  {key:'livecattle',  label:'Live Cattle',      short:'Cattle', emoji:'<svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg>', color:'#d9534f', group:'livestock'},
-  {key:'feedercattle',label:'Feeder Cattle',    short:'Feeder', emoji:'<svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg>', color:'#e07b5a', group:'livestock'},
-  {key:'leanhogs',    label:'Lean Hogs',        short:'Hogs',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-ham"/></svg>', color:'#e89ab0', group:'livestock'},
-  {key:'milk',        label:'Class III Milk',   short:'Milk',   emoji:'<svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg>', color:'#8fb8e0', group:'dairy'}
+  {key:'corn',        label:'Corn',             short:'Corn',   emoji:'', color:'#d4a23f', group:'grains'},
+  {key:'beans',       label:'Soybeans',         short:'Beans',  emoji:'', color:'#4aab4c', group:'grains'},
+  {key:'wheat',       label:'Wheat (SRW)',      short:'SRW',    emoji:'', color:'#5ba3e0', group:'grains'},
+  {key:'kcwheat',     label:'KC Wheat (HRW)',   short:'KC',     emoji:'', color:'#2fb5a5', group:'grains'},
+  {key:'mplswheat',   label:'Mpls Wheat (HRS)', short:'Mpls',   emoji:'', color:'#9b7cc4', group:'grains'},
+  {key:'soymeal',     label:'Soybean Meal',     short:'Meal',   emoji:'', color:'#7ab87c', group:'crush'},
+  {key:'soyoil',      label:'Soybean Oil',      short:'Oil',    emoji:'', color:'#d8c24a', group:'crush'},
+  {key:'livecattle',  label:'Live Cattle',      short:'Cattle', emoji:'', color:'#d9534f', group:'livestock'},
+  {key:'feedercattle',label:'Feeder Cattle',    short:'Feeder', emoji:'', color:'#e07b5a', group:'livestock'},
+  {key:'leanhogs',    label:'Lean Hogs',        short:'Hogs',   emoji:'', color:'#e89ab0', group:'livestock'},
+  {key:'milk',        label:'Class III Milk',   short:'Milk',   emoji:'', color:'#8fb8e0', group:'dairy'}
 ];
 var GROUP_ORDER = [['grains','Grain Board'],['crush','Crush Complex'],['livestock','Livestock'],['dairy','Dairy']];
 var GROUPS = {}, COLORS = {}, LABELS = {}, SHORT = {}, EMOJI = {};
@@ -172,11 +172,10 @@ function cotMarkCard(key, present) {
     (LABELS[key] || key) + ': no data in this report.');
 }
 
-/* FUNDS THIS WEEK (2026-11-04, made plainer 2026-11-05, Sig: "KISS, the chart I
-   want can tell a lot of that story"): the crowded verdict on one line when it
+/* FUNDS THIS WEEK (2026-11-04, made plainer 2026-11-05): the crowded verdict on one line when it
    fits (else the report's dates), the chart's own brief line per market
    (components/cot-chart.js), and every market as a table row behind one tap
-   (components/cot-glance.js row(): market | long or short | rank | change). The
+   (components/cot-glance.js row: market | long or short | rank | change). The
    rank and the weight word come with cot-analysis.json for the same report;
    until then the cells carry neither rather than guess. */
 function renderGlance() {
@@ -187,7 +186,7 @@ function renderGlance() {
   if (v) {
     var vt = G.verdict(COT_SUMMARY, cx), alt = G.asOfShort(COT_SUMMARY, cx);
     v.textContent = vt || alt;
-    if (vt && v.scrollWidth > v.clientWidth + 1) v.textContent = alt;   /* one line only (Sig) */
+    if (vt && v.scrollWidth > v.clientWidth + 1) v.textContent = alt;   /* one line only */
   }
   if (!tb) return;
   var rs = G.rows(COT_SUMMARY, cx);
@@ -277,7 +276,7 @@ function renderInsight(key){
   /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
      weeks with a percentile computed over the whole array, after the fact, and
      counted overlapping weeks of one episode as separate cases. The card's
-     52-week contract rank fold is gone too (2026-11-06, Sig): the pill's
+     52-week contract rank fold is gone too (2026-11-06): the pill's
      share-of-open-interest rank is the one ranking on the card. */
   el.innerHTML=html;
   return k;
@@ -578,7 +577,7 @@ function cotStartPolling(){
 }
 function cotStopPolling(){ if (COT_POLL) { clearInterval(COT_POLL); COT_POLL = null; } }
 
-/* THE RELEASE BAR (2026-11-06, Sig: "a clear indicator or countdown until the release that you can't miss").
+/* THE RELEASE BAR (2026-11-06).
    One countdown on the page, at the very top (#cot-rel; the old one in the closed fold is gone). Its words come
    from AgCotGlance.release(): "New report in 2 h 14 m · today 3:30 PM ET", then "New report out at 3:30 PM ET,
    updating" while the page polls, "The report due ... is late" after three hours, and "Updated today with the
@@ -633,7 +632,7 @@ function cotTick(){
 }
 cotTick();
 
-/* THE SIGNUP BOX ON ARRIVAL (Sig, Nov 6: grow the Funds this week list). The release bar's "Get it in your inbox
+/* THE SIGNUP BOX ON ARRIVAL (Nov 6: grow the Funds this week list). The release bar's "Get it in your inbox
    Friday", the print sheet's QR code, the email's forward line and the homepage's "Email me Fridays" all land on
    #cot-signup, the one Funds this week ask (components/signup-ask.js draws it; no second signup path). The browser
    may jump to the box (late, and smoothly, with the site's scroll-behavior); once the ask has drawn, a box not yet

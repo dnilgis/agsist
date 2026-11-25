@@ -508,7 +508,7 @@
     }
     selectKey(CX_KEY || remembered || (CX.commodities.corn ? 'corn' : Object.keys(CX.commodities)[0]), false, true);
 
-    /* Source and sample only (2026-11-06, Sig): how many readings were tested and how many held up, and
+    /* Source and sample only (2026-11-06): how many readings were tested and how many held up, and
        how many weeks were left out, never how the test is run. */
     var f = CX.family, sx = CX.shutdown_excluded;
     if (f && $('cx-family')) {

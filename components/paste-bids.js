@@ -1,12 +1,12 @@
-/* Read a bid board Sig pasted by hand (desk/elevators.html, Paste bids).
+/* Read a bid board the owner pasted by hand (desk/elevators.html, Paste bids).
  *
  * NEW Cooperative's site puts a Cloudflare bot check in front of the bids
- * reader, and the reader does not try to get past it. So Sig opens
+ * reader, and the reader does not try to get past it. So the owner opens
  * https://www.newcoop.com/cash-bids in his own browser, copies the page source
  * (or select-all text, or uses the "Copy for AGSIST" bookmarklet) and pastes it
  * here. Nothing in this file fetches their site.
  *
- * The board (Sig's page source, Oct 20): inside <turbo-frame id="cashbids">, an
+ * The board (the owner's page source, Oct 20): inside <turbo-frame id="cashbids">, an
  * <h1 class="text-4xl ..."> per location, then a table
  *   COMMODITY | DELIVERY | CASH PRICE | BASIS | FUTURE PRICE | FUTURE CHANGE
  *   Corn | 10/1/2026 - 10/31/2026 | $4.26 | -35 | 461-4 | -5-4
@@ -17,12 +17,13 @@
 (function (root) {
   'use strict';
 
-  /* dnilgis/bids sources/newcoop-*.json: id and locationId, Oct 20 2026.
-     The board prints 69 headings; these 66 are the ones bids reads. */
+  /* dnilgis/bids sources/newcoop-*.json: id and locationId, Nov 12 2026.
+     The board prints 69 headings and bids reads all 69 (Cainsville, Morton Mills
+     and Mt. Ayr were added Nov 12; until then the paste listed them as unmatched). */
   var NEWCOOP_BOARDS = [
     ['newcoop-afton', 'Afton'], ['newcoop-algona', 'Algona'], ['newcoop-anita', 'Anita'], ['newcoop-anthon', 'Anthon'],
     ['newcoop-badger', 'Badger'], ['newcoop-barnum', 'Barnum'], ['newcoop-belmond', 'Belmond'], ['newcoop-blairsburg', 'Blairsburg'],
-    ['newcoop-blencoe', 'Blencoe'], ['newcoop-bode', 'Bode'], ['newcoop-britt', 'Britt'], ['newcoop-chariton', 'Chariton'],
+    ['newcoop-blencoe', 'Blencoe'], ['newcoop-bode', 'Bode'], ['newcoop-britt', 'Britt'], ['newcoop-cainsville', 'Cainsville'], ['newcoop-chariton', 'Chariton'],
     ['newcoop-churdan', 'Churdan'], ['newcoop-clare', 'Clare'], ['newcoop-clearfield', 'Clearfield'], ['newcoop-cooper', 'Cooper'],
     ['newcoop-correctionville', 'Correctionville'], ['newcoop-creston1', 'Creston 1'], ['newcoop-creston2', 'Creston 2'],
     ['newcoop-daviscity', 'Davis City'], ['newcoop-dickens', 'Dickens'], ['newcoop-dows', 'Dows'], ['newcoop-duncombe', 'Duncombe'],
@@ -31,7 +32,8 @@
     ['newcoop-humboldt', 'Humboldt'], ['newcoop-humeston', 'Humeston'], ['newcoop-klemme', 'Klemme'], ['newcoop-knierim', 'Knierim'],
     ['newcoop-knoke', 'Knoke'], ['newcoop-lamoni', 'Lamoni'], ['newcoop-lanesboro', 'Lanesboro'], ['newcoop-langdon', 'Langdon'],
     ['newcoop-lanyon', 'Lanyon'], ['newcoop-lidderdale', 'Lidderdale'], ['newcoop-lohrville', 'Lohrville'], ['newcoop-luverne', 'LuVerne'],
-    ['newcoop-mallard', 'Mallard'], ['newcoop-mapleton', 'Mapleton'], ['newcoop-milford', 'Milford'], ['newcoop-onawa', 'Onawa'],
+    ['newcoop-mallard', 'Mallard'], ['newcoop-mapleton', 'Mapleton'], ['newcoop-milford', 'Milford'], ['newcoop-mortonmills', 'Morton Mills'], ['newcoop-mtayr', 'Mt. Ayr'],
+    ['newcoop-onawa', 'Onawa'],
     ['newcoop-osceola', 'Osceola'], ['newcoop-otho', 'Otho'], ['newcoop-palmer', 'Palmer'], ['newcoop-pierson', 'Pierson'],
     ['newcoop-pomeroy', 'Pomeroy'], ['newcoop-rands', 'Rands'], ['newcoop-redoak', 'Red Oak'], ['newcoop-roelyn', 'Roelyn'],
     ['newcoop-rowan', 'Rowan'], ['newcoop-sloan', 'Sloan'], ['newcoop-superior', 'Superior'], ['newcoop-ute', 'Ute'],
@@ -211,7 +213,7 @@
 
   /* Whether a read is clean enough to save with no one looking: every check
      read() makes passed, and every board we have for the site came through
-     with rows (NEW Cooperative: 66 of 66). Anything less waits for Save. */
+     with rows (NEW Cooperative: 69 of 69). Anything less waits for Save. */
   function clean(site, r) {
     var boards = ((SITES[site] || {}).boards || []).length;
     if (!r || r.error) return { ok: false, why: (r && r.error) || 'Nothing was read.' };
@@ -223,7 +225,7 @@
   }
 
   /* The Send to AGSIST bookmark (desk/today.html). On the elevator's bid page,
-     in Sig's own browser, it copies the page (a spare, in case the new tab is
+     in the owner's own browser, it copies the page (a spare, in case the new tab is
      cut off from it) and opens the desk at #send. When the desk says it is
      ready, and only to https://agsist.com, it hands over the page's HTML. It
      holds no token and no list of sites: the desk decides which pages it takes. */

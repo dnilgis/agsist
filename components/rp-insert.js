@@ -1,8 +1,8 @@
-/* components/rp-insert.js: the letter that goes on top in every Rain Print box (2026-10-17, Sig).
+/* components/rp-insert.js: the letter that goes on top in every Rain Print box (2026-10-17).
  *
  * One page, letter size (8.5 x 11 in, 850 x 1100 units, 100 to the inch), so
  * whoever opens the box knows what it is before they see the print. It lies
- * flat on the print in the box (13 x 19 paper), no fold. Made on Sig's print files page
+ * flat on the print in the box (13 x 19 paper), no fold. Made on the owner's print files page
  * (/rain-print?maker=1, "Insert letter PDF") the way the order files are made:
  * this SVG, drawn into a 300 dpi canvas, wrapped in a one-page PDF. Prints and
  * framed prints only; a digital file has no box.
@@ -26,17 +26,17 @@
  *   qr: the standard code's matrix, fontCss, measure(text, style) -> width (optional), px [w, h],
  *   offer: data/rain-print.json letter_offer {code, dollars_off, expires} or null, today: YYYY-MM-DD (the day the letter is made)
  * }
- * The offer line (Sig, 2026-10-17) prints only when the code, the dollars and the
+ * The offer line (2026-10-17) prints only when the code, the dollars and the
  * date all read clean and the letter is made on or before the last day; otherwise
  * nothing. It is worded for whoever opens the box, the giver or the one who got it.
- * Copy rules (Sig): plain farm words, no em dashes, no store or printer names,
+ * Copy rules: plain farm words, no em dashes, no store or printer names,
  * never "archival", no prices, no counts of buyers.
  *
- * THE READING GUIDE (o.guide true, Sig 2026-10-20): the same page for a digital
+ * THE READING GUIDE (o.guide true, 2026-10-20): the same page for a digital
  * file, sent with the files the moment the buyer approves the proof
  * (scripts/rp_buyer_email.py). Titled "How to read your Rain Print"; no serial,
  * no pencil line and no code line (a digital file has neither); the maker line
- * is Sig's plain one; "Printing it" takes the place of the care list.
+ * is the owner's plain one; "Printing it" takes the place of the care list.
  * o.drawn (both kinds): what the print's own drawing holds, read from the
  * miniature's groups by the engine ({hist, rec, frost, crop, ribbon, qr}). The
  * guide keys every one of them; the letter only uses hist (no tan and blue
@@ -143,7 +143,7 @@
     }
     c.key = key;
 
-    // a business's message says who it is from (Sig, 2026-10-17: no separate card; the note is on the letter)
+    // a business's message says who it is from (2026-10-17: no separate card; the note is on the letter)
     var from = String(o.giftFrom || '').replace(/\s+/g, ' ').trim();
     c.giftHead = from ? 'A NOTE FROM ' + from.toUpperCase() : 'A NOTE FOR YOU';
     c.gift = String(o.gift || '').replace(/\s+/g, ' ').trim();

@@ -1,11 +1,10 @@
-/* PRF STATE SPONSORS (Sig, 2026-10-13).
+/* PRF STATE SPONSORS (2026-10-13).
  *
  * One business per state can sponsor PRF there: the state page
  * (prf/<state>.html), every county page in it (prf/<state>/<county>.html) and,
  * on /prf, a box beside the result when a reader's grid is in that state.
  * On the state and county pages the sponsor takes the place of the unsold
- * offer band, which sits under the opening answer, near the top (Sig,
- * 2026-10-14), so a sold block shows in that same upper spot.
+ * offer band, which sits under the opening answer, near the top (* 2026-10-14), so a sold block shows in that same upper spot.
  *
  * WHERE A SALE LIVES: data/prf-sponsors.json, keyed by state code:
  *   { "IA": { "name": "...", "url": "https://...", "line": "one sentence, 120 characters at most",
@@ -33,8 +32,8 @@
  * Farmers First never appears in a slot, so an entry naming it is dropped.
  *
  * Every unsold offer links to /prf-sponsor?state=XX (prf-sponsor.html), where
- * a business sees its block drawn by render() below and asks; the mailto to
- * Sig stays beside it as the second way.
+ * a business sees its block drawn by render below and asks; the mailto to
+ * The owner stays beside it as the second way.
  *
  * Tested by test/prf-sponsor.test.mjs (node loads the pure part below).
  */
@@ -97,7 +96,7 @@
       (sp.line ? ' ' + esc(sp.line) : '') + (sp.phone ? ' <span class="prf-spon-tel">' + esc(sp.phone) + '</span>.' : '') + ' ' + ask(n) + noSay + '</span>' + visit(sp, n, kind);
   }
 
-  /* The /prf print sheet (Sig, Oct 18): a sold state's sponsor prints, labelled Sponsor, with the
+  /* The /prf print sheet (Oct 18): a sold state's sponsor prints, labelled Sponsor, with the
      name, phone and website, the short line, and the standing disclosure. Unsold prints nothing.
      No logo (one ink, one page), no price, no link to click on paper. */
   function site(url) { return String(url).replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, ''); }
@@ -149,7 +148,7 @@
   var box = doc.getElementById('prf-spon'), pbox = doc.getElementById('prf-spon-p');
   var offer = doc.querySelector ? doc.querySelector('a[data-prf-offer]') : null;
   /* The offer band ships under "Find your grid" (the empty page) and moves under the step 3 answer,
-     after the email box, the first time a grid opens (Sig, Oct 20). */
+     after the email box, the first time a grid opens (Oct 20). */
   var band = offer && offer.closest ? offer.closest('.prf-spon-offer') : null;
   function placeBand() {
     if (!band || band.getAttribute('data-placed')) return;

@@ -1,17 +1,14 @@
 name: Build Analyst Scorecard
-# Build Analyst Scorecard.
 
 on:
   push:
     branches: [main]
     paths:
       - "data/analyst-estimates.json"
-      - "scripts/build_analyst_scorecard.py"
   schedule:
-    - cron: "25 11 * * *"   # 11:25 UTC daily — rolls the "next report" panel as dates pass
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: "25 11 * * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 08"]
     types: [completed]
   workflow_dispatch:
 
@@ -20,7 +17,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 08' || (contains(github.event.workflow_run.display_title, ' analyst-scorecard.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -51,6 +50,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     concurrency:
       group: analyst-scorecard
       cancel-in-progress: false
@@ -80,6 +80,12 @@ jobs:
             echo "No change."
           else
             git commit -m "Update analyst scorecard $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            git pull --rebase --autostash origin main || true
-            git push
+            pushed=0
+            for n in 1 2 3 4 5; do
+              if git push; then pushed=1; break; fi
+              echo "Push race on attempt $n; rebasing..."
+              git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+              sleep $((RANDOM % 4 + 2))
+            done
+            [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
           fi

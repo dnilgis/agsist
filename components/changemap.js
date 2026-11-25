@@ -1,5 +1,5 @@
-/* What changed here this week (god's-eye panel, build 4; Sig, Oct 27 2026: no new list, sender or
-   cron). Fast Facts "My place" loads this file only once a place is open (components/here.js
+/* What changed here this week (god's-eye panel, build 4; Oct 27 2026: no new list, sender or
+ cron). Fast Facts "My place" loads this file only once a place is open (components/here.js
    changeMap()); nothing of it is inline in the page.
 
    For the open county: a sticky line (county, crop, date), one plain sentence of what changed,
@@ -7,7 +7,7 @@
    buyers within 50 mi, the 50 mi ring and the place. Every line carries its source and date. A
    line we cannot back with a file is withheld and says why; it is never guessed.
 
-   The map (Sig, Oct 29 2026: a good basemap on phone and desktop). The county shapes are drawn as
+   The map (Oct 29 2026: a good basemap on phone and desktop). The county shapes are drawn as
    one SVG the moment the outlines are in, so the first map needs only this file and the state's
    outlines. Leaflet 1.9.4 (/vendor, the copy Field Scout uses) loads when the map is near the
    screen and lays the same SVG over the USGS National Map topo tiles (public domain, no key,
@@ -246,14 +246,14 @@
   var SIGNALS = [['drought', 'Drought'], ['bids', 'Bids'], ['rent', 'Rent'], ['sales', 'Sales'], ['rain', 'Rain']];
 
   /* ── drawing into the page ───────────────────────────────────────── */
-  var CSS = '.cm{margin:0 0 1rem;border:1px solid var(--border);border-top:0;border-radius:0 0 10px 10px;background:var(--surface);overflow:clip}' +
-    '.cm-top{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.4rem 0 0;padding:.45rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 0 0;font-weight:700;font-size:.95rem;color:var(--text)}' +
+  var CSS = '.cm{margin:0 0 1rem;border:1px solid var(--border);border-top:0;border-radius:0 0 var(--r-lg) var(--r-lg);background:var(--surface);overflow:clip}' +
+    '.cm-top{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.4rem 0 0;padding:.45rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0;font-weight:700;font-size:.95rem;color:var(--text)}' +
     '.cm-top:empty{display:none}' +
     '.cm-top span+span::before{content:"\\00b7";margin-right:.4rem;color:var(--text-muted)}' +
     '#h-cm .cm-lead{grid-area:lead;margin:0;min-height:2.8em;font-size:.95rem;font-weight:600;line-height:1.4;color:var(--text)}' +
     '.cm-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lead" "map" "side";gap:.35rem;padding:.45rem .75rem .7rem}' +
     '.cm-map{grid-area:map;margin:0;min-width:0}.cm-side{grid-area:side}' +
-    '.cm-box{position:relative;height:240px;border-radius:8px;overflow:hidden;background:#e9ece6}' +
+    '.cm-box{position:relative;height:240px;border-radius:var(--r-md);overflow:hidden;background:#e9ece6}' +
     '.cm-box>.cm-svg{display:block;width:100%;height:100%}' +
     '.cm-lf{position:absolute;inset:0;background:#e9ece6;font:inherit}.cm-lf .leaflet-tile-pane{filter:saturate(.55) brightness(1.04)}' +
     '.cm-lf .leaflet-control-attribution{font-size:.68rem;background:rgba(255,255,255,.78);color:#333}' +
@@ -269,7 +269,7 @@
     '.cm-pt{fill:#fff;stroke:#222;stroke-width:1;vector-effect:non-scaling-stroke}' +
     '.cm-you{fill:#d4a23f;stroke:#111;stroke-width:2;vector-effect:non-scaling-stroke}' +
     '.cm-sw{display:flex;flex-wrap:wrap;gap:.2rem;margin:.45rem 0 0;min-height:1.9rem}' +
-    '.cm-sw button{font:inherit;font-size:.78rem;min-height:32px;padding:.15rem .45rem;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer}' +
+    '.cm-sw button{font:inherit;font-size:.78rem;min-height:32px;padding:.15rem .45rem;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer}' +
     '.cm-sw button[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}' +
     '.cm-key{display:flex;flex-wrap:wrap;gap:.25rem .8rem;margin:.35rem 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--text-dim);min-height:1.2rem}' +
     '.cm-key i{display:inline-block;width:.8rem;height:.8rem;border-radius:2px;margin-right:.3rem;vertical-align:-.1rem}' +

@@ -6,10 +6,39 @@
      USDA_TREND in scripts/bake_crop_size.py (/conditions-yield); change both.
      No soybean figure until one is checked at the source. */
   var USDA_TREND={corn:183.0};
+  /* Nov 10: withheld once the ratings week ended 16 or more days ago (15 is still shown). */
+  function ncWithheld(we,now){var w=/^\d{4}-\d{2}-\d{2}$/.test(String(we))?Date.UTC(+we.slice(0,4),+we.slice(5,7)-1,+we.slice(8,10)):NaN;return isNaN(w)||(now-w)/864e5>=16;}
+  /* Nov 10: the time a futures stamp names. A last trade carries its own close_time; anything else, the file's read time F. */
+  function stampAt(cq,F){return cq&&cq.close_kind==='last'&&cq.close_time&&!isNaN(Date.parse(cq.close_time))?new Date(cq.close_time):F;}
+  /* Nov 19 (owner): a withheld estimate is one plain line, the reason and the date, never a card of dashes.
+     The reason is the file's own (held_back.reason, the clause after its first colon) when it is about the
+     week on file (held_back.last_good_week); else the age rule above says why. -> the line's text. */
+  var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function ncDay(we){return /^\d{4}-\d{2}-\d{2}$/.test(String(we))?MO[+we.slice(5,7)-1]+' '+(+we.slice(8,10))+', '+we.slice(0,4):'';}
+  function ncWhy(d,we){
+    var hb=d&&d.held_back,dt=ncDay(we),r=hb&&hb.last_good_week===we&&typeof hb.reason==='string'?hb.reason:'';
+    var cl=r.indexOf(': ')>=0?r.slice(r.indexOf(': ')+2):'';cl=cl.split(/\.(\s|$)/)[0].trim();
+    if(cl&&dt)return 'Yield nowcast withheld since the week ending '+dt+': '+cl+'. It returns with next season\u2019s ratings.';
+    return 'Yield nowcast withheld: the last usable USDA ratings week ended '+(dt||'too long ago')+', two or more weeks back. It returns with next season\u2019s ratings.';
+  }
+  /* the heading, the two crop boxes and the source line show only with an estimate */
+  function ncShow(on){var w=document.getElementById('nowcast-widget');if(!w)return;w.classList.toggle('nc-on',!!on);
+    [].forEach.call(w.querySelectorAll('.nc-in'),function(e){e.hidden=!on;});}
   function loadYieldNowcast(){
     fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
       if(!d||!d.crops)throw new Error('no-nowcast');
       var map={corn:'nc-corn',soybeans:'nc-beans'};
+      /* Nov 10: an estimate from ratings two or more weekly reports old is
+         withheld, not headed "Near USDA" (Oct 4 ratings were still shown Nov 9).
+         A fresh week is 2 to 9 days old when it posts; 16 days means two missed. */
+      var _we=d.crops.corn&&d.crops.corn.week_ending;
+      if(ncWithheld(_we,Date.now())){
+        ncShow(false);
+        var _w=document.getElementById('nc-week');if(_w){_w.textContent=ncWhy(d,_we);_w.style.color='';}
+        var _y=document.getElementById('nc-years');if(_y&&d.crops.corn&&d.crops.corn.backtest_years)_y.textContent=d.crops.corn.backtest_years;
+        return;
+      }
+      ncShow(true);
       var above=0,below=0;
       Object.keys(map).forEach(function(crop){
         var c=d.crops[crop];
@@ -70,7 +99,8 @@
       var v=document.getElementById('nc-verdict');
       if(v){v.className='ratio-verdict neutral';v.textContent='Data unavailable';}
       var wk=document.getElementById('nc-week');
-      if(wk){wk.textContent='Could not load this week\u2019s ratings.';wk.style.color='';}
+      if(wk){wk.textContent='Yield nowcast: this week\u2019s ratings did not load.';wk.style.color='';}
+      ncShow(false);
       /* No numbers to show: the two "--" boxes hide; the line above says why. */
       var _g=document.getElementById('nc-corn');_g=_g&&_g.parentNode&&_g.parentNode.parentNode;if(_g&&_g.style)_g.style.display='none';
     });
@@ -153,7 +183,7 @@
   /* 2026-10-01: when the front-month and this-year's-harvest contract are
      the same contract (true for corn/beans from early fall through year end),
      this used to hide the second tile and append "+ new crop" to the first.
-     Sig's call: never drop to one tile for corn or beans -- when that
+     a product decision: never drop to one tile for corn or beans -- when that
      happens, swap the second tile to NEXT year's harvest contract
      (corn-dec27 / beans-nov27) instead, so the reader always sees two real,
      distinct corn (or bean) prices. Both symbols are already fetched live by
@@ -433,6 +463,12 @@
                1:46 PM trade; CBOT settled $12.61 1/4. */
             var qs=data.quotes||{},cq=qs['corn-nearby']||qs.corn||{};
             var hn=holName(dayT);
+            /* Nov 10: one stamp for one price file. The ticker said "As of
+               1:46 PM CT" (the file's read time) over cards saying "Last trade as
+               of 1:20 pm CT"; a last trade is stamped with its own close_time,
+               the same words as the cards (AgPxStamp.clock, components/price-local.js). */
+            var LT=stampAt(cq,F);
+            function hmT(){return window.AgPxStamp&&AgPxStamp.clock?AgPxStamp.clock(LT.toISOString()):hm(LT);}
             /* 2026-10-19 (P1): the settle check comes before the session
                check. Sunday 7:31 PM CT is inside the overnight session, but the
                file held the Oct 16 settles and the badge still called them a delayed live quote.
@@ -452,13 +488,13 @@
               if(cq.close_kind==='last'&&cq.settled&&cq.close_date){var ld=Date.parse(cq.close_date+'T00:00:00Z');
                 if(!isNaN(ld))return{t:'As of '+lbl(ld),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
               var n=ct(new Date()),same=(+n.year===+p.year&&+n.month===+p.month&&+n.day===+p.day);
-              return{t:'As of '+(same?hm(F):lbl(dayT)),live:false,title:read};
+              return{t:'As of '+(same?hmT():lbl(dayT)),live:false,title:read};
             }
-            if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
+            if(tr&&m>=800&&m<815)return{t:'As of '+hmT(),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
             if(tr&&m>=465&&m<510)return{t:'Pre-open',live:false,title:'Overnight session closed, day session not open yet. '+read};
             if(cq.close_kind==='last'||(tr&&m>=815&&m<1410)){
               var n2=ct(new Date()),same2=(+n2.year===+p.year&&+n2.month===+p.month&&+n2.day===+p.day);
-              return{t:'As of '+(same2?hm(F):lbl(dayT)),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
+              return{t:'As of '+(same2?hmT():lbl(dayT)),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
             var s=(tr&&m>=815)?dayT:dayT-DY,guard=0;while(!trading(s)&&guard++<10)s-=DY;
             /* A file from before close_kind: "Close", not "Settle". */
             return{t:'Close '+lbl(s),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Closing prices for '+lbl(s)+', '+new Date(s).getUTCFullYear()+' (Yahoo Finance closes, not CME settlements). '+read};
@@ -466,7 +502,11 @@
           if(_st){_tb.innerHTML='';(/^As of /.test(_st.t)?['As of',_st.t.slice(6)]:_st.t.split(/ (.+)/).slice(0,2)).forEach(function(w,i){if(i)_tb.appendChild(document.createElement('br'));_tb.appendChild(document.createTextNode(w));});_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}
           else{_tb.innerHTML='Not loaded<br>yet';_tb.parentNode.classList.add('stale');}
         }
-        if(window.AgAsOf)AgAsOf.set(_pa,data.fetched,'prices');
+        /* Nov 10: the card said "Updated 1:46 pm" (read time, no zone); it
+           carries the same stamp as the futures cards above it. */
+        var _cq=(data.quotes||{})['corn-nearby']||(data.quotes||{}).corn;
+        if(window.AgPxStamp&&AgPxStamp.html&&_cq&&AgPxStamp.html(_cq,data.fetched))_pa.innerHTML=AgPxStamp.html(_cq,data.fetched);
+        else if(window.AgAsOf)AgAsOf.set(_pa,data.fetched,'prices');
         else{_pa.textContent=_mins<2?'• Live now':_mins<60?'• Updated '+_mins+' min ago':_mins<2880?'• Updated '+Math.round(_mins/60)+'h ago':'• Updated '+Math.round(_mins/1440)+'d ago';
         _pa.style.color=_mins>60?'var(--orange)':_mins>30?'var(--gold)':'var(--text-muted)';}
       }

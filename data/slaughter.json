@@ -1,38 +1,38 @@
 {
  "schema": "agsist-slaughter/1",
- "generated": "2026-11-07T14:56:04Z",
+ "generated": "2026-11-24T23:27:18Z",
  "note": "USDA's estimated federally inspected slaughter, head. week_ago and year_ago are USDA's figures for the same day; week_to_date runs Monday through this day.",
  "report": "Daily Livestock and Poultry Slaughter",
- "report_date": "2026-11-06",
- "source": "USDA AMS, Daily Livestock and Poultry Slaughter, Nov 6, 2026",
+ "report_date": "2026-11-24",
+ "source": "USDA AMS, Daily Livestock and Poultry Slaughter, Nov 24, 2026",
  "stale": false,
  "cattle": {
-  "date": "2026-11-06",
-  "head": 93000,
-  "week_ago": 96000,
-  "year_ago": 98573,
-  "week_to_date": 523000,
-  "prev_week_to_date": 530000,
-  "year_ago_week_to_date": 562146,
+  "date": "2026-11-24",
+  "head": 112000,
+  "week_ago": 111000,
+  "year_ago": 125669,
+  "week_to_date": 221000,
+  "prev_week_to_date": 218000,
+  "year_ago_week_to_date": 248705,
   "previous": {
-   "date": "2026-11-05",
-   "head": 110000,
+   "date": "2026-11-23",
+   "head": 109000,
    "revised": false
   }
  },
  "hogs": {
-  "date": "2026-11-06",
-  "head": 485000,
-  "week_ago": 486000,
-  "year_ago": 470840,
-  "week_to_date": 2452000,
-  "prev_week_to_date": 2418000,
-  "year_ago_week_to_date": 2410676,
+  "date": "2026-11-24",
+  "head": 494000,
+  "week_ago": 499000,
+  "year_ago": 497577,
+  "week_to_date": 978000,
+  "prev_week_to_date": 985000,
+  "year_ago_week_to_date": 998609,
   "previous": {
-   "date": "2026-11-05",
-   "head": 494000,
+   "date": "2026-11-23",
+   "head": 484000,
    "revised": false
   }
  },
- "daily_line": "Estimated federally inspected slaughter, Fri Nov 6: cattle 93,000 head (96,000 a week ago, 98,573 a year ago); hogs 485,000 head (486,000 a week ago, 470,840 a year ago). USDA AMS, Daily Livestock and Poultry Slaughter, Nov 6, 2026."
+ "daily_line": "Estimated federally inspected slaughter, Tue Nov 24: cattle 112,000 head (111,000 a week ago, 125,669 a year ago); hogs 494,000 head (499,000 a week ago, 497,577 a year ago). USDA AMS, Daily Livestock and Poultry Slaughter, Nov 24, 2026."
 }

@@ -1,5 +1,4 @@
 name: Price alert emails
-# Price alert emails.
 
 on:
   schedule:

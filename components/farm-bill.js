@@ -8,6 +8,11 @@
  * runs this same file in a bare context. The DOM wiring at the bottom only runs
  * when there is a document. The data is our own file and carries trusted HTML
  * (entities, <b>, links), the same fields build_farmbill.py bakes.
+ *
+ * Dates that fall out: anything marked data-until="YYYY-MM-DD" (each next-90-days
+ * item, and status words tied to a day) is hidden once the reader's own date is
+ * past that day, so a page baked a while ago never shows a past date as upcoming.
+ * build_farmbill.py drops the same items whenever it bakes.
  */
 (function (root) {
   'use strict';
@@ -65,11 +70,33 @@
       (data.ledgerNote ? '<p class="note">' + data.ledgerNote + '</p>' : '');
   }
 
+  function isoDay(d) {
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+  }
+  // shown through its own day, gone the next; a malformed date is left alone
+  function expired(until, today) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(until || '') && until < today;
+  }
+  function hidePast(doc, today) {
+    var n = 0;
+    [].slice.call(doc.querySelectorAll('[data-until]')).forEach(function (el) {
+      if (expired(el.getAttribute('data-until'), today)) { el.hidden = true; n++; }
+    });
+    var list = doc.querySelector('.n90-dates');
+    if (list && list.querySelectorAll('li:not([hidden])').length === 0) list.hidden = true;
+    return n;
+  }
+
   var api = { renderOperation: renderOperation, renderTitles: renderTitles,
-              renderLedger: renderLedger, renderDetail: renderDetail };
+              renderLedger: renderLedger, renderDetail: renderDetail,
+              isoDay: isoDay, expired: expired, hidePast: hidePast };
   root.AgFarmBill = api;
 
   if (typeof document === 'undefined' || !document.querySelector) return;
+
+  // runs at once: the script is deferred, so the page is parsed by now
+  hidePast(document, isoDay(new Date()));
 
   var pending = null;
   function load() {

@@ -1,5 +1,5 @@
-/* The line logic behind "what changed here this week" (Sig, Oct 27 2026: god's-eye panel; "Your
-   county this week" goes inside the existing Daily slots, no new list, sender or cron).
+/* The line logic behind "what changed here this week" (Oct 27 2026: god's-eye panel; "Your
+ county this week" goes inside the existing Daily slots, no new list, sender or cron).
 
    One module, three readers, so no two places ever print a different line for one county:
      components/changemap.js   Fast Facts My place: the sentence, the lines and the state map (50 mi)
@@ -143,14 +143,17 @@
   }
   /* index: the network's merged index ({generated, places}); prev: {ST: bids-prev file or null};
      today: the Central-time day, YYYY-MM-DD. */
-  function nearCorn(index, lat, lng, radius) {
+  /* Nov 20, 2026: a top corn bid is a plain CURRENT bid (bid-filter.js isPlainCurrent): white
+     corn and a Harvest 2027 contract never are. No rule loaded: no rows, never unfiltered ones.
+     now: a Date or the Central day (YYYY-MM-DD); default the clock. */
+  function nearCorn(index, lat, lng, radius, now) {
     var BF = bidFilter(), out = [];
-    if (!index || !index.places) return out;
+    if (!index || !index.places || !BF || !BF.isPlainCurrent) return out;
     index.places.forEach(function (p) {
       var n = p.now && p.now.corn;
       if (!n || typeof n.cash !== 'number' || !isFinite(n.cash) || !n.period || !p.place) return;
       if ((p.currency || 'USD') !== 'USD' || typeof p.lat !== 'number' || typeof p.lon !== 'number') return;
-      if (BF && !BF.canSetBest({ commodity: n.commodity || 'Corn', crop: 'corn', cashPrice: n.cash })) return;
+      if (!BF.isPlainCurrent({ commodity: n.commodity || 'Corn', crop: 'corn', cashPrice: n.cash, period: n.period }, now || new Date())) return;
       var d = miles(lat, lng, p.lat, p.lon);
       if (d > radius) return;
       out.push({ key: fnv(p.place + '|corn|' + n.period), site: String(p.operator || '').trim().toLowerCase() + '|' + p.lat.toFixed(3) + '|' + p.lon.toFixed(3), st: String(p.state || '').toUpperCase(), period: n.period, cash: n.cash,
@@ -161,7 +164,7 @@
   function topBid(index, prev, lat, lng, today, radius) {
     var R = radius || RING_MI;
     if (!index || !index.places) return no('the elevator network did not answer');
-    var rows = nearCorn(index, lat, lng, R);
+    var rows = nearCorn(index, lat, lng, R, today);
     if (!rows.length) return no('no posted corn bid within ' + R + ' mi in our network');
     var by = {};
     rows.forEach(function (r) { (by[r.period] = by[r.period] || []).push(r); });
@@ -280,7 +283,7 @@
 
   /* ── the sentence ─────────────────────────────────────────────────── */
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
-  /* 2026-11-04 (site panel, skeptic row 8): "Nothing changed here this week" printed with one
+  /* 2026-11-04 (site review, row 8): "Nothing changed here this week" printed with one
      line read and three not read. It is said only when every line was read; otherwise the
      sentence says how many were checked and names the ones that were not. */
   function summary(lines) {

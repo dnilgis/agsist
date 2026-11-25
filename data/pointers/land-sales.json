@@ -1,0 +1,1501 @@
+{
+ "about": "Pointer pages for retired pages: path, where it sends readers, and the date retired.",
+ "pointers": {
+  "farmland-sales/2026-09.html": {
+   "to": "/land-sales/2026-09",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida.html": {
+   "to": "/land-sales/florida/",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/alachua-county.html": {
+   "to": "/land-sales/florida/alachua-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/baker-county.html": {
+   "to": "/land-sales/florida/baker-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/bay-county.html": {
+   "to": "/land-sales/florida/bay-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/bradford-county.html": {
+   "to": "/land-sales/florida/bradford-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/brevard-county.html": {
+   "to": "/land-sales/florida/brevard-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/broward-county.html": {
+   "to": "/land-sales/florida/broward-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/calhoun-county.html": {
+   "to": "/land-sales/florida/calhoun-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/charlotte-county.html": {
+   "to": "/land-sales/florida/charlotte-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/citrus-county.html": {
+   "to": "/land-sales/florida/citrus-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/clay-county.html": {
+   "to": "/land-sales/florida/clay-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/collier-county.html": {
+   "to": "/land-sales/florida/collier-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/columbia-county.html": {
+   "to": "/land-sales/florida/columbia-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/desoto-county.html": {
+   "to": "/land-sales/florida/desoto-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/dixie-county.html": {
+   "to": "/land-sales/florida/dixie-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/duval-county.html": {
+   "to": "/land-sales/florida/duval-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/escambia-county.html": {
+   "to": "/land-sales/florida/escambia-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/flagler-county.html": {
+   "to": "/land-sales/florida/flagler-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/franklin-county.html": {
+   "to": "/land-sales/florida/franklin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/gadsden-county.html": {
+   "to": "/land-sales/florida/gadsden-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/gilchrist-county.html": {
+   "to": "/land-sales/florida/gilchrist-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/glades-county.html": {
+   "to": "/land-sales/florida/glades-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/gulf-county.html": {
+   "to": "/land-sales/florida/gulf-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/hamilton-county.html": {
+   "to": "/land-sales/florida/hamilton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/hardee-county.html": {
+   "to": "/land-sales/florida/hardee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/hendry-county.html": {
+   "to": "/land-sales/florida/hendry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/hernando-county.html": {
+   "to": "/land-sales/florida/hernando-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/highlands-county.html": {
+   "to": "/land-sales/florida/highlands-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/hillsborough-county.html": {
+   "to": "/land-sales/florida/hillsborough-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/holmes-county.html": {
+   "to": "/land-sales/florida/holmes-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/indian-river-county.html": {
+   "to": "/land-sales/florida/indian-river-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/jackson-county.html": {
+   "to": "/land-sales/florida/jackson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/jefferson-county.html": {
+   "to": "/land-sales/florida/jefferson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/lafayette-county.html": {
+   "to": "/land-sales/florida/lafayette-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/lake-county.html": {
+   "to": "/land-sales/florida/lake-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/lee-county.html": {
+   "to": "/land-sales/florida/lee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/leon-county.html": {
+   "to": "/land-sales/florida/leon-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/levy-county.html": {
+   "to": "/land-sales/florida/levy-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/liberty-county.html": {
+   "to": "/land-sales/florida/liberty-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/madison-county.html": {
+   "to": "/land-sales/florida/madison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/manatee-county.html": {
+   "to": "/land-sales/florida/manatee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/marion-county.html": {
+   "to": "/land-sales/florida/marion-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/martin-county.html": {
+   "to": "/land-sales/florida/martin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/miami-dade-county.html": {
+   "to": "/land-sales/florida/miami-dade-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/nassau-county.html": {
+   "to": "/land-sales/florida/nassau-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/okaloosa-county.html": {
+   "to": "/land-sales/florida/okaloosa-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/okeechobee-county.html": {
+   "to": "/land-sales/florida/okeechobee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/orange-county.html": {
+   "to": "/land-sales/florida/orange-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/osceola-county.html": {
+   "to": "/land-sales/florida/osceola-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/palm-beach-county.html": {
+   "to": "/land-sales/florida/palm-beach-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/pasco-county.html": {
+   "to": "/land-sales/florida/pasco-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/pinellas-county.html": {
+   "to": "/land-sales/florida/pinellas-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/polk-county.html": {
+   "to": "/land-sales/florida/polk-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/putnam-county.html": {
+   "to": "/land-sales/florida/putnam-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/santa-rosa-county.html": {
+   "to": "/land-sales/florida/santa-rosa-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/sarasota-county.html": {
+   "to": "/land-sales/florida/sarasota-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/seminole-county.html": {
+   "to": "/land-sales/florida/seminole-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/st-johns-county.html": {
+   "to": "/land-sales/florida/st-johns-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/st-lucie-county.html": {
+   "to": "/land-sales/florida/st-lucie-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/sumter-county.html": {
+   "to": "/land-sales/florida/sumter-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/suwannee-county.html": {
+   "to": "/land-sales/florida/suwannee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/taylor-county.html": {
+   "to": "/land-sales/florida/taylor-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/union-county.html": {
+   "to": "/land-sales/florida/union-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/volusia-county.html": {
+   "to": "/land-sales/florida/volusia-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/wakulla-county.html": {
+   "to": "/land-sales/florida/wakulla-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/walton-county.html": {
+   "to": "/land-sales/florida/walton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/florida/washington-county.html": {
+   "to": "/land-sales/florida/washington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois.html": {
+   "to": "/land-sales/illinois/",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/adams-county.html": {
+   "to": "/land-sales/illinois/adams-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/alexander-county.html": {
+   "to": "/land-sales/illinois/alexander-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/bond-county.html": {
+   "to": "/land-sales/illinois/bond-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/boone-county.html": {
+   "to": "/land-sales/illinois/boone-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/brown-county.html": {
+   "to": "/land-sales/illinois/brown-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/bureau-county.html": {
+   "to": "/land-sales/illinois/bureau-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/calhoun-county.html": {
+   "to": "/land-sales/illinois/calhoun-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/carroll-county.html": {
+   "to": "/land-sales/illinois/carroll-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/cass-county.html": {
+   "to": "/land-sales/illinois/cass-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/champaign-county.html": {
+   "to": "/land-sales/illinois/champaign-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/christian-county.html": {
+   "to": "/land-sales/illinois/christian-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/clark-county.html": {
+   "to": "/land-sales/illinois/clark-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/clay-county.html": {
+   "to": "/land-sales/illinois/clay-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/clinton-county.html": {
+   "to": "/land-sales/illinois/clinton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/coles-county.html": {
+   "to": "/land-sales/illinois/coles-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/cook-county.html": {
+   "to": "/land-sales/illinois/cook-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/crawford-county.html": {
+   "to": "/land-sales/illinois/crawford-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/cumberland-county.html": {
+   "to": "/land-sales/illinois/cumberland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/de-witt-county.html": {
+   "to": "/land-sales/illinois/de-witt-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/dekalb-county.html": {
+   "to": "/land-sales/illinois/dekalb-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/douglas-county.html": {
+   "to": "/land-sales/illinois/douglas-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/dupage-county.html": {
+   "to": "/land-sales/illinois/dupage-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/edgar-county.html": {
+   "to": "/land-sales/illinois/edgar-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/edwards-county.html": {
+   "to": "/land-sales/illinois/edwards-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/effingham-county.html": {
+   "to": "/land-sales/illinois/effingham-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/fayette-county.html": {
+   "to": "/land-sales/illinois/fayette-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/ford-county.html": {
+   "to": "/land-sales/illinois/ford-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/franklin-county.html": {
+   "to": "/land-sales/illinois/franklin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/fulton-county.html": {
+   "to": "/land-sales/illinois/fulton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/gallatin-county.html": {
+   "to": "/land-sales/illinois/gallatin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/greene-county.html": {
+   "to": "/land-sales/illinois/greene-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/grundy-county.html": {
+   "to": "/land-sales/illinois/grundy-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/hamilton-county.html": {
+   "to": "/land-sales/illinois/hamilton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/hancock-county.html": {
+   "to": "/land-sales/illinois/hancock-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/hardin-county.html": {
+   "to": "/land-sales/illinois/hardin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/henderson-county.html": {
+   "to": "/land-sales/illinois/henderson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/henry-county.html": {
+   "to": "/land-sales/illinois/henry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/iroquois-county.html": {
+   "to": "/land-sales/illinois/iroquois-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/jackson-county.html": {
+   "to": "/land-sales/illinois/jackson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/jasper-county.html": {
+   "to": "/land-sales/illinois/jasper-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/jefferson-county.html": {
+   "to": "/land-sales/illinois/jefferson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/jersey-county.html": {
+   "to": "/land-sales/illinois/jersey-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/jo-daviess-county.html": {
+   "to": "/land-sales/illinois/jo-daviess-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/johnson-county.html": {
+   "to": "/land-sales/illinois/johnson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/kane-county.html": {
+   "to": "/land-sales/illinois/kane-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/kankakee-county.html": {
+   "to": "/land-sales/illinois/kankakee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/kendall-county.html": {
+   "to": "/land-sales/illinois/kendall-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/knox-county.html": {
+   "to": "/land-sales/illinois/knox-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/lake-county.html": {
+   "to": "/land-sales/illinois/lake-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/lasalle-county.html": {
+   "to": "/land-sales/illinois/lasalle-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/lawrence-county.html": {
+   "to": "/land-sales/illinois/lawrence-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/lee-county.html": {
+   "to": "/land-sales/illinois/lee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/livingston-county.html": {
+   "to": "/land-sales/illinois/livingston-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/logan-county.html": {
+   "to": "/land-sales/illinois/logan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/macon-county.html": {
+   "to": "/land-sales/illinois/macon-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/macoupin-county.html": {
+   "to": "/land-sales/illinois/macoupin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/madison-county.html": {
+   "to": "/land-sales/illinois/madison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/marion-county.html": {
+   "to": "/land-sales/illinois/marion-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/marshall-county.html": {
+   "to": "/land-sales/illinois/marshall-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/mason-county.html": {
+   "to": "/land-sales/illinois/mason-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/massac-county.html": {
+   "to": "/land-sales/illinois/massac-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/mcdonough-county.html": {
+   "to": "/land-sales/illinois/mcdonough-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/mchenry-county.html": {
+   "to": "/land-sales/illinois/mchenry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/mclean-county.html": {
+   "to": "/land-sales/illinois/mclean-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/menard-county.html": {
+   "to": "/land-sales/illinois/menard-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/mercer-county.html": {
+   "to": "/land-sales/illinois/mercer-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/monroe-county.html": {
+   "to": "/land-sales/illinois/monroe-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/montgomery-county.html": {
+   "to": "/land-sales/illinois/montgomery-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/morgan-county.html": {
+   "to": "/land-sales/illinois/morgan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/moultrie-county.html": {
+   "to": "/land-sales/illinois/moultrie-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/ogle-county.html": {
+   "to": "/land-sales/illinois/ogle-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/peoria-county.html": {
+   "to": "/land-sales/illinois/peoria-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/perry-county.html": {
+   "to": "/land-sales/illinois/perry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/piatt-county.html": {
+   "to": "/land-sales/illinois/piatt-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/pike-county.html": {
+   "to": "/land-sales/illinois/pike-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/pope-county.html": {
+   "to": "/land-sales/illinois/pope-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/pulaski-county.html": {
+   "to": "/land-sales/illinois/pulaski-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/putnam-county.html": {
+   "to": "/land-sales/illinois/putnam-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/randolph-county.html": {
+   "to": "/land-sales/illinois/randolph-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/richland-county.html": {
+   "to": "/land-sales/illinois/richland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/rock-island-county.html": {
+   "to": "/land-sales/illinois/rock-island-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/saline-county.html": {
+   "to": "/land-sales/illinois/saline-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/sangamon-county.html": {
+   "to": "/land-sales/illinois/sangamon-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/schuyler-county.html": {
+   "to": "/land-sales/illinois/schuyler-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/scott-county.html": {
+   "to": "/land-sales/illinois/scott-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/shelby-county.html": {
+   "to": "/land-sales/illinois/shelby-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/st-clair-county.html": {
+   "to": "/land-sales/illinois/st-clair-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/stark-county.html": {
+   "to": "/land-sales/illinois/stark-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/stephenson-county.html": {
+   "to": "/land-sales/illinois/stephenson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/tazewell-county.html": {
+   "to": "/land-sales/illinois/tazewell-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/union-county.html": {
+   "to": "/land-sales/illinois/union-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/vermilion-county.html": {
+   "to": "/land-sales/illinois/vermilion-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/wabash-county.html": {
+   "to": "/land-sales/illinois/wabash-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/warren-county.html": {
+   "to": "/land-sales/illinois/warren-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/washington-county.html": {
+   "to": "/land-sales/illinois/washington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/wayne-county.html": {
+   "to": "/land-sales/illinois/wayne-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/white-county.html": {
+   "to": "/land-sales/illinois/white-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/whiteside-county.html": {
+   "to": "/land-sales/illinois/whiteside-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/will-county.html": {
+   "to": "/land-sales/illinois/will-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/williamson-county.html": {
+   "to": "/land-sales/illinois/williamson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/winnebago-county.html": {
+   "to": "/land-sales/illinois/winnebago-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/illinois/woodford-county.html": {
+   "to": "/land-sales/illinois/woodford-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/index.html": {
+   "to": "/land-sales/",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana.html": {
+   "to": "/land-sales/indiana/",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/adams-county.html": {
+   "to": "/land-sales/indiana/adams-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/allen-county.html": {
+   "to": "/land-sales/indiana/allen-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/bartholomew-county.html": {
+   "to": "/land-sales/indiana/bartholomew-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/benton-county.html": {
+   "to": "/land-sales/indiana/benton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/blackford-county.html": {
+   "to": "/land-sales/indiana/blackford-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/boone-county.html": {
+   "to": "/land-sales/indiana/boone-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/brown-county.html": {
+   "to": "/land-sales/indiana/brown-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/carroll-county.html": {
+   "to": "/land-sales/indiana/carroll-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/cass-county.html": {
+   "to": "/land-sales/indiana/cass-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/clark-county.html": {
+   "to": "/land-sales/indiana/clark-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/clay-county.html": {
+   "to": "/land-sales/indiana/clay-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/clinton-county.html": {
+   "to": "/land-sales/indiana/clinton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/crawford-county.html": {
+   "to": "/land-sales/indiana/crawford-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/daviess-county.html": {
+   "to": "/land-sales/indiana/daviess-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/dearborn-county.html": {
+   "to": "/land-sales/indiana/dearborn-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/decatur-county.html": {
+   "to": "/land-sales/indiana/decatur-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/dekalb-county.html": {
+   "to": "/land-sales/indiana/dekalb-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/delaware-county.html": {
+   "to": "/land-sales/indiana/delaware-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/dubois-county.html": {
+   "to": "/land-sales/indiana/dubois-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/elkhart-county.html": {
+   "to": "/land-sales/indiana/elkhart-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/fayette-county.html": {
+   "to": "/land-sales/indiana/fayette-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/floyd-county.html": {
+   "to": "/land-sales/indiana/floyd-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/fountain-county.html": {
+   "to": "/land-sales/indiana/fountain-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/franklin-county.html": {
+   "to": "/land-sales/indiana/franklin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/fulton-county.html": {
+   "to": "/land-sales/indiana/fulton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/gibson-county.html": {
+   "to": "/land-sales/indiana/gibson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/grant-county.html": {
+   "to": "/land-sales/indiana/grant-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/greene-county.html": {
+   "to": "/land-sales/indiana/greene-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/hamilton-county.html": {
+   "to": "/land-sales/indiana/hamilton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/hancock-county.html": {
+   "to": "/land-sales/indiana/hancock-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/harrison-county.html": {
+   "to": "/land-sales/indiana/harrison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/hendricks-county.html": {
+   "to": "/land-sales/indiana/hendricks-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/henry-county.html": {
+   "to": "/land-sales/indiana/henry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/howard-county.html": {
+   "to": "/land-sales/indiana/howard-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/huntington-county.html": {
+   "to": "/land-sales/indiana/huntington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/jackson-county.html": {
+   "to": "/land-sales/indiana/jackson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/jasper-county.html": {
+   "to": "/land-sales/indiana/jasper-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/jay-county.html": {
+   "to": "/land-sales/indiana/jay-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/jefferson-county.html": {
+   "to": "/land-sales/indiana/jefferson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/jennings-county.html": {
+   "to": "/land-sales/indiana/jennings-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/johnson-county.html": {
+   "to": "/land-sales/indiana/johnson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/knox-county.html": {
+   "to": "/land-sales/indiana/knox-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/kosciusko-county.html": {
+   "to": "/land-sales/indiana/kosciusko-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/lagrange-county.html": {
+   "to": "/land-sales/indiana/lagrange-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/lake-county.html": {
+   "to": "/land-sales/indiana/lake-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/laporte-county.html": {
+   "to": "/land-sales/indiana/laporte-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/lawrence-county.html": {
+   "to": "/land-sales/indiana/lawrence-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/madison-county.html": {
+   "to": "/land-sales/indiana/madison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/marion-county.html": {
+   "to": "/land-sales/indiana/marion-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/marshall-county.html": {
+   "to": "/land-sales/indiana/marshall-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/martin-county.html": {
+   "to": "/land-sales/indiana/martin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/miami-county.html": {
+   "to": "/land-sales/indiana/miami-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/monroe-county.html": {
+   "to": "/land-sales/indiana/monroe-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/montgomery-county.html": {
+   "to": "/land-sales/indiana/montgomery-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/morgan-county.html": {
+   "to": "/land-sales/indiana/morgan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/newton-county.html": {
+   "to": "/land-sales/indiana/newton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/noble-county.html": {
+   "to": "/land-sales/indiana/noble-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/ohio-county.html": {
+   "to": "/land-sales/indiana/ohio-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/orange-county.html": {
+   "to": "/land-sales/indiana/orange-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/owen-county.html": {
+   "to": "/land-sales/indiana/owen-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/parke-county.html": {
+   "to": "/land-sales/indiana/parke-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/perry-county.html": {
+   "to": "/land-sales/indiana/perry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/pike-county.html": {
+   "to": "/land-sales/indiana/pike-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/porter-county.html": {
+   "to": "/land-sales/indiana/porter-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/posey-county.html": {
+   "to": "/land-sales/indiana/posey-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/pulaski-county.html": {
+   "to": "/land-sales/indiana/pulaski-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/putnam-county.html": {
+   "to": "/land-sales/indiana/putnam-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/randolph-county.html": {
+   "to": "/land-sales/indiana/randolph-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/ripley-county.html": {
+   "to": "/land-sales/indiana/ripley-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/rush-county.html": {
+   "to": "/land-sales/indiana/rush-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/scott-county.html": {
+   "to": "/land-sales/indiana/scott-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/shelby-county.html": {
+   "to": "/land-sales/indiana/shelby-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/spencer-county.html": {
+   "to": "/land-sales/indiana/spencer-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/st-joseph-county.html": {
+   "to": "/land-sales/indiana/st-joseph-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/starke-county.html": {
+   "to": "/land-sales/indiana/starke-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/steuben-county.html": {
+   "to": "/land-sales/indiana/steuben-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/sullivan-county.html": {
+   "to": "/land-sales/indiana/sullivan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/switzerland-county.html": {
+   "to": "/land-sales/indiana/switzerland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/tippecanoe-county.html": {
+   "to": "/land-sales/indiana/tippecanoe-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/tipton-county.html": {
+   "to": "/land-sales/indiana/tipton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/union-county.html": {
+   "to": "/land-sales/indiana/union-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/vanderburgh-county.html": {
+   "to": "/land-sales/indiana/vanderburgh-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/vermillion-county.html": {
+   "to": "/land-sales/indiana/vermillion-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/vigo-county.html": {
+   "to": "/land-sales/indiana/vigo-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/wabash-county.html": {
+   "to": "/land-sales/indiana/wabash-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/warren-county.html": {
+   "to": "/land-sales/indiana/warren-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/warrick-county.html": {
+   "to": "/land-sales/indiana/warrick-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/washington-county.html": {
+   "to": "/land-sales/indiana/washington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/wayne-county.html": {
+   "to": "/land-sales/indiana/wayne-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/wells-county.html": {
+   "to": "/land-sales/indiana/wells-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/white-county.html": {
+   "to": "/land-sales/indiana/white-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/indiana/whitley-county.html": {
+   "to": "/land-sales/indiana/whitley-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey.html": {
+   "to": "/land-sales/new-jersey/",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/atlantic-county.html": {
+   "to": "/land-sales/new-jersey/atlantic-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/bergen-county.html": {
+   "to": "/land-sales/new-jersey/bergen-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/burlington-county.html": {
+   "to": "/land-sales/new-jersey/burlington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/camden-county.html": {
+   "to": "/land-sales/new-jersey/camden-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/cape-may-county.html": {
+   "to": "/land-sales/new-jersey/cape-may-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/cumberland-county.html": {
+   "to": "/land-sales/new-jersey/cumberland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/essex-county.html": {
+   "to": "/land-sales/new-jersey/essex-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/gloucester-county.html": {
+   "to": "/land-sales/new-jersey/gloucester-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/hunterdon-county.html": {
+   "to": "/land-sales/new-jersey/hunterdon-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/mercer-county.html": {
+   "to": "/land-sales/new-jersey/mercer-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/middlesex-county.html": {
+   "to": "/land-sales/new-jersey/middlesex-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/monmouth-county.html": {
+   "to": "/land-sales/new-jersey/monmouth-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/morris-county.html": {
+   "to": "/land-sales/new-jersey/morris-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/ocean-county.html": {
+   "to": "/land-sales/new-jersey/ocean-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/passaic-county.html": {
+   "to": "/land-sales/new-jersey/passaic-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/salem-county.html": {
+   "to": "/land-sales/new-jersey/salem-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/somerset-county.html": {
+   "to": "/land-sales/new-jersey/somerset-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/sussex-county.html": {
+   "to": "/land-sales/new-jersey/sussex-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/union-county.html": {
+   "to": "/land-sales/new-jersey/union-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/new-jersey/warren-county.html": {
+   "to": "/land-sales/new-jersey/warren-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont.html": {
+   "to": "/land-sales/vermont/",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/addison-county.html": {
+   "to": "/land-sales/vermont/addison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/bennington-county.html": {
+   "to": "/land-sales/vermont/bennington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/caledonia-county.html": {
+   "to": "/land-sales/vermont/caledonia-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/chittenden-county.html": {
+   "to": "/land-sales/vermont/chittenden-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/essex-county.html": {
+   "to": "/land-sales/vermont/essex-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/franklin-county.html": {
+   "to": "/land-sales/vermont/franklin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/grand-isle-county.html": {
+   "to": "/land-sales/vermont/grand-isle-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/lamoille-county.html": {
+   "to": "/land-sales/vermont/lamoille-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/orange-county.html": {
+   "to": "/land-sales/vermont/orange-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/orleans-county.html": {
+   "to": "/land-sales/vermont/orleans-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/rutland-county.html": {
+   "to": "/land-sales/vermont/rutland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/washington-county.html": {
+   "to": "/land-sales/vermont/washington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/windham-county.html": {
+   "to": "/land-sales/vermont/windham-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/vermont/windsor-county.html": {
+   "to": "/land-sales/vermont/windsor-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin.html": {
+   "to": "/land-sales/wisconsin/",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/adams-county.html": {
+   "to": "/land-sales/wisconsin/adams-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/ashland-county.html": {
+   "to": "/land-sales/wisconsin/ashland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/barron-county.html": {
+   "to": "/land-sales/wisconsin/barron-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/bayfield-county.html": {
+   "to": "/land-sales/wisconsin/bayfield-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/brown-county.html": {
+   "to": "/land-sales/wisconsin/brown-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/buffalo-county.html": {
+   "to": "/land-sales/wisconsin/buffalo-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/burnett-county.html": {
+   "to": "/land-sales/wisconsin/burnett-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/calumet-county.html": {
+   "to": "/land-sales/wisconsin/calumet-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/chippewa-county.html": {
+   "to": "/land-sales/wisconsin/chippewa-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/clark-county.html": {
+   "to": "/land-sales/wisconsin/clark-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/columbia-county.html": {
+   "to": "/land-sales/wisconsin/columbia-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/crawford-county.html": {
+   "to": "/land-sales/wisconsin/crawford-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/dane-county.html": {
+   "to": "/land-sales/wisconsin/dane-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/dodge-county.html": {
+   "to": "/land-sales/wisconsin/dodge-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/door-county.html": {
+   "to": "/land-sales/wisconsin/door-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/douglas-county.html": {
+   "to": "/land-sales/wisconsin/douglas-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/dunn-county.html": {
+   "to": "/land-sales/wisconsin/dunn-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/eau-claire-county.html": {
+   "to": "/land-sales/wisconsin/eau-claire-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/florence-county.html": {
+   "to": "/land-sales/wisconsin/florence-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/fond-du-lac-county.html": {
+   "to": "/land-sales/wisconsin/fond-du-lac-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/forest-county.html": {
+   "to": "/land-sales/wisconsin/forest-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/grant-county.html": {
+   "to": "/land-sales/wisconsin/grant-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/green-county.html": {
+   "to": "/land-sales/wisconsin/green-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/green-lake-county.html": {
+   "to": "/land-sales/wisconsin/green-lake-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/iowa-county.html": {
+   "to": "/land-sales/wisconsin/iowa-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/iron-county.html": {
+   "to": "/land-sales/wisconsin/iron-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/jackson-county.html": {
+   "to": "/land-sales/wisconsin/jackson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/jefferson-county.html": {
+   "to": "/land-sales/wisconsin/jefferson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/juneau-county.html": {
+   "to": "/land-sales/wisconsin/juneau-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/kenosha-county.html": {
+   "to": "/land-sales/wisconsin/kenosha-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/kewaunee-county.html": {
+   "to": "/land-sales/wisconsin/kewaunee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/la-crosse-county.html": {
+   "to": "/land-sales/wisconsin/la-crosse-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/lafayette-county.html": {
+   "to": "/land-sales/wisconsin/lafayette-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/langlade-county.html": {
+   "to": "/land-sales/wisconsin/langlade-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/lincoln-county.html": {
+   "to": "/land-sales/wisconsin/lincoln-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/manitowoc-county.html": {
+   "to": "/land-sales/wisconsin/manitowoc-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/marathon-county.html": {
+   "to": "/land-sales/wisconsin/marathon-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/marinette-county.html": {
+   "to": "/land-sales/wisconsin/marinette-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/marquette-county.html": {
+   "to": "/land-sales/wisconsin/marquette-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/menominee-county.html": {
+   "to": "/land-sales/wisconsin/menominee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/milwaukee-county.html": {
+   "to": "/land-sales/wisconsin/milwaukee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/monroe-county.html": {
+   "to": "/land-sales/wisconsin/monroe-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/oconto-county.html": {
+   "to": "/land-sales/wisconsin/oconto-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/oneida-county.html": {
+   "to": "/land-sales/wisconsin/oneida-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/outagamie-county.html": {
+   "to": "/land-sales/wisconsin/outagamie-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/ozaukee-county.html": {
+   "to": "/land-sales/wisconsin/ozaukee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/pepin-county.html": {
+   "to": "/land-sales/wisconsin/pepin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/pierce-county.html": {
+   "to": "/land-sales/wisconsin/pierce-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/polk-county.html": {
+   "to": "/land-sales/wisconsin/polk-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/portage-county.html": {
+   "to": "/land-sales/wisconsin/portage-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/price-county.html": {
+   "to": "/land-sales/wisconsin/price-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/racine-county.html": {
+   "to": "/land-sales/wisconsin/racine-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/richland-county.html": {
+   "to": "/land-sales/wisconsin/richland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/rock-county.html": {
+   "to": "/land-sales/wisconsin/rock-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/rusk-county.html": {
+   "to": "/land-sales/wisconsin/rusk-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/sauk-county.html": {
+   "to": "/land-sales/wisconsin/sauk-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/sawyer-county.html": {
+   "to": "/land-sales/wisconsin/sawyer-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/shawano-county.html": {
+   "to": "/land-sales/wisconsin/shawano-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/sheboygan-county.html": {
+   "to": "/land-sales/wisconsin/sheboygan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/st-croix-county.html": {
+   "to": "/land-sales/wisconsin/st-croix-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/taylor-county.html": {
+   "to": "/land-sales/wisconsin/taylor-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/trempealeau-county.html": {
+   "to": "/land-sales/wisconsin/trempealeau-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/vernon-county.html": {
+   "to": "/land-sales/wisconsin/vernon-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/vilas-county.html": {
+   "to": "/land-sales/wisconsin/vilas-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/walworth-county.html": {
+   "to": "/land-sales/wisconsin/walworth-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/washburn-county.html": {
+   "to": "/land-sales/wisconsin/washburn-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/washington-county.html": {
+   "to": "/land-sales/wisconsin/washington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/waukesha-county.html": {
+   "to": "/land-sales/wisconsin/waukesha-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/waupaca-county.html": {
+   "to": "/land-sales/wisconsin/waupaca-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/waushara-county.html": {
+   "to": "/land-sales/wisconsin/waushara-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/winnebago-county.html": {
+   "to": "/land-sales/wisconsin/winnebago-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/wisconsin/wood-county.html": {
+   "to": "/land-sales/wisconsin/wood-county",
+   "since": "2026-11-12"
+  }
+ }
+}

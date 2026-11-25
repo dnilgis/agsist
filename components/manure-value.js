@@ -493,7 +493,9 @@
       var pr = nutrientPrices(data);
       Array.prototype.forEach.call(roots, function (r) { if (r._mvFill) r._mvFill(pr); });
       liveNumbers(data);
+      d.documentElement.classList.remove('mv-wait');
     }).catch(function () {
+      d.documentElement.classList.remove('mv-wait');
       Array.prototype.forEach.call(roots, function (r) { if (r._mvFill) r._mvFill({ n: null, p: null, k: null, src: {} }); });
     });
   }

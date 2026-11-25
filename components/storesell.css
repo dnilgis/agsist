@@ -1,7 +1,7 @@
 /* storesell.css: the posted-carry line and table in the homepage
    "Store or sell?" calculator (components/storesell.js). Site tokens only,
    so light and dark come from the theme. */
-.ss-posted{margin:0 0 .75rem;padding:.65rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;min-width:0}
+.ss-posted{margin:0 0 .75rem;padding:.65rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);min-width:0}
 .ss-line{margin:0;font-size:.95rem;line-height:1.45;font-weight:600;color:var(--text)}
 .ss-tablewrap{margin:.55rem 0 0;max-width:100%;overflow-x:auto}
 .ss-table{width:100%;border-collapse:collapse;font-size:.8125rem;font-variant-numeric:tabular-nums}

@@ -15,7 +15,7 @@
  *     checked (a co-op with no url is named with no link). Prices are what
  *     the co-op posts; the copy says to call and confirm.
  *   * Only the co-ops' own prices. No other source is drawn or blended in
- *     (Sig, 2026-10-15 and 16).
+ *     (2026-10-15 and 16).
  */
 (function (root) {
   'use strict';
@@ -181,7 +181,18 @@
     var n = newest(d), reg = regionOf(d);
     return 'Every price on this page is from <strong>' + esc(reg || 'co-op') + '</strong> co-ops: the middle cash price of ' +
       count(d.coops_current, 'co-op', 'co-ops') + (n ? ', posted through <strong>' + esc(shortDate(n, true)) + '</strong>' : '') + '.' +
-      ' Read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true)) + '.';
+      ' Read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true)) + '.' + staleNote(d, n);
+  }
+
+  /* Nov 12, 2026 (SEO audit, item 9): the co-ops are read every weekday, but a co-op changes its posted price only now and
+     then, so the newest price can be weeks old while the read is today. Said plainly once it is over a week old, from the
+     file's own read date (never the reader's clock), so "this week" is never implied for an older price. */
+  function staleNote(d, n) {
+    var g = String(d.generated || '').slice(0, 10);
+    if (!isDate(g) || !n) return '';
+    var days = Math.round((Date.parse(g + 'T12:00:00Z') - Date.parse(n + 'T12:00:00Z')) / 86400000);
+    if (!(days > 7)) return '';
+    return ' No co-op has posted a newer price than ' + esc(shortDate(n, false)) + ', so the newest price here is ' + days + ' days old.';
   }
 
   /* The top of the page: the co-op price cards. '' when there is nothing real. */

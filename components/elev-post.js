@@ -185,11 +185,11 @@
   }
   var MAIL = '<a href="mailto:' + SIG_EMAIL + '">' + SIG_EMAIL + '</a>';
   function refused(j) {
-    if (j._down && j._status) return message('Could not reach AGSIST', 'Our system is down right now. Open the link again later. If it keeps happening, email Sig at ' + MAIL + '.');
-    if (j._status === 403) return message('This listing is turned off', 'Your bids are not showing on AGSIST right now. To turn the listing back on, email Sig at ' + MAIL + '.');
-    if (j._status === 429) return message('Too many tries', 'This phone has opened the page a lot in the last hour. Wait a while and open it again. If it keeps happening, email Sig at ' + MAIL + '.');
-    if (j._status === 0 || j._status >= 500) return message('Could not reach AGSIST', 'Check your signal and open the link again. If it keeps happening, email Sig at ' + MAIL + '.');
-    return message('This link does not open a listing', 'Use the whole link from your text or email, or ask Sig for a new one: ' + MAIL + '.');
+    if (j._down && j._status) return message('Could not reach AGSIST', 'Our system is down right now. Open the link again later. If it keeps happening, email AGSIST at ' + MAIL + '.');
+    if (j._status === 403) return message('This listing is turned off', 'Your bids are not showing on AGSIST right now. To turn the listing back on, email AGSIST at ' + MAIL + '.');
+    if (j._status === 429) return message('Too many tries', 'This phone has opened the page a lot in the last hour. Wait a while and open it again. If it keeps happening, email AGSIST at ' + MAIL + '.');
+    if (j._status === 0 || j._status >= 500) return message('Could not reach AGSIST', 'Check your signal and open the link again. If it keeps happening, email AGSIST at ' + MAIL + '.');
+    return message('This link does not open a listing', 'Use the whole link from your text or email, or ask AGSIST for a new one: ' + MAIL + '.');
   }
 
   function when(iso) {
@@ -323,7 +323,7 @@
       '<section class="ep-card"><h2>Note for farmers</h2>' +
         '<label for="ep-note">Short and current, like "Corn dump open till 9 tonight"</label>' +
         '<textarea id="ep-note" maxlength="' + NOTE_MAX + '" rows="2">' + esc(form.note) + '</textarea><div class="ep-count" id="ep-count"></div></section>' +
-      '<p class="ep-foot-note">This page is private to you. Anyone with this link can change your listing, so keep it to yourself. Lost it, or want a new one? Email Sig at ' + MAIL + '.</p>' +
+      '<p class="ep-foot-note">This page is private to you. Anyone with this link can change your listing, so keep it to yourself. Lost it, or want a new one? Email AGSIST at ' + MAIL + '.</p>' +
       '<div class="ep-bar"><div class="in"><button type="button" class="ep-save" id="ep-save">Save</button><div class="ep-state" id="ep-state" role="status" aria-live="polite"></div></div></div>';
     drawRows();
     count();
@@ -435,7 +435,7 @@
      entered_at, the moment Save was pressed; the worker (v5.50) stores that
      time, not the time a kept save arrives, so the board shows how old the
      prices really are ("Updated 6:10 AM Wed"), and a kept save never
-     overwrites a newer one (Sig, Oct 22). */
+     overwrites a newer one (Oct 22). */
   var LAST = 'elev-last', LAST_DAYS = 14, OFFLINE = false;
   function keepLast(r) { try { localStorage.setItem(LAST, JSON.stringify({ k: key.trim(), rec: r, t: Date.now() })); } catch (e) {} }
   function lastRec() {
@@ -476,8 +476,8 @@
       if (!j.ok && j._down && keepSave(body)) return;
       if (!j.ok || !j.record) {
         var why = j._status === 0 ? 'No signal or AGSIST could not be reached.' :
-          j._status === 403 ? 'This listing has been turned off. Email Sig at ' + SIG_EMAIL + '.' :
-          j._status === 404 ? 'This link no longer works. Email Sig at ' + SIG_EMAIL + ' for a new one.' :
+          j._status === 403 ? 'This listing has been turned off. Email AGSIST at ' + SIG_EMAIL + '.' :
+          j._status === 404 ? 'This link no longer works. Email AGSIST at ' + SIG_EMAIL + ' for a new one.' :
           j._status === 429 ? 'Too many saves this hour. Wait a few minutes.' :
           j._status === 409 && j.newer ? 'A newer save is already posted. Open the page again to see it.' :
           'AGSIST said: ' + String(j.error || 'something went wrong') + '.';

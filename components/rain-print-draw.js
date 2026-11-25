@@ -1,4 +1,4 @@
-/* components/rain-print-draw.js: "Watch your year draw" (Sig, 2026-10-20).
+/* components/rain-print-draw.js: "Watch your year draw" (2026-10-20).
  *
  * The reader's own Rain Print draws itself day by day, on the page (in place,
  * over the print) and as a video file to post or text: square 1080 x 1080 or
@@ -36,7 +36,7 @@
  *            site as commercial use, and no free source gives the same daily
  *            gust for any spot and year. WIND_SRC is null, so the chip is not
  *            shown and nothing is asked; the drawing code stays for a source
- *            Sig picks (NCEI daily summaries WSF2/WSFG at the nearest ASOS).
+ *            The owner picks (NCEI daily summaries WSF2/WSFG at the nearest ASOS).
  *
  * EXPORT. MediaRecorder on a canvas, H.264 MP4 where the browser offers it
  * (Safari, Chrome 126 and later), WebM otherwise; no sound; about 2.5 to 4 Mb/s
@@ -998,7 +998,7 @@
       if (!j) r.checked = true;
       lab.appendChild(r); lab.appendChild(doc.createTextNode(FORMATS[k].label)); fmtBox.appendChild(lab);
     });
-    /* Wind is the video's alone (2026-10-22, Sig): a labeled on/off chip that says so; the print never draws it */
+    /* Wind is the video's alone (2026-10-22): a labeled on/off chip that says so; the print never draws it */
     var windLab = el('label', { class: 'chip rpd-wind', title: 'Each day\u2019s strongest gust, modeled, not measured. In the video only, never on the print.' }), windBox = el('input', { type: 'checkbox' });
     windLab.appendChild(windBox); windLab.appendChild(doc.createTextNode(' Wind, video only'));
     if (!WIND_SRC || !isFinite(+src.lat) || !isFinite(+src.lon)) windLab.classList.add('rpd-hide');

@@ -24,9 +24,9 @@ id = "9024f0b7ca5948bf9ed98d6135d73357"
 # Variables and Secrets (list in workers/README.md). Deploys never touch them.
 
 # Plain switches set from the repo, so a deploy sets them and nobody has to edit the dashboard
-# (Nov 3, 2026, Sig: "why can't you just do this automatically"). Secrets stay in the dashboard.
+# (Nov 3, 2026). Secrets stay in the dashboard.
 # RP_*_LIVE "1": the worker asks the Rain Print design / buyer email jobs for a live run, not a dry
-# run to Sig (the repo variables of the same names gate the hourly runs).
+# run to the owner (the repo variables of the same names gate the hourly runs).
 [vars]
 RP_DESIGN_EMAIL_LIVE = "1"
 RP_BUYER_EMAIL_LIVE = "1"

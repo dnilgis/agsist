@@ -1,12 +1,12 @@
 /* components/rp-xmas.js -- the Christmas Rain Print line on the field and
-   weather pages (Sig, 2026-10-30): one slim, quiet line in Sig's voice, near
+   weather pages (2026-10-30): one slim, quiet line in the owner's voice, near
    the top of the page, with his phone number for people who would rather he
    made the print for them (/rain-print has the "I'll make it for you" form).
 
    WIRING: one plain (not deferred) script tag inside <main>, near the top (on
    /hail-map under the map and its 5-year controls, on county rain pages under
    the print and its sell block, so a phone's first screen keeps those):
-     <script src="/components/rp-xmas.js?v=1"></script>
+     <script src="/components/rp-xmas.js?v=2"></script>
    It writes the line just before itself while the page is still being read,
    so the line is there at the first paint and nothing below it ever moves
    (no fetch, no late fill). Outside the dates, or hidden by the reader,
@@ -15,8 +15,8 @@
    PAGES (and only these): /rain and every county rain page
    (scripts/build_county_rain.py), /rain-radar, /hail-map, /drought-monitor,
    /spray, /gdu-calculator, /field-scout and the Farmland Atlas county pages
-   (scripts/build_atlas_pages.py). Never the home page or the Daily (Sig
-   parked both until Nov 19). test/rp-xmas.test.mjs holds the list.
+   (scripts/build_atlas_pages.py). Never the home page or the Daily (the owner
+ parked both until Nov 19). test/rp-xmas.test.mjs holds the list.
 
    DATES: FROM..UNTIL inclusive, America/Chicago. UNTIL is the last day a
    print can be ordered for Christmas delivery, print_christmas_cutoff in
@@ -50,7 +50,7 @@
       '<button type="button" class="rpx-x" aria-label="Hide this for 30 days">×</button>';
   }
   var CSS = '.rpx{display:flex;align-items:flex-start;gap:.4rem;margin:.6rem 0 .9rem;padding:6px 6px 6px 11px;' +
-    'border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:6px;background:var(--surface);' +
+    'border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-md);background:var(--surface);' +
     'font-size:.86rem;line-height:1.45;color:var(--text-dim);max-width:100%;box-sizing:border-box}' +
     '@media (max-width:520px){.rpx{font-size:.8rem;line-height:1.4;padding:5px 4px 5px 10px}}' +
     'aside.rpx p.rpx-t{flex:1;min-width:0;margin:0;font-size:inherit;line-height:inherit;color:inherit;max-width:none}' +

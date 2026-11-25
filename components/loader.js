@@ -19,7 +19,7 @@
     var QUEUED = "Got it. You'll be added within a day.";
     var real = window.fetch;
     function routeOf(u) {
-      try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] ? x.pathname : ''; }
+      try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] && /^(www\.)?agsist\.com$/.test(location.hostname) ? x.pathname : ''; }
       catch (e) { return ''; }
     }
     function fields(body) {
@@ -38,7 +38,7 @@
         var old = document.getElementById('signup-queued'); if (old) old.remove();
         var bar = document.createElement('div');
         bar.id = 'signup-queued'; bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center';
         bar.textContent = QUEUED + ' No need to look for a confirmation email for now.';
         var x = document.createElement('button');
         x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.textContent = '×';
@@ -78,7 +78,7 @@
     window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS };
     try {
       if (!window.AgOutbox && localStorage.getItem('agsist-outbox') && !document.querySelector('script[src^="/components/outbox.js"]')) {
-        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=3'; ob.defer = true;
+        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=4'; ob.defer = true;
         (document.head || document.documentElement).appendChild(ob);
       }
     } catch (e) { }
@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '106';
+  var CV = '111';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -138,7 +138,6 @@
       })
       .catch(function () {});
   }
-  /* menu_click {group, label, menu} for a live menu link (Oct 29, 2026); nothing else is sent */
   function initMenuClicks() {
     var txt = function (el) { return el ? String(el.textContent || '').replace(/[\u2192]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : ''; };
     function send(a, menu, group) {
@@ -153,7 +152,7 @@
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!a) return;
       var dd = a.closest('.nav-dd');
-      send(a, 'desktop', txt(dd && dd.querySelector('.nav-btn')));
+      send(a, 'desktop', dd ? txt(dd.querySelector('.nav-btn')) : 'Top');   // a link straight on the bar (Cash bids) is group Top
     }, true);   // capture: each panel keeps its own clicks from bubbling (it stays open on a click inside)
     var dr = document.getElementById('drawer');
     if (dr) dr.addEventListener('click', function (e) {
@@ -244,8 +243,6 @@
     var ov  = document.getElementById('draw-ov');
     var dc  = document.getElementById('draw-close');
     if (ham) {
-      ham.style.minHeight = '44px';
-      ham.style.minWidth  = '44px';
       ham.setAttribute('aria-expanded', 'false');
       ham.setAttribute('aria-controls', 'drawer');
       if (!ham.getAttribute('aria-label')) ham.setAttribute('aria-label', 'Open navigation menu');
@@ -387,7 +384,6 @@
   function saveZip(z, done) {
     var prior = null;
     try { prior = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) { prior = null; }
-    // our own ZIP table, [lat, lon, town, state code, county] (2026-10-29: no outside geocoder)
     fetch('/data/places/zip/' + z.slice(0, 2) + '.json')
       .then(function (r) { if (r.status === 404) return null; if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (t) {
@@ -501,23 +497,7 @@
     if (!hide) return;
     document.querySelectorAll('#topnav [data-sponsor-link], #drawer [data-sponsor-link]').forEach(function (a) { a.style.setProperty('display', 'none', 'important'); });
   }
-  var COUNTER_URL = '';
   function renderSupporters() {
-    function esc(s) {
-      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-      });
-    }
-    if (COUNTER_URL) {
-      fetch(COUNTER_URL, { cache: 'no-store' })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (d) {
-          var n = Number(d && d.views);
-          var el = document.querySelector('[data-adviews]');
-          if (el && isFinite(n) && n > 0) el.textContent = n.toLocaleString('en-US');
-        })
-        .catch(function () { });
-    }
     var row = document.getElementById('adspace-row');
     if (!row) return;
     var strip = document.getElementById('footer-adspace');
@@ -571,36 +551,80 @@
       (s.blurb ? '<span class="ad-filled-blurb">' + slotEsc(s.blurb) + '</span>' : '');
   }
   window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
-  var OPEN_SLOT_LINE = true;
-  // Oct 29 rate card: state cash bids and rent ribbons are the State Sponsor; others are retired, no link.
-  function openSlotTier(id) { return id === 'cash-bids' ? 'cashbids' : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? 'state' : ''; }
-  function openSlotLine(rib, id) {
-    var tier = openSlotTier(id);
-    if (!OPEN_SLOT_LINE || !rib || rib.className !== 'ag-sponsor-ribbon' || !tier) return;
-    if (!document.getElementById('ag-open-slot-css')) {
-      var st = document.createElement('style');
-      st.id = 'ag-open-slot-css';
-      st.textContent = 'html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:block!important;margin:0;padding:0;border:0;background:none;box-shadow:none;font-size:.78rem;line-height:1.2;color:var(--text-muted)}' +
-        'aside.ag-sponsor-ribbon--open a.ag-open-slot{display:inline;min-height:0;margin:0;padding:14px 0;background:none;border:0;border-radius:0;box-shadow:none;width:auto;color:var(--text-muted)!important;font-weight:600;text-decoration:underline;text-underline-offset:2px;transform:none}' +
-        'aside.ag-sponsor-ribbon--open a.ag-open-slot:hover,aside.ag-sponsor-ribbon--open a.ag-open-slot:focus-visible{color:var(--brand)!important;box-shadow:none;transform:none}' +
-        '@media print{html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:none!important}}';
-      document.head.appendChild(st);
-    }
-    rib.classList.add('ag-sponsor-ribbon--open');
-    rib.setAttribute('aria-label', 'Sponsor this page');
-    rib.innerHTML = '<a class="ag-open-slot" href="' + BASE + '/sponsor-apply?tier=' + tier + '&amp;slot=' + encodeURIComponent(id) +
-      '" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'open_slot\'})">Sponsor this page</a>';
-  }
   var GEO_SKIP = /^\/(rain-print|rp-gift|rain-gauge|gifts-for-farmers|birth-year-weather-gift|wedding-year-weather-gift|farm-anniversary-gifts|farmer-retirement-gifts)(?:[.\/-]|$)/;
   function geoSponsor(noSponsor, rib) {
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=3';
+    s.src = BASE + '/components/geo-sponsor.js?v=7';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
+  /* Sitewide sponsor line: sold, else the open spot (no reader figure). It fills #sw-slot after the answer; with no
+     slot it goes above the footer. */
+  function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  // Sold: on, not the house ad, a name, an https link, and today (Central) in start..end, both days counted in.
+  // Outside them, or a date that does not read: the open strip. day: YYYY-MM-DD, else today.
+  function swSold(sp, day) {
+    if (!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''))) return false;
+    var bad = function (v) {
+      if (v == null || v === '') return false;
+      var t = /^\d{4}-\d{2}-\d{2}$/.test(v) ? Date.parse(v + 'T12:00:00Z') : NaN;
+      return isNaN(t) || new Date(t).toISOString().slice(0, 10) !== v;
+    };
+    if (bad(sp.start) || bad(sp.end)) return false;
+    if (!sp.start && !sp.end) return true;
+    if (!day) {
+      try { day = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
+      catch (e) { day = new Date().toISOString().slice(0, 10); }
+    }
+    return !(sp.start && day < sp.start) && !(sp.end && day > sp.end);
+  }
+  function swLine(sp, card, spots, preview, day) {
+    if (preview) sp = { active: true, advertiser: 'Your Business', headline: 'Your one line here.', cta_url: 'https://agsist.com/sponsor' };
+    if (swSold(sp, day)) {
+      var href = sp.cta_url + (sp.cta_url.indexOf('?') < 0 ? '?' : '&') + 'utm_source=agsist&utm_medium=sitewide';
+      return { sold: true, html: '<span class="sw-in"><span class="sw-tag">Sponsor</span>Supported by <b>' + slotEsc(sp.advertiser) + '</b>' +
+        (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
+        (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
+    }
+    return { sold: false, html: '' };
+  }
+  function sitewide(noSponsor, before, parent) {
+    if (noSponsor || GEO_SKIP.test(location.pathname) || !parent || document.getElementById('ag-sw') || document.getElementById('site-header') ||
+        (document.body && document.body.classList.contains('no-sw'))) return;
+    var line = document.createElement('aside');
+    line.id = 'ag-sw';
+    line.className = 'sw-line';
+    line.setAttribute('aria-label', 'Sponsor');
+    var slot = document.getElementById('sw-slot');
+    // one sponsor ask after the answer: a page whose state card follows its answer holds no slot and shows no line
+    if (!slot && document.querySelector('[data-state-spot]')) return;
+    if (!slot) {
+      var foot = document.getElementById('site-footer') || document.querySelector('footer.footer');
+      if (!foot || !foot.parentNode) return;
+      slot = document.createElement('div');
+      slot.id = 'sw-slot'; slot.className = 'sw-slot sw-slot--wide';
+      foot.parentNode.insertBefore(slot, foot);
+    }
+    slot.appendChild(line);
+    var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
+    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json')]).then(function (r) {
+      var o = swLine(r[0], r[1], null, preview);
+      if (o.sold) {
+        line.className = 'sw-line sw-line--sold';
+        if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
+      }
+      if (o.sold) { line.innerHTML = o.html; return; }
+      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(null, BASE); } catch (e) {} };
+      if (window.AgsistSwOpen) return f();
+      var s = document.createElement('script');
+      s.src = BASE + '/components/sw-open.js?v=3'; s.async = true; s.onload = f;
+      document.head.appendChild(s);
+    });
+  }
+  window.AgsistSitewide = { line: swLine };
   function fillPageRibbons(noSponsor) {
     var rib = document.querySelector('aside.ag-sponsor-ribbon');
     if (!rib) return geoSponsor(noSponsor, null);
@@ -618,10 +642,9 @@
         var today;
         try { today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
         catch (e) { today = new Date().toISOString().slice(0, 10); }
-        if (!noSponsor && (!sp || sp.active === false)) openSlotLine(rib, id);
         var sold = !!sp && sp.active !== false && !!sp.company && /^https?:\/\//.test(sp.url || '') &&
             /^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') && sp.start <= today;
-        if (!sold) geoSponsor(noSponsor, rib);
+        if (!sold || document.querySelector('[data-state-spot]')) geoSponsor(noSponsor, rib);
         if (!sp || sp.active === false || !sp.company || !/^https?:\/\//.test(sp.url || '') ||
             !/^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') || sp.start > today) return;
         rib.classList.add('ag-sponsor-ribbon--sold');
@@ -707,7 +730,7 @@
         var bar = document.createElement('div');
         bar.id = 'site-notice';
         bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center';
         var msg = document.createElement('span');
         msg.textContent = n.text;
         bar.appendChild(msg);
@@ -735,13 +758,14 @@
     siteNotice();
     loadSponsorMetrics();
     var noSponsor = pageHidesSponsor();
-    loadComponent('site-header', '/components/header.html', function () { initNav(); headerSponsorHide(noSponsor); });
+    var swPh = document.getElementById('site-header'), swNext = swPh && swPh.nextSibling, swParent = swPh && swPh.parentNode;
+    loadComponent('site-header', '/components/header.html', function () { sitewide(noSponsor, swNext, swParent); initNav(); headerSponsorHide(noSponsor); });
     loadComponent('site-footer', '/components/footer.html', function () {
       foldFooter(); renderSupporters(); footerSponsorHide(noSponsor);
       try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}
     });
     fillPageRibbons(noSponsor);
-    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=2'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })();
+    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=3'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })();
   });
 })();
 (function () {
@@ -766,12 +790,12 @@
     var css =
       '.agt{display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:inherit;line-height:1.2;color:inherit;white-space:nowrap}' +
       '.agt-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}' +
-      '.agt-dot-live{background:var(--green,#3a8b3c);animation:agt-pulse 2s ease-in-out infinite}' +
+      '.agt-dot-live{background:var(--green,#3a8b3c);}' +
       '.agt-dot-stale{background:var(--gold-fill,var(--gold,#daa520))}' +
       '.agt-dot-offline{background:var(--red,#c8322e)}' +
       '.agt-stale{color:var(--gold,#daa520)}' +
       '.agt-offline{color:var(--red,#c8322e)}' +
-      '.agt-tag{font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.92em}' +
+      '.agt-tag{font-weight:700;letter-spacing:0;text-transform:none;font-size:.92em}' +
       '.agt-next{opacity:.55;margin-left:2px}' +
       '@keyframes agt-pulse{0%,100%{opacity:1}50%{opacity:.35}}' +
       '@media(prefers-reduced-motion:reduce){.agt-dot-live{animation:none}}';
@@ -934,7 +958,7 @@
     EV.forEach(function (t) { window.removeEventListener(t, go, true); });
     if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/signup-ask.js?v=21';
+    s.src = '/components/signup-ask.js?v=23';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -960,7 +984,7 @@
     if (window.AgLandAlert || document.querySelector('script[src^="/components/land-alert.js"]')) return;
     if (!document.querySelector('[data-land-alert],section[data-atlas-sales="county"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/land-alert.js?v=4';
+    s.src = '/components/land-alert.js?v=5';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -973,7 +997,7 @@
         && !/^\/rent\/(illinois|wisconsin|indiana|vermont|new-jersey)(\.html)?\/?$/.test(location.pathname)
         && !/^\/farmland-atlas\/(indiana|vermont|new-jersey|florida)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=6';
+    s.src = '/components/land-sales.js?v=7';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -1155,7 +1179,7 @@
       bar = document.createElement('p');
       bar.className = 'asof-offline sw-saved-note';
       bar.setAttribute('role', 'status');
-      bar.style.cssText = 'margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);border-radius:var(--r-sm,6px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4';
+      bar.style.cssText = 'margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);border-radius:var(--r-sm,2px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4';
       var host = document.querySelector('main') || document.body;
       if (!host) return;
       host.insertBefore(bar, host.firstChild);

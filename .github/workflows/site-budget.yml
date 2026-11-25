@@ -1,5 +1,4 @@
 name: Site size budget
-# Site size budget.
 
 on:
   push:
@@ -7,7 +6,6 @@ on:
     paths:
       - '**.html'
       - 'data/**'
-      - 'scripts/check_site_budget.py'
   workflow_dispatch:
 
 permissions:

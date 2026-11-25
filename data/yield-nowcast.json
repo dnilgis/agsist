@@ -1,45 +1,27 @@
 {
  "generated": "2026-10-13T10:36:18Z",
- "note": "AGSIST's estimate of US final yield. band80 is the 80th percentile (nearest rank) of absolute EXPANDING-WINDOW backtest errors AT THIS WEEK: each held-out year is estimated from earlier years only (backtest_years says how many, backtest_window which). loyo_* are the leave-one-year-out figures, which use later years, kept for transparency and not used for the band. trend_mae is the no-ratings baseline on the same years by the same rule; skill_pct is computed from the rounded MAEs as printed. trend is fitted on every US final in trend_window. History rows are append-only: a rerun that changes a recorded week adds a row with its generation time beside the old one. Final USDA yield is written beside them in January, misses included.",
+ "note": "AGSIST's estimate of US final yield, with its past record. USDA's final yield is written beside it in January, misses included.",
  "crops": {
   "corn": {
-   "history_source": "pairs-2000",
    "week_ending": "2026-10-04",
    "nowcast": 180.6,
    "band80": 6.9,
    "mae": 4.2,
-   "band_method": "expanding-window",
    "trend": 188.7,
    "trend_window": "2010-2025",
-   "trend_n": 16,
-   "trend_mae": 5.5,
-   "skill_pct": 24,
-   "states": 18,
    "backtest_years": 12,
    "backtest_window": "2011-2024",
-   "loyo_mae": 3.56,
-   "loyo_band80": 6.94,
-   "loyo_years": 13,
    "unit": "bu/acre"
   },
   "soybeans": {
-   "history_source": "pairs-2000",
    "week_ending": "2026-10-04",
    "nowcast": 53.5,
    "band80": 2.4,
    "mae": 1.3,
-   "band_method": "expanding-window",
    "trend": 53.9,
    "trend_window": "2010-2025",
-   "trend_n": 16,
-   "trend_mae": 2.4,
-   "skill_pct": 46,
-   "states": 18,
    "backtest_years": 13,
    "backtest_window": "2011-2024",
-   "loyo_mae": 1.06,
-   "loyo_band80": 1.57,
-   "loyo_years": 14,
    "unit": "bu/acre"
   }
  },
@@ -151,8 +133,7 @@
     "week_ending": "2026-10-04",
     "nowcast": 53.5,
     "band80": 2.4,
-    "generated": "2026-10-06T13:45:02Z",
-    "band_method": "expanding-window"
+    "generated": "2026-10-06T13:45:02Z"
    }
   ]
  },

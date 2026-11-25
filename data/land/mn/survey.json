@@ -1,0 +1,830 @@
+{
+ "about": "County cash rents farmers paid in 2025, from FINBIN farm records (University of Minnesota). Not a USDA figure. A county with fewer than 10 reporting farms has no figure.",
+ "counties": {
+  "27001": {
+   "name": "Aitkin",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27003": {
+   "name": "Anoka",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27005": {
+   "median": 103.47,
+   "name": "Becker",
+   "p10": 47.36,
+   "p90": 194.29,
+   "prior": {
+    "2021": 116,
+    "2022": 121,
+    "2023": 106,
+    "2024": 131
+   },
+   "rent": 138.07
+  },
+  "27007": {
+   "name": "Beltrami",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27009": {
+   "median": 98.12,
+   "name": "Benton",
+   "p10": 51.92,
+   "p90": 145.92,
+   "prior": {
+    "2021": 114,
+    "2022": 128,
+    "2023": 154,
+    "2024": 160
+   },
+   "rent": 144.61
+  },
+  "27011": {
+   "name": "Big Stone",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27013": {
+   "median": 249.11,
+   "name": "Blue Earth",
+   "p10": 146.5,
+   "p90": 300.51,
+   "prior": {
+    "2021": 234,
+    "2022": 260,
+    "2023": 279,
+    "2024": 260
+   },
+   "rent": 267.63
+  },
+  "27015": {
+   "median": 231.53,
+   "name": "Brown",
+   "p10": 184.42,
+   "p90": 300.15,
+   "prior": {
+    "2021": 210,
+    "2022": 218,
+    "2023": 248,
+    "2024": 221
+   },
+   "rent": 237.38
+  },
+  "27017": {
+   "name": "Carlton",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27019": {
+   "median": 245.92,
+   "name": "Carver",
+   "p10": 128.28,
+   "p90": 300,
+   "prior": {
+    "2021": 199,
+    "2022": 231,
+    "2023": 215,
+    "2024": 218
+   },
+   "rent": 231.25
+  },
+  "27021": {
+   "name": "Cass",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27023": {
+   "name": "Chippewa",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27025": {
+   "name": "Chisago",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27027": {
+   "median": 174.49,
+   "name": "Clay",
+   "p10": 104,
+   "p90": 218.47,
+   "prior": {
+    "2021": 145,
+    "2022": 152,
+    "2023": 164,
+    "2024": 167
+   },
+   "rent": 168.93
+  },
+  "27029": {
+   "name": "Clearwater",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27033": {
+   "median": 235,
+   "name": "Cottonwood",
+   "p10": 163.67,
+   "p90": 305.05,
+   "prior": {
+    "2021": 201,
+    "2022": 222,
+    "2023": 223,
+    "2024": 232
+   },
+   "rent": 240.45
+  },
+  "27035": {
+   "name": "Crow Wing",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27037": {
+   "name": "Dakota",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27039": {
+   "median": 306.07,
+   "name": "Dodge",
+   "p10": 191.8,
+   "p90": 333.91,
+   "prior": {
+    "2021": 232,
+    "2022": 256,
+    "2023": 281,
+    "2024": 274
+   },
+   "rent": 289.34
+  },
+  "27041": {
+   "median": 123.96,
+   "name": "Douglas",
+   "p10": 55.47,
+   "p90": 203.77,
+   "prior": {
+    "2021": 133,
+    "2022": 158,
+    "2023": 160,
+    "2024": 159
+   },
+   "rent": 151.52
+  },
+  "27043": {
+   "median": 264.55,
+   "name": "Faribault",
+   "p10": 119.75,
+   "p90": 316,
+   "prior": {
+    "2021": 244,
+    "2022": 262,
+    "2023": 271,
+    "2024": 263
+   },
+   "rent": 259.05
+  },
+  "27045": {
+   "median": 235.25,
+   "name": "Filmore",
+   "p10": 128.29,
+   "p90": 319.76,
+   "prior": {
+    "2021": 222,
+    "2022": 242,
+    "2023": 247,
+    "2024": 257
+   },
+   "rent": 266.47
+  },
+  "27047": {
+   "median": 266.31,
+   "name": "Freeborn",
+   "p10": 211.65,
+   "p90": 321.15,
+   "prior": {
+    "2021": 227,
+    "2022": 250,
+    "2023": 259,
+    "2024": 262
+   },
+   "rent": 270.04
+  },
+  "27049": {
+   "median": 243.66,
+   "name": "Goodhue",
+   "p10": 125,
+   "p90": 334.48,
+   "prior": {
+    "2021": 219,
+    "2022": 242,
+    "2023": 251,
+    "2024": 255
+   },
+   "rent": 261.48
+  },
+  "27051": {
+   "median": 160.34,
+   "name": "Grant",
+   "p10": 85.21,
+   "p90": 237.32,
+   "prior": {
+    "2021": 185,
+    "2022": 198,
+    "2023": 202,
+    "2024": 187
+   },
+   "rent": 193.55
+  },
+  "27053": {
+   "name": "Hennepin",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27055": {
+   "name": "Houston",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27057": {
+   "name": "Hubbard",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27059": {
+   "name": "Isanti",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27061": {
+   "name": "Itasca",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27063": {
+   "median": 250,
+   "name": "Jackson",
+   "p10": 167.63,
+   "p90": 300.3,
+   "prior": {
+    "2021": 218,
+    "2022": 233,
+    "2023": 242,
+    "2024": 237
+   },
+   "rent": 249.25
+  },
+  "27065": {
+   "name": "Kanabec",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27067": {
+   "median": 217.01,
+   "name": "Kandiyohi",
+   "p10": 161.57,
+   "p90": 286.31,
+   "prior": {
+    "2021": 217,
+    "2022": 247,
+    "2023": 261,
+    "2024": 251
+   },
+   "rent": 244.14
+  },
+  "27069": {
+   "name": "Kittson",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27071": {
+   "name": "Koochiching",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27073": {
+   "name": "Lac qui Parle",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27077": {
+   "name": "Lake of Woods",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27079": {
+   "median": 241.78,
+   "name": "Le Sueur",
+   "p10": 144.85,
+   "p90": 304.64,
+   "prior": {
+    "2021": 217,
+    "2022": 246,
+    "2023": 250,
+    "2024": 244
+   },
+   "rent": 246.41
+  },
+  "27081": {
+   "median": 239.24,
+   "name": "Lincoln",
+   "p10": 192.58,
+   "p90": 278.18,
+   "prior": {
+    "2021": 199,
+    "2022": 209,
+    "2023": 227,
+    "2024": 242
+   },
+   "rent": 228.99
+  },
+  "27083": {
+   "median": 234.79,
+   "name": "Lyon",
+   "p10": 178.71,
+   "p90": 285,
+   "prior": {
+    "2021": 196,
+    "2022": 218,
+    "2023": 240,
+    "2024": 237
+   },
+   "rent": 230.06
+  },
+  "27085": {
+   "median": 220.04,
+   "name": "McLeod",
+   "p10": 155.93,
+   "p90": 349.08,
+   "prior": {
+    "2021": 211,
+    "2022": 232,
+    "2023": 233,
+    "2024": 228
+   },
+   "rent": 246.97
+  },
+  "27087": {
+   "median": 125.59,
+   "name": "Mahnomen",
+   "p10": 71.65,
+   "p90": 166.36,
+   "prior": {
+    "2021": 107,
+    "2022": 103,
+    "2023": 126,
+    "2024": 134
+   },
+   "rent": 127.32
+  },
+  "27089": {
+   "median": 70,
+   "name": "Marshall",
+   "p10": 40.25,
+   "p90": 130,
+   "prior": {
+    "2021": 80,
+    "2022": 93,
+    "2023": 95,
+    "2024": 91
+   },
+   "rent": 88.15
+  },
+  "27091": {
+   "median": 271.33,
+   "name": "Martin",
+   "p10": 200,
+   "p90": 321.16,
+   "prior": {
+    "2021": 244,
+    "2022": 269,
+    "2023": 294,
+    "2024": 285
+   },
+   "rent": 283.76
+  },
+  "27093": {
+   "median": 205,
+   "name": "Meeker",
+   "p10": 160.71,
+   "p90": 299.48,
+   "prior": {
+    "2021": 197,
+    "2022": 222,
+    "2023": 243,
+    "2024": 248
+   },
+   "rent": 231.87
+  },
+  "27095": {
+   "name": "Mille Lacs",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27097": {
+   "median": 107.54,
+   "name": "Morrison",
+   "p10": 62,
+   "p90": 156.32,
+   "prior": {
+    "2021": 101,
+    "2022": 123,
+    "2023": 137,
+    "2024": 126
+   },
+   "rent": 137
+  },
+  "27099": {
+   "median": 255.59,
+   "name": "Mower",
+   "p10": 154,
+   "p90": 329.54,
+   "prior": {
+    "2021": 228,
+    "2022": 260,
+    "2023": 271,
+    "2024": 277
+   },
+   "rent": 269.16
+  },
+  "27101": {
+   "median": 250.68,
+   "name": "Murray",
+   "p10": 169.93,
+   "p90": 330,
+   "prior": {
+    "2021": 242,
+    "2022": 263,
+    "2023": 293,
+    "2024": 267
+   },
+   "rent": 262.16
+  },
+  "27103": {
+   "median": 252.23,
+   "name": "Nicollet",
+   "p10": 185.74,
+   "p90": 320.01,
+   "prior": {
+    "2021": 235,
+    "2022": 259,
+    "2023": 263,
+    "2024": 262
+   },
+   "rent": 258.43
+  },
+  "27105": {
+   "median": 251.01,
+   "name": "Nobles",
+   "p10": 169.48,
+   "p90": 303.8,
+   "prior": {
+    "2021": 216,
+    "2022": 241,
+    "2023": 243,
+    "2024": 244
+   },
+   "rent": 250.59
+  },
+  "27107": {
+   "median": 152.56,
+   "name": "Norman",
+   "p10": 110.24,
+   "p90": 205.45,
+   "prior": {
+    "2021": 138,
+    "2022": 141,
+    "2023": 154,
+    "2024": 159
+   },
+   "rent": 169.41
+  },
+  "27109": {
+   "median": 236.3,
+   "name": "Olmsted",
+   "p10": 134.97,
+   "p90": 278.25,
+   "prior": {},
+   "rent": 232.9
+  },
+  "27111": {
+   "median": 96.45,
+   "name": "Otter Tail",
+   "p10": 42.22,
+   "p90": 172.03,
+   "prior": {
+    "2021": 119,
+    "2022": 125,
+    "2023": 130,
+    "2024": 112
+   },
+   "rent": 110.26
+  },
+  "27113": {
+   "median": 80.12,
+   "name": "Pennington",
+   "p10": 65.68,
+   "p90": 151.33,
+   "prior": {
+    "2021": 72,
+    "2022": 71,
+    "2023": 75,
+    "2024": 71
+   },
+   "rent": 84.19
+  },
+  "27115": {
+   "name": "Pine",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27117": {
+   "median": 220,
+   "name": "Pipestone",
+   "p10": 160.05,
+   "p90": 286.19,
+   "prior": {
+    "2021": 212,
+    "2022": 219,
+    "2023": 238,
+    "2024": 231
+   },
+   "rent": 237.34
+  },
+  "27119": {
+   "median": 100,
+   "name": "Polk",
+   "p10": 65,
+   "p90": 189.2,
+   "prior": {
+    "2021": 106,
+    "2022": 114,
+    "2023": 120,
+    "2024": 118
+   },
+   "rent": 115.91
+  },
+  "27121": {
+   "name": "Pope",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27125": {
+   "name": "Red Lake",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27127": {
+   "median": 275,
+   "name": "Redwood",
+   "p10": 151.79,
+   "p90": 313.74,
+   "prior": {
+    "2021": 224,
+    "2022": 236,
+    "2023": 262,
+    "2024": 244
+   },
+   "rent": 259.92
+  },
+  "27129": {
+   "median": 238.82,
+   "name": "Renville",
+   "p10": 205.88,
+   "p90": 300,
+   "prior": {
+    "2021": 215,
+    "2022": 233,
+    "2023": 242,
+    "2024": 246
+   },
+   "rent": 241.76
+  },
+  "27131": {
+   "median": 236.01,
+   "name": "Rice",
+   "p10": 168.19,
+   "p90": 309.78,
+   "prior": {
+    "2021": 243,
+    "2022": 253,
+    "2023": 258,
+    "2024": 277
+   },
+   "rent": 271.39
+  },
+  "27133": {
+   "name": "Rock",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27135": {
+   "median": 66.86,
+   "name": "Roseau",
+   "p10": 49.78,
+   "p90": 80.45,
+   "prior": {
+    "2021": 49,
+    "2022": 59,
+    "2023": 61,
+    "2024": 61
+   },
+   "rent": 70.73
+  },
+  "27137": {
+   "name": "St. Louis",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27139": {
+   "median": 185.25,
+   "name": "Scott",
+   "p10": 102.54,
+   "p90": 252.86,
+   "prior": {
+    "2021": 196,
+    "2022": 184,
+    "2023": 208,
+    "2024": 210
+   },
+   "rent": 213.13
+  },
+  "27141": {
+   "name": "Sherburne",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27143": {
+   "median": 262.45,
+   "name": "Sibley",
+   "p10": 171.89,
+   "p90": 317.85,
+   "prior": {
+    "2021": 216,
+    "2022": 250,
+    "2023": 245,
+    "2024": 248
+   },
+   "rent": 260.49
+  },
+  "27145": {
+   "median": 159.94,
+   "name": "Stearns",
+   "p10": 70.59,
+   "p90": 253.32,
+   "prior": {
+    "2021": 150,
+    "2022": 173,
+    "2023": 189,
+    "2024": 181
+   },
+   "rent": 169.44
+  },
+  "27147": {
+   "median": 240,
+   "name": "Steele",
+   "p10": 213.44,
+   "p90": 325.8,
+   "prior": {
+    "2021": 240,
+    "2022": 269,
+    "2023": 295,
+    "2024": 269
+   },
+   "rent": 266.54
+  },
+  "27149": {
+   "name": "Stevens",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27151": {
+   "median": 234,
+   "name": "Swift",
+   "p10": 178.4,
+   "p90": 310,
+   "prior": {
+    "2021": 167,
+    "2022": 189,
+    "2023": 208,
+    "2024": 235
+   },
+   "rent": 262.53
+  },
+  "27153": {
+   "median": 126.49,
+   "name": "Todd",
+   "p10": 66.2,
+   "p90": 230.29,
+   "prior": {
+    "2021": 89,
+    "2022": 87,
+    "2023": 126,
+    "2024": 115
+   },
+   "rent": 145.03
+  },
+  "27155": {
+   "name": "Traverse",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27157": {
+   "median": 220.78,
+   "name": "Wabasha",
+   "p10": 61.05,
+   "p90": 300,
+   "prior": {
+    "2021": 191,
+    "2022": 189,
+    "2023": 223,
+    "2024": 215
+   },
+   "rent": 240.16
+  },
+  "27159": {
+   "name": "Wadena",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27161": {
+   "median": 248.48,
+   "name": "Waseca",
+   "p10": 166.86,
+   "p90": 308.18,
+   "prior": {
+    "2021": 223,
+    "2022": 263,
+    "2023": 285,
+    "2024": 265
+   },
+   "rent": 251.64
+  },
+  "27163": {
+   "name": "Washington",
+   "withheld": "fewer than 10 farms with cash rented land reported to FINBIN"
+  },
+  "27165": {
+   "median": 297.79,
+   "name": "Watonwan",
+   "p10": 214.13,
+   "p90": 331.78,
+   "prior": {
+    "2021": 252,
+    "2022": 271,
+    "2023": 292,
+    "2024": 282
+   },
+   "rent": 276.94
+  },
+  "27167": {
+   "median": 150.45,
+   "name": "Wilkin",
+   "p10": 61.89,
+   "p90": 210.08,
+   "prior": {
+    "2021": 140,
+    "2022": 156,
+    "2023": 149,
+    "2024": 158
+   },
+   "rent": 167.88
+  },
+  "27169": {
+   "median": 214.59,
+   "name": "Winona",
+   "p10": 115.98,
+   "p90": 281.02,
+   "prior": {
+    "2021": 197,
+    "2022": 217,
+    "2023": 225,
+    "2024": 227
+   },
+   "rent": 227.32
+  },
+  "27171": {
+   "median": 240.46,
+   "name": "Wright",
+   "p10": 147.66,
+   "p90": 275.02,
+   "prior": {
+    "2021": 164,
+    "2022": 155,
+    "2023": 179,
+    "2024": 191
+   },
+   "rent": 214.7
+  },
+  "27173": {
+   "median": 199.99,
+   "name": "Yellow Med.",
+   "p10": 184.83,
+   "p90": 265.69,
+   "prior": {
+    "2021": 182,
+    "2022": 207,
+    "2023": 223,
+    "2024": 206
+   },
+   "rent": 231.11
+  }
+ },
+ "evidence": "rents paid, FINBIN farm records",
+ "min_farms": 10,
+ "not_listed": [
+  "Cook",
+  "Lake",
+  "Ramsey"
+ ],
+ "source": {
+  "authors": "Coryn Davidson, Pauline Van Nurden, Rann Loppnow and Dale Nordquist",
+  "org": "Center for Farm Financial Management, University of Minnesota",
+  "ref": "umn-cffm-mn-county-rents",
+  "released": "August 2026",
+  "sha256": "16a9d87259215e8c252b3a52b5e5bee5789117c1624017407e986ecebc709642",
+  "terms": "Cited as: Cropland Rental Rates for Minnesota Counties, Center for Farm Financial Management, University of Minnesota, updated August 2026; data from FINBIN.",
+  "title": "Cropland Rental Rates for Minnesota Counties",
+  "url": "https://cffm.umn.edu/publications/farm-management/cropland-rental-rates-minnesota-counties"
+ },
+ "state": "MN",
+ "what": {
+  "median": "median rent paid",
+  "p10": "10th percentile",
+  "p90": "90th percentile",
+  "prior": "weighted average, earlier years",
+  "rent": "weighted average cash rent paid, dollars an acre"
+ },
+ "year": 2025
+}

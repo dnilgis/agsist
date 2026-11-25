@@ -1,6 +1,6 @@
 /* Positioning map and options positions on /cot (2026-11-06; Nov 6 polish: one tab stop on the map with arrow keys,
-   the detail beside the map on a wide screen, the block's column says options, Sig: feature options open interest and single out
-   unusual positions; "has to be epic", few words, no repeated wording).
+ the detail beside the map on a wide screen, the block's column says options, feature options open interest and single out
+ unusual positions; "has to be epic", few words, no repeated wording).
    Reads /data/cot-options.json, which scripts/cot_options.py builds from CFTC data only. Every figure there is
    computed by the builder; this file only words and places it. Facts only: no arrows, no direction words, no calls.
      map()     markets down the side, the four trader groups across (futures and options for each); each cell is
