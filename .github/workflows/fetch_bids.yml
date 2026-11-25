@@ -181,14 +181,15 @@ jobs:
           DRY: ${{ github.event.inputs.dry_run }}
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_BRANCH: private-data
+          RAW_SOFT: '1'
         run: |
           rm -rf private/cash-index
-          bash scripts/pull_raw.sh private/cash-index || { echo "::warning::cash index: the private months were not read; nothing folded (a later run catches up)"; exit 0; }
+          RAW_SOFT=0 bash scripts/pull_raw.sh private/cash-index || { echo "::warning::cash index: the private months were not read; nothing folded (a later run catches up)"; exit 0; }
           before=$(cat private/cash-index/*.json | sha256sum)
           python3 scripts/dev/quiet.py cash-index-fold -- python scripts/cash_bid_index.py --fold
           [ "$(cat private/cash-index/*.json | sha256sum)" = "$before" ] && { echo "cash index: nothing new to save"; exit 0; }
           [ "$DRY" = true ] && { echo "cash index: dry run, the folded months are not saved"; exit 0; }
-          RAW_SOFT=1 bash scripts/push_raw.sh "cash index fold $(date -u +%F)" private/cash-index
+          bash scripts/push_raw.sh "cash index fold $(date -u +%F)" private/cash-index
 
       - name: Sizes
         run: |
