@@ -9,6 +9,12 @@ on:
     workflows: ["conditions", "Fetch Grain Bids", "Tick 04"]
     types: [completed]
   workflow_dispatch:
+    inputs:
+      panel:
+        description: "w29 builds the week-29 history (2000 to 2025) the crop-rating test needs, and nothing else. Empty: the usual run."
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -94,18 +100,24 @@ jobs:
           if [ "$M" -ge 4 ] && [ "$M" -le 11 ]; then echo "go=1" >> $GITHUB_OUTPUT; else
             echo "go=0" >> $GITHUB_OUTPUT; echo "month $M off-season — skipping"; fi
       - name: Fetch
-        if: steps.window.outputs.go == '1'
+        if: steps.window.outputs.go == '1' && inputs.panel == ''
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_cond_yield.py
+      - name: Fetch panel
+        if: steps.window.outputs.go == '1' && inputs.panel != ''
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+          PANEL: ${{ inputs.panel }}
+        run: python scripts/fetch_cond_yield.py --panel "$PANEL"
       - name: Yield Nowcast
-        if: steps.window.outputs.go == '1'
+        if: steps.window.outputs.go == '1' && inputs.panel == ''
         run: python scripts/build_yield_nowcast.py
       - name: Directional record (grade past WASDE, lock next)
-        if: steps.window.outputs.go == '1'
+        if: steps.window.outputs.go == '1' && inputs.panel == ''
         run: python scripts/nowcast_direction.py --grade --lock
       - name: Bake FAQ structured data
-        if: steps.window.outputs.go == '1'
+        if: steps.window.outputs.go == '1' && inputs.panel == ''
         run: |
           python scripts/bake_faq.py --selftest
           python scripts/bake_faq.py
