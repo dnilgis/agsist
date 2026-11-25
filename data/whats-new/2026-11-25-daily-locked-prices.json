@@ -1,8 +1,8 @@
 {
  "id": "2026-11-25-daily-locked-prices",
  "date": "2026-11-25",
- "title": "The Daily: prices in the opening come from the price table",
- "line": "Every futures price and cents move in the Daily's opening and its number of the day is set from the morning's price table, and a basis change always says basis.",
+ "title": "The Daily: board prices come from the price table",
+ "line": "Futures prices and their moves in the Daily are set from the morning's price table, one trading session per sentence, and a basis change always says basis.",
  "link": "/daily",
  "rank": 5
 }
