@@ -73,6 +73,13 @@ jobs:
         run: |
           python scripts/daily_edge.py --selftest
           python scripts/cash_bid_index.py --selftest
+      # The per-board month files live on the private-data branch, never on the site:
+      # no edition is built without them (a hard stop, not a short month).
+      - name: Unpack the private month files
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: bash scripts/pull_raw.sh private/cash-index
       - name: Build the edition
         env:
           MONTH: ${{ github.event.inputs.month }}
@@ -83,6 +90,12 @@ jobs:
           [ "$PARTIAL" = "true" ] && args="$args --partial-ok"
           python scripts/cash_bid_index.py $args
           python scripts/cash_bid_index.py --check
+      - name: Save the folded month files privately
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/push_raw.sh "cash index build $(date -u +%F)" private/cash-index
       - name: Commit if changed (race-tolerant)
         run: |
           set -e
