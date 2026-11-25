@@ -1,0 +1,1242 @@
+{
+ "id": "3883",
+ "title": "Inter-Mountain West Production Cost Report (Monthly)",
+ "region": "Inter-Mountain West",
+ "states": [
+  "UT",
+  "ID",
+  "CO",
+  "WY"
+ ],
+ "cadence": "monthly",
+ "source": "USDA AMS, Inter-Mountain West Production Cost Report (Monthly)",
+ "credit": "USDA AMS, Inter-Mountain West Production Cost Report (Monthly), Nov 20, 2026",
+ "published": "2026-11-20",
+ "week_begin": "2026-11-16",
+ "terms": "Dealer asking prices, low, high and average, as USDA printed them.",
+ "products": [
+  {
+   "key": "urea",
+   "label": "Urea",
+   "name": "Urea (46-0-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 780.0,
+   "high": 1000.0,
+   "avg": 888.75,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 888.75,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": {
+    "published": "2025-11-25",
+    "avg": 734.17,
+    "change": 154.58
+   },
+   "why_year": null
+  },
+  {
+   "key": "uan32",
+   "label": "UAN 32%",
+   "name": "Liquid Nitrogen (32-0-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 670.0,
+   "high": 850.0,
+   "avg": 760.0,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 760.0,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": {
+    "published": "2025-11-25",
+    "avg": 631.25,
+    "change": 128.75
+   },
+   "why_year": null
+  },
+  {
+   "key": "map",
+   "label": "MAP",
+   "name": "MAP (Monoammonium Phosphate 11-52-0)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 1020.0,
+   "high": 1350.0,
+   "avg": 1196.0,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 1196.0,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": {
+    "published": "2025-11-25",
+    "avg": 977.83,
+    "change": 218.17
+   },
+   "why_year": null
+  },
+  {
+   "key": "potash",
+   "label": "Potash",
+   "name": "Potash (Red 0-0-60)",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 550.0,
+   "high": 750.0,
+   "avg": 662.5,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 662.5,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": {
+    "published": "2025-11-25",
+    "avg": 668.57,
+    "change": -6.07
+   },
+   "why_year": null
+  },
+  {
+   "key": "ams",
+   "label": "Ammonium sulfate",
+   "name": "Ammonium Sulfate",
+   "unit": "$/ton",
+   "freight": "F.O.B.",
+   "low": 560.0,
+   "high": 795.0,
+   "avg": 672.0,
+   "thin": false,
+   "prev": {
+    "published": "2026-10-30",
+    "avg": 672.0,
+    "change": 0.0
+   },
+   "why_prev": null,
+   "year": {
+    "published": "2025-11-25",
+    "avg": 667.33,
+    "change": 4.67
+   },
+   "why_year": null
+  }
+ ],
+ "series": {
+  "ams": [
+   [
+    "2025-10-31",
+    574.0,
+    725.0,
+    672.0
+   ],
+   [
+    "2025-11-25",
+    574.0,
+    725.0,
+    667.33
+   ],
+   [
+    "2026-01-30",
+    574.0,
+    725.0,
+    659.86
+   ],
+   [
+    "2026-02-27",
+    574.0,
+    725.0,
+    649.0
+   ],
+   [
+    "2026-03-30",
+    574.0,
+    750.0,
+    642.0
+   ],
+   [
+    "2026-04-30",
+    600.0,
+    780.0,
+    671.67
+   ],
+   [
+    "2026-05-29",
+    600.0,
+    780.0,
+    681.0
+   ],
+   [
+    "2026-06-30",
+    625.0,
+    780.0,
+    687.33
+   ],
+   [
+    "2026-07-29",
+    625.0,
+    780.0,
+    687.33
+   ],
+   [
+    "2026-08-31",
+    625.0,
+    780.0,
+    684.8
+   ],
+   [
+    "2026-09-29",
+    560.0,
+    795.0,
+    672.0
+   ],
+   [
+    "2026-10-30",
+    560.0,
+    795.0,
+    672.0
+   ],
+   [
+    "2026-11-20",
+    560.0,
+    795.0,
+    672.0
+   ]
+  ],
+  "map": [
+   [
+    "2025-10-31",
+    920.0,
+    1150.0,
+    995.29
+   ],
+   [
+    "2025-11-25",
+    920.0,
+    1150.0,
+    977.83
+   ],
+   [
+    "2026-01-30",
+    920.0,
+    1150.0,
+    1000.71
+   ],
+   [
+    "2026-02-27",
+    920.0,
+    1075.0,
+    975.83
+   ],
+   [
+    "2026-03-30",
+    920.0,
+    1075.0,
+    988.57
+   ],
+   [
+    "2026-04-30",
+    960.0,
+    1075.0,
+    1020.0
+   ],
+   [
+    "2026-05-29",
+    960.0,
+    1075.0,
+    1026.0
+   ],
+   [
+    "2026-06-30",
+    1000.0,
+    1250.0,
+    1083.17
+   ],
+   [
+    "2026-07-29",
+    1000.0,
+    1250.0,
+    1083.17
+   ],
+   [
+    "2026-08-31",
+    1000.0,
+    1250.0,
+    1089.8
+   ],
+   [
+    "2026-09-29",
+    1020.0,
+    1350.0,
+    1196.0
+   ],
+   [
+    "2026-10-30",
+    1020.0,
+    1350.0,
+    1196.0
+   ],
+   [
+    "2026-11-20",
+    1020.0,
+    1350.0,
+    1196.0
+   ]
+  ],
+  "potash": [
+   [
+    "2025-10-31",
+    530.0,
+    750.0,
+    668.57
+   ],
+   [
+    "2025-11-25",
+    530.0,
+    750.0,
+    668.57
+   ],
+   [
+    "2026-01-30",
+    530.0,
+    750.0,
+    655.71
+   ],
+   [
+    "2026-02-27",
+    530.0,
+    700.0,
+    640.0
+   ],
+   [
+    "2026-03-30",
+    550.0,
+    700.0,
+    630.0
+   ],
+   [
+    "2026-04-30",
+    550.0,
+    700.0,
+    650.0
+   ],
+   [
+    "2026-05-29",
+    550.0,
+    700.0,
+    646.0
+   ],
+   [
+    "2026-06-30",
+    600.0,
+    750.0,
+    664.0
+   ],
+   [
+    "2026-07-29",
+    600.0,
+    750.0,
+    664.0
+   ],
+   [
+    "2026-08-31",
+    600.0,
+    750.0,
+    662.5
+   ],
+   [
+    "2026-09-29",
+    550.0,
+    750.0,
+    662.5
+   ],
+   [
+    "2026-10-30",
+    550.0,
+    750.0,
+    662.5
+   ],
+   [
+    "2026-11-20",
+    550.0,
+    750.0,
+    662.5
+   ]
+  ],
+  "uan32": [
+   [
+    "2025-10-31",
+    500.0,
+    720.0,
+    605.0
+   ],
+   [
+    "2025-11-25",
+    530.0,
+    720.0,
+    631.25
+   ],
+   [
+    "2026-01-30",
+    530.0,
+    720.0,
+    613.5
+   ],
+   [
+    "2026-02-27",
+    530.0,
+    690.0,
+    592.2
+   ],
+   [
+    "2026-03-30",
+    571.0,
+    750.0,
+    611.83
+   ],
+   [
+    "2026-04-30",
+    575.0,
+    750.0,
+    673.75
+   ],
+   [
+    "2026-05-29",
+    575.0,
+    750.0,
+    673.75
+   ],
+   [
+    "2026-06-30",
+    710.0,
+    900.0,
+    776.67
+   ],
+   [
+    "2026-07-29",
+    710.0,
+    900.0,
+    776.67
+   ],
+   [
+    "2026-08-31",
+    710.0,
+    900.0,
+    776.67
+   ],
+   [
+    "2026-09-29",
+    670.0,
+    850.0,
+    760.0
+   ],
+   [
+    "2026-10-30",
+    670.0,
+    850.0,
+    760.0
+   ],
+   [
+    "2026-11-20",
+    670.0,
+    850.0,
+    760.0
+   ]
+  ],
+  "urea": [
+   [
+    "2025-10-31",
+    650.0,
+    900.0,
+    749.29
+   ],
+   [
+    "2025-11-25",
+    650.0,
+    900.0,
+    734.17
+   ],
+   [
+    "2026-01-30",
+    650.0,
+    900.0,
+    754.29
+   ],
+   [
+    "2026-02-27",
+    650.0,
+    795.0,
+    730.0
+   ],
+   [
+    "2026-03-30",
+    660.0,
+    900.0,
+    782.86
+   ],
+   [
+    "2026-04-30",
+    730.0,
+    1075.0,
+    867.5
+   ],
+   [
+    "2026-05-29",
+    730.0,
+    1075.0,
+    876.0
+   ],
+   [
+    "2026-06-30",
+    765.0,
+    1000.0,
+    883.0
+   ],
+   [
+    "2026-07-29",
+    765.0,
+    1000.0,
+    883.0
+   ],
+   [
+    "2026-08-31",
+    765.0,
+    1000.0,
+    891.25
+   ],
+   [
+    "2026-09-29",
+    780.0,
+    1000.0,
+    888.75
+   ],
+   [
+    "2026-10-30",
+    780.0,
+    1000.0,
+    888.75
+   ],
+   [
+    "2026-11-20",
+    780.0,
+    1000.0,
+    888.75
+   ]
+  ]
+ },
+ "reports": [
+  {
+   "published": "2025-10-31",
+   "week_begin": "2025-10-27",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 574.0,
+     "high": 725.0,
+     "avg": 672.0,
+     "change": 4.67
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 920.0,
+     "high": 1150.0,
+     "avg": 995.29,
+     "change": -11.71
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 530.0,
+     "high": 750.0,
+     "avg": 668.57,
+     "change": 24.4
+    },
+    "potash-white-0-0-62": {
+     "name": "Potash (White 0-0-62)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 700.0,
+     "high": 700.0,
+     "avg": 700.0,
+     "change": null
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 500.0,
+     "high": 720.0,
+     "avg": 605.0,
+     "change": 21.25
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 900.0,
+     "avg": 749.29,
+     "change": 0.0
+    }
+   }
+  },
+  {
+   "published": "2025-11-25",
+   "week_begin": "2025-11-24",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 574.0,
+     "high": 725.0,
+     "avg": 667.33,
+     "change": -4.67
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 920.0,
+     "high": 1150.0,
+     "avg": 977.83,
+     "change": -17.45
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 530.0,
+     "high": 750.0,
+     "avg": 668.57,
+     "change": 0.0
+    },
+    "potash-white-0-0-62": {
+     "name": "Potash (White 0-0-62)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 700.0,
+     "high": 700.0,
+     "avg": 700.0,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 530.0,
+     "high": 720.0,
+     "avg": 631.25,
+     "change": 26.25
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 900.0,
+     "avg": 734.17,
+     "change": -15.12
+    }
+   }
+  },
+  {
+   "published": "2026-01-30",
+   "week_begin": "2026-01-26",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 574.0,
+     "high": 725.0,
+     "avg": 659.86,
+     "change": -7.48
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 920.0,
+     "high": 1150.0,
+     "avg": 1000.71,
+     "change": 22.88
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 530.0,
+     "high": 750.0,
+     "avg": 655.71,
+     "change": -12.86
+    },
+    "potash-white-0-0-62": {
+     "name": "Potash (White 0-0-62)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 700.0,
+     "high": 700.0,
+     "avg": 700.0,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 530.0,
+     "high": 720.0,
+     "avg": 613.5,
+     "change": -17.75
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 900.0,
+     "avg": 754.29,
+     "change": 20.12
+    }
+   }
+  },
+  {
+   "published": "2026-02-27",
+   "week_begin": "2026-02-23",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 574.0,
+     "high": 725.0,
+     "avg": 649.0,
+     "change": -10.86
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 920.0,
+     "high": 1075.0,
+     "avg": 975.83,
+     "change": -24.88
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 530.0,
+     "high": 700.0,
+     "avg": 640.0,
+     "change": -15.71
+    },
+    "potash-white-0-0-62": {
+     "name": "Potash (White 0-0-62)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 700.0,
+     "high": 700.0,
+     "avg": 700.0,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 530.0,
+     "high": 690.0,
+     "avg": 592.2,
+     "change": -21.3
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 795.0,
+     "avg": 730.0,
+     "change": -24.29
+    }
+   }
+  },
+  {
+   "published": "2026-03-30",
+   "week_begin": "2026-03-30",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 574.0,
+     "high": 750.0,
+     "avg": 642.0,
+     "change": -7.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 920.0,
+     "high": 1075.0,
+     "avg": 988.57,
+     "change": 12.74
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 700.0,
+     "avg": 630.0,
+     "change": -10.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 571.0,
+     "high": 750.0,
+     "avg": 611.83,
+     "change": 19.63
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 660.0,
+     "high": 900.0,
+     "avg": 782.86,
+     "change": 52.86
+    }
+   }
+  },
+  {
+   "published": "2026-04-30",
+   "week_begin": "2026-04-27",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 600.0,
+     "high": 780.0,
+     "avg": 671.67,
+     "change": 29.67
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 960.0,
+     "high": 1075.0,
+     "avg": 1020.0,
+     "change": 31.43
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 700.0,
+     "avg": 650.0,
+     "change": 20.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 575.0,
+     "high": 750.0,
+     "avg": 673.75,
+     "change": 61.92
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 730.0,
+     "high": 1075.0,
+     "avg": 867.5,
+     "change": 84.64
+    }
+   }
+  },
+  {
+   "published": "2026-05-29",
+   "week_begin": "2026-05-25",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 600.0,
+     "high": 780.0,
+     "avg": 681.0,
+     "change": 9.33
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 960.0,
+     "high": 1075.0,
+     "avg": 1026.0,
+     "change": 6.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 700.0,
+     "avg": 646.0,
+     "change": -4.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 575.0,
+     "high": 750.0,
+     "avg": 673.75,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 730.0,
+     "high": 1075.0,
+     "avg": 876.0,
+     "change": 8.5
+    }
+   }
+  },
+  {
+   "published": "2026-06-30",
+   "week_begin": "2026-06-29",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 625.0,
+     "high": 780.0,
+     "avg": 687.33,
+     "change": 6.33
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1000.0,
+     "high": 1250.0,
+     "avg": 1083.17,
+     "change": 57.17
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 600.0,
+     "high": 750.0,
+     "avg": 664.0,
+     "change": 18.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 710.0,
+     "high": 900.0,
+     "avg": 776.67,
+     "change": 102.92
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 765.0,
+     "high": 1000.0,
+     "avg": 883.0,
+     "change": 7.0
+    }
+   }
+  },
+  {
+   "published": "2026-07-29",
+   "week_begin": "2026-07-27",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 625.0,
+     "high": 780.0,
+     "avg": 687.33,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1000.0,
+     "high": 1250.0,
+     "avg": 1083.17,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 600.0,
+     "high": 750.0,
+     "avg": 664.0,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 710.0,
+     "high": 900.0,
+     "avg": 776.67,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 765.0,
+     "high": 1000.0,
+     "avg": 883.0,
+     "change": 0.0
+    }
+   }
+  },
+  {
+   "published": "2026-08-31",
+   "week_begin": "2026-08-31",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 625.0,
+     "high": 780.0,
+     "avg": 684.8,
+     "change": -2.53
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1000.0,
+     "high": 1250.0,
+     "avg": 1089.8,
+     "change": 6.63
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 600.0,
+     "high": 750.0,
+     "avg": 662.5,
+     "change": -1.5
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 710.0,
+     "high": 900.0,
+     "avg": 776.67,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 765.0,
+     "high": 1000.0,
+     "avg": 891.25,
+     "change": 8.25
+    }
+   }
+  },
+  {
+   "published": "2026-09-29",
+   "week_begin": "2026-09-28",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 560.0,
+     "high": 795.0,
+     "avg": 672.0,
+     "change": -12.8
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1020.0,
+     "high": 1350.0,
+     "avg": 1196.0,
+     "change": 106.2
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 750.0,
+     "avg": 662.5,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 670.0,
+     "high": 850.0,
+     "avg": 760.0,
+     "change": -16.67
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 780.0,
+     "high": 1000.0,
+     "avg": 888.75,
+     "change": -2.5
+    }
+   }
+  },
+  {
+   "published": "2026-10-30",
+   "week_begin": "2026-10-26",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 560.0,
+     "high": 795.0,
+     "avg": 672.0,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1020.0,
+     "high": 1350.0,
+     "avg": 1196.0,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 750.0,
+     "avg": 662.5,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 670.0,
+     "high": 850.0,
+     "avg": 760.0,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 780.0,
+     "high": 1000.0,
+     "avg": 888.75,
+     "change": 0.0
+    }
+   }
+  },
+  {
+   "published": "2026-11-20",
+   "week_begin": "2026-11-16",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 560.0,
+     "high": 795.0,
+     "avg": 672.0,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 1020.0,
+     "high": 1350.0,
+     "avg": 1196.0,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 750.0,
+     "avg": 662.5,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 670.0,
+     "high": 850.0,
+     "avg": 760.0,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 780.0,
+     "high": 1000.0,
+     "avg": 888.75,
+     "change": 0.0
+    }
+   }
+  }
+ ],
+ "status": {
+  "ok": true,
+  "checked": "2026-11-23T15:24:56Z",
+  "notes": []
+ }
+}

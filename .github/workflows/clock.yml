@@ -1,0 +1,91 @@
+name: Clock
+
+on:
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clock
+  cancel-in-progress: false
+
+jobs:
+  clock:
+    if: vars.CLOCK_LIVE == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            scripts/clock.py
+            /.github/workflows/
+            data/cot.json
+            data/lrp/today.json
+            data/predictions.json
+            data/crop-progress.json
+            data/conditions/conditions.json
+            data/yield-nowcast.json
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Which chained workflows have work
+        id: plan
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FETCH_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: python3 scripts/clock.py plan --out "$RUNNER_TEMP/plan.tsv"
+      - name: Fail open (name every chained workflow; each gate decides)
+        if: ${{ failure() }}
+        run: |
+          : > "$RUNNER_TEMP/plan.tsv"
+          for t in .github/workflows/tick-*.yml; do
+            n=$(sed -n 's/^name: //p' "$t" | head -1)
+            due=$(grep -l "workflow_run:" .github/workflows/*.yml | xargs grep -l "\"$n\"" | xargs -n1 basename | tr '\n' ' ')
+            [ -n "$due" ] && printf '%s\t %s\n' "$(basename "$t")" "$due" >> "$RUNNER_TEMP/plan.tsv"
+          done
+          cat "$RUNNER_TEMP/plan.tsv"
+      - name: Start the ticks
+        id: start
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ secrets.CLOCK_TOKEN }}
+        run: |
+          [ -f "$RUNNER_TEMP/plan.tsv" ] || exit 0
+          fail=0
+          while IFS=$'\t' read -r tick due; do
+            [ -n "$tick" ] || continue
+            echo "$tick:$due"
+            ok=0
+            for i in 1 2 3; do
+              if gh workflow run "$tick" --repo "$GITHUB_REPOSITORY" --ref main -f due="$due"; then ok=1; break; fi
+              sleep $((5 * i))
+            done
+            [ "$ok" = 1 ] || { echo "::error::could not start $tick"; fail=1; }
+          done < "$RUNNER_TEMP/plan.tsv"
+          exit $fail
+      - name: Tell the owner the ticks did not start
+        if: ${{ failure() && steps.start.outcome == 'failure' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          T="Clock: the chained workflows did not start"
+          n=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"$T\" in:title" --json number --jq 'length' 2>/dev/null || echo 0)
+          [ "${n:-0}" -gt 0 ] && exit 0
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$T" --body "Run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID could not start the ticks. Until it is fixed, delete the repository variable CLOCK_LIVE: every chained workflow then runs after each bid fetch again, as before the clock." || true

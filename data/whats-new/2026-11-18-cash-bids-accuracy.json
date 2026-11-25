@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-18-cash-bids-accuracy",
+ "date": "2026-11-18",
+ "title": "Cash bid pages fixed",
+ "line": "Town pages headline the regular corn bid, not a white corn premium. Company pages count each crop where it is bid. Estimates name the futures time.",
+ "link": "/cash-bids",
+ "rank": 3
+}

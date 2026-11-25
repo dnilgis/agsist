@@ -1,0 +1,4 @@
+{
+ "about": "Next releases a publisher has stated, keyed by the ref of the survey file now on the Farmland Atlas (the source.ref in data/land/<state>/*.json). The land figures index reads it; a source not listed here prints 'not announced'. An entry is used only with the publisher's own words for it: 'source_ref' (the copy on the references branch it was read from) and 'quote' (the sentence that states the date), besides 'date' (YYYY-MM-DD, or YYYY-MM for a month), 'words', 'what' and 'checked'. Never a guess, never a date read only in outside research. When the survey file is replaced (a new ref), its old entry stops matching on its own.",
+ "refs": {}
+}

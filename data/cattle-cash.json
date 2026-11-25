@@ -1,8 +1,8 @@
 {
  "cutout": {
-  "date": "2026-11-11",
-  "choice": 360.26,
-  "select": 347.47,
+  "date": "2026-11-24",
+  "choice": 359.91,
+  "select": 346.0,
   "source": "USDA AMS LM_XB403, National Daily Boxed Beef Cutout, PM",
   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2453"
  },
@@ -10,20 +10,20 @@
   "cutout": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-11T21:55:13Z"
+   "checked": "2026-11-24T21:48:15Z"
   },
   "fed_steer": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-11T21:55:13Z"
+   "checked": "2026-11-24T21:48:15Z"
   }
  },
  "fed_steer": {
-  "week_ending": "2026-11-08",
-  "price": 215.43,
-  "head": 25417,
+  "week_ending": "2026-11-22",
+  "price": 219.06,
+  "head": 37429,
   "source": "USDA AMS LM_CT150, 5 Area Weekly Weighted Average Direct Slaughter Cattle",
   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2477"
  },
- "updated": "2026-11-11T21:55:13Z"
+ "updated": "2026-11-24T21:48:15Z"
 }

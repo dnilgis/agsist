@@ -1,0 +1,1018 @@
+{
+ "about": "UNL's eight Nebraska districts: the average reported value per acre (February 1, 2026) by land type with high and low grade, and cash rent (2026) with high and low third, from a survey of expert panel members. A district's figure, not a county's.",
+ "counties": {
+  "31001": {
+   "name": "Adams",
+   "region": "South"
+  },
+  "31003": {
+   "name": "Antelope",
+   "region": "Northeast"
+  },
+  "31005": {
+   "name": "Arthur",
+   "region": "North"
+  },
+  "31007": {
+   "name": "Banner",
+   "region": "Northwest"
+  },
+  "31009": {
+   "name": "Blaine",
+   "region": "North"
+  },
+  "31011": {
+   "name": "Boone",
+   "region": "Northeast"
+  },
+  "31013": {
+   "name": "Box Butte",
+   "region": "Northwest"
+  },
+  "31015": {
+   "name": "Boyd",
+   "region": "North"
+  },
+  "31017": {
+   "name": "Brown",
+   "region": "North"
+  },
+  "31019": {
+   "name": "Buffalo",
+   "region": "Central"
+  },
+  "31021": {
+   "name": "Burt",
+   "region": "Northeast"
+  },
+  "31023": {
+   "name": "Butler",
+   "region": "East"
+  },
+  "31025": {
+   "name": "Cass",
+   "region": "East"
+  },
+  "31027": {
+   "name": "Cedar",
+   "region": "Northeast"
+  },
+  "31029": {
+   "name": "Chase",
+   "region": "Southwest"
+  },
+  "31031": {
+   "name": "Cherry",
+   "region": "North"
+  },
+  "31033": {
+   "name": "Cheyenne",
+   "region": "Northwest"
+  },
+  "31035": {
+   "name": "Clay",
+   "region": "Southeast"
+  },
+  "31037": {
+   "name": "Colfax",
+   "region": "East"
+  },
+  "31039": {
+   "name": "Cuming",
+   "region": "Northeast"
+  },
+  "31041": {
+   "name": "Custer",
+   "region": "Central"
+  },
+  "31043": {
+   "name": "Dakota",
+   "region": "Northeast"
+  },
+  "31045": {
+   "name": "Dawes",
+   "region": "Northwest"
+  },
+  "31047": {
+   "name": "Dawson",
+   "region": "Central"
+  },
+  "31049": {
+   "name": "Deuel",
+   "region": "Northwest"
+  },
+  "31051": {
+   "name": "Dixon",
+   "region": "Northeast"
+  },
+  "31053": {
+   "name": "Dodge",
+   "region": "East"
+  },
+  "31055": {
+   "name": "Douglas",
+   "region": "East"
+  },
+  "31057": {
+   "name": "Dundy",
+   "region": "Southwest"
+  },
+  "31059": {
+   "name": "Fillmore",
+   "region": "Southeast"
+  },
+  "31061": {
+   "name": "Franklin",
+   "region": "South"
+  },
+  "31063": {
+   "name": "Frontier",
+   "region": "Southwest"
+  },
+  "31065": {
+   "name": "Furnas",
+   "region": "South"
+  },
+  "31067": {
+   "name": "Gage",
+   "region": "Southeast"
+  },
+  "31069": {
+   "name": "Garden",
+   "region": "Northwest"
+  },
+  "31071": {
+   "name": "Garfield",
+   "region": "North"
+  },
+  "31073": {
+   "name": "Gosper",
+   "region": "South"
+  },
+  "31075": {
+   "name": "Grant",
+   "region": "North"
+  },
+  "31077": {
+   "name": "Greeley",
+   "region": "Central"
+  },
+  "31079": {
+   "name": "Hall",
+   "region": "Central"
+  },
+  "31081": {
+   "name": "Hamilton",
+   "region": "East"
+  },
+  "31083": {
+   "name": "Harlan",
+   "region": "South"
+  },
+  "31085": {
+   "name": "Hayes",
+   "region": "Southwest"
+  },
+  "31087": {
+   "name": "Hitchcock",
+   "region": "Southwest"
+  },
+  "31089": {
+   "name": "Holt",
+   "region": "North"
+  },
+  "31091": {
+   "name": "Hooker",
+   "region": "North"
+  },
+  "31093": {
+   "name": "Howard",
+   "region": "Central"
+  },
+  "31095": {
+   "name": "Jefferson",
+   "region": "Southeast"
+  },
+  "31097": {
+   "name": "Johnson",
+   "region": "Southeast"
+  },
+  "31099": {
+   "name": "Kearney",
+   "region": "South"
+  },
+  "31101": {
+   "name": "Keith",
+   "region": "Southwest"
+  },
+  "31103": {
+   "name": "Keya Paha",
+   "region": "North"
+  },
+  "31105": {
+   "name": "Kimball",
+   "region": "Northwest"
+  },
+  "31107": {
+   "name": "Knox",
+   "region": "Northeast"
+  },
+  "31109": {
+   "name": "Lancaster",
+   "region": "East"
+  },
+  "31111": {
+   "name": "Lincoln",
+   "region": "Southwest"
+  },
+  "31113": {
+   "name": "Logan",
+   "region": "North"
+  },
+  "31115": {
+   "name": "Loup",
+   "region": "North"
+  },
+  "31117": {
+   "name": "McPherson",
+   "region": "North"
+  },
+  "31119": {
+   "name": "Madison",
+   "region": "Northeast"
+  },
+  "31121": {
+   "name": "Merrick",
+   "region": "East"
+  },
+  "31123": {
+   "name": "Morrill",
+   "region": "Northwest"
+  },
+  "31125": {
+   "name": "Nance",
+   "region": "East"
+  },
+  "31127": {
+   "name": "Nemaha",
+   "region": "Southeast"
+  },
+  "31129": {
+   "name": "Nuckolls",
+   "region": "Southeast"
+  },
+  "31131": {
+   "name": "Otoe",
+   "region": "Southeast"
+  },
+  "31133": {
+   "name": "Pawnee",
+   "region": "Southeast"
+  },
+  "31135": {
+   "name": "Perkins",
+   "region": "Southwest"
+  },
+  "31137": {
+   "name": "Phelps",
+   "region": "South"
+  },
+  "31139": {
+   "name": "Pierce",
+   "region": "Northeast"
+  },
+  "31141": {
+   "name": "Platte",
+   "region": "East"
+  },
+  "31143": {
+   "name": "Polk",
+   "region": "East"
+  },
+  "31145": {
+   "name": "Red Willow",
+   "region": "Southwest"
+  },
+  "31147": {
+   "name": "Richardson",
+   "region": "Southeast"
+  },
+  "31149": {
+   "name": "Rock",
+   "region": "North"
+  },
+  "31151": {
+   "name": "Saline",
+   "region": "Southeast"
+  },
+  "31153": {
+   "name": "Sarpy",
+   "region": "East"
+  },
+  "31155": {
+   "name": "Saunders",
+   "region": "East"
+  },
+  "31157": {
+   "name": "Scotts Bluff",
+   "region": "Northwest"
+  },
+  "31159": {
+   "name": "Seward",
+   "region": "East"
+  },
+  "31161": {
+   "name": "Sheridan",
+   "region": "Northwest"
+  },
+  "31163": {
+   "name": "Sherman",
+   "region": "Central"
+  },
+  "31165": {
+   "name": "Sioux",
+   "region": "Northwest"
+  },
+  "31167": {
+   "name": "Stanton",
+   "region": "Northeast"
+  },
+  "31169": {
+   "name": "Thayer",
+   "region": "Southeast"
+  },
+  "31171": {
+   "name": "Thomas",
+   "region": "North"
+  },
+  "31173": {
+   "name": "Thurston",
+   "region": "Northeast"
+  },
+  "31175": {
+   "name": "Valley",
+   "region": "Central"
+  },
+  "31177": {
+   "name": "Washington",
+   "region": "East"
+  },
+  "31179": {
+   "name": "Wayne",
+   "region": "Northeast"
+  },
+  "31181": {
+   "name": "Webster",
+   "region": "South"
+  },
+  "31183": {
+   "name": "Wheeler",
+   "region": "North"
+  },
+  "31185": {
+   "name": "York",
+   "region": "East"
+  }
+ },
+ "evidence": "opinion survey of expert panel members, district averages",
+ "not_mapped": {},
+ "notes": {
+  "panel": "nearly 160",
+  "parcel": "Actual agricultural land values or rental rates for an individual parcel in Nebraska will vary from reported figures",
+  "within": "variations exist within reporting Districts that may cause real estate values and rental rates to differ substantially within the region"
+ },
+ "regions": {
+  "Central": {
+   "asd": "50",
+   "counties": [
+    "31019",
+    "31041",
+    "31047",
+    "31077",
+    "31079",
+    "31093",
+    "31163",
+    "31175"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 120,
+     "high": 155,
+     "low": 92
+    },
+    "gravity": {
+     "avg": 235,
+     "high": 300,
+     "low": 180
+    },
+    "pasture": {
+     "avg": 52,
+     "high": 69,
+     "low": 35
+    },
+    "pivot": {
+     "avg": 270,
+     "high": 340,
+     "low": 205
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 4035,
+     "high": 5290,
+     "low": 2715
+    },
+    "dry_irr": {
+     "avg": 4465,
+     "high": 5645,
+     "low": 3405
+    },
+    "gravity": {
+     "avg": 6470,
+     "high": 8315,
+     "low": 4935
+    },
+    "graze_nontill": {
+     "avg": 2405,
+     "high": 2985,
+     "low": 1870
+    },
+    "graze_till": {
+     "avg": 3290,
+     "high": 3965,
+     "low": 2550
+    },
+    "hay": {
+     "avg": 3120,
+     "high": 3750,
+     "low": 2465
+    },
+    "pivot": {
+     "avg": 9155,
+     "high": 10740,
+     "low": 7320
+    }
+   }
+  },
+  "East": {
+   "asd": "60",
+   "counties": [
+    "31023",
+    "31025",
+    "31037",
+    "31053",
+    "31055",
+    "31081",
+    "31109",
+    "31121",
+    "31125",
+    "31141",
+    "31143",
+    "31153",
+    "31155",
+    "31159",
+    "31177",
+    "31185"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 220,
+     "high": 270,
+     "low": 185
+    },
+    "gravity": {
+     "avg": 305,
+     "high": 350,
+     "low": 255
+    },
+    "pasture": {
+     "avg": 68,
+     "high": 84,
+     "low": 51
+    },
+    "pivot": {
+     "avg": 335,
+     "high": 390,
+     "low": 280
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 8320,
+     "high": 10375,
+     "low": 6255
+    },
+    "dry_irr": {
+     "avg": 9650,
+     "high": 11490,
+     "low": 7735
+    },
+    "gravity": {
+     "avg": 11045,
+     "high": 13460,
+     "low": 8620
+    },
+    "graze_nontill": {
+     "avg": 3475,
+     "high": 4320,
+     "low": 2640
+    },
+    "graze_till": {
+     "avg": 5125,
+     "high": 6080,
+     "low": 4105
+    },
+    "hay": {
+     "avg": 4630,
+     "high": 5495,
+     "low": 3810
+    },
+    "pivot": {
+     "avg": 12430,
+     "high": 14905,
+     "low": 10185
+    }
+   }
+  },
+  "North": {
+   "asd": "20",
+   "counties": [
+    "31005",
+    "31009",
+    "31015",
+    "31017",
+    "31031",
+    "31071",
+    "31075",
+    "31089",
+    "31091",
+    "31103",
+    "31113",
+    "31115",
+    "31117",
+    "31149",
+    "31171",
+    "31183"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 73,
+     "high": 105,
+     "low": 47
+    },
+    "gravity": {
+     "avg": 185,
+     "high": 220,
+     "low": 155
+    },
+    "pasture": {
+     "avg": 41,
+     "high": 56,
+     "low": 19
+    },
+    "pivot": {
+     "avg": 225,
+     "high": 265,
+     "low": 175
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 1915,
+     "high": 2445,
+     "low": 1380
+    },
+    "dry_irr": {
+     "avg": 2340,
+     "high": 2875,
+     "low": 1760
+    },
+    "gravity": {
+     "avg": 4255,
+     "high": 5530,
+     "low": 2995
+    },
+    "graze_nontill": {
+     "avg": 1085,
+     "high": 1340,
+     "low": 775
+    },
+    "graze_till": {
+     "avg": 1710,
+     "high": 1990,
+     "low": 1355
+    },
+    "hay": {
+     "avg": 1970,
+     "high": 2305,
+     "low": 1620
+    },
+    "pivot": {
+     "avg": 4760,
+     "high": 5915,
+     "low": 3645
+    }
+   }
+  },
+  "Northeast": {
+   "asd": "30",
+   "counties": [
+    "31003",
+    "31011",
+    "31021",
+    "31027",
+    "31039",
+    "31043",
+    "31051",
+    "31107",
+    "31119",
+    "31139",
+    "31167",
+    "31173",
+    "31179"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 245,
+     "high": 290,
+     "low": 195
+    },
+    "gravity": {
+     "avg": 320,
+     "high": 375,
+     "low": 265
+    },
+    "pasture": {
+     "avg": 79,
+     "high": 97,
+     "low": 58
+    },
+    "pivot": {
+     "avg": 360,
+     "high": 410,
+     "low": 295
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 7670,
+     "high": 9705,
+     "low": 5830
+    },
+    "dry_irr": {
+     "avg": 9185,
+     "high": 10920,
+     "low": 7340
+    },
+    "gravity": {
+     "avg": 9710,
+     "high": 11965,
+     "low": 7880
+    },
+    "graze_nontill": {
+     "avg": 3120,
+     "high": 3860,
+     "low": 2335
+    },
+    "graze_till": {
+     "avg": 4535,
+     "high": 5615,
+     "low": 3370
+    },
+    "hay": {
+     "avg": 4145,
+     "high": 5385,
+     "low": 2930
+    },
+    "pivot": {
+     "avg": 11735,
+     "high": 14190,
+     "low": 9475
+    }
+   }
+  },
+  "Northwest": {
+   "asd": "10",
+   "counties": [
+    "31007",
+    "31013",
+    "31033",
+    "31045",
+    "31049",
+    "31069",
+    "31105",
+    "31123",
+    "31157",
+    "31161",
+    "31165"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 34,
+     "high": 46,
+     "low": 25
+    },
+    "gravity": {
+     "avg": 120,
+     "high": 165,
+     "low": 83
+    },
+    "pasture": {
+     "avg": 17,
+     "high": 24,
+     "low": 13
+    },
+    "pivot": {
+     "avg": 165,
+     "high": 215,
+     "low": 120
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 890,
+     "high": 1120,
+     "low": 665
+    },
+    "dry_irr": {
+     "avg": 955,
+     "high": 1230,
+     "low": 695
+    },
+    "gravity": {
+     "avg": 2640,
+     "high": 3485,
+     "low": 1825
+    },
+    "graze_nontill": {
+     "avg": 670,
+     "high": 815,
+     "low": 500
+    },
+    "graze_till": {
+     "avg": 785,
+     "high": 935,
+     "low": 620
+    },
+    "hay": {
+     "avg": 965,
+     "high": 1140,
+     "low": 795
+    },
+    "pivot": {
+     "avg": 3185,
+     "high": 3855,
+     "low": 2610
+    }
+   }
+  },
+  "South": {
+   "asd": "80",
+   "counties": [
+    "31001",
+    "31061",
+    "31065",
+    "31073",
+    "31083",
+    "31099",
+    "31137",
+    "31181"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 105,
+     "high": 135,
+     "low": 78
+    },
+    "gravity": {
+     "avg": 255,
+     "high": 285,
+     "low": 215
+    },
+    "pasture": {
+     "avg": 47,
+     "high": 56,
+     "low": 34
+    },
+    "pivot": {
+     "avg": 300,
+     "high": 350,
+     "low": 245
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 4360,
+     "high": 5485,
+     "low": 3270
+    },
+    "dry_irr": {
+     "avg": 4715,
+     "high": 5960,
+     "low": 3625
+    },
+    "gravity": {
+     "avg": 7065,
+     "high": 8940,
+     "low": 5385
+    },
+    "graze_nontill": {
+     "avg": 1945,
+     "high": 2425,
+     "low": 1490
+    },
+    "graze_till": {
+     "avg": 2940,
+     "high": 3455,
+     "low": 2310
+    },
+    "hay": {
+     "avg": 2685,
+     "high": 3315,
+     "low": 2035
+    },
+    "pivot": {
+     "avg": 8490,
+     "high": 10250,
+     "low": 6915
+    }
+   }
+  },
+  "Southeast": {
+   "asd": "90",
+   "counties": [
+    "31035",
+    "31059",
+    "31067",
+    "31095",
+    "31097",
+    "31127",
+    "31129",
+    "31131",
+    "31133",
+    "31147",
+    "31151",
+    "31169"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 185,
+     "high": 225,
+     "low": 145
+    },
+    "gravity": {
+     "avg": 270,
+     "high": 320,
+     "low": 235
+    },
+    "pasture": {
+     "avg": 64,
+     "high": 77,
+     "low": 49
+    },
+    "pivot": {
+     "avg": 325,
+     "high": 375,
+     "low": 265
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 6430,
+     "high": 7755,
+     "low": 5035
+    },
+    "dry_irr": {
+     "avg": 7685,
+     "high": 9405,
+     "low": 6150
+    },
+    "gravity": {
+     "avg": 8820,
+     "high": 10170,
+     "low": 7415
+    },
+    "graze_nontill": {
+     "avg": 3270,
+     "high": 3795,
+     "low": 2655
+    },
+    "graze_till": {
+     "avg": 3865,
+     "high": 4640,
+     "low": 3075
+    },
+    "hay": {
+     "avg": 3940,
+     "high": 4925,
+     "low": 2860
+    },
+    "pivot": {
+     "avg": 10870,
+     "high": 13135,
+     "low": 8580
+    }
+   }
+  },
+  "Southwest": {
+   "asd": "70",
+   "counties": [
+    "31029",
+    "31057",
+    "31063",
+    "31085",
+    "31087",
+    "31101",
+    "31111",
+    "31135",
+    "31145"
+   ],
+   "rent": {
+    "dry": {
+     "avg": 54,
+     "high": 69,
+     "low": 42
+    },
+    "gravity": {
+     "avg": 175,
+     "high": 210,
+     "low": 140
+    },
+    "pasture": {
+     "avg": 30,
+     "high": 38,
+     "low": 22
+    },
+    "pivot": {
+     "avg": 205,
+     "high": 245,
+     "low": 165
+    }
+   },
+   "value": {
+    "dry": {
+     "avg": 1745,
+     "high": 2230,
+     "low": 1195
+    },
+    "dry_irr": {
+     "avg": 1930,
+     "high": 2485,
+     "low": 1410
+    },
+    "gravity": {
+     "avg": 3790,
+     "high": 4525,
+     "low": 3070
+    },
+    "graze_nontill": {
+     "avg": 1160,
+     "high": 1380,
+     "low": 905
+    },
+    "graze_till": {
+     "avg": 1270,
+     "high": 1495,
+     "low": 1035
+    },
+    "hay": {
+     "avg": 2115,
+     "high": 2560,
+     "low": 1645
+    },
+    "pivot": {
+     "avg": 4845,
+     "high": 6165,
+     "low": 3730
+    }
+   }
+  }
+ },
+ "regions_from": "Figure 1, Nebraska Agricultural Statistics Districts (its county labels agree with the NASS district of each county)",
+ "source": {
+  "authors": "Jim Jansen",
+  "org": "University of Nebraska-Lincoln, Center for Agricultural Profitability",
+  "ref": "unl-ne-farm-real-estate-2026-pdf",
+  "released": "June 2026",
+  "sha256": "357fca5bebea68430ed6f5450958ab305bb4f3702225e9211840e68575a09047",
+  "title": "Nebraska Farm Real Estate Market Highlights 2025-2026",
+  "url": "https://cap.unl.edu/realestate/"
+ },
+ "state": "NE",
+ "types": {
+  "dry": "dryland cropland, no irrigation potential",
+  "dry_irr": "dryland cropland, irrigation potential",
+  "gravity": "gravity irrigated cropland",
+  "graze_nontill": "grazing land, nontillable",
+  "graze_till": "grazing land, tillable",
+  "hay": "hayland",
+  "pasture": "pasture",
+  "pivot": "center pivot irrigated cropland (value of pivot not included)"
+ },
+ "unit": "district",
+ "what": {
+  "rent": "reported cash rent per acre, 2026, with the high third and low third quality averages",
+  "value": "average reported value per acre, February 1, 2026, with the high and low grade averages"
+ },
+ "year": 2026
+}

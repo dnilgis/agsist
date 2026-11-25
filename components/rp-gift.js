@@ -177,11 +177,11 @@
     return G;
   }
 
-  var BANNER_CSS = '.rpg-banner{border:1px solid var(--border-2,#c9ccc4);border-left:4px solid #2B5C8A;border-radius:6px;padding:12px 14px;margin:0 0 1rem;background:var(--surface,#fff);color:var(--text,#1E2125);line-height:1.55}' +
+  var BANNER_CSS = '.rpg-banner{border:1px solid var(--border-2,#c9ccc4);border-left:4px solid #2B5C8A;border-radius:var(--r-md);padding:12px 14px;margin:0 0 1rem;background:var(--surface,#fff);color:var(--text,#1E2125);line-height:1.55}' +
     '.rpg-banner p{margin:0 0 .4rem}.rpg-banner p:last-child{margin:0}.rpg-banner b{font-weight:600}' +
     '.rpg-banner .rpg-code{font-family:"IBM Plex Mono",monospace;font-size:.85em;color:var(--text-dim,#5E6475)}' +
     '.rpg-banner.rpg-bad{border-left-color:#A8321E}.rpg-banner form{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}' +
-    '.rpg-banner input{font:inherit;font-family:"IBM Plex Mono",monospace;min-height:40px;padding:0 .6rem;border:1px solid var(--border-2,#c9ccc4);border-radius:4px;background:var(--bg,#fff);color:inherit;text-transform:uppercase;flex:1 1 14em;max-width:20em}' +
+    '.rpg-banner input{font:inherit;font-family:"IBM Plex Mono",monospace;min-height:40px;padding:0 .6rem;border:1px solid var(--border-2,#c9ccc4);border-radius:4px;background:var(--bg,#fff);color:inherit;text-transform:none;flex:1 1 14em;max-width:20em}' +
     '.rpg-banner .rpg-h{font-size:1.1em}.rpg-banner .rpg-steps{margin:.2rem 0 .5rem;padding-left:1.4em}.rpg-banner .rpg-steps li{margin:0 0 .25rem}' +
     '.rpg-banner .rpg-note{font-size:.92em;color:var(--text-dim,#5E6475)}' +
     '.rpg-banner .rpg-go{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border-radius:4px;background:#2B5C8A;color:#fff;font-weight:600;text-decoration:none}' +

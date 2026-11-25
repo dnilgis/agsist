@@ -15,6 +15,10 @@ __pycache__/
 # gitignored since 2026-08-19 and it was not, and one `git add -A` by hand
 # would have put 6 MB into the repo. Now the claim is true.
 bids-full.json
+# The Farmland Atlas county cards' words (Nov 23, 2026): written by build_atlas_pages.py for build_atlas_cards.py
+# to read in the same job (farmland-atlas-pages.yml), about 1.8 MB; in farmland-atlas/data/cards.json they put the
+# set over its size cap, and no page reads them.
+/atlas-card-leads.json
 
 
 # Daily cash bid snapshots: built in the fetch_bids job and saved to the raw
@@ -118,3 +122,7 @@ build/shots/
 /data/land-hosted
 # River key inputs (river-pull.yml, one time): saved to the raw branch, never main
 /river/
+
+# Worklists of elevator coordinates and board URLs are private engine data (scripts/worklists, Nov 13); a job that
+# commits all of data/ must not publish them.
+/data/gaps/

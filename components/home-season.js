@@ -671,10 +671,16 @@
         var found=null,re=/\b(ahead of|before|into|awaiting|waiting (?:on|for))\b([^.;]{0,48})/ig,m;
         var noise=/^(report|summary|the|of|and|sep|sept|september|october|quarterly|monthly|annual|final|\d+)$/;
         while((m=re.exec(String(s||'')))){
-          var phrase=m[2].toLowerCase(),keys={};
-          ev.forEach(function(e){shortName(e.name).toLowerCase().split(/[^a-z]+/).forEach(function(w){if(w.length>3&&!noise.test(w)&&phrase.indexOf(w)>=0)keys[w]=1;});});
-          Object.keys(keys).forEach(function(w){
-            var hits=ev.filter(function(e){return shortName(e.name).toLowerCase().indexOf(w)>=0;});
+          var phrase=m[2].toLowerCase(),names={};
+          /* A report is named only when every word of its name is in the phrase: "Crop Progress" shares "crop"
+             with "Crop Production", and one shared word made every weekly Crop Progress line look stale the day
+             after the monthly Crop Production (Nov 16 2026). */
+          ev.forEach(function(e){
+            var ws=shortName(e.name).toLowerCase().split(/[^a-z]+/).filter(function(w){return w.length>3&&!noise.test(w);});
+            if(ws.length&&ws.every(function(w){return phrase.indexOf(w)>=0;}))names[shortName(e.name).toLowerCase()]=1;
+          });
+          Object.keys(names).forEach(function(n){
+            var hits=ev.filter(function(e){return shortName(e.name).toLowerCase()===n;});
             var past=hits.filter(function(e){return e.t<=NOW;}).sort(function(a,b){return b.t-a.t;})[0];
             var fut=hits.filter(function(e){return e.t>NOW;}).sort(function(a,b){return a.t-b.t;})[0];
             if(past&&(!fut||(NOW-past.t)<(fut.t-NOW)))found=found||past;

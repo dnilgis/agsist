@@ -1,0 +1,502 @@
+{
+ "about": "OSU Extension's two western Ohio regions: the average estimated value and cash rent per acre of bare tillable cropland for 2026, top, average and bottom land, from an opinion survey of professionals (January to April 2026). A region's figure, not a county's.",
+ "counties": {
+  "39003": {
+   "name": "Allen",
+   "region": "Northwest"
+  },
+  "39011": {
+   "name": "Auglaize",
+   "region": "Southwest"
+  },
+  "39021": {
+   "name": "Champaign",
+   "region": "Southwest"
+  },
+  "39023": {
+   "name": "Clark",
+   "region": "Southwest"
+  },
+  "39027": {
+   "name": "Clinton",
+   "region": "Southwest"
+  },
+  "39033": {
+   "name": "Crawford",
+   "region": "Northwest"
+  },
+  "39037": {
+   "name": "Darke",
+   "region": "Southwest"
+  },
+  "39039": {
+   "name": "Defiance",
+   "region": "Northwest"
+  },
+  "39041": {
+   "name": "Delaware",
+   "region": "Southwest"
+  },
+  "39043": {
+   "name": "Erie",
+   "region": "Northwest"
+  },
+  "39047": {
+   "name": "Fayette",
+   "region": "Southwest"
+  },
+  "39049": {
+   "name": "Franklin",
+   "region": "Southwest"
+  },
+  "39051": {
+   "name": "Fulton",
+   "region": "Northwest"
+  },
+  "39057": {
+   "name": "Greene",
+   "region": "Southwest"
+  },
+  "39063": {
+   "name": "Hancock",
+   "region": "Northwest"
+  },
+  "39065": {
+   "name": "Hardin",
+   "region": "Northwest"
+  },
+  "39069": {
+   "name": "Henry",
+   "region": "Northwest"
+  },
+  "39077": {
+   "name": "Huron",
+   "region": "Northwest"
+  },
+  "39091": {
+   "name": "Logan",
+   "region": "Southwest"
+  },
+  "39095": {
+   "name": "Lucas",
+   "region": "Northwest"
+  },
+  "39097": {
+   "name": "Madison",
+   "region": "Southwest"
+  },
+  "39101": {
+   "name": "Marion",
+   "region": "Northwest"
+  },
+  "39107": {
+   "name": "Mercer",
+   "region": "Southwest"
+  },
+  "39109": {
+   "name": "Miami",
+   "region": "Southwest"
+  },
+  "39113": {
+   "name": "Montgomery",
+   "region": "Southwest"
+  },
+  "39117": {
+   "name": "Morrow",
+   "region": "Northwest"
+  },
+  "39123": {
+   "name": "Ottawa",
+   "region": "Northwest"
+  },
+  "39125": {
+   "name": "Paulding",
+   "region": "Northwest"
+  },
+  "39129": {
+   "name": "Pickaway",
+   "region": "Southwest"
+  },
+  "39135": {
+   "name": "Preble",
+   "region": "Southwest"
+  },
+  "39137": {
+   "name": "Putnam",
+   "region": "Northwest"
+  },
+  "39143": {
+   "name": "Sandusky",
+   "region": "Northwest"
+  },
+  "39147": {
+   "name": "Seneca",
+   "region": "Northwest"
+  },
+  "39149": {
+   "name": "Shelby",
+   "region": "Southwest"
+  },
+  "39159": {
+   "name": "Union",
+   "region": "Southwest"
+  },
+  "39161": {
+   "name": "Van Wert",
+   "region": "Northwest"
+  },
+  "39171": {
+   "name": "Williams",
+   "region": "Northwest"
+  },
+  "39173": {
+   "name": "Wood",
+   "region": "Northwest"
+  },
+  "39175": {
+   "name": "Wyandot",
+   "region": "Northwest"
+  }
+ },
+ "evidence": "opinion survey of farmland professionals, region averages",
+ "not_mapped": {
+  "39001": {
+   "name": "Adams",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39005": {
+   "name": "Ashland",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39007": {
+   "name": "Ashtabula",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39009": {
+   "name": "Athens",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39013": {
+   "name": "Belmont",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39015": {
+   "name": "Brown",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39017": {
+   "name": "Butler",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39019": {
+   "name": "Carroll",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39025": {
+   "name": "Clermont",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39029": {
+   "name": "Columbiana",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39031": {
+   "name": "Coshocton",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39035": {
+   "name": "Cuyahoga",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39045": {
+   "name": "Fairfield",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39053": {
+   "name": "Gallia",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39055": {
+   "name": "Geauga",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39059": {
+   "name": "Guernsey",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39061": {
+   "name": "Hamilton",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39067": {
+   "name": "Harrison",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39071": {
+   "name": "Highland",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39073": {
+   "name": "Hocking",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39075": {
+   "name": "Holmes",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39079": {
+   "name": "Jackson",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39081": {
+   "name": "Jefferson",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39083": {
+   "name": "Knox",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39085": {
+   "name": "Lake",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39087": {
+   "name": "Lawrence",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39089": {
+   "name": "Licking",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39093": {
+   "name": "Lorain",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39099": {
+   "name": "Mahoning",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39103": {
+   "name": "Medina",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39105": {
+   "name": "Meigs",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39111": {
+   "name": "Monroe",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39115": {
+   "name": "Morgan",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39119": {
+   "name": "Muskingum",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39121": {
+   "name": "Noble",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39127": {
+   "name": "Perry",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39131": {
+   "name": "Pike",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39133": {
+   "name": "Portage",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39139": {
+   "name": "Richland",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39141": {
+   "name": "Ross",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39145": {
+   "name": "Scioto",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39151": {
+   "name": "Stark",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39153": {
+   "name": "Summit",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39155": {
+   "name": "Trumbull",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39157": {
+   "name": "Tuscarawas",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39163": {
+   "name": "Vinton",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39165": {
+   "name": "Warren",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39167": {
+   "name": "Washington",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  },
+  "39169": {
+   "name": "Wayne",
+   "why": "outside western Ohio: the OSU survey covers its northwest and southwest regions only"
+  }
+ },
+ "notes": {
+  "border": "Counties bordering this region will contain land parcels with cropland value and rental rate characteristics similar to",
+  "nonscientific": "This is a non-scientific survey that relies on those professionals willing to complete this survey.",
+  "projected": "2026 rents are projected rental rates, as OSU marks them"
+ },
+ "regions": {
+  "Northwest": {
+   "corn": {
+    "average": 188.6,
+    "bottom": 158.2,
+    "top": 217.2
+   },
+   "counties": [
+    "39003",
+    "39033",
+    "39039",
+    "39043",
+    "39051",
+    "39063",
+    "39065",
+    "39069",
+    "39077",
+    "39095",
+    "39101",
+    "39117",
+    "39123",
+    "39125",
+    "39137",
+    "39143",
+    "39147",
+    "39161",
+    "39171",
+    "39173",
+    "39175"
+   ],
+   "pasture": {
+    "rent": 104,
+    "value": 7313
+   },
+   "rent": {
+    "average": 223,
+    "bottom": 185,
+    "top": 278
+   },
+   "rent_prior": {
+    "average": 221,
+    "bottom": 184,
+    "top": 274
+   },
+   "value": {
+    "average": 12358,
+    "bottom": 9827,
+    "top": 15053
+   },
+   "value_prior": {
+    "average": 12255,
+    "bottom": 9739,
+    "top": 14912
+   }
+  },
+  "Southwest": {
+   "corn": {
+    "average": 206.0,
+    "bottom": 171.9,
+    "top": 243.3
+   },
+   "counties": [
+    "39011",
+    "39021",
+    "39023",
+    "39027",
+    "39037",
+    "39041",
+    "39047",
+    "39049",
+    "39057",
+    "39091",
+    "39097",
+    "39107",
+    "39109",
+    "39113",
+    "39129",
+    "39135",
+    "39149",
+    "39159"
+   ],
+   "pasture": {
+    "rent": 99,
+    "value": 8162
+   },
+   "rent": {
+    "average": 260,
+    "bottom": 208,
+    "top": 319
+   },
+   "rent_prior": {
+    "average": 259,
+    "bottom": 208,
+    "top": 315
+   },
+   "value": {
+    "average": 15941,
+    "bottom": 12640,
+    "top": 20286
+   },
+   "value_prior": {
+    "average": 15909,
+    "bottom": 12658,
+    "top": 20249
+   }
+  }
+ },
+ "regions_from": "the report's own county lists for the northwest and southwest regions (Figures 2 and 3)",
+ "respondents": 132,
+ "source": {
+  "authors": "Barry Ward",
+  "date_words": "survey of January to April 2026",
+  "org": "Ohio State University Extension",
+  "ref": "osu-western-ohio-2025-26-pdf",
+  "released": "2026",
+  "sha256": "fbef9933ed1afb86ddc921bb471806d78bff7b5e0c4865fa65119bdd3ae1e385",
+  "survey": "January to April 2026",
+  "title": "Western Ohio Cropland Values and Cash Rents 2025-26",
+  "url": "https://farmoffice.osu.edu/farm-management-tools/farm-management-publications/cash-rents"
+ },
+ "state": "OH",
+ "states": [
+  "OH"
+ ],
+ "tiers": {
+  "average": "average",
+  "bottom": "bottom",
+  "top": "top"
+ },
+ "unit": "region",
+ "what": {
+  "corn": "the respondents' average corn yield for the class, bu/acre",
+  "pasture": "pasture land value and cash rent, estimated, improved, non-rotation",
+  "rent": "average estimated cash rent per acre, 2026 (projected)",
+  "value": "average estimated market value per acre, 2026 (tillable, bare cropland)"
+ },
+ "year": 2026
+}

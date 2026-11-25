@@ -67,7 +67,7 @@
      below, marked for a native speaker's review in the plan). French puts a
      space before : and %, a comma for the decimal point, a space between
      thousands, and the day before the month ("3 mai"). */
-  var LOC = { mm: false, fr: false };
+  var LOC = { mm: false, fr: false, nw: false };
   var MON_FR = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
   var MONCAP_FR = ['JANV', 'FÉVR', 'MARS', 'AVR', 'MAI', 'JUIN', 'JUILL', 'AOÛT', 'SEPT', 'OCT', 'NOV', 'DÉC'];
   /* FR-REVIEW: every French string on the print. Keys are the English words. */
@@ -89,8 +89,10 @@
     'usual': 'normale', 'SNOWFALL': 'NEIGE', 'snow': 'neige', 'PREVIEW': 'APERÇU',
     'Trace of snow (too little to measure)': 'Trace de neige (trop peu pour être mesurée)'
   };
-  function tr(en) { return LOC.fr && FR[en] !== undefined ? FR[en] : en; }
-  function setLoc(l) { l = l || {}; LOC = { mm: l.units === 'mm', fr: l.lang === 'fr' }; }
+  // loc.word 'normal' (the county rain pages, C32): the English says "normal" where it says "usual"
+  function nw(en) { return LOC.nw ? en.replace(/\busual\b/g, 'normal') : en; }
+  function tr(en) { return LOC.fr && FR[en] !== undefined ? FR[en] : nw(en); }
+  function setLoc(l) { l = l || {}; LOC = { mm: l.units === 'mm', fr: l.lang === 'fr', nw: l.word === 'normal' }; }
   // a number as the print writes it: d decimals, French comma and spaces, English commas over 9,999
   function num(v, d) {
     var s = (+v).toFixed(d), p = s.split('.'), neg = p[0].charAt(0) === '-', i = neg ? p[0].slice(1) : p[0];
@@ -451,9 +453,9 @@
     var pct = ov && ov.total >= 1 ? Math.round((total - ov.total) / ov.total * 100) : null;
     var soFar = I.preview ? (LOC.fr ? ' jusqu’ici' : ' so far') : '';
     var verdict = pct === null ? null : (Math.abs(pct) <= 3 ? tr('About a usual year')
-      : pct > 100 ? num(1 + pct / 100, 1) + (LOC.fr ? ' fois une année normale' : ' times a usual year')
+      : pct > 100 ? num(1 + pct / 100, 1) + (LOC.fr ? ' fois une année normale' : nw(' times a usual year'))
       : LOC.fr ? pctText(Math.abs(pct)) + (pct < 0 ? ' de moins' : ' de plus') + ' qu’une année normale'
-      : Math.abs(pct) + '% ' + (pct < 0 ? 'less' : 'more') + ' than a usual year') + soFar;
+      : Math.abs(pct) + '% ' + (pct < 0 ? 'less' : 'more') + nw(' than a usual year')) + soFar;
     // whether a dry stretch is long enough to mark is the engine's call (RainPrint.showDry), never this file's
     var dry = I.showDry && D.dryMax && D.dryMax.startDoy >= 0 ? { s: D.dryMax.startDoy, e: D.dryMax.endDoy, len: D.dryMax.len } : null;
     if (dry) dry.range = fmtRange(days[dry.s].date, days[dry.e].date);
@@ -1415,7 +1417,7 @@
     foot1.push(E.daysText);
     if (E.traceKey) foot1.push(TRACE_PAD + E.traceKey);
     var foot2 = [];
-    if (E.cmp && E.ovNote) foot2.push(E.ovNote + (E.showN ? (LOC.fr ? '; le total normal du mois est le chiffre gris sous chaque mois' : '; the usual month total is the gray number under each month') + (E.preview ? (LOC.fr ? ' (le mois en cours : les jours rapport\u00e9s seulement)' : ' (this month: the days reported so far)') : '') : ''));
+    if (E.cmp && E.ovNote) foot2.push(E.ovNote + (E.showN ? (LOC.fr ? '; le total normal du mois est le chiffre gris sous chaque mois' : nw('; the usual month total is the gray number under each month')) + (E.preview ? (LOC.fr ? ' (le mois en cours : les jours rapport\u00e9s seulement)' : ' (this month: the days reported so far)') : '') : ''));
     if (E.snowNote) foot2.push(E.snowNote);
     if (hist && hist.foot) foot2.push(hist.foot);
     if (E.missing > GAP_QUIET) foot2.push(LOC.fr ? 'Trous : ' + E.missing + ' jours sans relevé' : 'Gaps: ' + E.missing + ' days with no report');

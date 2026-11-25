@@ -372,7 +372,7 @@ function loadWxAlerts(lat, lon) {
       var hot = p.severity === 'Extreme' || p.severity === 'Severe';
       var col = hot ? 'var(--red,#e0685f)' : p.severity === 'Moderate' ? 'var(--gold,#d4a23f)' : 'var(--text-muted)';
       var body = [p.description, p.instruction].filter(Boolean).join('\n\n');
-      return '<details class="wx-alert" style="border:1px solid ' + col + ';border-left:6px solid ' + col + ';border-radius:8px;padding:.55rem .7rem;margin:0 0 .6rem;background:var(--surface2,rgba(255,255,255,.03))">'
+      return '<details class="wx-alert" style="border:1px solid ' + col + ';border-left:6px solid ' + col + ';border-radius:var(--r-md);padding:.55rem .7rem;margin:0 0 .6rem;background:var(--surface2,rgba(255,255,255,.03))">'
         + '<summary style="cursor:pointer;list-style:none;font-weight:700;color:var(--text);line-height:1.35">'
         + '<span style="color:' + col + '">&#9888; ' + esc(p.event) + '</span> '
         + '<span style="font-weight:500;color:var(--text-muted)">' + esc(until(p.ends || p.expires)) + '</span></summary>'
@@ -813,7 +813,7 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
   var u = calcUrea(tempF, humid, wind, pop);
   var uPalette = {frozen:'91,163,224', low:'62,207,110', moderate:'230,176,66', high:'240,145,58', extreme:'240,96,96'};
   var uLbls    = {frozen:'Below freezing now: low risk', low:'Low Risk', moderate:'Moderate Risk', high:'High Risk', extreme:'Extreme Risk'};
-  var uRecs    = {frozen:'Air below 32\u00B0F right now; risk rises as it warms', low:'Favorable for application', moderate:'Consider NBPT stabilizer', high:'Use stabilizer or wait', extreme:'Do not apply without stabilizer'};
+  var uRecs    = {frozen:'Air below 32\u00B0F right now; risk rises as it warms', low:'Favorable for application', moderate:'Wait, or use a urease inhibitor (NBPT)', high:'Wait, work it in, or use NBPT', extreme:'Do not surface-apply today'};
   var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'var(--orange)', extreme:'var(--red)'};
   var uSc = document.getElementById('wsp-urea-score');
   var uBd = document.getElementById('wsp-urea-badge');
@@ -847,9 +847,9 @@ function renderForecast(lat, lon) {
           var day = new Date(days.time[i] + 'T12:00:00');
           var dname = i===1 ? 'Tomorrow' : dayNames[day.getDay()];
           var el = document.createElement('div');
-          el.style.cssText = 'flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .4rem;text-align:center';
+          el.style.cssText = 'flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .4rem;text-align:center';
           var pop = days.precipitation_probability_max[i];
-          el.innerHTML = '<div style="font-size:.64rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem">'+dname+'</div>'
+          el.innerHTML = '<div style="font-size:.64rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.2rem">'+dname+'</div>'
             + '<div style="font-size:1.3rem;line-height:1;margin-bottom:.2rem">'+(WX_ICONS[days.weather_code[i]]||'')+'</div>'
             + '<div style="font-size:.82rem;font-weight:700;color:var(--text)">'+_deg(days.temperature_2m_max[i])+'\u00B0</div>'
             + '<div style="font-size:.74rem;color:var(--text-muted)">'+_deg(days.temperature_2m_min[i])+'\u00B0</div>'
@@ -888,6 +888,24 @@ function lookupBids() {
 // ─────────────────────────────────────────────────────────────────
 // PRICE CONFIGURATION
 // ─────────────────────────────────────────────────────────────────
+/* The markets whose quotes.<root> is swapped for quotes['<root>-nearby'] (fetchAllPrices). */
+var NEARBY_ROOTS = ['corn', 'beans', 'wheat', 'cattle', 'kcwheat', 'oats', 'meal', 'soyoil', 'feeders', 'hogs', 'milk'];
+/* quotes.<root> becomes the front month (quotes['<root>-nearby']) for every root above, and NB[root] its
+   contract label. Mutates quotes and NB; test/home-numbers.test.mjs runs it on the Nov 12 file. */
+function nearbySwap(quotes, nearby, NB) {
+  NEARBY_ROOTS.forEach(function(c) {
+    var nb = quotes[c + '-nearby'];
+    if (nb && nb.close != null) {
+      quotes[c] = nb;
+      NB[c] = nb.contract || (nearby && nearby[c] && nearby[c].label) || 'nearby';
+    } else if (nearby && nearby[c] && nearby[c].close != null) {
+      // an older file kept cattle's front month only in the nearby block
+      quotes[c] = nearby[c];
+      NB[c] = nearby[c].label || 'nearby';
+    }
+  });
+  return quotes;
+}
 var PRICE_MAP = {
   'corn':       { label:'Corn',          priceEl:'pcp-corn-near', chgEl:'pcc-corn-near', dec:2, grain:true  },
   'corn-dec':   { label:"Corn Dec'26",   priceEl:'pcp-corn-dec',  chgEl:'pcc-corn-dec',  dec:2, grain:true  },
@@ -1165,19 +1183,12 @@ function fetchAllPrices() {
          consumer of `quotes.<crop>` on this page gets the real front month,
          and record the contract so labels can name it. */
       window.AGSIST_NEARBY = window.AGSIST_NEARBY || {};
-      ['corn', 'beans', 'wheat', 'cattle'].forEach(function(c) {
-        var nb = quotes[c + '-nearby'];
-        if (nb && nb.close != null) {
-          quotes[c] = nb;
-          window.AGSIST_NEARBY[c] = nb.contract ||
-            (data.nearby && data.nearby[c] && data.nearby[c].label) || 'nearby';
-        } else if (data.nearby && data.nearby[c] && data.nearby[c].close != null) {
-          // fetch_prices only publishes a -nearby alias for the grains; cattle
-          // has to come out of the nearby block directly.
-          quotes[c] = data.nearby[c];
-          window.AGSIST_NEARBY[c] = data.nearby[c].label || 'nearby';
-        }
-      });
+      /* Nov 12: every market with a front-month alias, not the four grains and
+         cattle only. KC wheat's continuous series (KE=F) traded Mar '27 at
+         $6.29 1/2 on Nov 12 with a change of -10c against Dec '26's settle,
+         while Dec '26 itself was $6.19, down 20 1/2c; oats, meal and soy oil
+         roll the same way before their front month expires. */
+      nearbySwap(quotes, data.nearby, window.AGSIST_NEARBY);
       // Name the contract on the card instead of the generic "Front Month",
       // so a reader can see WHICH month the number belongs to.
       [['corn','pcp-corn-near'],['beans','pcp-bean-near'],
@@ -1193,13 +1204,28 @@ function fetchAllPrices() {
         if (!q || q.close === null || q.close === undefined) return;
         applyPriceResult(key, q, q.close, q.open, q.netChange, q.pctChange);
       });
+      tickerReady();
     })
-    .catch(function(e) { console.warn('prices.json fetch failed:', e); });
+    .catch(function(e) { console.warn('prices.json fetch failed:', e); tickerReady(true); });
 }
 
 // ─────────────────────────────────────────────────────────────────
 // TICKER
 // ─────────────────────────────────────────────────────────────────
+/* THE TICKER ROW SHOWS WHOLE (Nov 24, 2026). Its prices land after the first paint, and each one widens its item, so
+   the row slid 270 px at 1280 when they came (0.008 to 0.011 of layout shift on the home page and /index1). The page
+   holds the row unseen (.prices-strip without .t-ready, a style beside the strip, 5 s at most by CSS alone) and this
+   shows it in the same task that writes the last price, so it never moves on screen. A page script that rewrites
+   the row after the prices (home.js) sets window.__tickerHold before this runs and calls tickerReady when done.
+   force: the price file did not come; show the row as it is. */
+function tickerReady(force) {
+  var s = document.querySelector('.prices-strip');
+  if (!s || s.classList.contains('t-ready')) return;
+  if (!force && window.__tickerHold) return;
+  s.classList.add('t-ready');
+}
+window.tickerReady = tickerReady;
+
 var _tickerRebuildTimer = null;
 function rebuildTickerLoop() {
   if (_tickerRebuildTimer) clearTimeout(_tickerRebuildTimer);
@@ -1360,8 +1386,8 @@ function buildMarketCard(m, showExtras) {
   var tierHTML = '';
   if (showExtras && m.relevance) {
     var tier = getRelevanceTier(m.relevance);
-    tierHTML = '<span style="font-size:.55rem;font-weight:700;letter-spacing:.05em;'
-      + 'text-transform:uppercase;color:' + tier.color + ';background:' + tier.bg
+    tierHTML = '<span style="font-size:.55rem;font-weight:700;letter-spacing:0;'
+      + 'text-transform:none;color:' + tier.color + ';background:' + tier.bg
       + ';border:1px solid ' + tier.border + ';border-radius:3px;padding:.08rem .3rem;'
       + 'white-space:nowrap">' + tier.label + '</span>';
   }
@@ -1370,17 +1396,17 @@ function buildMarketCard(m, showExtras) {
   if (showExtras && m.why_it_matters) {
     var whyText = m.why_it_matters.length > 150 ? m.why_it_matters.slice(0, 147) + '\u2026' : m.why_it_matters;
     whyHTML = '<div style="font-size:.7rem;line-height:1.55;color:var(--text-dim);'
-      + 'padding:.45rem .55rem;background:var(--surface2);border-radius:6px;'
+      + 'padding:.45rem .55rem;background:var(--surface2);border-radius:var(--r-md);'
       + 'border:1px solid var(--border);margin-top:.1rem">'
       + '<span style="font-weight:700;color:var(--text-muted);font-size:.58rem;'
-      + 'letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:.2rem">'
+      + 'letter-spacing:0;text-transform:none;display:block;margin-bottom:.2rem">'
       + 'For farmers</span>' + whyText + '</div>';
   }
 
   var div = document.createElement('div');
   div.className = 'market-card';
   div.style.cssText = 'background:' + bgAlpha + ';border:1px solid ' + borderC
-    + ';border-radius:10px;padding:.8rem;display:flex;flex-direction:column;'
+    + ';border-radius:var(--r-lg);padding:.8rem;display:flex;flex-direction:column;'
     + 'gap:.4rem;cursor:pointer;transition:border-color .15s,transform .1s';
 
   div.onmouseenter = function() { div.style.borderColor = color; div.style.transform = 'translateY(-1px)'; };
@@ -1482,8 +1508,7 @@ function loadDailyBriefing() {
               surpriseNames.push(s.commodity + ' ' + arrow + Math.abs(s.pct_change).toFixed(1) + '%');
             });
           }
-          surpriseBanner.innerHTML = '<span class="surprise-icon">\u26A1</span>'
-            + '<span class="surprise-text">'
+          surpriseBanner.innerHTML = '<span class="surprise-text">'
             + '<strong>Overnight Surprise' + (surpriseCount > 1 ? 's' : '') + ':</strong> '
             + (surpriseNames.length ? surpriseNames.join(' \u00B7 ') : surpriseCount + ' unusual move' + (surpriseCount > 1 ? 's' : ''))
             + '</span>';

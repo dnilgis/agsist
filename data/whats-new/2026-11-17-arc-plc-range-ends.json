@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-17-arc-plc-range-ends",
+ "date": "2026-11-17",
+ "title": "ARC/PLC trigger yields to a tenth",
+ "line": "County ARC/PLC cards now print the yield where ARC-CO starts to pay to a tenth, rounded down, so 38.62 bu reads 38.6. The 60% to 100% range ends are rounded once.",
+ "link": "/arc-plc",
+ "rank": 3
+}

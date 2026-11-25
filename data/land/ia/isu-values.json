@@ -1,0 +1,618 @@
+{
+ "about": "Iowa State University Land Value Survey: estimated county average value of farmland on Nov 1, dollars an acre, from the survey and U.S. Census of Agriculture estimates. Not a USDA number and not recorded sales.",
+ "state": "IA",
+ "evidence": "Iowa State survey of land values",
+ "year": 2025,
+ "as_of": "Nov 1, 2025",
+ "what": {
+  "value": "estimated average value of farmland, dollars an acre, Nov 1, 2025",
+  "prior": "the same, Nov 1, 2024",
+  "change_pct": "percent change from 2024, same survey"
+ },
+ "state_average": 11549,
+ "released": "December 9, 2025",
+ "source": {
+  "org": "Iowa State University (CARD and ISU Extension and Outreach)",
+  "title": "Iowa State University Land Value Survey 2025",
+  "released": "December 2025",
+  "url": "https://farmland.card.iastate.edu/files/inline-files/2025%20and%202024%20Iowa%20Average%20Land%20Values%20by%20County.pdf",
+  "ref": "isu-land-values-county-2025-pdf",
+  "sha256": "b2b7bcb3e76759cdda1f873ff9b879fb45234529cb8f2fac2130e050a7e65862"
+ },
+ "counties": {
+  "19001": {
+   "name": "Adair",
+   "value": 9116,
+   "prior": 8990,
+   "change_pct": 1.4
+  },
+  "19003": {
+   "name": "Adams",
+   "value": 8113,
+   "prior": 8100,
+   "change_pct": 0.2
+  },
+  "19005": {
+   "name": "Allamakee",
+   "value": 9742,
+   "prior": 9332,
+   "change_pct": 4.4
+  },
+  "19007": {
+   "name": "Appanoose",
+   "value": 6679,
+   "prior": 6840,
+   "change_pct": -2.4
+  },
+  "19009": {
+   "name": "Audubon",
+   "value": 11956,
+   "prior": 11671,
+   "change_pct": 2.4
+  },
+  "19011": {
+   "name": "Benton",
+   "value": 12689,
+   "prior": 12781,
+   "change_pct": -0.7
+  },
+  "19013": {
+   "name": "Black Hawk",
+   "value": 13455,
+   "prior": 13385,
+   "change_pct": 0.5
+  },
+  "19015": {
+   "name": "Boone",
+   "value": 12811,
+   "prior": 13098,
+   "change_pct": -2.2
+  },
+  "19017": {
+   "name": "Bremer",
+   "value": 13134,
+   "prior": 12786,
+   "change_pct": 2.7
+  },
+  "19019": {
+   "name": "Buchanan",
+   "value": 12957,
+   "prior": 12671,
+   "change_pct": 2.3
+  },
+  "19021": {
+   "name": "Buena Vista",
+   "value": 13696,
+   "prior": 13695,
+   "change_pct": 0.0
+  },
+  "19023": {
+   "name": "Butler",
+   "value": 12027,
+   "prior": 12032,
+   "change_pct": -0.0
+  },
+  "19025": {
+   "name": "Calhoun",
+   "value": 13317,
+   "prior": 13535,
+   "change_pct": -1.6
+  },
+  "19027": {
+   "name": "Carroll",
+   "value": 13239,
+   "prior": 13023,
+   "change_pct": 1.7
+  },
+  "19029": {
+   "name": "Cass",
+   "value": 10612,
+   "prior": 10412,
+   "change_pct": 1.9
+  },
+  "19031": {
+   "name": "Cedar",
+   "value": 13199,
+   "prior": 12874,
+   "change_pct": 2.5
+  },
+  "19033": {
+   "name": "Cerro Gordo",
+   "value": 11594,
+   "prior": 11638,
+   "change_pct": -0.4
+  },
+  "19035": {
+   "name": "Cherokee",
+   "value": 13665,
+   "prior": 13350,
+   "change_pct": 2.4
+  },
+  "19037": {
+   "name": "Chickasaw",
+   "value": 12135,
+   "prior": 11811,
+   "change_pct": 2.7
+  },
+  "19039": {
+   "name": "Clarke",
+   "value": 7348,
+   "prior": 7506,
+   "change_pct": -2.1
+  },
+  "19041": {
+   "name": "Clay",
+   "value": 13112,
+   "prior": 13114,
+   "change_pct": -0.0
+  },
+  "19043": {
+   "name": "Clayton",
+   "value": 10825,
+   "prior": 10369,
+   "change_pct": 4.4
+  },
+  "19045": {
+   "name": "Clinton",
+   "value": 12154,
+   "prior": 11805,
+   "change_pct": 3.0
+  },
+  "19047": {
+   "name": "Crawford",
+   "value": 12563,
+   "prior": 12253,
+   "change_pct": 2.5
+  },
+  "19049": {
+   "name": "Dallas",
+   "value": 11883,
+   "prior": 12002,
+   "change_pct": -1.0
+  },
+  "19051": {
+   "name": "Davis",
+   "value": 7735,
+   "prior": 7761,
+   "change_pct": -0.3
+  },
+  "19053": {
+   "name": "Decatur",
+   "value": 6781,
+   "prior": 6944,
+   "change_pct": -2.3
+  },
+  "19055": {
+   "name": "Delaware",
+   "value": 13891,
+   "prior": 13397,
+   "change_pct": 3.7
+  },
+  "19057": {
+   "name": "Des Moines",
+   "value": 10976,
+   "prior": 10831,
+   "change_pct": 1.3
+  },
+  "19059": {
+   "name": "Dickinson",
+   "value": 12869,
+   "prior": 12594,
+   "change_pct": 2.2
+  },
+  "19061": {
+   "name": "Dubuque",
+   "value": 13677,
+   "prior": 13124,
+   "change_pct": 4.2
+  },
+  "19063": {
+   "name": "Emmet",
+   "value": 12483,
+   "prior": 12501,
+   "change_pct": -0.1
+  },
+  "19065": {
+   "name": "Fayette",
+   "value": 13037,
+   "prior": 12587,
+   "change_pct": 3.6
+  },
+  "19067": {
+   "name": "Floyd",
+   "value": 11944,
+   "prior": 11721,
+   "change_pct": 1.9
+  },
+  "19069": {
+   "name": "Franklin",
+   "value": 11926,
+   "prior": 12292,
+   "change_pct": -3.0
+  },
+  "19071": {
+   "name": "Fremont",
+   "value": 10073,
+   "prior": 9930,
+   "change_pct": 1.4
+  },
+  "19073": {
+   "name": "Greene",
+   "value": 12557,
+   "prior": 12650,
+   "change_pct": -0.7
+  },
+  "19075": {
+   "name": "Grundy",
+   "value": 13658,
+   "prior": 13793,
+   "change_pct": -1.0
+  },
+  "19077": {
+   "name": "Guthrie",
+   "value": 11055,
+   "prior": 10896,
+   "change_pct": 1.5
+  },
+  "19079": {
+   "name": "Hamilton",
+   "value": 13130,
+   "prior": 13530,
+   "change_pct": -3.0
+  },
+  "19081": {
+   "name": "Hancock",
+   "value": 11527,
+   "prior": 11824,
+   "change_pct": -2.5
+  },
+  "19083": {
+   "name": "Hardin",
+   "value": 12619,
+   "prior": 13003,
+   "change_pct": -3.0
+  },
+  "19085": {
+   "name": "Harrison",
+   "value": 10994,
+   "prior": 10750,
+   "change_pct": 2.3
+  },
+  "19087": {
+   "name": "Henry",
+   "value": 10204,
+   "prior": 10071,
+   "change_pct": 1.3
+  },
+  "19089": {
+   "name": "Howard",
+   "value": 11214,
+   "prior": 10913,
+   "change_pct": 2.8
+  },
+  "19091": {
+   "name": "Humboldt",
+   "value": 12719,
+   "prior": 13220,
+   "change_pct": -3.8
+  },
+  "19093": {
+   "name": "Ida",
+   "value": 13117,
+   "prior": 12794,
+   "change_pct": 2.5
+  },
+  "19095": {
+   "name": "Iowa",
+   "value": 11454,
+   "prior": 11339,
+   "change_pct": 1.0
+  },
+  "19097": {
+   "name": "Jackson",
+   "value": 11575,
+   "prior": 11169,
+   "change_pct": 3.6
+  },
+  "19099": {
+   "name": "Jasper",
+   "value": 11784,
+   "prior": 11643,
+   "change_pct": 1.2
+  },
+  "19101": {
+   "name": "Jefferson",
+   "value": 8839,
+   "prior": 8721,
+   "change_pct": 1.4
+  },
+  "19103": {
+   "name": "Johnson",
+   "value": 13476,
+   "prior": 13112,
+   "change_pct": 2.8
+  },
+  "19105": {
+   "name": "Jones",
+   "value": 12380,
+   "prior": 12015,
+   "change_pct": 3.0
+  },
+  "19107": {
+   "name": "Keokuk",
+   "value": 9828,
+   "prior": 9543,
+   "change_pct": 3.0
+  },
+  "19109": {
+   "name": "Kossuth",
+   "value": 12414,
+   "prior": 12966,
+   "change_pct": -4.3
+  },
+  "19111": {
+   "name": "Lee",
+   "value": 10222,
+   "prior": 10271,
+   "change_pct": -0.5
+  },
+  "19113": {
+   "name": "Linn",
+   "value": 13513,
+   "prior": 13262,
+   "change_pct": 1.9
+  },
+  "19115": {
+   "name": "Louisa",
+   "value": 11632,
+   "prior": 11319,
+   "change_pct": 2.8
+  },
+  "19117": {
+   "name": "Lucas",
+   "value": 6843,
+   "prior": 7007,
+   "change_pct": -2.3
+  },
+  "19119": {
+   "name": "Lyon",
+   "value": 15764,
+   "prior": 15427,
+   "change_pct": 2.2
+  },
+  "19121": {
+   "name": "Madison",
+   "value": 9770,
+   "prior": 9759,
+   "change_pct": 0.1
+  },
+  "19123": {
+   "name": "Mahaska",
+   "value": 10209,
+   "prior": 10072,
+   "change_pct": 1.4
+  },
+  "19125": {
+   "name": "Marion",
+   "value": 10379,
+   "prior": 10428,
+   "change_pct": -0.5
+  },
+  "19127": {
+   "name": "Marshall",
+   "value": 11857,
+   "prior": 11919,
+   "change_pct": -0.5
+  },
+  "19129": {
+   "name": "Mills",
+   "value": 10775,
+   "prior": 10623,
+   "change_pct": 1.4
+  },
+  "19131": {
+   "name": "Mitchell",
+   "value": 12418,
+   "prior": 12187,
+   "change_pct": 1.9
+  },
+  "19133": {
+   "name": "Monona",
+   "value": 10563,
+   "prior": 10283,
+   "change_pct": 2.7
+  },
+  "19135": {
+   "name": "Monroe",
+   "value": 8023,
+   "prior": 8044,
+   "change_pct": -0.3
+  },
+  "19137": {
+   "name": "Montgomery",
+   "value": 9221,
+   "prior": 9090,
+   "change_pct": 1.4
+  },
+  "19139": {
+   "name": "Muscatine",
+   "value": 12125,
+   "prior": 11823,
+   "change_pct": 2.6
+  },
+  "19141": {
+   "name": "O'Brien",
+   "value": 16269,
+   "prior": 15921,
+   "change_pct": 2.2
+  },
+  "19143": {
+   "name": "Osceola",
+   "value": 14483,
+   "prior": 14174,
+   "change_pct": 2.2
+  },
+  "19145": {
+   "name": "Page",
+   "value": 8513,
+   "prior": 8393,
+   "change_pct": 1.4
+  },
+  "19147": {
+   "name": "Palo Alto",
+   "value": 12504,
+   "prior": 12802,
+   "change_pct": -2.3
+  },
+  "19149": {
+   "name": "Plymouth",
+   "value": 14582,
+   "prior": 14222,
+   "change_pct": 2.5
+  },
+  "19151": {
+   "name": "Pocahontas",
+   "value": 12951,
+   "prior": 13367,
+   "change_pct": -3.1
+  },
+  "19153": {
+   "name": "Polk",
+   "value": 12174,
+   "prior": 12347,
+   "change_pct": -1.4
+  },
+  "19155": {
+   "name": "Pottawattamie",
+   "value": 11571,
+   "prior": 11360,
+   "change_pct": 1.9
+  },
+  "19157": {
+   "name": "Poweshiek",
+   "value": 11642,
+   "prior": 11507,
+   "change_pct": 1.2
+  },
+  "19159": {
+   "name": "Ringgold",
+   "value": 7373,
+   "prior": 7452,
+   "change_pct": -1.1
+  },
+  "19161": {
+   "name": "Sac",
+   "value": 13743,
+   "prior": 13512,
+   "change_pct": 1.7
+  },
+  "19163": {
+   "name": "Scott",
+   "value": 15192,
+   "prior": 14846,
+   "change_pct": 2.3
+  },
+  "19165": {
+   "name": "Shelby",
+   "value": 11847,
+   "prior": 11579,
+   "change_pct": 2.3
+  },
+  "19167": {
+   "name": "Sioux",
+   "value": 15983,
+   "prior": 15617,
+   "change_pct": 2.3
+  },
+  "19169": {
+   "name": "Story",
+   "value": 13479,
+   "prior": 13770,
+   "change_pct": -2.1
+  },
+  "19171": {
+   "name": "Tama",
+   "value": 11968,
+   "prior": 12042,
+   "change_pct": -0.6
+  },
+  "19173": {
+   "name": "Taylor",
+   "value": 7555,
+   "prior": 7539,
+   "change_pct": 0.2
+  },
+  "19175": {
+   "name": "Union",
+   "value": 8255,
+   "prior": 8343,
+   "change_pct": -1.1
+  },
+  "19177": {
+   "name": "Van Buren",
+   "value": 8438,
+   "prior": 8471,
+   "change_pct": -0.4
+  },
+  "19179": {
+   "name": "Wapello",
+   "value": 8410,
+   "prior": 8292,
+   "change_pct": 1.4
+  },
+  "19181": {
+   "name": "Warren",
+   "value": 10578,
+   "prior": 10768,
+   "change_pct": -1.8
+  },
+  "19183": {
+   "name": "Washington",
+   "value": 12594,
+   "prior": 12229,
+   "change_pct": 3.0
+  },
+  "19185": {
+   "name": "Wayne",
+   "value": 7227,
+   "prior": 7401,
+   "change_pct": -2.4
+  },
+  "19187": {
+   "name": "Webster",
+   "value": 12694,
+   "prior": 13086,
+   "change_pct": -3.0
+  },
+  "19189": {
+   "name": "Winnebago",
+   "value": 11217,
+   "prior": 11504,
+   "change_pct": -2.5
+  },
+  "19191": {
+   "name": "Winneshiek",
+   "value": 11608,
+   "prior": 11208,
+   "change_pct": 3.6
+  },
+  "19193": {
+   "name": "Woodbury",
+   "value": 11277,
+   "prior": 10979,
+   "change_pct": 2.7
+  },
+  "19195": {
+   "name": "Worth",
+   "value": 11265,
+   "prior": 11304,
+   "change_pct": -0.3
+  },
+  "19197": {
+   "name": "Wright",
+   "value": 12712,
+   "prior": 13209,
+   "change_pct": -3.8
+  }
+ }
+}

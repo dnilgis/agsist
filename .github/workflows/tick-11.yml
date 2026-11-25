@@ -1,0 +1,22 @@
+name: Tick 11
+run-name: "Tick 11 [${{ inputs.due }}]"
+
+on:
+  workflow_dispatch:
+    inputs:
+      due:
+        description: "Workflow files to run, each with a space on both sides (clock.yml fills this)"
+        type: string
+        required: true
+
+permissions: {}
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Named
+        env:
+          DUE: ${{ inputs.due }}
+        run: echo "due:$DUE"

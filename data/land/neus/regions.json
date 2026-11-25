@@ -1,0 +1,1583 @@
+{
+ "about": "The Northeast Chapter ASFMRA and Cornell Cooperative Extension's twelve regions: the range of per-acre values seen in verified 2025 farm sales, by land class, with the chapter's sales activity words and cropland rent ranges. A region's range, not a county's figure.",
+ "counties": {
+  "09001": {
+   "name": "Fairfield",
+   "region": "Southern New England"
+  },
+  "09003": {
+   "name": "Hartford",
+   "region": "Southern New England"
+  },
+  "09005": {
+   "name": "Litchfield",
+   "region": "Southern New England"
+  },
+  "09007": {
+   "name": "Middlesex",
+   "region": "Southern New England"
+  },
+  "09009": {
+   "name": "New Haven",
+   "region": "Southern New England"
+  },
+  "09011": {
+   "name": "New London",
+   "region": "Southern New England"
+  },
+  "09013": {
+   "name": "Tolland",
+   "region": "Southern New England"
+  },
+  "09015": {
+   "name": "Windham",
+   "region": "Southern New England"
+  },
+  "09110": {
+   "name": "Capitol",
+   "region": "Southern New England"
+  },
+  "09130": {
+   "name": "Lower Ct River Valley",
+   "region": "Southern New England"
+  },
+  "09140": {
+   "name": "Naugatuck Valley",
+   "region": "Southern New England"
+  },
+  "09150": {
+   "name": "Northeastern Ct",
+   "region": "Southern New England"
+  },
+  "09160": {
+   "name": "Northwest Hills",
+   "region": "Southern New England"
+  },
+  "09170": {
+   "name": "South Central Ct",
+   "region": "Southern New England"
+  },
+  "09180": {
+   "name": "Southeastern Ct",
+   "region": "Southern New England"
+  },
+  "25001": {
+   "name": "Barnstable",
+   "region": "Southern New England"
+  },
+  "25003": {
+   "name": "Berkshire",
+   "region": "Southern New England"
+  },
+  "25005": {
+   "name": "Bristol",
+   "region": "Southern New England"
+  },
+  "25007": {
+   "name": "Dukes",
+   "region": "Southern New England"
+  },
+  "25009": {
+   "name": "Essex",
+   "region": "Southern New England"
+  },
+  "25011": {
+   "name": "Franklin",
+   "region": "Southern New England"
+  },
+  "25013": {
+   "name": "Hampden",
+   "region": "Southern New England"
+  },
+  "25015": {
+   "name": "Hampshire",
+   "region": "Southern New England"
+  },
+  "25017": {
+   "name": "Middlesex",
+   "region": "Southern New England"
+  },
+  "25019": {
+   "name": "Nantucket",
+   "region": "Southern New England"
+  },
+  "25021": {
+   "name": "Norfolk",
+   "region": "Southern New England"
+  },
+  "25023": {
+   "name": "Plymouth",
+   "region": "Southern New England"
+  },
+  "25025": {
+   "name": "Suffolk",
+   "region": "Southern New England"
+  },
+  "25027": {
+   "name": "Worcester",
+   "region": "Southern New England"
+  },
+  "36001": {
+   "name": "Albany",
+   "region": "Capital Region"
+  },
+  "36003": {
+   "name": "Allegany",
+   "region": "Southern Tier"
+  },
+  "36007": {
+   "name": "Broome",
+   "region": "Central New York"
+  },
+  "36009": {
+   "name": "Cattaraugus",
+   "region": "Southern Tier"
+  },
+  "36011": {
+   "name": "Cayuga",
+   "region": "Western New York"
+  },
+  "36013": {
+   "name": "Chautauqua",
+   "region": "Southern Tier"
+  },
+  "36015": {
+   "name": "Chemung",
+   "region": "Southern Tier"
+  },
+  "36017": {
+   "name": "Chenango",
+   "region": "Central New York"
+  },
+  "36019": {
+   "name": "Clinton",
+   "region": "Adirondack"
+  },
+  "36021": {
+   "name": "Columbia",
+   "region": "Capital Region"
+  },
+  "36023": {
+   "name": "Cortland",
+   "region": "Central New York"
+  },
+  "36025": {
+   "name": "Delaware",
+   "region": "Central New York"
+  },
+  "36027": {
+   "name": "Dutchess",
+   "region": "Hudson Valley"
+  },
+  "36029": {
+   "name": "Erie",
+   "region": "Western New York"
+  },
+  "36031": {
+   "name": "Essex",
+   "region": "Adirondack"
+  },
+  "36033": {
+   "name": "Franklin",
+   "region": "Adirondack"
+  },
+  "36035": {
+   "name": "Fulton",
+   "region": "Adirondack"
+  },
+  "36037": {
+   "name": "Genesee",
+   "region": "Western New York"
+  },
+  "36039": {
+   "name": "Greene",
+   "region": "Capital Region"
+  },
+  "36041": {
+   "name": "Hamilton",
+   "region": "Adirondack"
+  },
+  "36043": {
+   "name": "Herkimer",
+   "region": "Adirondack"
+  },
+  "36045": {
+   "name": "Jefferson",
+   "region": "Central New York"
+  },
+  "36049": {
+   "name": "Lewis",
+   "region": "Central New York"
+  },
+  "36051": {
+   "name": "Livingston",
+   "region": "Western New York"
+  },
+  "36053": {
+   "name": "Madison",
+   "region": "Central New York"
+  },
+  "36055": {
+   "name": "Monroe",
+   "region": "Western New York"
+  },
+  "36057": {
+   "name": "Montgomery",
+   "region": "Capital Region"
+  },
+  "36063": {
+   "name": "Niagara",
+   "region": "Western New York"
+  },
+  "36065": {
+   "name": "Oneida",
+   "region": "Central New York"
+  },
+  "36067": {
+   "name": "Onondaga",
+   "region": "Central New York"
+  },
+  "36069": {
+   "name": "Ontario",
+   "region": "Western New York"
+  },
+  "36071": {
+   "name": "Orange",
+   "region": "Hudson Valley"
+  },
+  "36073": {
+   "name": "Orleans",
+   "region": "Western New York"
+  },
+  "36075": {
+   "name": "Oswego",
+   "region": "Central New York"
+  },
+  "36077": {
+   "name": "Otsego",
+   "region": "Central New York"
+  },
+  "36079": {
+   "name": "Putnam",
+   "region": "Hudson Valley"
+  },
+  "36083": {
+   "name": "Rensselaer",
+   "region": "Capital Region"
+  },
+  "36087": {
+   "name": "Rockland",
+   "region": "Hudson Valley"
+  },
+  "36089": {
+   "name": "St. Lawrence",
+   "region": "Adirondack"
+  },
+  "36091": {
+   "name": "Saratoga",
+   "region": "Capital Region"
+  },
+  "36093": {
+   "name": "Schenectady",
+   "region": "Capital Region"
+  },
+  "36095": {
+   "name": "Schoharie",
+   "region": "Capital Region"
+  },
+  "36097": {
+   "name": "Schuyler",
+   "region": "Western New York"
+  },
+  "36099": {
+   "name": "Seneca",
+   "region": "Western New York"
+  },
+  "36101": {
+   "name": "Steuben",
+   "region": "Southern Tier"
+  },
+  "36105": {
+   "name": "Sullivan",
+   "region": "Hudson Valley"
+  },
+  "36107": {
+   "name": "Tioga",
+   "region": "Southern Tier"
+  },
+  "36109": {
+   "name": "Tompkins",
+   "region": "Western New York"
+  },
+  "36111": {
+   "name": "Ulster",
+   "region": "Hudson Valley"
+  },
+  "36113": {
+   "name": "Warren",
+   "region": "Adirondack"
+  },
+  "36115": {
+   "name": "Washington",
+   "region": "Capital Region"
+  },
+  "36117": {
+   "name": "Wayne",
+   "region": "Western New York"
+  },
+  "36119": {
+   "name": "Westchester",
+   "region": "Hudson Valley"
+  },
+  "36121": {
+   "name": "Wyoming",
+   "region": "Western New York"
+  },
+  "36123": {
+   "name": "Yates",
+   "region": "Western New York"
+  },
+  "42031": {
+   "name": "Clarion",
+   "region": "Northwestern Pennsylvania"
+  },
+  "42039": {
+   "name": "Crawford",
+   "region": "Northwestern Pennsylvania"
+  },
+  "42049": {
+   "name": "Erie",
+   "region": "Northwestern Pennsylvania"
+  },
+  "42053": {
+   "name": "Forest",
+   "region": "Northwestern Pennsylvania"
+  },
+  "42085": {
+   "name": "Mercer",
+   "region": "Northwestern Pennsylvania"
+  },
+  "42121": {
+   "name": "Venango",
+   "region": "Northwestern Pennsylvania"
+  },
+  "42123": {
+   "name": "Warren",
+   "region": "Northwestern Pennsylvania"
+  },
+  "44001": {
+   "name": "Bristol",
+   "region": "Southern New England"
+  },
+  "44003": {
+   "name": "Kent",
+   "region": "Southern New England"
+  },
+  "44005": {
+   "name": "Newport",
+   "region": "Southern New England"
+  },
+  "44007": {
+   "name": "Providence",
+   "region": "Southern New England"
+  },
+  "44009": {
+   "name": "Washington",
+   "region": "Southern New England"
+  },
+  "50001": {
+   "name": "Addison",
+   "region": "Northwest Vermont"
+  },
+  "50003": {
+   "name": "Bennington",
+   "region": "Southern Vermont"
+  },
+  "50007": {
+   "name": "Chittenden",
+   "region": "Northwest Vermont"
+  },
+  "50011": {
+   "name": "Franklin",
+   "region": "Northwest Vermont"
+  },
+  "50013": {
+   "name": "Grand Isle",
+   "region": "Northwest Vermont"
+  },
+  "50015": {
+   "name": "Lamoille",
+   "region": "Northeast Vermont"
+  },
+  "50019": {
+   "name": "Orleans",
+   "region": "Northeast Vermont"
+  },
+  "50021": {
+   "name": "Rutland",
+   "region": "Southern Vermont"
+  },
+  "50023": {
+   "name": "Washington",
+   "region": "Northeast Vermont"
+  }
+ },
+ "evidence": "ranges from verified farm sales, region by region, by appraisers",
+ "not_mapped": {
+  "33001": {
+   "name": "Belknap",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33003": {
+   "name": "Carroll",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33005": {
+   "name": "Cheshire",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33007": {
+   "name": "Coos",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33009": {
+   "name": "Grafton",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33011": {
+   "name": "Hillsborough",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33013": {
+   "name": "Merrimack",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33015": {
+   "name": "Rockingham",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33017": {
+   "name": "Strafford",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "33019": {
+   "name": "Sullivan",
+   "why": "the report covers only the New Hampshire towns along the Connecticut River (CT River Valley region), not whole counties"
+  },
+  "36005": {
+   "name": "Bronx",
+   "why": "New York City and Long Island are not in the report's regions"
+  },
+  "36047": {
+   "name": "Kings",
+   "why": "New York City and Long Island are not in the report's regions"
+  },
+  "36059": {
+   "name": "Nassau",
+   "why": "New York City and Long Island are not in the report's regions"
+  },
+  "36061": {
+   "name": "New York",
+   "why": "New York City and Long Island are not in the report's regions"
+  },
+  "36081": {
+   "name": "Queens",
+   "why": "New York City and Long Island are not in the report's regions"
+  },
+  "36085": {
+   "name": "Richmond",
+   "why": "New York City and Long Island are not in the report's regions"
+  },
+  "36103": {
+   "name": "Suffolk",
+   "why": "New York City and Long Island are not in the report's regions"
+  },
+  "42001": {
+   "name": "Adams",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42003": {
+   "name": "Allegheny",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42005": {
+   "name": "Armstrong",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42007": {
+   "name": "Beaver",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42009": {
+   "name": "Bedford",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42011": {
+   "name": "Berks",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42013": {
+   "name": "Blair",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42015": {
+   "name": "Bradford",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42017": {
+   "name": "Bucks",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42019": {
+   "name": "Butler",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42021": {
+   "name": "Cambria",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42023": {
+   "name": "Cameron",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42025": {
+   "name": "Carbon",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42027": {
+   "name": "Centre",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42029": {
+   "name": "Chester",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42033": {
+   "name": "Clearfield",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42035": {
+   "name": "Clinton",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42037": {
+   "name": "Columbia",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42041": {
+   "name": "Cumberland",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42043": {
+   "name": "Dauphin",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42045": {
+   "name": "Delaware",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42047": {
+   "name": "Elk",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42051": {
+   "name": "Fayette",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42055": {
+   "name": "Franklin",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42057": {
+   "name": "Fulton",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42059": {
+   "name": "Greene",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42061": {
+   "name": "Huntingdon",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42063": {
+   "name": "Indiana",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42065": {
+   "name": "Jefferson",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42067": {
+   "name": "Juniata",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42069": {
+   "name": "Lackawanna",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42071": {
+   "name": "Lancaster",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42073": {
+   "name": "Lawrence",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42075": {
+   "name": "Lebanon",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42077": {
+   "name": "Lehigh",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42079": {
+   "name": "Luzerne",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42081": {
+   "name": "Lycoming",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42083": {
+   "name": "McKean",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42087": {
+   "name": "Mifflin",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42089": {
+   "name": "Monroe",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42091": {
+   "name": "Montgomery",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42093": {
+   "name": "Montour",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42095": {
+   "name": "Northampton",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42097": {
+   "name": "Northumberland",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42099": {
+   "name": "Perry",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42101": {
+   "name": "Philadelphia",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42103": {
+   "name": "Pike",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42105": {
+   "name": "Potter",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42107": {
+   "name": "Schuylkill",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42109": {
+   "name": "Snyder",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42111": {
+   "name": "Somerset",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42113": {
+   "name": "Sullivan",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42115": {
+   "name": "Susquehanna",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42117": {
+   "name": "Tioga",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42119": {
+   "name": "Union",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42125": {
+   "name": "Washington",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42127": {
+   "name": "Wayne",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42129": {
+   "name": "Westmoreland",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42131": {
+   "name": "Wyoming",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "42133": {
+   "name": "York",
+   "why": "the report covers northwestern Pennsylvania only"
+  },
+  "50005": {
+   "name": "Caledonia",
+   "why": "split by town between Northeast Vermont and the CT River Valley region"
+  },
+  "50009": {
+   "name": "Essex",
+   "why": "split by town between Northeast Vermont and the CT River Valley region"
+  },
+  "50017": {
+   "name": "Orange",
+   "why": "split by town between Northeast Vermont and the CT River Valley region"
+  },
+  "50025": {
+   "name": "Windham",
+   "why": "split by town between Southern Vermont and the CT River Valley region"
+  },
+  "50027": {
+   "name": "Windsor",
+   "why": "split by town between Southern Vermont and the CT River Valley region"
+  }
+ },
+ "notes": {
+  "classes": "We want to emphasize that the interpretation of a particular land class might be region-specific.",
+  "disclaimer": "This report is intended to provide information on general land value trends and factors influencing the US Northeast land market, it is not intended to provide a direct estimate for any single property.",
+  "sne": "the Southern New England states of Rhode Island, Massachusetts, and Connecticut are grouped into a single region due to limited comparable sales volume"
+ },
+ "regions": {
+  "Adirondack": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 9000,
+      "low": 5000,
+      "printed": "$5,000-$9,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 6000,
+      "low": 2500,
+      "printed": "$2,500-$6,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Low-Quality cropland or pasture",
+     "range": {
+      "high": 4000,
+      "low": 2000,
+      "printed": "$2,000-$4,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Woodland/Maple Sugarbush",
+     "range": {
+      "high": 2500,
+      "low": 1000,
+      "printed": "$1,000-$2,500"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 1300,
+      "low": 350,
+      "printed": "$350-$1,300"
+     }
+    }
+   ],
+   "counties": [
+    "36019",
+    "36031",
+    "36033",
+    "36035",
+    "36041",
+    "36043",
+    "36089",
+    "36113"
+   ],
+   "num": 4,
+   "rent": {
+    "activity": "Stable",
+    "high": 200,
+    "low": null,
+    "printed": "Up to $200"
+   },
+   "states": [
+    "NY"
+   ]
+  },
+  "CT River Valley": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 11000,
+      "low": 5000,
+      "printed": "$5,000-$11,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 4500,
+      "low": 2500,
+      "printed": "$2,500-$4,500"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Low-Quality cropland or pasture",
+     "range": {
+      "high": 1500,
+      "low": 100,
+      "printed": "$100-$1,500"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Woodland/Maple Sugarbush",
+     "range": {
+      "high": 3500,
+      "low": 450,
+      "printed": "$450-$3,500"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 700,
+      "low": 100,
+      "printed": "$100-$700"
+     }
+    }
+   ],
+   "counties": [],
+   "num": 10,
+   "rent": {
+    "activity": "Stable",
+    "high": 250,
+    "low": null,
+    "printed": "Up to $250"
+   },
+   "states": [
+    "VT",
+    "NH"
+   ],
+   "towns": "towns along the Connecticut River in Essex, Caledonia, Orange, Windsor and Windham counties of Vermont and Coos, Grafton, Sullivan and Cheshire counties of New Hampshire (no whole county)"
+  },
+  "Capital Region": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 21000,
+      "low": 7000,
+      "printed": "$7,000-$21,000"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 6500,
+      "low": 2500,
+      "printed": "$2,500-$6,500"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Low-Quality cropland or pasture",
+     "range": {
+      "high": 2500,
+      "low": 1000,
+      "printed": "$1,000-$2,500"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 4500,
+      "low": 500,
+      "printed": "$500-$4,500"
+     }
+    }
+   ],
+   "counties": [
+    "36001",
+    "36021",
+    "36039",
+    "36057",
+    "36083",
+    "36091",
+    "36093",
+    "36095",
+    "36115"
+   ],
+   "num": 5,
+   "rent": {
+    "activity": "Stable",
+    "high": 250,
+    "low": null,
+    "printed": "Up to $250"
+   },
+   "states": [
+    "NY"
+   ]
+  },
+  "Central New York": {
+   "classes": [
+    {
+     "activity": "Less Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 8500,
+      "low": 2000,
+      "printed": "$2,000-$8,500"
+     }
+    },
+    {
+     "activity": "Less Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 6500,
+      "low": 1500,
+      "printed": "$1,500-$6,500"
+     }
+    },
+    {
+     "activity": "Less Sales",
+     "class": "Low-quality cropland",
+     "range": {
+      "high": 3800,
+      "low": 1000,
+      "printed": "$1,000-$3,800"
+     }
+    },
+    {
+     "activity": "Less Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 3000,
+      "low": 500,
+      "printed": "$500-$3,000"
+     }
+    }
+   ],
+   "counties": [
+    "36007",
+    "36017",
+    "36023",
+    "36025",
+    "36045",
+    "36049",
+    "36053",
+    "36065",
+    "36067",
+    "36075",
+    "36077"
+   ],
+   "num": 3,
+   "rent": {
+    "activity": "Stable",
+    "high": 200,
+    "low": null,
+    "printed": "Up to $200"
+   },
+   "states": [
+    "NY"
+   ]
+  },
+  "Hudson Valley": {
+   "classes": [
+    {
+     "activity": "Fewer Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 30000,
+      "low": 8500,
+      "printed": "$8,500-$30,000"
+     }
+    },
+    {
+     "activity": "Fewer Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 20000,
+      "low": 6500,
+      "printed": "$6,500-$20,000"
+     }
+    },
+    {
+     "activity": "Fewer Sales",
+     "class": "Low-quality cropland or Pasture",
+     "range": {
+      "high": 15000,
+      "low": 4000,
+      "printed": "$4,000-$15,000"
+     }
+    },
+    {
+     "activity": "Fewer Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 10000,
+      "low": 2000,
+      "printed": "$2,000-$10,000"
+     }
+    },
+    {
+     "activity": "Fewer Sales",
+     "class": "Muckland",
+     "range": {
+      "high": 10000,
+      "low": 7000,
+      "printed": "$7,000-$10,000"
+     }
+    }
+   ],
+   "counties": [
+    "36027",
+    "36071",
+    "36079",
+    "36087",
+    "36105",
+    "36111",
+    "36119"
+   ],
+   "num": 6,
+   "rent": {
+    "activity": "Stable",
+    "high": 500,
+    "low": null,
+    "printed": "Up to $500"
+   },
+   "states": [
+    "NY"
+   ]
+  },
+  "Northeast Vermont": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 8500,
+      "low": 7500,
+      "printed": "$7,500-$8,500"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 4750,
+      "low": null,
+      "odd": true,
+      "printed": "$2,00-$4,750"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Low-Quality cropland or pasture",
+     "range": {
+      "high": 1600,
+      "low": 1000,
+      "printed": "$1,000-$1,600"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Woodland/Maple Sugarbush",
+     "range": {
+      "high": 4000,
+      "low": 1000,
+      "printed": "$1,000-$4,000"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 1200,
+      "low": 200,
+      "printed": "$200-$1,200"
+     }
+    }
+   ],
+   "counties": [
+    "50015",
+    "50019",
+    "50023"
+   ],
+   "num": 8,
+   "rent": {
+    "activity": "Stable",
+    "high": 250,
+    "low": null,
+    "printed": "Up to $250"
+   },
+   "states": [
+    "VT"
+   ]
+  },
+  "Northwest Vermont": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 9000,
+      "low": 4000,
+      "printed": "$4,000-$9,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 7000,
+      "low": 2000,
+      "printed": "$2,000-$7,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Low-Quality cropland or pasture",
+     "range": {
+      "high": 2500,
+      "low": 900,
+      "printed": "$900-$2,500"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Woodland/Maple Sugarbush",
+     "range": {
+      "high": 4000,
+      "low": 400,
+      "printed": "$400-$4,000"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 900,
+      "low": null,
+      "printed": "Up to $900"
+     }
+    }
+   ],
+   "counties": [
+    "50001",
+    "50007",
+    "50011",
+    "50013"
+   ],
+   "num": 7,
+   "rent": {
+    "activity": "Stable",
+    "high": 250,
+    "low": null,
+    "printed": "Up to $250"
+   },
+   "states": [
+    "VT"
+   ]
+  },
+  "Northwestern Pennsylvania": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "Larger Agricultural Land with Excellent Combination of Location, Terrain, Access, and Land Mix",
+     "range": {
+      "high": 5500,
+      "low": 3800,
+      "printed": "$3,800-$5,500"
+     }
+    },
+    {
+     "activity": "Moderate Sales",
+     "class": "Average-quality land / Average location, terrain, access, and land mix",
+     "range": {
+      "high": 4500,
+      "low": 3500,
+      "printed": "$3,500-$4,500"
+     }
+    },
+    {
+     "activity": "Moderate Sales",
+     "class": "Smaller Recreational Tracts / Primarily Woods and Pasture",
+     "range": {
+      "high": 8500,
+      "low": 4500,
+      "printed": "$4,500-$8,500"
+     }
+    },
+    {
+     "activity": "Moderate Sales",
+     "class": "Larger Recently Timbered / Recreational Tracts",
+     "range": {
+      "high": 1000,
+      "low": 450,
+      "printed": "$450-$1,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Vineyards – Erie County",
+     "range": {
+      "high": 10000,
+      "low": 8000,
+      "printed": "$8,000-$10,000"
+     }
+    }
+   ],
+   "counties": [
+    "42031",
+    "42039",
+    "42049",
+    "42053",
+    "42085",
+    "42121",
+    "42123"
+   ],
+   "num": 12,
+   "rent": {
+    "activity": "Stable",
+    "high": 125,
+    "low": 50,
+    "printed": "$50-$125"
+   },
+   "states": [
+    "PA"
+   ]
+  },
+  "Southern New England": {
+   "classes": [
+    {
+     "activity": "Less Sales",
+     "class": "Cropland",
+     "range": {
+      "high": 25000,
+      "low": 6500,
+      "printed": "$6,500-$25,000"
+     }
+    },
+    {
+     "activity": "Less Sales",
+     "class": "Woodland",
+     "range": {
+      "high": 11000,
+      "low": 1000,
+      "printed": "$1,000-$11,000"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Cranberry (Per Bog Acre)",
+     "range": {
+      "high": 30000,
+      "low": 10000,
+      "printed": "$10,000-$30,000"
+     }
+    }
+   ],
+   "counties": [
+    "09001",
+    "09003",
+    "09005",
+    "09007",
+    "09009",
+    "09011",
+    "09013",
+    "09015",
+    "09110",
+    "09130",
+    "09140",
+    "09150",
+    "09160",
+    "09170",
+    "09180",
+    "25001",
+    "25003",
+    "25005",
+    "25007",
+    "25009",
+    "25011",
+    "25013",
+    "25015",
+    "25017",
+    "25019",
+    "25021",
+    "25023",
+    "25025",
+    "25027",
+    "44001",
+    "44003",
+    "44005",
+    "44007",
+    "44009"
+   ],
+   "county_count": 27,
+   "ct_planning_regions": [
+    "09110",
+    "09130",
+    "09140",
+    "09150",
+    "09160",
+    "09170",
+    "09180"
+   ],
+   "num": 11,
+   "rent": null,
+   "states": [
+    "MA",
+    "RI",
+    "CT"
+   ]
+  },
+  "Southern Tier": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 12000,
+      "low": 4000,
+      "printed": "$4,000-$12,000"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 7000,
+      "low": 3000,
+      "printed": "$3,000-$7,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Vineyard",
+     "range": {
+      "high": 17000,
+      "low": 4000,
+      "printed": "$4,000-$17,000"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 4000,
+      "low": 1000,
+      "printed": "$1,000-$4,000"
+     }
+    }
+   ],
+   "counties": [
+    "36003",
+    "36009",
+    "36013",
+    "36015",
+    "36101",
+    "36107"
+   ],
+   "num": 2,
+   "rent": {
+    "activity": "Stable",
+    "high": 300,
+    "low": null,
+    "printed": "Up to $300"
+   },
+   "states": [
+    "NY"
+   ]
+  },
+  "Southern Vermont": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 10000,
+      "low": 6000,
+      "printed": "$6,000-$10,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 6000,
+      "low": 2500,
+      "printed": "$2,500-$6,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Low-Quality cropland or pasture",
+     "range": {
+      "high": 2000,
+      "low": 1000,
+      "printed": "$1,000-$2,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Woodland/Maple Sugarbush",
+     "range": {
+      "high": 3000,
+      "low": 700,
+      "printed": "$700-$3,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 700,
+      "low": null,
+      "printed": "up to $700"
+     }
+    }
+   ],
+   "counties": [
+    "50003",
+    "50021"
+   ],
+   "num": 9,
+   "rent": {
+    "activity": "Stable",
+    "high": 200,
+    "low": null,
+    "printed": "Up to $200"
+   },
+   "states": [
+    "VT"
+   ]
+  },
+  "Western New York": {
+   "classes": [
+    {
+     "activity": "Limited Sales",
+     "class": "High-quality cropland",
+     "range": {
+      "high": 13000,
+      "low": 3000,
+      "printed": "$3,000-$13,000"
+     }
+    },
+    {
+     "activity": "Some Sales",
+     "class": "Medium-quality cropland",
+     "range": {
+      "high": 9000,
+      "low": 2000,
+      "printed": "$2,000-$9,000"
+     }
+    },
+    {
+     "activity": "Limited Sales",
+     "class": "Vineyard",
+     "range": {
+      "high": 25000,
+      "low": 4000,
+      "printed": "$4,000-$25,000"
+     }
+    },
+    {
+     "activity": "More Sales",
+     "class": "Wasteland or Recreational land",
+     "range": {
+      "high": 3000,
+      "low": 800,
+      "printed": "$800-$3,000"
+     }
+    }
+   ],
+   "counties": [
+    "36011",
+    "36029",
+    "36037",
+    "36051",
+    "36055",
+    "36063",
+    "36069",
+    "36073",
+    "36097",
+    "36099",
+    "36109",
+    "36117",
+    "36121",
+    "36123"
+   ],
+   "num": 1,
+   "rent": {
+    "activity": "Stable",
+    "high": 300,
+    "low": 50,
+    "printed": "$50-$300"
+   },
+   "states": [
+    "NY"
+   ]
+  }
+ },
+ "regions_from": "the report's county lists, checked against its region map (page 18, county names printed); whole counties only",
+ "sales_year": 2025,
+ "source": {
+  "date_words": "2025 sales, published 2026",
+  "org": "Northeast Chapter ASFMRA with Cornell Cooperative Extension",
+  "ref": "asfmra-ne-land-trends-2026-pdf",
+  "released": "2026",
+  "sha256": "494f354f71c84b92df4c6bbcdf1c668b9ff2c32caa6cec8ab5dfd09e014728af",
+  "title": "2026 US Northeast Land Value Trends",
+  "url": "https://www.asfmra.org/land-trends"
+ },
+ "state": "NEUS",
+ "states": [
+  "CT",
+  "MA",
+  "NH",
+  "NY",
+  "PA",
+  "RI",
+  "VT"
+ ],
+ "unit": "region",
+ "what": {
+  "activity": "the chapter's words for sales activity (Limited Sales, Some Sales and the like); no count of sales is printed",
+  "classes": "observed range of farmland values per acre in 2025 sales, by land class, as printed",
+  "rent": "cropland cash rent range per acre, as printed (\"Up to\" where only a top is given)"
+ },
+ "year": 2026
+}
