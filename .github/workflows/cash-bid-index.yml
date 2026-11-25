@@ -16,6 +16,10 @@ on:
         description: "Publish a partial month, labeled with its real dates"
         type: boolean
         default: false
+      usda_only:
+        description: "Read USDA (prices received and paid, production weights) and rebuild the page; no edition"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -73,6 +77,21 @@ jobs:
         run: |
           python scripts/daily_edge.py --selftest
           python scripts/cash_bid_index.py --selftest
+          python scripts/cash_index_usda.py --selftest
+      - name: Read USDA
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/cash_index_usda.py --fetch
+      - name: Keep USDA's answers as first prints
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_KEEP: '1'
+          RAW_SOFT: '1'
+        run: |
+          [ -d vintage/nass-cash-index ] || { echo "nothing read from USDA this run"; exit 0; }
+          bash scripts/push_raw.sh "nass cash index first print $(date -u +%F)" vintage/nass-cash-index
       - name: Unpack the private month files
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -84,13 +103,20 @@ jobs:
         env:
           MONTH: ${{ github.event.inputs.month }}
           PARTIAL: ${{ github.event.inputs.partial_ok }}
+          USDA_ONLY: ${{ github.event.inputs.usda_only }}
         run: |
+          if [ "$USDA_ONLY" = "true" ]; then
+            python scripts/cash_bid_index.py --page
+            python scripts/cash_bid_index.py --check
+            exit 0
+          fi
           args="--build"
           [ -n "$MONTH" ] && args="$args $MONTH"
           [ "$PARTIAL" = "true" ] && args="$args --partial-ok"
           python scripts/cash_bid_index.py $args
           python scripts/cash_bid_index.py --check
       - name: Save the folded month files privately
+        if: github.event.inputs.usda_only != 'true'
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_BRANCH: private-data
