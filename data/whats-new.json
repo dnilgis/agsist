@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-25-daily-locked-prices",
+   "date": "2026-11-25",
+   "title": "The Daily: board prices come from the price table",
+   "line": "Futures prices and their moves in the Daily are set from the morning's price table, one trading session per sentence, and a basis change always says basis.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-25-gauge-ask",
    "date": "2026-11-25",
    "title": "Rain gauge waitlist on the rain pages",
