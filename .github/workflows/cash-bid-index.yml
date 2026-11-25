@@ -16,6 +16,10 @@ on:
         description: "Publish a partial month, labeled with its real dates"
         type: boolean
         default: false
+      usda_only:
+        description: "Read USDA (prices received and paid, production weights) and rebuild the page; no edition"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -73,6 +77,24 @@ jobs:
         run: |
           python scripts/daily_edge.py --selftest
           python scripts/cash_bid_index.py --selftest
+          python scripts/cash_index_usda.py --selftest
+      # USDA's prices received and paid (the long view) and, once a year, last year's state production (the
+      # frozen weights). Every answer is kept as read, as a first print, on the private raw branch. When USDA
+      # does not answer, the page keeps the last good numbers and says so; nothing is typed in.
+      - name: Read USDA
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/cash_index_usda.py --fetch
+      - name: Keep USDA's answers as first prints
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_KEEP: '1'
+          RAW_SOFT: '1'
+        run: |
+          [ -d vintage/nass-cash-index ] || { echo "nothing read from USDA this run"; exit 0; }
+          bash scripts/push_raw.sh "nass cash index first print $(date -u +%F)" vintage/nass-cash-index
       # The per-board month files live on the private-data branch, never on the site:
       # no edition is built without them (a hard stop, not a short month).
       - name: Unpack the private month files
@@ -84,7 +106,13 @@ jobs:
         env:
           MONTH: ${{ github.event.inputs.month }}
           PARTIAL: ${{ github.event.inputs.partial_ok }}
+          USDA_ONLY: ${{ github.event.inputs.usda_only }}
         run: |
+          if [ "$USDA_ONLY" = "true" ]; then
+            python scripts/cash_bid_index.py --page
+            python scripts/cash_bid_index.py --check
+            exit 0
+          fi
           args="--build"
           [ -n "$MONTH" ] && args="$args $MONTH"
           [ "$PARTIAL" = "true" ] && args="$args --partial-ok"
