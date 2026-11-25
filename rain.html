@@ -49,6 +49,8 @@
 #p-radar .rr-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid #2b8cbe;border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.8rem 1rem .9rem;margin:0 0 .6rem}
 #p-radar .rr h2.rr-v{display:block;font-size:clamp(1.45rem,6.4vw,2.05rem);font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .35rem;outline:none}
 #p-radar .rr-answer.rr-known{min-height:100vh}
+/* no spot known: radar-rain-page.js shows the lookup box when it loads; hold its room (invisible, out of the tab order) so the blocks below do not move */
+#p-radar .rr-answer.rr-ask:has(#rr-results[hidden]) .rr-loc[hidden]{display:flex!important;visibility:hidden}
 #p-radar .rr-answer p.fine,#p-radar .rr .fine{font-size:.84rem;color:var(--text-muted);margin:.25rem 0 .5rem}
 #p-radar .rr-loc{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.3rem 0 0}
 #p-radar .rr-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-size:1rem}
@@ -141,7 +143,7 @@
       
 
       <div id="rr-answer" class="rr-answer">
-        <script>/* a spot already known (a ?lat=&lon= link or a saved location): hold a screen's height for the answer from first paint, so it does not push the page down when it lands (radar-rain-page.js lets go on an error) */try{var _q=/[?&]lat=-?\d/.test(location.search)&&/[?&]lon=-?\d/.test(location.search),_l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_q||(_l&&typeof _l.lat==='number'&&typeof _l.lon==='number'))document.getElementById('rr-answer').classList.add('rr-known');}catch(e){}</script>
+        <script>/* a spot already known (a ?lat=&lon= link or a saved location): hold a screen's height for the answer from first paint, so it does not push the page down when it lands (radar-rain-page.js lets go on an error); no spot known: the lookup box is shown by radar-rain-page.js, so its room is held until then (rr-ask, radar.css) */try{var _q=/[?&]lat=-?\d/.test(location.search)&&/[?&]lon=-?\d/.test(location.search),_l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_q||(_l&&typeof _l.lat==='number'&&typeof _l.lon==='number'))document.getElementById('rr-answer').classList.add('rr-known');else document.getElementById('rr-answer').classList.add('rr-ask');}catch(e){}</script>
         <div aria-live="polite" aria-atomic="true">
           <h2 id="rr-verdict" class="rr-v">Where is the field?</h2>
         </div>
