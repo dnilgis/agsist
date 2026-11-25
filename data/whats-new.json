@@ -2,11 +2,25 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-25-daily-lock-followup",
+   "date": "2026-11-25",
+   "title": "The Daily: market moves read by what each sentence is about",
+   "line": "When a Daily line says the board or the market moved, the move comes from the morning's price table; lines about cash, crop ratings or exports stay as written.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-25-daily-locked-prices",
    "date": "2026-11-25",
    "title": "The Daily: board prices come from the price table",
    "line": "Futures prices and their moves in the Daily are set from the morning's price table, one trading session per sentence, and a basis change always says basis.",
    "link": "/daily"
+  },
+  {
+   "id": "2026-11-25-ad-reps",
+   "date": "2026-11-25",
+   "title": "Ad reps wanted",
+   "line": "Know the farm businesses near you? We are looking for commission ad reps. How it works and how to apply is on the advertise page.",
+   "link": "/sponsor#sell-for-us"
   },
   {
    "id": "2026-11-25-gauge-ask",

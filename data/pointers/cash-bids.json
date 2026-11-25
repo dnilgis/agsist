@@ -29,12 +29,8 @@
    "to": "/cash-bids/company/the-andersons",
    "since": "2026-11-19"
   },
-  "cash-bids/company/assumption-coop.html": {
-   "to": "/cash-bids/company/",
-   "since": "2026-11-25"
-  },
   "cash-bids/company/assumption.html": {
-   "to": "/cash-bids/company/",
+   "to": "/cash-bids/company/assumption-coop",
    "since": "2026-11-19"
   },
   "cash-bids/company/aurora.html": {
@@ -153,10 +149,6 @@
    "to": "/cash-bids/company/gold-eagle-cooperative",
    "since": "2026-11-19"
   },
-  "cash-bids/company/h-b-specialties.html": {
-   "to": "/cash-bids/company/",
-   "since": "2026-11-25"
-  },
   "cash-bids/company/heartland.html": {
    "to": "/cash-bids/company/heartland-co-op",
    "since": "2026-11-19"
@@ -273,12 +265,8 @@
    "to": "/cash-bids/company/pro-cooperative",
    "since": "2026-11-19"
   },
-  "cash-bids/company/rcm-co-op.html": {
-   "to": "/cash-bids/company/",
-   "since": "2026-11-25"
-  },
   "cash-bids/company/rcm.html": {
-   "to": "/cash-bids/company/",
+   "to": "/cash-bids/company/rcm-co-op",
    "since": "2026-11-19"
   },
   "cash-bids/company/river-country.html": {
@@ -348,42 +336,6 @@
   "cash-bids/company/yoder.html": {
    "to": "/cash-bids/company/yoder-grain",
    "since": "2026-11-19"
-  },
-  "cash-bids/illinois/assumption.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/athens.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/east-saint-louis.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/meredosia.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/palmer.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/pana.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/pleasant-plains.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/waverly.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
-  },
-  "cash-bids/illinois/west-union.html": {
-   "to": "/cash-bids/illinois/",
-   "since": "2026-11-25"
   },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
