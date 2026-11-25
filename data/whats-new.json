@@ -37,6 +37,13 @@
    "link": "/cash-lease#notice"
   },
   {
+   "id": "2026-11-24-rain-fields-tab",
+   "date": "2026-11-24",
+   "title": "Rain: your fields move into a tab on the rain page",
+   "line": "Rain at your fields is now the My fields tab on /rain, beside the radar tab. Saved fields and field links carry over; the old address forwards.",
+   "link": "/rain#fields"
+  },
+  {
    "id": "2026-11-24-trust-fixes",
    "date": "2026-11-24",
    "title": "Markets and links: one contract per change",
