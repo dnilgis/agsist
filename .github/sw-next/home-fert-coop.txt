@@ -1,1 +1,0 @@
-The test home page's fertilizer card now shows the co-op anhydrous price.
