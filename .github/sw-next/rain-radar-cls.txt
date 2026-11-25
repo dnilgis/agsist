@@ -1,0 +1,1 @@
+The rain page's radar tab holds the room of its ZIP box from the first paint, so the questions under it no longer jump when it loads.
