@@ -5,10 +5,6 @@
    "to": "/rain/alabama",
    "since": "2026-11-17"
   },
-  "rain/arkansas/arkansas-county.html": {
-   "to": "/rain/arkansas",
-   "since": "2026-11-15"
-  },
   "rain/arkansas/bradley-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -220,6 +216,10 @@
   "rain/virginia/dickenson-county.html": {
    "to": "/rain/virginia",
    "since": "2026-11-17"
+  },
+  "rain/virginia/fredericksburg-city.html": {
+   "to": "/rain/virginia",
+   "since": "2026-11-25"
   },
   "rain/virginia/richmond-county.html": {
    "to": "/rain/virginia",
