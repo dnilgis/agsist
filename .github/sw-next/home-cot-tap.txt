@@ -1,1 +1,0 @@
-Home: the Full COT chart button is a steadier 46 px tap target (home.css?v=53)
