@@ -1,1 +1,0 @@
-Farm sale pages and the farm sale map list auction results beside recorded sales, marked Auction result (land-sales.js?v=8, land-map.js?v=3, loader.js?v=26 and CV 114).
