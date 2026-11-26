@@ -31,6 +31,26 @@
  * Never twice: one flush at a time across tabs (navigator.locks, else a
  * short lease in storage), and each item is marked as sending before it
  * goes, so a second tab skips it. Kept at most 30 items and 30 days.
+ *
+ * A SIGNUP (Nov 18, 2026): when loader.js sends a signup to the backup form
+ * because the worker did not answer, it also keeps it here (kind 'signup',
+ * max tries, 7 days). Such an item is tried at most once per page view, waits
+ * longer after each miss, and is dropped after its last try or its 7 days.
+ * It goes out through the page's own fetch, never through loader.js's backup
+ * form wrapper, so a retry that misses sends nothing anywhere else. Sent: the
+ * worker does what it always does for that route (a watch or price alert mails
+ * its confirmation; the Daily, notices and hail alerts do not) and the page says
+ * that route's usual success line (SIGNED). An item past its 7 days leaves
+ * storage at the first page load after that, so the address is removed then,
+ * not at the minute it turns 7 days old. Signups are capped at SIGNUPS_MAX and
+ * never push out the other kept items. A signup sends queued_at (when the reader
+ * signed up), so the worker writes nothing for a signup older than a stop link
+ * or older than what it already holds. A try is counted before it goes, and a
+ * signup at its last try is dropped before it would go again. A signup that
+ * misses does not hold up the other kept items behind it.
+ * Refused by the worker: dropped quietly (the backup form copy stands); a watch
+ * refused for its 5-item limit is dropped with the page's own limit line. The
+ * address in it stays in this browser's storage only and is never logged.
  */
 (function (root) {
   'use strict';
@@ -39,6 +59,31 @@
   var KEY = 'agsist-outbox', LOCK = 'agsist-outbox-lock', MAX = 30, DAYS = 30, LEASE_MS = 60000, SEND_MS = 15000;
   var LINE = 'Saved. It will go through when our system is back and you next open agsist.com on this device; nothing else to do.';
   var CONTACT = 'sig@agsist.com';
+  // each route's own success line, as the page says it when the worker answers at once (signup-ask.js)
+  var SIGNED = {
+    '/subscribe': 'You are on AGSIST Daily, first email tomorrow morning.',
+    '/notice': 'You are signed up for that email.',
+    '/alert-subscribe': 'Hail alerts are on. They arrive the morning after radar-estimated hail touches your spot.',
+    '/watch-subscribe': 'Check your inbox for a confirmation link for the county watch. It can take up to 30 minutes. Look in spam if it is not there.',
+    '/elevator-watch-subscribe': 'Check your email to confirm the price alert. Nothing about it is sent until you press that link.',
+    '/price-watch-subscribe': 'Check your email to confirm the futures alert. Nothing about it is sent until you press that link.'
+  };
+  // the rain gauge waiting list is a notice topic with its own line (signup-ask.js)
+  var GAUGE_LINE = 'You are on the rain gauge waitlist. You will hear from me when the first batch is ready.';
+  function signedLine(x) {
+    var b = x.body || {};
+    if (x.route === '/notice' && b.topic === 'rain-gauge') return GAUGE_LINE;
+    if (x.route === '/alert-subscribe' && b.place) return 'Watching ' + String(b.place).slice(0, 120) + '. Hail alerts arrive the morning after radar-estimated hail touches it.';
+    return SIGNED[x.route] || 'You are signed up.';
+  }
+  // a watch refused for its 5-item limit: final, with the page's own line (cb-alerts.js, signup-ask.js, the Atlas)
+  var LIMIT = {
+    '/watch-subscribe': 'This address already watches 5 counties, the most one address can hold. Nothing new was saved.',
+    '/elevator-watch-subscribe': 'This address already has 5 elevator alerts, the most one address can hold. Nothing new was saved.',
+    '/price-watch-subscribe': 'This address already has 5 price alerts set, the most one address can hold. Nothing new was saved.'
+  };
+  var SIGNUPS_MAX = 10;
+  var WAIT_MS = 60000, WAIT_MAX = 6 * 3600000;
 
   // The worker moved to agsist-api on Oct 22 (same storage behind both). Either
   // host is taken; whatever was kept goes to the new one, since the old one is
@@ -56,6 +101,15 @@
     });
   }
   function write(a) {
+    var over = a.length - MAX;
+    if (over > 0) {   // signups go first, oldest first: they never push out what only the worker can finish
+      a = a.filter(function (x) { if (over > 0 && x.kind === 'signup') { over--; return false; } return true; });
+    }
+    var sg = a.filter(function (x) { return x.kind === 'signup'; });
+    if (sg.length > SIGNUPS_MAX) {
+      var cut = sg.slice(0, sg.length - SIGNUPS_MAX);
+      a = a.filter(function (x) { return cut.indexOf(x) < 0; });
+    }
     try {
       if (a.length) root.localStorage.setItem(KEY, JSON.stringify(a.slice(-MAX)));
       else root.localStorage.removeItem(KEY);
@@ -71,17 +125,35 @@
     if (o.expires) x.expires = o.expires;
     if (o.after) x.after = o.after;
     if (o.meta) x.meta = o.meta;
+    if (o.max > 0) { x.max = Math.min(Math.floor(o.max), 20); x.n = 0; }
     var a = read().concat([x]);
     if (!write(a)) return '';
     // read back: a full or blocked storage keeps nothing
     return read().some(function (y) { return y.id === id; }) ? id : '';
   }
+  // expired or broken items leave storage now, not only from the list read() gives
+  function prune() {
+    var live = read(), raw = null;
+    try { raw = root.localStorage.getItem(KEY); } catch (e) { return live; }
+    if (raw === null) return live;
+    var n = -1;
+    try { var a = JSON.parse(raw); n = Array.isArray(a) ? a.length : -1; } catch (e) { n = -1; }
+    if (n !== live.length) write(live);
+    return live;
+  }
   function drop(id) { write(read().filter(function (x) { return x.id !== id; })); }
-  function mark(id, v) {
+  function mark(id, v, more) {
     var a = read(), hit = false;
-    a.forEach(function (x) { if (x.id === id) { x.sending = v; hit = true; } });
+    a.forEach(function (x) { if (x.id === id) { x.sending = v; if (more) { x.n = more.n; x.next = more.next; } hit = true; } });
     if (hit) write(a);
     return hit;
+  }
+  // items with a try limit (signups): once per page view, a longer wait after each miss
+  var triedHere = {};
+  function realFetch(x) {
+    if (x.kind !== 'signup') return root.fetch;
+    var f = root.agsistSignupFallback && root.agsistSignupFallback.realFetch;
+    return typeof f === 'function' ? f : null;   // never through the backup form wrapper
   }
 
   // a response that is not the worker's own answer: blocked, down or busy
@@ -96,12 +168,16 @@
     var timer = setTimeout(function () { if (ctl) ctl.abort(); }, SEND_MS);
     var init = { method: x.method, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', signal: ctl ? ctl.signal : undefined,
       headers: { Accept: 'application/json' } };
-    if (x.body !== undefined) { init.body = JSON.stringify(x.body); init.headers['Content-Type'] = 'application/json'; }
-    return root.fetch(target(x.url), init).then(function (r) {
+    // a signup carries when the reader signed up: the worker writes nothing for one older than a stop link
+    var body = x.kind === 'signup' && x.body && typeof x.body === 'object' ? Object.assign({}, x.body, { queued_at: x.t }) : x.body;
+    if (body !== undefined) { init.body = JSON.stringify(body); init.headers['Content-Type'] = 'application/json'; }
+    return realFetch(x).call(root, target(x.url), init).then(function (r) {
       clearTimeout(timer);
       return r.json().then(function (j) { return { status: r.status, ok: r.ok, json: true, j: j }; },
         function () { return { status: r.status, ok: r.ok, json: false, j: null }; });
     }, function () { clearTimeout(timer); return { status: 0, ok: false, json: false, j: null }; }).then(function (a) {
+      // a watch at its 5-item limit is the worker's real answer, not a busy one: final
+      if (x.kind === 'signup' && a.status === 429 && a.json && a.j && a.j.error === 'limit') return { refused: true, error: 'limit' };
       if (blocked(a.status, a.json)) return { keep: true };
       var j = a.j && typeof a.j === 'object' ? a.j : {};
       var good = a.ok && (x.okIf === 'json' ? j.ok !== false : j.ok === true);
@@ -127,7 +203,7 @@
       var old = doc.getElementById('outbox-said'); if (old) old.remove();
       var b = doc.createElement('div');
       b.id = 'outbox-said'; b.setAttribute('role', 'status');
-      b.style.cssText = 'background:' + (bad ? '#7a2414' : '#1f5130') + ';color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9991;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+      b.style.cssText = 'background:' + (bad ? '#7a2414' : '#1f5130') + ';color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9991;text-align:center';
       lines.forEach(function (t, i) { var p = doc.createElement('div'); p.textContent = t; if (i) p.style.marginTop = '4px'; b.appendChild(p); });
       var c = doc.createElement('button');
       c.type = 'button'; c.setAttribute('aria-label', 'Close'); c.textContent = '×';
@@ -167,16 +243,33 @@
     var quiet = opts && opts.quiet;
     running = Promise.resolve(withLock(function () {
       var out = { sent: [], kept: 0, refused: [] };
-      var ids = read().map(function (x) { return x.id; });
+      var ids = prune().map(function (x) { return x.id; });
       return ids.reduce(function (p, id) {
         return p.then(function () {
           var x = read().filter(function (y) { return y.id === id; })[0];
           if (!x) return;                                              // sent by another tab, or expired
           if (x.sending && now() - x.sending < LEASE_MS) { out.kept++; return; }
-          if (!mark(id, now())) return;
+          if (x.max && (x.n || 0) >= x.max) { drop(id); return; }       // its tries are used up (a page closed mid-send): never a ninth
+          if (x.max && (triedHere[id] || (x.next && now() < x.next) || !realFetch(x))) { out.kept++; return; }
+          // a try is counted before it goes, so a page closed mid-send still uses up that try
+          var n = (x.n || 0) + 1;
+          if (!mark(id, now(), x.max ? { n: n, next: now() + Math.min(WAIT_MAX, WAIT_MS * Math.pow(4, n - 1)) } : null)) return;
+          if (x.max) triedHere[id] = 1;
           return send(x).then(function (r) {
-            if (r.keep) { mark(id, 0); out.kept++; return 'stop'; }
+            if (r.keep) {
+              if (!x.max) { mark(id, 0); out.kept++; return 'stop'; }
+              if (n >= x.max) { drop(id); return; }                     // its last try: the backup form copy stands
+              mark(id, 0);
+              out.kept++; return;                                         // a missed signup does not hold up the items behind it
+            }
             drop(id);
+            if (x.kind === 'signup') {
+              var line = r.sent ? signedLine(x) : r.error === 'limit' ? LIMIT[x.route] : '';
+              if (r.sent) out.signed = (out.signed || 0) + 1;
+              else if (line) out.limited = (out.limited || 0) + 1;
+              if (line) out.signedLines = (out.signedLines || []).filter(function (l) { return l !== line; }).concat([line]);
+              return;
+            }
             if (r.sent) { afterSent(x, r.j); out.sent.push(x.label); }
             else out.refused.push(x.label + (r.error ? ': ' + r.error : ''));
           });
@@ -185,19 +278,20 @@
     })).then(function (out) {
       running = null;
       out = out || { sent: [], kept: 0, refused: [] };
-      try { if (out.sent.length || out.refused.length) root.dispatchEvent(new root.CustomEvent('agsist:outbox', { detail: out })); } catch (e) {}
+      try { if (out.sent.length || out.refused.length || out.signed || out.limited) root.dispatchEvent(new root.CustomEvent('agsist:outbox', { detail: out })); } catch (e) {}
       if (!quiet) {
         if (out.refused.length) bar(['Something you saved while our system was down did not go through.'].concat(out.refused,
           ['Write to ' + CONTACT + ' if you need a hand.']), true);
-        else if (out.sent.length) bar(['Sent now that our system is back: ' + out.sent.join('; ') + '.']);
+        else if (out.sent.length) bar(['Sent now that our system is back: ' + out.sent.join('; ') + '.'].concat(out.signedLines || []));
+        else if (out.signed || out.limited) bar(out.signedLines);
       }
       return out;
     }, function () { running = null; return { sent: [], kept: read().length, refused: [] }; });
     return running;
   }
 
-  root.AgOutbox = { add: add, flush: flush, list: read, drop: drop, blocked: blocked, LINE: LINE, KEY: KEY };
+  root.AgOutbox = { add: add, flush: flush, list: read, drop: drop, blocked: blocked, LINE: LINE, KEY: KEY, SIGNED: SIGNED };
 
-  if (root.document && read().length) setTimeout(function () { flush(); }, 1500);
+  if (prune().length && root.document) setTimeout(function () { flush(); }, 1500);
   if (root.addEventListener) root.addEventListener('online', function () { if (read().length) flush(); });
 })(typeof window !== 'undefined' ? window : this);

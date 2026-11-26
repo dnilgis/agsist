@@ -1,0 +1,521 @@
+{
+  "headline": "Cattle on Feed shows placements below last year; corn up 3¾¢",
+  "lead": "Dec corn is up 3¾ cents overnight at $4.38¼, giving back part of Friday's 1.0% drop. October cattle placements came in under last year, so fewer calves are heading to feedlots into winter.",
+  "teaser": "Cattle on Feed shows fewer placements; corn and beans edge up overnight before Crop Progress.",
+  "one_number": {
+    "value": "2.45",
+    "unit": "Nov '27 beans to Dec '27 corn ratio",
+    "context": "The ratio compares next year's contracts, the ones that matter for 2027 acres. It is the only ratio to use for planting talk."
+  },
+  "sections": [
+    {
+      "title": "Grains edge up overnight",
+      "body": "- Dec corn is at **$4.38¼** overnight, up 3¾ cents after Friday's 1.0% drop to $4.34½.\n- Jan soybeans are at $12.25¾ overnight, up 5 cents, and meal is up 0.7% to $342.80.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Cattle on Feed and hogs",
+      "body": "- USDA's November Cattle on Feed shows October placements and marketings below last year, with 150- and 180-day inventories growing.\n- Dec live cattle settled Friday at **$223.00**, up 0.1%, and Dec lean hogs settled at $52.60, up 0.3%.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    }
+  ],
+  "outside_the_pit": [
+    {
+      "title": "Cyberattack takes USDA payment systems offline",
+      "body": "Several USDA applications were taken offline last week, hitting tools used for farm payments.",
+      "tag": "POLICY",
+      "link": "https://farmpolicynews.illinois.edu/2026/11/cyberattack-hit-usda-last-week-impacting-payment-systems/",
+      "source": "farmpolicynews.illinois.edu",
+      "news_id": "N22"
+    },
+    {
+      "title": "Screwworm cases move higher, keeping ranchers on alert",
+      "body": "Detections keep spreading across the Southwest, adding inspections and paperwork for moving cattle.",
+      "tag": "DISEASE",
+      "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPc2lqWVFOMmRqdUZHalN1T0U2SUd0Y2swNjc3VHZoX0tSTGtuVjdoUDBKU0kwbXdGRi1iUExlRUdKWWtvWWFwSW5XeC1KdTBLbk1oWFNZT0o1V0VVckZYQmpJNFFRS1lZM1hkTE9LeEFYcW9ETndrMVJQX3NnOEtVNDhOZUU2VjRpR3M5cXF6djU5VVBCcEZNYUVEZ2c3TXFnRkNYUDhfUU16X3JBeHRYcnJPakpENEp4Ui1TNzlKbHFSc20yNjJtNTJTaFM?oc=5",
+      "source": "Reuters",
+      "news_id": "N3"
+    },
+    {
+      "title": "Nebraska farm income projected up 16% in 2026",
+      "body": "Cattle receipts and government payments drive a projected $9.4 billion in net farm income.",
+      "tag": "LIVESTOCK",
+      "link": "https://www.thefencepost.com/news/cattle-receipts-government-payments-support-projected-nebraska-farm-income-growth/",
+      "source": "thefencepost.com",
+      "news_id": "N13"
+    }
+  ],
+  "watch_list": [
+    {
+      "time": "Tuesday, Nov 24, 2:00 p.m. CT",
+      "desc": "USDA Cold Storage."
+    }
+  ],
+  "source_summary": "CME futures quotes, USDA Cattle on Feed, AGSIST news digest",
+  "date": "Monday, November 23, 2026",
+  "meta": {
+    "market_mood": "cautious",
+    "heat_section": 0,
+    "overnight_surprises_count": 2,
+    "word_count": 210,
+    "news_coverage": {
+      "ok": 17,
+      "total": 26,
+      "items": 90,
+      "dark": [
+        "nass.usda.gov",
+        "agproud.com",
+        "brownfieldagnews.com",
+        "drovers.com",
+        "dairyherd.com",
+        "porkbusiness.com",
+        "extension.umn.edu",
+        "extension.purdue.edu",
+        "cpc.ncep.noaa.gov"
+      ]
+    }
+  },
+  "freshness": {
+    "window": 7,
+    "tries": 2,
+    "hits": []
+  },
+  "locked_prices": {
+    "corn": 4.3825,
+    "corn-dec": 4.3825,
+    "beans": 12.2575,
+    "beans-nov": 11.7125,
+    "wheat": 5.7675,
+    "oats": 3.6175,
+    "cattle": 223.0,
+    "feeders": 335.42499,
+    "hogs": 52.6,
+    "milk": 17.71,
+    "meal": 342.79999,
+    "soyoil": 59.2,
+    "crude": 81.69,
+    "natgas": 3.533,
+    "gold": 3622.30005,
+    "silver": 42.175,
+    "dollar": 104.053,
+    "sp500": 6910.39014,
+    "bitcoin": 61215.46875
+  },
+  "locked_changes": {
+    "corn": {
+      "prev": 4.345,
+      "pct": 0.8631,
+      "kind": "last",
+      "at": "2026-11-23T13:46:02Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "contract": "Dec '26",
+      "prev_net": -0.045
+    },
+    "corn-dec": {
+      "prev": 4.345,
+      "pct": 0.8631,
+      "kind": "last",
+      "at": "2026-11-23T13:45:57Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "prev_net": -0.045
+    },
+    "beans": {
+      "prev": 12.2075,
+      "pct": 0.4096,
+      "kind": "last",
+      "at": "2026-11-23T13:46:03Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "contract": "Jan '27",
+      "prev_net": 0.1325
+    },
+    "beans-nov": {
+      "prev": 11.71,
+      "pct": 0.0213,
+      "kind": "last",
+      "at": "2026-11-23T13:45:58Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "prev_net": 0.02
+    },
+    "wheat": {
+      "prev": 5.7425,
+      "pct": 0.4354,
+      "kind": "last",
+      "at": "2026-11-23T13:46:05Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "contract": "Dec '26",
+      "prev_net": -0.04
+    },
+    "oats": {
+      "prev": 3.615,
+      "pct": 0.0692,
+      "kind": "last",
+      "at": "2026-11-23T13:46:11Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "prev_net": 0.06
+    },
+    "cattle": {
+      "prev": 222.85,
+      "pct": 0.0673,
+      "kind": "settle",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "contract": "Dec '26"
+    },
+    "feeders": {
+      "prev": 335.55,
+      "pct": -0.0373,
+      "kind": "settle",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "contract": "Jan '27"
+    },
+    "hogs": {
+      "prev": 52.425,
+      "pct": 0.3338,
+      "kind": "settle",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19",
+      "contract": "Dec '26"
+    },
+    "milk": {
+      "prev": 17.74,
+      "pct": -0.1691,
+      "kind": "last",
+      "at": "2026-11-23T13:46:14Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "contract": "Nov '26",
+      "prev_net": 0.02
+    },
+    "meal": {
+      "prev": 340.3,
+      "pct": 0.7346,
+      "kind": "last",
+      "at": "2026-11-23T13:46:12Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "prev_net": 9.39999
+    },
+    "soyoil": {
+      "prev": 59.81,
+      "pct": -1.0199,
+      "kind": "last",
+      "at": "2026-11-23T13:46:13Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "prev_net": -0.28
+    },
+    "crude": {
+      "prev": null,
+      "pct": null,
+      "kind": "last",
+      "at": "2026-11-23T13:46:16Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20",
+      "withheld": "CL=F moved -2.73% from 83.98 (2026-11-20) to 81.69 (2026-11-23), inside the Dec '26 contract's expiry window (last trade 2026-11-20); the two prices may be different contracts, so the change is withheld"
+    },
+    "natgas": {
+      "prev": 3.411,
+      "pct": 3.5767,
+      "kind": "last",
+      "at": "2026-11-23T13:46:16Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20"
+    },
+    "gold": {
+      "prev": 3515.3999,
+      "pct": 3.0409,
+      "kind": "last",
+      "at": "2026-11-23T13:46:16Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20"
+    },
+    "silver": {
+      "prev": 41.035,
+      "pct": 2.7781,
+      "kind": "last",
+      "at": "2026-11-23T13:46:17Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20"
+    },
+    "dollar": {
+      "prev": 103.81,
+      "pct": 0.2341,
+      "kind": "last",
+      "at": "2026-11-23T13:46:18Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-20"
+    },
+    "sp500": {
+      "prev": 7175.8301,
+      "pct": -3.6991,
+      "kind": "settle",
+      "date": "2026-11-20",
+      "prev_date": "2026-11-19"
+    },
+    "bitcoin": {
+      "prev": 61161.9102,
+      "pct": 0.0876,
+      "kind": "last",
+      "at": "2026-11-23T13:46:18Z",
+      "date": "2026-11-23",
+      "prev_date": "2026-11-22"
+    }
+  },
+  "board": {
+    "fetched": "2026-11-23T13:46:18Z",
+    "quote_session": "2026-11-23",
+    "prev_close_session": "2026-11-20"
+  },
+  "basis_wow": {
+    "print": false,
+    "rows": [
+      {
+        "st": "KS",
+        "name": "Kansas",
+        "crop": "soybeans",
+        "wow": 10.0,
+        "n": 32,
+        "moved": 25,
+        "companies": 9
+      },
+      {
+        "st": "MN",
+        "name": "Minnesota",
+        "crop": "corn",
+        "wow": 5.0,
+        "n": 79,
+        "moved": 53,
+        "companies": 25
+      }
+    ],
+    "why": "the same states within 5 cents of the last print",
+    "snapshot": "2026-11-23T13:08:04Z"
+  },
+  "chart_series": {
+    "corn": [
+      4.3925,
+      4.49,
+      4.48,
+      4.425,
+      4.455,
+      4.4875,
+      4.4675,
+      4.355,
+      4.39,
+      4.345
+    ],
+    "soybeans": [
+      11.8825,
+      12.28,
+      12.3075,
+      12.19,
+      12.315,
+      12.29,
+      12.255,
+      12.1675,
+      12.075,
+      12.2075
+    ]
+  },
+  "chart_dates": [
+    "2026-11-09",
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20"
+  ],
+  "chart_series_dates": {
+    "corn": [
+      "2026-11-09",
+      "2026-11-10",
+      "2026-11-11",
+      "2026-11-12",
+      "2026-11-13",
+      "2026-11-16",
+      "2026-11-17",
+      "2026-11-18",
+      "2026-11-19",
+      "2026-11-20"
+    ],
+    "soybeans": [
+      "2026-11-09",
+      "2026-11-10",
+      "2026-11-11",
+      "2026-11-12",
+      "2026-11-13",
+      "2026-11-16",
+      "2026-11-17",
+      "2026-11-18",
+      "2026-11-19",
+      "2026-11-20"
+    ]
+  },
+  "chart_window": "Nov 9 - Nov 20",
+  "quote_strip": {
+    "asof": "2026-11-23T13:46:18Z",
+    "session": "2026-11-23",
+    "vs_session": "2026-11-20",
+    "quotes": [
+      {
+        "key": "corn-dec",
+        "name": "Corn",
+        "contract": "Dec '26",
+        "last": 4.3825,
+        "prev": 4.345,
+        "pct": 0.8631,
+        "kind": "last",
+        "at": "2026-11-23T13:45:57Z"
+      },
+      {
+        "key": "beans",
+        "name": "Soybeans",
+        "contract": "Jan '27",
+        "last": 12.2575,
+        "prev": 12.2075,
+        "pct": 0.4096,
+        "kind": "last",
+        "at": "2026-11-23T13:46:03Z"
+      },
+      {
+        "key": "wheat",
+        "name": "Wheat",
+        "contract": "Dec '26",
+        "last": 5.7675,
+        "prev": 5.7425,
+        "pct": 0.4354,
+        "kind": "last",
+        "at": "2026-11-23T13:46:05Z"
+      }
+    ]
+  },
+  "price_windows": [
+    {
+      "label": "Month to date",
+      "items": [
+        {
+          "name": "Corn",
+          "text": "−13 1/4¢ (−2.96%)"
+        },
+        {
+          "name": "Soybeans",
+          "withheld": true,
+          "text": "not compared (Nov '26 at the start of the month, Jan '27 now)"
+        }
+      ]
+    }
+  ],
+  "sponsor": {
+    "active": false,
+    "label": "SPONSOR · 1 SLOT",
+    "advertiser": "AGSIST",
+    "headline": "Sponsor AGSIST: one line under the menu on every page, and in this email.",
+    "body": "One business at a time. Pay by check or bank wire. Money back if you ask inside 30 days. Prices at agsist.com/sponsor.",
+    "cta_text": "Become the sponsor",
+    "cta_url": "mailto:sig@agsist.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+    "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
+    "is_house_ad": true
+  },
+  "generated_at": "2026-11-23T13:49:10.581394+00:00",
+  "generator_version": "5.5.0",
+  "surprise_count": 2,
+  "surprises": [
+    {
+      "commodity": "Gold",
+      "key": "gold",
+      "price": "$3,622",
+      "pct_change": 3.0409,
+      "direction": "up",
+      "surprise_magnitude": 2.0
+    },
+    {
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$42.17",
+      "pct_change": 2.7781,
+      "direction": "up",
+      "surprise_magnitude": 1.1
+    }
+  ],
+  "price_validation_clean": true,
+  "market_closed": false,
+  "market_status_reason": "open",
+  "otp_week_ahead": false,
+  "theme": {
+    "kind": "quiet",
+    "tier": 7,
+    "key": "none",
+    "value": "",
+    "headline": "",
+    "lead": [],
+    "figure": null,
+    "date": "2026-11-23",
+    "move_date": null,
+    "ledger": [],
+    "withheld": []
+  },
+  "critic_pass": {
+    "version": "2.0",
+    "ran_at": "2026-11-23T13:49:15.751824+00:00",
+    "threshold": 7,
+    "final_scores": {
+      "rule_1_lead_so_what": 4,
+      "rule_2_conviction_earned": 5,
+      "rule_3_lede_no_deferral": 7,
+      "rule_4_watch_conditional": 9,
+      "rule_5_so_what_synthesizes": 9,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_yc_honesty": 10,
+      "rule_8_word_budget": 9,
+      "rule_9_voice": 6,
+      "rule_10_forward_test": 3,
+      "rule_11_action_thresholded": 10,
+      "rule_12_one_fact_one_home": 4,
+      "rule_13_level_coherence": 6,
+      "rule_14_one_number_coherence": 6,
+      "rule_15_markdown_not_html": 10,
+      "rule_16_macro_anchoring": 10
+    },
+    "rewrites_applied": [
+      {
+        "pass": 1,
+        "target": "lead",
+        "rule": "rule_1_lead_so_what",
+        "scores_before": {
+          "rule_1_lead_so_what": 4,
+          "rule_2_conviction_earned": 5,
+          "rule_3_lede_no_deferral": 7,
+          "rule_4_watch_conditional": 9,
+          "rule_5_so_what_synthesizes": 9,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_yc_honesty": 10,
+          "rule_8_word_budget": 9,
+          "rule_9_voice": 6,
+          "rule_10_forward_test": 3,
+          "rule_11_action_thresholded": 10,
+          "rule_12_one_fact_one_home": 4,
+          "rule_13_level_coherence": 6,
+          "rule_14_one_number_coherence": 6,
+          "rule_15_markdown_not_html": 10,
+          "rule_16_macro_anchoring": 10
+        }
+      }
+    ],
+    "consistency": [],
+    "dry_run": false
+  },
+  "first_published_at": "2026-11-23T13:49:10.581394+00:00"
+}

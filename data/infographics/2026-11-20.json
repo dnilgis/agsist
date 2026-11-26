@@ -1,0 +1,332 @@
+{
+ "date": "2026-11-20",
+ "slug": "2026-11-20",
+ "kind": "funds-corn",
+ "topic": "grain",
+ "related_page": "/cot",
+ "title": "Corn funds' net position fell 9 weeks in a row",
+ "big": {
+  "value": -33862,
+  "unit": "contracts net short",
+  "label": "Managed money in corn futures, positions Nov 17, 2026"
+ },
+ "chart": {
+  "type": "line",
+  "title": "Managed money net position in corn, Sep 15 to Nov 17, 2026",
+  "unit": "contracts",
+  "axis": {
+   "x": "Report week (positions on Tuesday)",
+   "y": "Net contracts (long minus short)"
+  },
+  "series": [
+   "Managed money net"
+  ],
+  "points": [
+   {
+    "x": "2026-09-15",
+    "label": "Sep 15",
+    "y": 414460,
+    "words": "414,460 net long"
+   },
+   {
+    "x": "2026-09-22",
+    "label": "Sep 22",
+    "y": 404097,
+    "words": "404,097 net long"
+   },
+   {
+    "x": "2026-09-29",
+    "label": "Sep 29",
+    "y": 381220,
+    "words": "381,220 net long"
+   },
+   {
+    "x": "2026-10-06",
+    "label": "Oct 6",
+    "y": 329839,
+    "words": "329,839 net long"
+   },
+   {
+    "x": "2026-10-13",
+    "label": "Oct 13",
+    "y": 246425,
+    "words": "246,425 net long"
+   },
+   {
+    "x": "2026-10-20",
+    "label": "Oct 20",
+    "y": 164423,
+    "words": "164,423 net long"
+   },
+   {
+    "x": "2026-10-27",
+    "label": "Oct 27",
+    "y": 81113,
+    "words": "81,113 net long"
+   },
+   {
+    "x": "2026-11-03",
+    "label": "Nov 3",
+    "y": 8795,
+    "words": "8,795 net long"
+   },
+   {
+    "x": "2026-11-10",
+    "label": "Nov 10",
+    "y": -22628,
+    "words": "22,628 net short"
+   },
+   {
+    "x": "2026-11-17",
+    "label": "Nov 17",
+    "y": -33862,
+    "words": "33,862 net short"
+   }
+  ],
+  "highlight": [
+   0,
+   9
+  ],
+  "split": {
+   "long_change": 1016,
+   "short_change": 12250,
+   "label": "longs and shorts both added"
+  },
+  "moves": {
+   "heading": "How much the net position fell each week",
+   "col": "Drop in contracts",
+   "rows": [
+    {
+     "x": "2026-09-22",
+     "label": "Sep 22",
+     "chg": -10363,
+     "shown": "10,363"
+    },
+    {
+     "x": "2026-09-29",
+     "label": "Sep 29",
+     "chg": -22877,
+     "shown": "22,877"
+    },
+    {
+     "x": "2026-10-06",
+     "label": "Oct 6",
+     "chg": -51381,
+     "shown": "51,381"
+    },
+    {
+     "x": "2026-10-13",
+     "label": "Oct 13",
+     "chg": -83414,
+     "shown": "83,414"
+    },
+    {
+     "x": "2026-10-20",
+     "label": "Oct 20",
+     "chg": -82002,
+     "shown": "82,002"
+    },
+    {
+     "x": "2026-10-27",
+     "label": "Oct 27",
+     "chg": -83310,
+     "shown": "83,310"
+    },
+    {
+     "x": "2026-11-03",
+     "label": "Nov 3",
+     "chg": -72318,
+     "shown": "72,318"
+    },
+    {
+     "x": "2026-11-10",
+     "label": "Nov 10",
+     "chg": -31423,
+     "shown": "31,423"
+    },
+    {
+     "x": "2026-11-17",
+     "label": "Nov 17",
+     "chg": -11234,
+     "shown": "11,234"
+    }
+   ]
+  },
+  "alt": "Line chart: managed money's net position in corn futures, from 414,460 net long on Sep 15 to 33,862 net short on Nov 17, 2026, falling every week. Source: CFTC Commitments of Traders.",
+  "card": {
+   "caption": "Nine straight weekly declines. What changed in longs and shorts?",
+   "meta": "CFTC · Positions Nov 17, 2026 · AGSIST",
+   "start": "414,460 net long",
+   "end": "33,862 net short",
+   "zero": "Longs = shorts"
+  }
+ },
+ "facts": [
+  {
+   "text": "In the week to Nov 17, funds' net corn position fell 11,234 contracts, to 33,862 net short.",
+   "source": "CFTC Commitments of Traders, Disaggregated Futures-Only, positions Nov 17, 2026, released Nov 20, 2026",
+   "date": "2026-11-17"
+  },
+  {
+   "text": "From Nov 10 to Nov 17, shorts rose by 12,250 contracts. Longs rose by 1,016.",
+   "source": "CFTC Commitments of Traders, Disaggregated Futures-Only, positions Nov 17, 2026, released Nov 20, 2026",
+   "date": "2026-11-17"
+  },
+  {
+   "text": "Over nine weeks, funds cut longs by 239,561 contracts and added 208,761 shorts.",
+   "source": "CFTC Commitments of Traders, Disaggregated Futures-Only, positions Nov 17, 2026, released Nov 20, 2026",
+   "date": "2026-11-17"
+  },
+  {
+   "text": "Record high: 414,460 net long on Sep 15, 2026, the largest net long since our series began in 2010, in contracts.",
+   "source": "CFTC Commitments of Traders, Disaggregated Futures-Only, positions Nov 17, 2026, released Nov 20, 2026",
+   "date": "2026-11-17"
+  }
+ ],
+ "sources": [
+  {
+   "name": "CFTC Commitments of Traders, Disaggregated Futures-Only",
+   "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
+   "period": "Positions Nov 17, 2026, released Nov 20, 2026"
+  }
+ ],
+ "data_date": "2026-11-17",
+ "poster": {
+  "kicker": "Funds",
+  "headline": {
+   "lead": "Corn funds' net position fell ",
+   "em": "9 weeks",
+   "tail": " in a row"
+  },
+  "lede": [
+   {
+    "s": "Funds' net corn position fell nine weeks in a row from a record high. "
+   },
+   {
+    "s": "On Nov 17, they held 33,862 more short contracts than long ones."
+   }
+  ],
+  "record_note": "Record high: 414,460 net long on Sep 15, 2026, the largest net long since our series began in 2010, in contracts.",
+  "panels": [
+   {
+    "id": "line",
+    "title": "Funds' net position in corn, week by week",
+    "date": "2026-11-17",
+    "source": "Positions as of Tue, Nov 17, 2026. CFTC released this report Fri, Nov 20.",
+    "points": [
+     {
+      "x": "2026-09-15",
+      "label": "Sep 15",
+      "y": 414460
+     },
+     {
+      "x": "2026-09-22",
+      "label": "Sep 22",
+      "y": 404097
+     },
+     {
+      "x": "2026-09-29",
+      "label": "Sep 29",
+      "y": 381220
+     },
+     {
+      "x": "2026-10-06",
+      "label": "Oct 6",
+      "y": 329839
+     },
+     {
+      "x": "2026-10-13",
+      "label": "Oct 13",
+      "y": 246425
+     },
+     {
+      "x": "2026-10-20",
+      "label": "Oct 20",
+      "y": 164423
+     },
+     {
+      "x": "2026-10-27",
+      "label": "Oct 27",
+      "y": 81113
+     },
+     {
+      "x": "2026-11-03",
+      "label": "Nov 3",
+      "y": 8795
+     },
+     {
+      "x": "2026-11-10",
+      "label": "Nov 10",
+      "y": -22628
+     },
+     {
+      "x": "2026-11-17",
+      "label": "Nov 17",
+      "y": -33862
+     }
+    ],
+    "start": "414,460 net long",
+    "end": "33,862 net short",
+    "zero": "Longs = shorts",
+    "futures": {
+     "text": "Same weeks in December 2026 corn futures: $5.02¼ on Oct 1 to $4.46¾ on Nov 17, down 55½ cents. Our settle files start on Oct 1.",
+     "source": "CME settles, Oct 1 to Nov 17",
+     "from": "2026-10-01",
+     "to": "2026-11-17",
+     "start": 502.25,
+     "end": 446.75,
+     "contract": "Dec '26"
+    }
+   },
+   {
+    "id": "split",
+    "title": "Longs and shorts",
+    "date": "2026-11-17",
+    "source": "CFTC, positions Nov 17",
+    "lead": "From Nov 10 to Nov 17, shorts rose by 12,250 contracts. Longs rose by 1,016.",
+    "run": "Over nine weeks, funds cut longs by 239,561 contracts and added 208,761 shorts.",
+    "weeks": [
+     {
+      "x": "2026-09-15",
+      "label": "Sep 15",
+      "long": 483738,
+      "short": 69278
+     },
+     {
+      "x": "2026-11-17",
+      "label": "Nov 17",
+      "long": 244177,
+      "short": 278039
+     }
+    ]
+   },
+   {
+    "id": "rank",
+    "title": "Against every week since 2010",
+    "date": "2026-11-17",
+    "source": "CFTC, positions Nov 17",
+    "pctl": 37.5,
+    "weeks": 881,
+    "since": "2010-01-05",
+    "net_oi": -1.733,
+    "line": "Measured against all open corn futures contracts, funds were this net short or more net short in 38% of the 881 weeks since 2010.",
+    "sub": "Size of the net short: 1.7% of all open corn futures contracts.",
+    "ends": [
+     "Most net short",
+     "Most net long"
+    ]
+   },
+   {
+    "id": "read",
+    "title": "How to read the chart",
+    "date": "2026-11-17",
+    "source": "Definitions: CFTC",
+    "lines": [
+     "Net is long contracts minus short contracts. Below zero, funds hold more shorts than longs."
+    ],
+    "small": "Funds here are managed money: the CFTC's name for professional money managers."
+   }
+  ],
+  "data_line": "Data: CFTC Commitments of Traders, Disaggregated Futures-Only, managed money in corn futures, positions Nov 17, 2026, released Nov 20, 2026. Futures: CME settles, Dec '26. Facts only, not a price forecast."
+ }
+}

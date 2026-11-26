@@ -5,6 +5,55 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.73 (2026-11-26): A KEPT SIGNUP NEVER PUTS BACK A READER WHO STOPPED. A signup the reader's browser kept while
+ *   this Worker did not answer (components/outbox.js) is sent later with queued_at, the time of the signup. Every stop
+ *   link (Daily, hail alerts, notices, county watches, elevator and price alerts) writes usm:<kind>:<item>:<email>
+ *   with an 8-day life (item "*" when it stops all of that kind). /subscribe, /notice, /alert-subscribe and the three
+ *   watch routes answer {ok:true} and write nothing when queued_at is older than such a mark, or older than the record
+ *   it would write (sub ts, the hail pin's ts, a notice topic's last write lw[topic], else ts), so an older kept hail
+ *   pin, gauge ZIP or note never replaces a newer one. note:<email> gains lw {topic: time of its last write}, beside
+ *   t, so the topic rows and /notice-list read the same. A request without queued_at (every live form) is answered
+ *   and stored as before, apart from that lw. No new binding, no new secret.
+ * v5.72 (2026-11-25): RAIN GAUGE WAITLIST KEEPS WHERE AND HOW MANY. /notice with topic rain-gauge also takes
+ *   fips (a state FIPS of 2 digits or a county FIPS of 5, state code real, else dropped), n ("1", "2-5" or "6+")
+ *   and biz (true: "for my customers"), kept on note:<email>.t["rain-gauge"] next to zip and note; src (the
+ *   page kind: rain-county, rain-hub, rain-print, else rain-gauge; kept only from that list) is the existing source field, 60 chars.
+ *   Asked again, n, biz and fips are taken when given. /notice-list returns fips, n, biz on those rows. /count
+ *   gains gauge {total, gauges_min, customers, with_zip, n:<1|2-5|6+|unsaid>, st:<state FIPS>, src:<source>},
+ *   flat counts only (no address, no ZIP, no county), read by scripts/stats_ingest.py and scripts/gauge_count.py.
+ *   No price field, no new binding, no new secret. Every other route answers exactly as before.
+ * v5.71 (2026-11-24): LEASE NOTICE REMINDER. /notice takes one more topic, lease:<st>:<YYYY-MM-DD>:
+ *   one email about two weeks before that state's farm lease termination notice deadline (the ask on
+ *   /cash-lease). Iowa, Kansas and Ohio only, and the date must be that state's deadline: September 1
+ *   for Iowa and Ohio, 30 days before March 1 for Kansas (January 30, January 31 in a leap year), still
+ *   ahead and within about 13 months. Each season is its own topic, so a reader is mailed once a season
+ *   and asks again for the next. Same record as every notice: note:<email>.t[topic] = {ts, src}; no
+ *   ZIP or place. GET /notice-list?topic=lease: lists them for scripts/send_lease_notice.py.
+ *   No new binding or secret. Every other route and topic answers as before.
+ * v5.70 (2026-11-13): GA BURST DAMPING, A BACKSTOP. GET /ga-ok also answers {"ok":false} for an
+ *   hour to a network and place (request.cf.asn plus request.cf.city, else region, else country;
+ *   never an address) that sends more than GA_BURST_MAX fresh calls in one minute. The main cuts
+ *   are the cloud check here and the reading bar in components/ga-gate.js (2026-11-13); this only
+ *   catches a burst bunched in one minute, one network and one place, which the stats on file
+ *   (daily, no hour) can neither show nor rule out. The count lives in this isolate's memory only,
+ *   so it is approximate: Cloudflare runs many isolates and they share nothing, so a spread burst
+ *   counts lower than it is, and a restart forgets it. One fixed log line per trip, when its hold
+ *   ends, with the number of calls refused in the hold. No new binding or secret. Every other
+ *   route answers as before.
+ * v5.69 (2026-11-13): HARVEST FUEL RELIEF NOTICE. /notice takes one more topic, hfr: one email when
+ *   USDA posts Harvest Fuel Relief payment rates or sign-up dates (the ask on /harvest-fuel-relief). Same
+ *   record as every notice: note:<email>.t.hfr = {ts, src}, no Daily unless the reader ticks the box. The
+ *   topic is a fixed word, validated like rain-gauge and milk-month; a made-up variant (hfr:x) is refused.
+ *   GET /notice-list?topic=hfr lists it for whoever mails it; /count notices {hfr: n} counts it; no
+ *   address leaves the Worker. /notice-unsubscribe with &topic=hfr names the list and stops only it.
+ *   No new binding or secret. Every other route and topic answers as before.
+ * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
+ *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
+ *   wire from the invoice we email at booking, and that the ad goes live the day payment arrives
+ *   (live on receipt). GET /count also answers people: the addresses on each list on the day it is
+ *   asked (the Daily, hail alerts, a watch with a confirmed entry, a notice topic), each once, as one
+ *   number; a watch address still waiting to confirm is not counted, and no address is sent.
+ *   No new binding or secret. Every other route answers as before.
  * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
  *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)
  *   in one fixed shape (rows of USDA's figure against the trade, counts, the WASDE balance lines,
@@ -1010,6 +1059,53 @@ function json(obj, status, extra) {
   });
 }
 
+// v5.70 GA burst damping (Nov 13), a backstop: the main cuts are the cloud check below and the
+// gate's reading bar. A network and place (cf.asn plus cf.city, else cf.region, else cf.country;
+// no address is read) that sends more than GA_BURST_MAX fresh /ga-ok calls in one minute is answered
+// false for an hour. Per isolate, in memory: approximate by design (isolates share nothing, a
+// restart forgets), and a fixed one-minute window can let up to twice the limit through across
+// its edge. Calls already refused as a cloud network are not counted. At most GA_BURST_KEYS buckets
+// are kept; expired ones go first, then the oldest. One log line per trip, when the hold ends (on
+// the bucket's next call or when it is pruned): fixed words and the number of calls refused.
+const GA_BURST_MAX = 20;
+const GA_BURST_WINDOW_MS = 60 * 1000;
+const GA_BURST_HOLD_MS = 60 * 60 * 1000;
+const GA_BURST_KEYS = 5000;
+const gaBursts = new Map();
+function gaBurstKey(cf) {
+  const place = (cf && (cf.city || cf.region || cf.country)) || "";
+  return String(Number(cf && cf.asn) || 0) + "|" + String(place).slice(0, 80).toLowerCase();
+}
+function gaBurstEnd(b) {
+  // fixed words and one count; no network, place or address
+  if (b.hold) console.log("subs worker: ga-ok burst hold ended; calls refused in the hold:", b.refused);
+}
+function gaBurstPrune(now) {
+  for (const [k, b] of gaBursts) {
+    if (b.hold <= now && now - b.start >= GA_BURST_WINDOW_MS) { gaBurstEnd(b); gaBursts.delete(k); }
+  }
+  while (gaBursts.size >= GA_BURST_KEYS) gaBursts.delete(gaBursts.keys().next().value);
+}
+function gaBurstOk(cf, now) {
+  const key = gaBurstKey(cf);
+  let b = gaBursts.get(key);
+  if (b && b.hold > now) { b.refused++; return false; }
+  if (!b || now - b.start >= GA_BURST_WINDOW_MS) {
+    if (b) gaBurstEnd(b);
+    else if (gaBursts.size >= GA_BURST_KEYS) gaBurstPrune(now);
+    gaBursts.delete(key);
+    b = { start: now, n: 0, hold: 0, refused: 0 };
+    gaBursts.set(key, b);
+  }
+  b.n++;
+  if (b.n > GA_BURST_MAX) {
+    b.hold = now + GA_BURST_HOLD_MS;
+    b.refused = 1;
+    return false;
+  }
+  return true;
+}
+
 // v5.33 GA gate. Cloud, hosting and data center networks by ASN, checked
 // 2026-10-20 against each network's own registration. Readers' ISPs, mobile
 // carriers and Starlink (14593) are not here. Left out on purpose:
@@ -1416,6 +1512,36 @@ function subEl(v) {
   return out.slice(0, SUB_EL_MAX);
 }
 
+// v5.73: a signup the reader's browser kept while this Worker did not answer (components/outbox.js) comes back
+// later carrying queued_at, the time the reader signed up. A stop link leaves a mark, usm:<kind>:<item>:<email>
+// (item "*" for every item of that kind), for UNSUB_MARK_TTL_S: longer than the browser's 7 days of retries.
+// A kept signup made before such a mark, or before the record it would write was last written, is answered
+// {ok:true} and writes nothing: a reader who stopped mail is never put back, and an older kept signup never
+// replaces a newer pin, ZIP or note. A signup without queued_at (every live form) is not touched by this.
+const UNSUB_MARK_TTL_S = 8 * 86400;
+function queuedAt(v) {
+  const n = Number(v);
+  return v !== undefined && v !== null && v !== "" && Number.isFinite(n) && n > 0 ? n : null;
+}
+async function markUnsub(env, kind, email, item) {
+  await env.SUBS.put("usm:" + kind + ":" + (item || "*") + ":" + email, String(Date.now()), { expirationTtl: UNSUB_MARK_TTL_S });
+}
+// true when a kept signup (qa = its queued_at) must write nothing; items: the item keys it would touch
+async function staleQueued(env, kind, email, qa, items, recTs) {
+  if (qa === null) return false;
+  if (Number.isFinite(recTs) && recTs > qa) return true;
+  for (const it of ["*"].concat(items || [])) {
+    let m = NaN;
+    try { m = Number(await env.SUBS.get("usm:" + kind + ":" + it + ":" + email)); } catch (e) { m = NaN; }
+    if (Number.isFinite(m) && m > 0 && m >= qa) return true;
+  }
+  return false;
+}
+async function subTs(env, email) {
+  try { const v = await env.SUBS.get("sub:" + email); const p = v ? JSON.parse(v) : null; return p && Number.isFinite(p.ts) ? p.ts : null; }
+  catch (e) { return null; }
+}
+
 // v5.4 merge, shared by /subscribe and /notice (daily:true). A bad ZIP is
 // dropped, never a reason to refuse the subscribe; the first ts is kept; zip,
 // reports and src change only when the request carries them.
@@ -1517,11 +1643,31 @@ const landMonth = rainMonth;   // v5.55: a landsales month follows the same rule
 const MILK_MONTH = "milk-month";
 const MILK_MONTH_ASK = "Stop the milk price day email for this address?";
 const MILK_MONTH_DONE = "Stopped. No more milk price day emails.";
+// v5.69: hfr, the Harvest Fuel Relief rates and sign-up dates email (one list, no month or place in the topic)
+const HFR = "hfr";
+const HFR_ASK = "Stop the Harvest Fuel Relief email for this address?";
+const HFR_DONE = "Stopped. No more Harvest Fuel Relief emails.";
 const CR_STATES = new Set("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy".split(" "));
+// v5.71: lease:<st>:<YYYY-MM-DD>, the farm lease notice deadline reminder. The date is the state's
+// own deadline in that year (scripts/send_lease_notice.py DEADLINE): Iowa and Ohio September 1,
+// Kansas 30 days before March 1.
+function leaseDeadline(st, y) {
+  if (st === "ia" || st === "oh") return Date.UTC(y, 8, 1);
+  if (st === "ks") return Date.UTC(y, 2, 1) - 30 * 864e5;
+  return null;
+}
+// v5.72: the rain gauge waitlist's structured fields. fips is a state (2 digits) or a county (5) with a real state code.
+function gaugeFips(v) {
+  const x = String(v == null ? "" : v).trim();
+  return /^\d{2}(\d{3})?$/.test(x) && RAIN_ST_FIPS.has(+x.slice(0, 2)) ? x : "";
+}
+const GAUGE_SRC = new Set(["rain-gauge", "rain-county", "rain-hub", "rain-print"]);
+function gaugeCount(v) { const x = String(v == null ? "" : v).trim(); return x === "1" || x === "2-5" || x === "6+" ? x : ""; }
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
   if (t === MILK_MONTH) return t;   // v5.58
+  if (t === HFR) return t;   // v5.69
   // v5.55: landsales:<ZIP>:<10|25|50>
   const ls = /^landsales:(\d{5}):(\d{2})$/.exec(t);
   if (ls) return ls[1] !== "00000" && LAND_MILES.includes(+ls[2]) ? t : null;
@@ -1530,6 +1676,14 @@ function noticeTopic(v, anyDate) {
   // state's next custom rate survey is on /custom-rates (scripts/send_custom_rates_notice.py)
   const cr = /^customrates:([a-z]{2})$/.exec(t);
   if (cr) return CR_STATES.has(cr[1]) ? t : null;
+  // v5.71: lease:<st>:<YYYY-MM-DD>, the state's own deadline, still ahead (a day of slack), within ~13 months
+  const ld = /^lease:([a-z]{2}):(\d{4})-(\d{2})-(\d{2})$/.exec(t);
+  if (ld) {
+    const want = leaseDeadline(ld[1], +ld[2]);
+    if (want === null || new Date(want).toISOString().slice(0, 10) !== t.slice(9)) return null;
+    if (!anyDate && (want < Date.now() - 864e5 || want > Date.now() + 400 * 864e5)) return null;
+    return t;
+  }
   const pg = /^prf:(\d+)$/.exec(t);
   if (pg) return prfGridOk(pg[1]) ? t : null;
   // v5.54: rain-month:<county FIPS>, the monthly county rain email
@@ -2699,10 +2853,25 @@ async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
   // v5.44: the standing lists, with where each reader signed up
   const lists = {};
+  // v5.72: the rain gauge waitlist, counts only (flat so the counts file keeps it)
+  const gauge = { total: 0, gauges_min: 0, customers: 0, with_zip: 0 };
   for (const l of LIST_TOPICS) lists[l] = { n: 0, by_source: {}, unsubs: { h24: 0, d7: 0, cleanup_h24: 0, cleanup_d7: 0 } };
   for (const k of keys) {
     let r = null;
     try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+    const gx = r && r.t && r.t["rain-gauge"];
+    if (gx) {
+      const bump = (key) => { gauge[key] = (gauge[key] || 0) + 1; };
+      gauge.total++;
+      if (gx.biz) gauge.customers++;
+      if (gx.zip) gauge.with_zip++;
+      const gn = gaugeCount(gx.n);
+      bump("n:" + (gn || "unsaid"));
+      gauge.gauges_min += gn === "6+" ? 6 : gn === "2-5" ? 2 : 1;
+      const fp = gaugeFips(gx.fips);
+      bump("st:" + (fp ? fp.slice(0, 2) : "unknown"));
+      bump("src:" + (String(gx.src || "").toLowerCase().replace(/[^a-z0-9:_-]/g, "").slice(0, 30) || "(none)"));
+    }
     for (const t of Object.keys((r && r.t) || {})) {
       by[t] = (by[t] || 0) + 1;
       if (lists[t]) {
@@ -2720,7 +2889,27 @@ async function noticeCounts(env) {
     if (age <= 864e5) o[pre + "h24"]++;
     if (age <= 7 * 864e5) o[pre + "d7"]++;
   }
-  return { notice: keys.length, notices: by, lists };
+  return { notice: keys.length, notices: by, lists, gauge };
+}
+
+// v5.68: unique addresses across every list, for the one "on our lists" figure. Counts only.
+// The Daily (sub:), hail alerts (alert:) and notice topics (note:) hold only addresses that are on the
+// list; a watch (watch:, ewatch:, pwatch:) also holds addresses still waiting to confirm (pend only), so
+// a watch address counts only when its record has a confirmed entry in w.
+const PEOPLE_ON = ["sub:", "alert:", "note:"];
+const PEOPLE_WATCH = ["watch:", "ewatch:", "pwatch:"];
+async function peopleCount(env) {
+  const seen = new Set();
+  const add = (k, pre) => { const e = k.slice(pre.length).trim().toLowerCase(); if (e.includes("@")) seen.add(e); };
+  for (const pre of PEOPLE_ON) for (const k of await listKeys(env, pre)) add(k, pre);
+  for (const pre of PEOPLE_WATCH) {
+    for (const k of await listKeys(env, pre)) {
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (r && r.w && typeof r.w === "object" && Object.keys(r.w).length) add(k, pre);
+    }
+  }
+  return seen.size;
 }
 
 async function formCounts(env) {
@@ -3520,8 +3709,9 @@ async function handle(req, env) {
     }
 
     // v5.33: may this visit load Google Analytics? Network type only; nothing kept.
+    // v5.70: and not a burst from one network and city (gaBurstOk: counts in memory, no address).
     if (path === "/ga-ok" && req.method === "GET") {
-      return json({ ok: gaOk(req.cf) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
+      return json({ ok: gaOk(req.cf) && gaBurstOk(req.cf, Date.now()) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
     }
 
     // v5.65: one sponsor's private report (sponsor-report.html). 404 with no detail for
@@ -3557,17 +3747,17 @@ async function handle(req, env) {
 
     // ---------- daily briefing: subscribe ----------
     if (path === "/subscribe" && req.method === "POST") {
-      let email = "", src = "", trap = "", zipIn = null, repIn = null, cwIn = null;
+      let email = "", src = "", trap = "", zipIn = null, repIn = null, cwIn = null, qa = null;
       const ct = req.headers.get("Content-Type") || "";
       try {
         if (ct.includes("json")) {
           const b = await req.json();
           email = b.email || ""; src = b.source || ""; trap = b._gotcha || "";
-          zipIn = b.zip; repIn = b.reports; cwIn = b.cw;
+          zipIn = b.zip; repIn = b.reports; cwIn = b.cw; qa = queuedAt(b.queued_at);
         } else {
           const f = await req.formData();
           email = f.get("email") || ""; src = f.get("source") || ""; trap = f.get("_gotcha") || "";
-          zipIn = f.get("zip"); repIn = f.get("reports"); cwIn = f.get("cw");
+          zipIn = f.get("zip"); repIn = f.get("reports"); cwIn = f.get("cw"); qa = queuedAt(f.get("queued_at"));
         }
       } catch (e) { /* validation below */ }
       email = String(email).trim().toLowerCase();
@@ -3576,6 +3766,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link, or from before this address's record: nothing written
+      if (qa !== null && await staleQueued(env, "daily", email, qa, [], await subTs(env, email))) return json({ ok: true }, 200, cors(req));
       await putSub(env, email, src, zipIn, repIn, cwIn);
       return json({ ok: true }, 200, cors(req));
     }
@@ -3594,7 +3786,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       const topic = noticeTopic(b.topic);
       if (!topic) return json({ ok: false, error: "invalid topic" }, 400, cors(req));
-      const src = String(b.source || "").slice(0, 60);
+      let src = String(b.source || "").slice(0, 60);
+      if (topic === "rain-gauge" && !GAUGE_SRC.has(src)) src = "rain-gauge";   // v5.72: the page kinds that ask, else the gauge page itself
       let r = null;
       try { const v = await env.SUBS.get("note:" + email); r = v ? JSON.parse(v) : null; } catch (e) { r = null; }
       if (!r || typeof r !== "object" || !r.t || typeof r.t !== "object") r = { ts: Date.now(), t: {} };
@@ -3602,6 +3795,16 @@ async function handle(req, env) {
         return json({ ok: false, error: "too many notices for this address" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link, or from before this topic was last written (r.lw[topic], else
+      // its ts): nothing written, so an older kept ask never replaces a newer ZIP or note
+      if (!r.lw || typeof r.lw !== "object" || Array.isArray(r.lw)) r.lw = {};
+      const qa = queuedAt(b.queued_at);
+      if (qa !== null) {
+        const cur = r.t[topic] && typeof r.t[topic] === "object" ? r.t[topic] : null;
+        const items = [topic].concat(topic.startsWith(LAND_ALL + ":") ? [LAND_ALL] : []);
+        if (await staleQueued(env, "note", email, qa, items, cur ? Math.max(Number(r.lw[topic]) || 0, Number(cur.ts) || 0) : null))
+          return json({ ok: true }, 200, cors(req));
+      }
       // v5.32: a rent notice is one release a year. Asked again after it was
       // sent, it starts over (new ts, no sent), so send_rent_notice.py mails
       // the next release after this ask, as it does for a first ask.
@@ -3612,15 +3815,22 @@ async function handle(req, env) {
         const z = subZip(b.zip), nt = oneLine(b.note, NOTE_TEXT_MAX);
         if (z) r.t[topic].zip = z;
         if (nt) r.t[topic].note = nt;
+        // v5.72: where the ask was (state or county FIPS), how many gauges, and "for my customers"
+        const fp = gaugeFips(b.fips), gn = gaugeCount(b.n);
+        if (fp) r.t[topic].fips = fp;
+        if (gn) r.t[topic].n = gn;
+        if (subBool(b.biz) === true) r.t[topic].biz = true;
       }
       // v5.29: a prf topic keeps the newest interval the page showed, from the first ask
       if (topic.startsWith("prf:") && !r.t[topic].after) {
         const af = prfInterval(b.after);
         if (af) r.t[topic].after = af;
       }
+      r.lw[topic] = Date.now();   // v5.73: when this topic was last written (beside the topics, so their rows read the same)
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       const daily = subBool(b.daily) === true;
-      if (daily) await putSub(env, email, src, b.zip, b.reports, b.cw);
+      if (daily && !(qa !== null && await staleQueued(env, "daily", email, qa, [], await subTs(env, email))))
+        await putSub(env, email, src, b.zip, b.reports, b.cw);
       return json({ ok: true, topic, daily }, 200, cors(req));
     }
 
@@ -3634,7 +3844,7 @@ async function handle(req, env) {
       if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
-        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : one === MILK_MONTH ? MILK_MONTH_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
+        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : one === MILK_MONTH ? MILK_MONTH_ASK : one === HFR ? HFR_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
           "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
@@ -3648,16 +3858,19 @@ async function handle(req, env) {
         if (one && r && r.t && typeof r.t === "object") {
           if (one === LAND_ALL) { for (const k of Object.keys(r.t)) if (k.startsWith(LAND_ALL + ":")) delete r.t[k]; }
           else delete r.t[one];
+          if (r.lw && typeof r.lw === "object") for (const k of Object.keys(r.lw)) if (!(k in r.t)) delete r.lw[k];   // v5.73
           if (Object.keys(r.t).length) await env.SUBS.put("note:" + e, JSON.stringify(r));
           else await env.SUBS.delete("note:" + e);
         } else {
           await env.SUBS.delete("note:" + e);
         }
         for (const l of gone) await countUnsub(env, l, req);
+        await markUnsub(env, "note", e, one || "*");   // v5.73: a kept signup from before now is not put back
         if (one && LIST_DONE[one]) return htmlPage(LIST_DONE[one]);
         if (one === LAND_ALL) return htmlPage(LAND_DONE);
         if (one && one.startsWith("rain-month:")) return htmlPage(RAIN_MONTH_DONE);
         if (one === MILK_MONTH) return htmlPage(MILK_MONTH_DONE);   // v5.58
+        if (one === HFR) return htmlPage(HFR_DONE);   // v5.69
         return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
       }
     }
@@ -3679,6 +3892,13 @@ async function handle(req, env) {
         return json({ ok: false, error: "pin outside the continental US" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link, or older than the pin now saved: the newer pin stays
+      const qa = queuedAt(b.queued_at);
+      if (qa !== null) {
+        let cur = null;
+        try { const v = await env.SUBS.get("alert:" + email); cur = v ? JSON.parse(v) : null; } catch (e) { cur = null; }
+        if (await staleQueued(env, "alert", email, qa, [], cur && Number.isFinite(cur.ts) ? cur.ts : null)) return json({ ok: true }, 200, cors(req));
+      }
       await env.SUBS.put("alert:" + email, JSON.stringify(
         { lat: +lat.toFixed(4), lon: +lon.toFixed(4), place, radius_mi: radius, ts: Date.now() }));
       return json({ ok: true }, 200, cors(req));
@@ -3714,6 +3934,9 @@ async function handle(req, env) {
         if (had) await countUnsub(env, isAlert ? "alerts" : "daily", req);
         // v5.11: "No more emails" covers the one-time notices too.
         if (!isAlert) await env.SUBS.delete("note:" + e);
+        // v5.73: a kept signup from before now is not put back (the Daily stop also stops the notices)
+        await markUnsub(env, isAlert ? "alert" : "daily", e);
+        if (!isAlert) await markUnsub(env, "note", e);
         return htmlPage(isAlert
           ? "Hail alerts stopped for this address. No more alert emails."
           : "You're unsubscribed. No more emails.");
@@ -3870,6 +4093,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid county" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link for this county or all: nothing written
+      if (await staleQueued(env, "watch", email, queuedAt(b.queued_at), [fips])) return json({ ok: true }, 200, cors(req));
       const r = await getWatch(email);
       const now = Date.now();
       for (const f of Object.keys(r.pend)) if (now - r.pend[f].ts > PEND_TTL) delete r.pend[f];
@@ -3916,6 +4141,7 @@ async function handle(req, env) {
         }
         if (f) { delete r.pend[f]; delete r.w[f]; } else { r.pend = {}; r.w = {}; }
         await putWatch(e, r);
+        await markUnsub(env, "watch", e, f || "*");   // v5.73
         return htmlPage(f ? "Stopped. No more emails about this county." : "Stopped. No more county watch emails.");
       }
     }
@@ -3972,6 +4198,9 @@ async function handle(req, env) {
         ewatch: (await listKeys(env, "ewatch:")).length,
         pwatch: (await listKeys(env, "pwatch:")).length,
         watch: (await listKeys(env, "watch:")).length,
+        // v5.68: people on any list, each address once (the Daily, hail alerts, elevator watch, price
+        // targets, county watch and every notice topic). A count only; no address leaves the Worker.
+        people: await peopleCount(env),
         by_source: bySource,
         // v5.13: whether UNSUB_SECRET is set on this Worker. A boolean, never the value.
         secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,
@@ -4003,6 +4232,9 @@ async function handle(req, env) {
           const row = { email: k.slice(5), topic, ts: v && v.ts || null, src: v && v.src || "", sent: v && v.sent || null };
           if (v && v.zip) row.zip = v.zip;     // v5.18: rain-gauge only
           if (v && v.note) row.note = v.note;
+          if (v && v.fips) row.fips = v.fips;      // v5.72: rain-gauge only
+          if (v && v.n) row.n = v.n;
+          if (v && v.biz) row.biz = true;
           if (v && v.after) row.after = v.after;   // v5.29: prf only
           if (v && v.iv) row.iv = v.iv;
           if (v && v.mo) row.mo = v.mo;            // v5.54 rain-month, v5.55 landsales, v5.58 milk-month
@@ -4178,6 +4410,8 @@ async function handle(req, env) {
       if (ev.error) return json({ ok: false, error: ev.error }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link for this alert or all: nothing written
+      if (await staleQueued(env, "ewatch", email, queuedAt(b.queued_at), [wid])) return json({ ok: true }, 200, cors(req));
       const r = await getEWatch(email);
       const now = Date.now();
       for (const w of Object.keys(r.pend)) if (now - r.pend[w].ts > EPEND_TTL) delete r.pend[w];
@@ -4234,6 +4468,7 @@ async function handle(req, env) {
         }
         if (w) { delete r.pend[w]; delete r.w[w]; } else { r.pend = {}; r.w = {}; }
         await putEWatch(e, r);
+        await markUnsub(env, "ewatch", e, w || "*");   // v5.73
         return htmlPage(w ? "Stopped. No more emails about " + escHtml(label) + "." : "Stopped. No more elevator watch emails.");
       }
     }
@@ -4315,6 +4550,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid label" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link for this alert or all: nothing written
+      if (await staleQueued(env, "pwatch", email, queuedAt(b.queued_at), [pid])) return json({ ok: true }, 200, cors(req));
       const r = await getPWatch(email);
       const now = Date.now();
       for (const p of Object.keys(r.pend)) if (now - r.pend[p].ts > PPEND_TTL) delete r.pend[p];
@@ -4364,6 +4601,7 @@ async function handle(req, env) {
         }
         if (p) { delete r.pend[p]; delete r.w[p]; } else { r.pend = {}; r.w = {}; }
         await putPWatch(e, r);
+        await markUnsub(env, "pwatch", e, p || "*");   // v5.73
         return htmlPage(p ? "Cancelled. No email for " + escHtml(label) + "." : "Cancelled. No more price alert emails.");
       }
     }
@@ -4517,12 +4755,12 @@ async function handle(req, env) {
         if (req.method !== "POST")
           return htmlPage("Confirm your AGSIST ad: " + what,
             "<form method=post><button style=\"font-size:16px;padding:10px 18px\">Yes, send it to Sig</button></form>" +
-            "<p>Your first month is free. Nothing runs until Sig has looked at it.</p>");
+            "<p>Nothing runs until we have looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions. Your ad goes live the day your payment arrives.</p>");
         r.status = "confirmed"; r.cts = Date.now();
         await env.SUBS.put("sapp:" + id, JSON.stringify(r));
         return htmlPage("Thanks. Sig has your ad.",
-          "<p>He reviews every ad himself, usually the same day, and you'll get an email when it's live. " +
-          "Your free month starts the day it runs.</p>");
+          "<p>He reviews every ad himself, usually the same day, and emails you the invoice. Pay it by check or bank wire. " +
+          "Your ad goes live the day your payment arrives, and you'll get an email when it's live.</p>");
       }
       const ok = SAPP_DECISIONS[d].from.includes(r.status);
       if (!ok) return htmlPage("Nothing to do: this application is " + escHtml(r.status) + ".");

@@ -14,10 +14,10 @@
 (function () {
   'use strict';
   var dlg = null, img = null, opener = null;
-  var CSS = '.lz-dlg{margin:auto;inset:0;padding:0;border:1px solid var(--border,#ccc);border-radius:8px;background:#fff;color:#111;width:min(1100px,96vw);max-width:96vw;max-height:94vh;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom}' +
+  var CSS = '.lz-dlg{margin:auto;inset:0;padding:0;border:1px solid var(--border,#ccc);border-radius:var(--r-md);background:#fff;color:#111;width:min(1100px,96vw);max-width:96vw;max-height:94vh;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom}' +
     '.lz-dlg::backdrop{background:rgba(0,0,0,.72)}' +
     '.lz-bar{position:sticky;top:0;left:0;display:flex;justify-content:flex-end;height:0;z-index:2}' +
-    '.lz-x{position:sticky;right:8px;margin:8px 8px 0 0;min-width:48px;min-height:48px;padding:0 14px;border:1px solid #333;border-radius:24px;background:#fff;color:#111;font:600 15px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.35)}' +
+    '.lz-x{position:sticky;right:8px;margin:8px 8px 0 0;min-width:48px;min-height:48px;padding:0 14px;border:1px solid #333;border-radius:var(--r-lg);background:#fff;color:#111;font:600 15px/1 system-ui,sans-serif;cursor:pointer}' +
     '.lz-x:focus-visible{outline:3px solid #b8860b;outline-offset:2px}' +
     '.lz-img{display:block;width:max(100%,820px);max-width:1700px;height:auto;margin:0}';
   function build() {

@@ -1,6 +1,6 @@
 {
-  "fetched": "2026-11-13T01:23:57Z",
-  "ok": 76,
+  "fetched": "2026-11-26T03:01:20Z",
+  "ok": 74,
   "failed": 1,
   "stale_keys": [],
   "rolls": {},
@@ -38,8 +38,8 @@
       "label": "Dec '26"
     },
     "feeders": {
-      "key": "feeders-nov26",
-      "label": "Nov '26"
+      "key": "feeders-jan27",
+      "label": "Jan '27"
     },
     "hogs": {
       "key": "hogs-dec26",
@@ -51,6 +51,7 @@
     }
   },
   "retired_keys": [
+    "beans-nov26",
     "cattle-aug26",
     "cattle-oct26",
     "hogs-aug26",
@@ -58,6 +59,7 @@
     "feeders-aug26",
     "feeders-sep26",
     "feeders-oct26",
+    "feeders-nov26",
     "oats-sep26",
     "meal-aug26",
     "meal-sep26",
@@ -70,17 +72,24 @@
     "milk-oct26"
   ],
   "withheld_keys": {},
-  "move_withheld": {},
-  "change_withheld": {},
+  "move_withheld": {
+    "natgas": "NG=F moved +10.68% from 3.323 (2026-11-24) to 3.678 (2026-11-25), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld",
+    "cotton": "CT=F: the series' last trade on 2026-11-24 is +4.1% from that session's settle, so its trades and settles are different contract months; the change is withheld, the price is kept",
+    "kcwheat": "KE=F: the price is the Mar '27 contract and the settle before it the Dec '26 contract; the change is withheld, the price is kept"
+  },
+  "change_withheld": {
+    "cotton": "CT=F: the series' last trade on 2026-11-24 is +4.1% from that session's settle, so its trades and settles are different contract months; the change is withheld, the price is kept",
+    "kcwheat": "KE=F: the price is the Mar '27 contract and the settle before it the Dec '26 contract; the change is withheld, the price is kept"
+  },
   "spreads": {
     "kcwheat": {
-      "cents": 36.5,
+      "cents": 39.5,
       "basis": "same-month",
       "month": "Dec '26",
       "class_key": "kcwheat-dec26",
       "chicago_key": "wheat-dec26",
-      "class_close": 619.0,
-      "chicago_close": 582.5
+      "class_close": 603.5,
+      "chicago_close": 564.0
     },
     "mplswheat": {
       "cents": null,
@@ -92,1477 +101,1301 @@
     "beans": "beans-nov27",
     "corn": "corn-dec27",
     "label": "Nov '27 beans \u00f7 Dec '27 corn",
-    "value": 2.4567
+    "value": 2.4438
   },
   "quotes": {
     "corn": {
       "ticker": "ZC=F",
-      "close": 442.25,
-      "open": 448.0,
-      "netChange": -5.75,
-      "pctChange": -1.2835,
+      "close": 439.5,
+      "open": 434.0,
+      "netChange": 5.5,
+      "pctChange": 1.2673,
       "wk52_hi": 544.5,
       "wk52_lo": 398.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 444.25,
-      "last_time": "2026-11-13T01:23:41Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 448.0,
-      "settle_date": "2026-11-11",
-      "settle_net": -1.0,
+      "settle": 434.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 439.25,
-        "2026-11-10": 449.0,
-        "2026-11-11": 448.0
+        "2026-11-20": 434.5,
+        "2026-11-23": 434.25,
+        "2026-11-24": 434.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 448.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 433.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 448.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 434.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 442.25,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 439.5,
+          "at": "2026-11-25T19:20:00Z"
         }
+      },
+      "repaired_from": "corn-dec26",
+      "repair_reason": "continuous-roll-contamination",
+      "_orig": {
+        "ticker": "ZC=F",
+        "close": 456.25,
+        "open": 434.0,
+        "netChange": 22.25,
+        "pctChange": 5.1267,
+        "close_date": "2026-11-25",
+        "prev_date": "2026-11-24"
       }
     },
     "corn-dec": {
       "ticker": "ZCZ26.CBT",
-      "close": 442.25,
-      "open": 448.0,
-      "netChange": -5.75,
-      "pctChange": -1.2835,
+      "close": 439.5,
+      "open": 434.0,
+      "netChange": 5.5,
+      "pctChange": 1.2673,
       "wk52_hi": 549.75,
       "wk52_lo": 425.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 444.25,
-      "last_time": "2026-11-13T01:23:41Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 448.0,
-      "settle_date": "2026-11-11",
-      "settle_net": -1.0,
+      "settle": 434.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 439.25,
-        "2026-11-10": 449.0,
-        "2026-11-11": 448.0
+        "2026-11-20": 434.5,
+        "2026-11-23": 434.25,
+        "2026-11-24": 434.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 448.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 433.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 448.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 434.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 442.25,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 439.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans": {
       "ticker": "ZS=F",
-      "close": 1227.0,
-      "open": 1229.0,
-      "netChange": -2.0,
-      "pctChange": -0.1627,
+      "close": 1243.25,
+      "open": 1234.0,
+      "netChange": 9.25,
+      "pctChange": 0.7496,
       "wk52_hi": 1332.25,
       "wk52_lo": 1022.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1222.5,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1229.0,
-      "settle_date": "2026-11-11",
-      "settle_net": 4.5,
+      "settle": 1234.0,
+      "settle_date": "2026-11-24",
+      "settle_net": 5.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1182.25,
-        "2026-11-10": 1224.5,
-        "2026-11-11": 1229.0
+        "2026-11-20": 1220.75,
+        "2026-11-23": 1228.75,
+        "2026-11-24": 1234.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1226.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1227.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1230.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1232.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1219.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1243.25,
+          "at": "2026-11-25T19:20:00Z"
         }
-      },
-      "repaired_from": "beans-nov26",
-      "repair_reason": "continuous-roll-contamination",
-      "_orig": {
-        "ticker": "ZS=F",
-        "close": 1219.5,
-        "open": 1229.0,
-        "netChange": -9.5,
-        "pctChange": -0.773,
-        "close_date": "2026-11-12",
-        "prev_date": "2026-11-11"
       }
     },
     "beans-nov": {
-      "ticker": "ZSX26.CBT",
-      "close": 1227.0,
-      "open": 1229.0,
-      "netChange": -2.0,
-      "pctChange": -0.1627,
-      "wk52_hi": 1335.25,
-      "wk52_lo": 1055.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1222.5,
-      "last_time": "2026-11-13T01:23:41Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "ticker": "ZSX27.CBT",
+      "close": 1184.0,
+      "open": 1184.5,
+      "netChange": -0.5,
+      "pctChange": -0.0422,
+      "wk52_hi": 1286.75,
+      "wk52_lo": 1054.0,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1229.0,
-      "settle_date": "2026-11-11",
-      "settle_net": 4.5,
+      "settle": 1184.5,
+      "settle_date": "2026-11-24",
+      "settle_net": 7.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1182.25,
-        "2026-11-10": 1224.5,
-        "2026-11-11": 1229.0
+        "2026-11-20": 1171.0,
+        "2026-11-23": 1176.75,
+        "2026-11-24": 1184.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1225.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1174.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1229.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1184.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1227.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1184.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "wheat": {
       "ticker": "ZW=F",
-      "close": 582.5,
-      "open": 599.5,
-      "netChange": -17.0,
-      "pctChange": -2.8357,
+      "close": 564.0,
+      "open": 569.75,
+      "netChange": -5.75,
+      "pctChange": -1.0092,
       "wk52_hi": 775.75,
       "wk52_lo": 501.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 583.5,
-      "last_time": "2026-11-13T01:23:42Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 599.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 6.75,
+      "settle": 569.75,
+      "settle_date": "2026-11-24",
+      "settle_net": -7.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 588.0,
-        "2026-11-10": 592.75,
-        "2026-11-11": 599.5
+        "2026-11-20": 574.25,
+        "2026-11-23": 577.0,
+        "2026-11-24": 569.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 591.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 576.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 600.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 569.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 582.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 564.0,
+          "at": "2026-11-25T19:20:00Z"
         }
+      },
+      "repaired_from": "wheat-dec26",
+      "repair_reason": "continuous-roll-contamination",
+      "_orig": {
+        "ticker": "ZW=F",
+        "close": 586.5,
+        "open": 569.75,
+        "netChange": 16.75,
+        "pctChange": 2.9399,
+        "close_date": "2026-11-25",
+        "prev_date": "2026-11-24"
       }
     },
     "kcwheat": {
       "ticker": "KE=F",
       "close": 629.5,
-      "open": 639.5,
-      "netChange": -10.0,
-      "pctChange": -1.5637,
+      "open": null,
+      "netChange": null,
+      "pctChange": null,
       "wk52_hi": 836.75,
       "wk52_lo": 498.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 630.25,
-      "last_time": "2026-11-13T01:23:42Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": null,
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
-      "prev_kind": "settle",
-      "settle": 639.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 5.25,
+      "close_time": "2026-11-25T19:20:00Z",
+      "settle": 612.5,
+      "settle_date": "2026-11-24",
+      "settle_net": -8.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 632.5,
-        "2026-11-10": 634.25,
-        "2026-11-11": 639.5
+        "2026-11-20": 624.5,
+        "2026-11-23": 621.25,
+        "2026-11-24": 612.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 633.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 636.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 649.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 631.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
+        "2026-11-25": {
           "px": 629.5,
-          "at": "2026-11-12T19:20:00Z"
+          "at": "2026-11-25T19:20:00Z"
         }
-      }
+      },
+      "change_withheld": "KE=F: the price is the Mar '27 contract and the settle before it the Dec '26 contract; the change is withheld, the price is kept",
+      "move_withheld": "KE=F: the price is the Mar '27 contract and the settle before it the Dec '26 contract; the change is withheld, the price is kept",
+      "roll": true
     },
     "oats": {
       "ticker": "ZO=F",
-      "close": 352.5,
-      "open": 350.75,
-      "netChange": 1.75,
-      "pctChange": 0.4989,
+      "close": 352.0,
+      "open": 362.0,
+      "netChange": -10.0,
+      "pctChange": -2.7624,
       "wk52_hi": 446.5,
       "wk52_lo": 257.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 352.5,
-      "last_time": "2026-11-13T01:23:43Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 350.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 5.75,
+      "settle": 362.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -2.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 334.0,
-        "2026-11-10": 345.0,
-        "2026-11-11": 350.75
+        "2026-11-20": 361.5,
+        "2026-11-23": 364.25,
+        "2026-11-24": 362.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 344.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 363.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 351.0,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 362.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 352.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 352.0,
+          "at": "2026-11-25T19:20:00Z"
         }
+      },
+      "repaired_from": "oats-dec26",
+      "repair_reason": "continuous-roll-contamination",
+      "_orig": {
+        "ticker": "ZO=F",
+        "close": 369.5,
+        "open": 362.0,
+        "netChange": 7.5,
+        "pctChange": 2.0718,
+        "close_date": "2026-11-25",
+        "prev_date": "2026-11-24"
       }
     },
     "cotton": {
       "ticker": "CT=F",
-      "close": 78.56,
-      "open": 78.52,
-      "netChange": 0.04,
-      "pctChange": 0.0509,
+      "close": 81.97,
+      "open": null,
+      "netChange": null,
+      "pctChange": null,
       "wk52_hi": 92.15,
       "wk52_lo": 60.71,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "close_date": "2026-11-25",
+      "prev_date": null,
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
-      "prev_kind": "settle",
-      "settle": 78.52,
-      "settle_date": "2026-11-11",
-      "settle_net": -0.17001,
+      "close_time": "2026-11-25T19:20:00Z",
+      "settle": 79.12,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.59,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 78.77999877929688,
-        "2026-11-10": 78.69000244140625,
-        "2026-11-11": 78.5199966430664
+        "2026-11-20": 75.47000122070312,
+        "2026-11-23": 77.52999877929688,
+        "2026-11-24": 79.12000274658203
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 78.27999877929688,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 81.20999908447266,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 82.3499984741211,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 82.33999633789062,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 78.55999755859375,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 81.97000122070312,
+          "at": "2026-11-25T19:20:00Z"
         }
-      }
+      },
+      "change_withheld": "CT=F: the series' last trade on 2026-11-24 is +4.1% from that session's settle, so its trades and settles are different contract months; the change is withheld, the price is kept",
+      "move_withheld": "CT=F: the series' last trade on 2026-11-24 is +4.1% from that session's settle, so its trades and settles are different contract months; the change is withheld, the price is kept",
+      "roll": true
     },
     "rice": {
       "ticker": "ZR=F",
-      "close": 18.635,
-      "open": 17.955,
-      "netChange": 0.68,
-      "pctChange": 3.7872,
-      "wk52_hi": 18.635,
+      "close": 18.75,
+      "open": 18.835,
+      "netChange": -0.085,
+      "pctChange": -0.4513,
+      "wk52_hi": 18.98,
       "wk52_lo": 9.245,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 18.685,
-      "last_time": "2026-11-13T01:23:44Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:15:00Z",
+      "close_time": "2026-11-25T19:15:00Z",
       "prev_kind": "settle",
-      "settle": 17.955,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.065,
+      "settle": 18.835,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.01,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 17.760000228881836,
-        "2026-11-10": 17.889999389648438,
-        "2026-11-11": 17.954999923706055
+        "2026-11-20": 18.565000534057617,
+        "2026-11-23": 18.844999313354492,
+        "2026-11-24": 18.834999084472656
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 18.239999771118164,
-          "at": "2026-11-10T19:15:00Z"
+        "2026-11-23": {
+          "px": 18.799999237060547,
+          "at": "2026-11-23T19:15:00Z"
         },
-        "2026-11-11": {
-          "px": 18.295000076293945,
-          "at": "2026-11-11T19:15:00Z"
+        "2026-11-24": {
+          "px": 18.790000915527344,
+          "at": "2026-11-24T19:15:00Z"
         },
-        "2026-11-12": {
-          "px": 18.635000228881836,
-          "at": "2026-11-12T19:15:00Z"
+        "2026-11-25": {
+          "px": 18.75,
+          "at": "2026-11-25T19:15:00Z"
         }
       }
     },
     "corn-dec26": {
       "ticker": "ZCZ26.CBT",
-      "close": 442.25,
-      "open": 448.0,
-      "netChange": -5.75,
-      "pctChange": -1.2835,
+      "close": 439.5,
+      "open": 434.0,
+      "netChange": 5.5,
+      "pctChange": 1.2673,
       "wk52_hi": 549.75,
       "wk52_lo": 425.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 444.25,
-      "last_time": "2026-11-13T01:23:44Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 448.0,
-      "settle_date": "2026-11-11",
-      "settle_net": -1.0,
+      "settle": 434.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 439.25,
-        "2026-11-10": 449.0,
-        "2026-11-11": 448.0
+        "2026-11-20": 434.5,
+        "2026-11-23": 434.25,
+        "2026-11-24": 434.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 448.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 433.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 448.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 434.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 442.25,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 439.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "corn-mar27": {
       "ticker": "ZCH27.CBT",
-      "close": 454.5,
-      "open": 460.25,
-      "netChange": -5.75,
-      "pctChange": -1.2493,
+      "close": 456.25,
+      "open": 450.25,
+      "netChange": 6.0,
+      "pctChange": 1.3326,
       "wk52_hi": 564.0,
       "wk52_lo": 441.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 456.5,
-      "last_time": "2026-11-13T01:23:44Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 460.25,
-      "settle_date": "2026-11-11",
-      "settle_net": -1.25,
+      "settle": 450.25,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.5,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 452.25,
-        "2026-11-10": 461.5,
-        "2026-11-11": 460.25
+        "2026-11-20": 448.75,
+        "2026-11-23": 449.75,
+        "2026-11-24": 450.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 460.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 449.0,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 460.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 450.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 454.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 456.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "corn-may27": {
       "ticker": "ZCK27.CBT",
-      "close": 462.0,
-      "open": 468.25,
-      "netChange": -6.25,
-      "pctChange": -1.3348,
+      "close": 465.75,
+      "open": 459.75,
+      "netChange": 6.0,
+      "pctChange": 1.3051,
       "wk52_hi": 570.5,
       "wk52_lo": 450.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 463.75,
-      "last_time": "2026-11-13T01:23:44Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 468.25,
-      "settle_date": "2026-11-11",
-      "settle_net": -1.5,
+      "settle": 459.75,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 460.75,
-        "2026-11-10": 469.75,
-        "2026-11-11": 468.25
+        "2026-11-20": 457.75,
+        "2026-11-23": 458.5,
+        "2026-11-24": 459.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 468.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 457.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 469.0,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 459.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 462.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 465.75,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "corn-jul27": {
       "ticker": "ZCN27.CBT",
-      "close": 469.0,
-      "open": 475.75,
-      "netChange": -6.75,
-      "pctChange": -1.4188,
+      "close": 474.0,
+      "open": 467.75,
+      "netChange": 6.25,
+      "pctChange": 1.3362,
       "wk52_hi": 572.0,
       "wk52_lo": 457.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 470.5,
-      "last_time": "2026-11-13T01:23:44Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 475.75,
-      "settle_date": "2026-11-11",
-      "settle_net": -2.0,
+      "settle": 467.75,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 468.75,
-        "2026-11-10": 477.75,
-        "2026-11-11": 475.75
+        "2026-11-20": 465.5,
+        "2026-11-23": 466.0,
+        "2026-11-24": 467.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 476.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 465.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 476.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 467.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 469.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 474.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "corn-sep27": {
       "ticker": "ZCU27.CBT",
-      "close": 464.25,
-      "open": 471.5,
-      "netChange": -7.25,
-      "pctChange": -1.5376,
+      "close": 469.5,
+      "open": 465.25,
+      "netChange": 4.25,
+      "pctChange": 0.9135,
       "wk52_hi": 540.75,
       "wk52_lo": 453.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 465.25,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 471.5,
-      "settle_date": "2026-11-11",
-      "settle_net": -3.75,
+      "settle": 465.25,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 467.75,
-        "2026-11-10": 475.25,
-        "2026-11-11": 471.5
+        "2026-11-20": 462.0,
+        "2026-11-23": 464.0,
+        "2026-11-24": 465.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 474.25,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 463.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 472.25,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 465.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 464.25,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 469.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "corn-dec27": {
       "ticker": "ZCZ27.CBT",
-      "close": 479.0,
-      "open": 486.0,
-      "netChange": -7.0,
-      "pctChange": -1.4403,
+      "close": 484.5,
+      "open": 479.75,
+      "netChange": 4.75,
+      "pctChange": 0.9901,
       "wk52_hi": 541.5,
       "wk52_lo": 460.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 480.25,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 486.0,
-      "settle_date": "2026-11-11",
-      "settle_net": -4.5,
+      "settle": 479.75,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.5,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 483.25,
-        "2026-11-10": 490.5,
-        "2026-11-11": 486.0
+        "2026-11-20": 476.25,
+        "2026-11-23": 478.25,
+        "2026-11-24": 479.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 489.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 477.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 486.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 479.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 479.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 484.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "corn-dec28": {
       "ticker": "ZCZ28.CBT",
-      "close": 486.25,
-      "open": 491.0,
-      "netChange": -4.75,
-      "pctChange": -0.9674,
+      "close": 492.25,
+      "open": 489.25,
+      "netChange": 3.0,
+      "pctChange": 0.6132,
       "wk52_hi": 520.0,
       "wk52_lo": 462.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 486.25,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 491.0,
-      "settle_date": "2026-11-11",
-      "settle_net": -2.0,
+      "settle": 489.25,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 489.0,
-        "2026-11-10": 493.0,
-        "2026-11-11": 491.0
+        "2026-11-20": 486.75,
+        "2026-11-23": 488.5,
+        "2026-11-24": 489.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 495.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 488.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 490.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 489.5,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 486.25,
-          "at": "2026-11-12T19:20:00Z"
-        }
-      }
-    },
-    "beans-nov26": {
-      "ticker": "ZSX26.CBT",
-      "close": 1227.0,
-      "open": 1229.0,
-      "netChange": -2.0,
-      "pctChange": -0.1627,
-      "wk52_hi": 1335.25,
-      "wk52_lo": 1055.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1222.5,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
-      "prev_kind": "settle",
-      "settle": 1229.0,
-      "settle_date": "2026-11-11",
-      "settle_net": 4.5,
-      "settles_v": 2,
-      "settles": {
-        "2026-11-09": 1182.25,
-        "2026-11-10": 1224.5,
-        "2026-11-11": 1229.0
-      },
-      "day_last": {
-        "2026-11-10": {
-          "px": 1225.75,
-          "at": "2026-11-10T19:20:00Z"
-        },
-        "2026-11-11": {
-          "px": 1229.75,
-          "at": "2026-11-11T19:20:00Z"
-        },
-        "2026-11-12": {
-          "px": 1227.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 492.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-jan27": {
       "ticker": "ZSF27.CBT",
-      "close": 1219.5,
-      "open": 1230.75,
-      "netChange": -11.25,
-      "pctChange": -0.9141,
+      "close": 1243.25,
+      "open": 1234.0,
+      "netChange": 9.25,
+      "pctChange": 0.7496,
       "wk52_hi": 1350.25,
       "wk52_lo": 1067.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1224.25,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1230.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 2.75,
+      "settle": 1234.0,
+      "settle_date": "2026-11-24",
+      "settle_net": 5.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1188.25,
-        "2026-11-10": 1228.0,
-        "2026-11-11": 1230.75
+        "2026-11-20": 1220.75,
+        "2026-11-23": 1228.75,
+        "2026-11-24": 1234.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1226.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1227.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1230.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1232.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1219.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1243.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-mar27": {
       "ticker": "ZSH27.CBT",
-      "close": 1225.5,
-      "open": 1238.0,
-      "netChange": -12.5,
-      "pctChange": -1.0097,
+      "close": 1244.25,
+      "open": 1237.25,
+      "netChange": 7.0,
+      "pctChange": 0.5658,
       "wk52_hi": 1356.0,
       "wk52_lo": 1068.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1229.75,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1238.0,
-      "settle_date": "2026-11-11",
-      "settle_net": 3.5,
+      "settle": 1237.25,
+      "settle_date": "2026-11-24",
+      "settle_net": 4.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1195.0,
-        "2026-11-10": 1234.5,
-        "2026-11-11": 1238.0
+        "2026-11-20": 1224.75,
+        "2026-11-23": 1232.5,
+        "2026-11-24": 1237.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1233.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1231.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1237.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1235.5,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1225.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1244.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-may27": {
       "ticker": "ZSK27.CBT",
-      "close": 1232.75,
-      "open": 1246.75,
-      "netChange": -14.0,
-      "pctChange": -1.1229,
+      "close": 1248.5,
+      "open": 1243.0,
+      "netChange": 5.5,
+      "pctChange": 0.4425,
       "wk52_hi": 1361.0,
       "wk52_lo": 1073.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1237.0,
-      "last_time": "2026-11-13T01:23:46Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1246.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 3.75,
+      "settle": 1243.0,
+      "settle_date": "2026-11-24",
+      "settle_net": 4.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1204.5,
-        "2026-11-10": 1243.0,
-        "2026-11-11": 1246.75
+        "2026-11-20": 1230.5,
+        "2026-11-23": 1238.75,
+        "2026-11-24": 1243.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1241.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1237.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1246.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1241.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1232.75,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1248.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-jul27": {
       "ticker": "ZSN27.CBT",
-      "close": 1238.0,
-      "open": 1252.0,
-      "netChange": -14.0,
-      "pctChange": -1.1182,
+      "close": 1251.5,
+      "open": 1247.5,
+      "netChange": 4.0,
+      "pctChange": 0.3206,
       "wk52_hi": 1364.0,
       "wk52_lo": 1078.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1242.5,
-      "last_time": "2026-11-13T01:23:46Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1252.0,
-      "settle_date": "2026-11-11",
-      "settle_net": 4.0,
+      "settle": 1247.5,
+      "settle_date": "2026-11-24",
+      "settle_net": 4.5,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1211.75,
-        "2026-11-10": 1248.0,
-        "2026-11-11": 1252.0
+        "2026-11-20": 1234.0,
+        "2026-11-23": 1243.0,
+        "2026-11-24": 1247.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1246.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1241.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1251.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1245.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1238.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1251.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-aug27": {
       "ticker": "ZSQ27.CBT",
-      "close": 1220.25,
-      "open": 1234.5,
-      "netChange": -14.25,
-      "pctChange": -1.1543,
+      "close": 1231.75,
+      "open": 1228.75,
+      "netChange": 3.0,
+      "pctChange": 0.2442,
       "wk52_hi": 1344.0,
       "wk52_lo": 1076.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1224.5,
-      "last_time": "2026-11-13T01:23:46Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1234.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 2.5,
+      "settle": 1228.75,
+      "settle_date": "2026-11-24",
+      "settle_net": 4.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1200.75,
-        "2026-11-10": 1232.0,
-        "2026-11-11": 1234.5
+        "2026-11-20": 1215.75,
+        "2026-11-23": 1224.0,
+        "2026-11-24": 1228.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1230.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1222.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1234.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1227.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1220.25,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1231.75,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-sep27": {
       "ticker": "ZSU27.CBT",
-      "close": 1185.0,
-      "open": 1197.25,
-      "netChange": -12.25,
-      "pctChange": -1.0232,
+      "close": 1192.5,
+      "open": 1191.5,
+      "netChange": 1.0,
+      "pctChange": 0.0839,
       "wk52_hi": 1301.25,
       "wk52_lo": 1057.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1188.75,
-      "last_time": "2026-11-13T01:23:46Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1197.25,
-      "settle_date": "2026-11-11",
-      "settle_net": -1.75,
+      "settle": 1191.5,
+      "settle_date": "2026-11-24",
+      "settle_net": 6.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1176.5,
-        "2026-11-10": 1199.0,
-        "2026-11-11": 1197.25
+        "2026-11-20": 1178.75,
+        "2026-11-23": 1185.25,
+        "2026-11-24": 1191.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1198.25,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1183.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1197.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1190.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1185.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1192.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-nov27": {
       "ticker": "ZSX27.CBT",
-      "close": 1176.75,
-      "open": 1188.25,
-      "netChange": -11.5,
-      "pctChange": -0.9678,
+      "close": 1184.0,
+      "open": 1184.5,
+      "netChange": -0.5,
+      "pctChange": -0.0422,
       "wk52_hi": 1286.75,
       "wk52_lo": 1054.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1180.5,
-      "last_time": "2026-11-13T01:23:47Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1188.25,
-      "settle_date": "2026-11-11",
-      "settle_net": -5.5,
+      "settle": 1184.5,
+      "settle_date": "2026-11-24",
+      "settle_net": 7.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1174.5,
-        "2026-11-10": 1193.75,
-        "2026-11-11": 1188.25
+        "2026-11-20": 1171.0,
+        "2026-11-23": 1176.75,
+        "2026-11-24": 1184.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1193.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1174.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1188.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1184.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1176.75,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1184.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "beans-nov28": {
       "ticker": "ZSX28.CBT",
-      "close": 1153.25,
-      "open": 1161.75,
-      "netChange": -8.5,
-      "pctChange": -0.7317,
+      "close": 1159.5,
+      "open": 1160.25,
+      "netChange": -0.75,
+      "pctChange": -0.0646,
       "wk52_hi": 1245.5,
       "wk52_lo": 1051.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1153.25,
-      "last_time": "2026-11-13T01:23:47Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1161.75,
-      "settle_date": "2026-11-11",
-      "settle_net": -10.5,
+      "settle": 1160.25,
+      "settle_date": "2026-11-24",
+      "settle_net": 8.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1158.25,
-        "2026-11-10": 1172.25,
-        "2026-11-11": 1161.75
+        "2026-11-20": 1147.5,
+        "2026-11-23": 1151.5,
+        "2026-11-24": 1160.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1174.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1146.0,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1161.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1159.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1153.25,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1159.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "wheat-dec26": {
       "ticker": "ZWZ26.CBT",
-      "close": 582.5,
-      "open": 599.5,
-      "netChange": -17.0,
-      "pctChange": -2.8357,
+      "close": 564.0,
+      "open": 569.75,
+      "netChange": -5.75,
+      "pctChange": -1.0092,
       "wk52_hi": 795.0,
       "wk52_lo": 557.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 583.5,
-      "last_time": "2026-11-13T01:23:47Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 599.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 6.75,
+      "settle": 569.75,
+      "settle_date": "2026-11-24",
+      "settle_net": -7.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 588.0,
-        "2026-11-10": 592.75,
-        "2026-11-11": 599.5
+        "2026-11-20": 574.25,
+        "2026-11-23": 577.0,
+        "2026-11-24": 569.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 591.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 576.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 600.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 569.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 582.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 564.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "wheat-mar27": {
       "ticker": "ZWH27.CBT",
-      "close": 597.5,
-      "open": 614.25,
-      "netChange": -16.75,
-      "pctChange": -2.7269,
+      "close": 586.5,
+      "open": 589.25,
+      "netChange": -2.75,
+      "pctChange": -0.4667,
       "wk52_hi": 810.5,
       "wk52_lo": 572.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 598.75,
-      "last_time": "2026-11-13T01:23:47Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 614.25,
-      "settle_date": "2026-11-11",
-      "settle_net": 9.0,
+      "settle": 589.25,
+      "settle_date": "2026-11-24",
+      "settle_net": -6.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 600.5,
-        "2026-11-10": 605.25,
-        "2026-11-11": 614.25
+        "2026-11-20": 592.0,
+        "2026-11-23": 595.5,
+        "2026-11-24": 589.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 604.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 594.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 615.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 588.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 597.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 586.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "wheat-may27": {
       "ticker": "ZWK27.CBT",
-      "close": 603.75,
-      "open": 620.5,
-      "netChange": -16.75,
-      "pctChange": -2.6994,
+      "close": 594.0,
+      "open": 596.5,
+      "netChange": -2.5,
+      "pctChange": -0.4191,
       "wk52_hi": 816.25,
       "wk52_lo": 582.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 604.5,
-      "last_time": "2026-11-13T01:23:47Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 620.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 10.5,
+      "settle": 596.5,
+      "settle_date": "2026-11-24",
+      "settle_net": -5.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 606.0,
-        "2026-11-10": 610.0,
-        "2026-11-11": 620.5
+        "2026-11-20": 599.5,
+        "2026-11-23": 602.25,
+        "2026-11-24": 596.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 609.25,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 601.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 621.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 595.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 603.75,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 594.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "wheat-jul27": {
       "ticker": "ZWN27.CBT",
-      "close": 609.5,
-      "open": 625.25,
-      "netChange": -15.75,
-      "pctChange": -2.519,
+      "close": 602.25,
+      "open": 603.75,
+      "netChange": -1.5,
+      "pctChange": -0.2484,
       "wk52_hi": 805.0,
       "wk52_lo": 583.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 610.5,
-      "last_time": "2026-11-13T01:23:48Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 625.25,
-      "settle_date": "2026-11-11",
-      "settle_net": 9.5,
+      "settle": 603.75,
+      "settle_date": "2026-11-24",
+      "settle_net": -4.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 611.75,
-        "2026-11-10": 615.75,
-        "2026-11-11": 625.25
+        "2026-11-20": 606.25,
+        "2026-11-23": 608.5,
+        "2026-11-24": 603.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 615.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 607.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 626.25,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 603.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 609.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 602.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "wheat-sep27": {
       "ticker": "ZWU27.CBT",
-      "close": 620.75,
-      "open": 636.5,
-      "netChange": -15.75,
-      "pctChange": -2.4745,
+      "close": 616.75,
+      "open": 617.0,
+      "netChange": -0.25,
+      "pctChange": -0.0405,
       "wk52_hi": 803.0,
       "wk52_lo": 593.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 622.0,
-      "last_time": "2026-11-13T01:23:48Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 636.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 9.5,
+      "settle": 617.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -4.0,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 623.25,
-        "2026-11-10": 627.0,
-        "2026-11-11": 636.5
+        "2026-11-20": 618.0,
+        "2026-11-23": 621.0,
+        "2026-11-24": 617.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 626.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 620.0,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 637.0,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 616.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 620.75,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 616.75,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "wheat-dec27": {
       "ticker": "ZWZ27.CBT",
-      "close": 637.75,
-      "open": 652.75,
-      "netChange": -15.0,
-      "pctChange": -2.298,
+      "close": 636.25,
+      "open": 635.5,
+      "netChange": 0.75,
+      "pctChange": 0.118,
       "wk52_hi": 806.0,
       "wk52_lo": 607.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 638.5,
-      "last_time": "2026-11-13T01:23:48Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 652.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 9.0,
+      "settle": 635.5,
+      "settle_date": "2026-11-24",
+      "settle_net": -3.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 639.75,
-        "2026-11-10": 643.75,
-        "2026-11-11": 652.75
+        "2026-11-20": 635.5,
+        "2026-11-23": 638.75,
+        "2026-11-24": 635.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 643.25,
-          "at": "2026-11-10T19:20:00Z"
-        },
-        "2026-11-11": {
-          "px": 653.25,
-          "at": "2026-11-11T19:20:00Z"
-        },
-        "2026-11-12": {
+        "2026-11-23": {
           "px": 637.75,
-          "at": "2026-11-12T19:20:00Z"
+          "at": "2026-11-23T19:20:00Z"
+        },
+        "2026-11-24": {
+          "px": 634.5,
+          "at": "2026-11-24T19:20:00Z"
+        },
+        "2026-11-25": {
+          "px": 636.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "kcwheat-dec26": {
       "ticker": "KEZ26.CBT",
-      "close": 619.0,
-      "open": 639.5,
-      "netChange": -20.5,
-      "pctChange": -3.2056,
+      "close": 603.5,
+      "open": 612.5,
+      "netChange": -9.0,
+      "pctChange": -1.4694,
       "wk52_hi": 858.25,
       "wk52_lo": 564.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 619.5,
-      "last_time": "2026-11-13T01:23:48Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 639.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 5.25,
+      "settle": 612.5,
+      "settle_date": "2026-11-24",
+      "settle_net": -8.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 632.5,
-        "2026-11-10": 634.25,
-        "2026-11-11": 639.5
+        "2026-11-20": 624.5,
+        "2026-11-23": 621.25,
+        "2026-11-24": 612.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 633.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 620.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 639.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 612.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 619.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 603.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "kcwheat-mar27": {
       "ticker": "KEH27.CBT",
       "close": 629.5,
-      "open": 649.5,
-      "netChange": -20.0,
-      "pctChange": -3.0793,
+      "open": 632.25,
+      "netChange": -2.75,
+      "pctChange": -0.435,
       "wk52_hi": 870.5,
       "wk52_lo": 582.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 630.25,
-      "last_time": "2026-11-13T01:23:48Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 649.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 7.75,
+      "settle": 632.25,
+      "settle_date": "2026-11-24",
+      "settle_net": -5.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 639.25,
-        "2026-11-10": 641.75,
-        "2026-11-11": 649.5
+        "2026-11-20": 640.25,
+        "2026-11-23": 637.5,
+        "2026-11-24": 632.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 641.25,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 636.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 649.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 631.75,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
+        "2026-11-25": {
           "px": 629.5,
-          "at": "2026-11-12T19:20:00Z"
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "kcwheat-may27": {
       "ticker": "KEK27.CBT",
-      "close": 633.0,
-      "open": 652.75,
-      "netChange": -19.75,
-      "pctChange": -3.0257,
+      "close": 636.25,
+      "open": 637.5,
+      "netChange": -1.25,
+      "pctChange": -0.1961,
       "wk52_hi": 874.0,
       "wk52_lo": 591.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 634.0,
-      "last_time": "2026-11-13T01:23:49Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 652.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 8.5,
+      "settle": 637.5,
+      "settle_date": "2026-11-24",
+      "settle_net": -5.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 641.75,
-        "2026-11-10": 644.25,
-        "2026-11-11": 652.75
+        "2026-11-20": 644.75,
+        "2026-11-23": 642.75,
+        "2026-11-24": 637.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 643.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 641.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 652.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 637.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 633.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 636.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "cattle": {
       "ticker": "LEZ26.CME",
-      "close": 218.97501,
-      "open": 218.97501,
-      "netChange": 0.0,
-      "pctChange": 0.0,
+      "close": 223.575,
+      "open": 225.89999,
+      "netChange": -2.32499,
+      "pctChange": -1.0292,
       "wk52_hi": 245.9,
-      "wk52_lo": 197.05,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 201.825,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 218.97501,
-      "settle_date": "2026-11-11",
-      "settle_net": -0.22499,
+      "settle": 225.89999,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.34999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 216.1999969482422,
-        "2026-11-10": 219.1999969482422,
-        "2026-11-11": 218.97500610351562
+        "2026-11-20": 223.0,
+        "2026-11-23": 224.5500030517578,
+        "2026-11-24": 225.89999389648438
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 219.1999969482422,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 224.5500030517578,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 218.97500610351562,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 225.89999389648438,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 218.97500610351562,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 223.5749969482422,
+          "at": "2026-11-25T19:05:00Z"
         }
       },
       "alias_of": "cattle-dec26",
@@ -1570,79 +1403,79 @@
       "continuous_ticker": "LE=F"
     },
     "feeders": {
-      "ticker": "GFX26.CME",
-      "close": 335.85001,
-      "open": 332.625,
-      "netChange": 3.22501,
-      "pctChange": 0.9696,
-      "wk52_hi": 372.8,
-      "wk52_lo": 284.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "ticker": "GFF27.CME",
+      "close": 327.42499,
+      "open": 332.89999,
+      "netChange": -5.475,
+      "pctChange": -1.6446,
+      "wk52_hi": 366.425,
+      "wk52_lo": 291.25,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 332.625,
-      "settle_date": "2026-11-11",
-      "settle_net": 2.27499,
+      "settle": 332.89999,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.42502,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 328.3500061035156,
-        "2026-11-10": 330.3500061035156,
-        "2026-11-11": 332.625
+        "2026-11-20": 335.42498779296875,
+        "2026-11-23": 334.32501220703125,
+        "2026-11-24": 332.8999938964844
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 330.3500061035156,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 334.32501220703125,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 332.625,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 332.8999938964844,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 335.8500061035156,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 327.42498779296875,
+          "at": "2026-11-25T19:05:00Z"
         }
       },
-      "alias_of": "feeders-nov26",
-      "contract": "Nov '26",
+      "alias_of": "feeders-jan27",
+      "contract": "Jan '27",
       "continuous_ticker": "GF=F"
     },
     "hogs": {
       "ticker": "HEZ26.CME",
-      "close": 55.15,
-      "open": 56.025,
-      "netChange": -0.875,
-      "pctChange": -1.5618,
+      "close": 49.925,
+      "open": 51.8,
+      "netChange": -1.875,
+      "pctChange": -3.6197,
       "wk52_hi": 85.275,
-      "wk52_lo": 53.175,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 49.925,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 56.025,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.225,
+      "settle": 51.8,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.65,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 55.875,
-        "2026-11-10": 55.79999923706055,
-        "2026-11-11": 56.025001525878906
+        "2026-11-20": 52.599998474121094,
+        "2026-11-23": 52.45000076293945,
+        "2026-11-24": 51.79999923706055
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 55.79999923706055,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 52.45000076293945,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 56.025001525878906,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 51.79999923706055,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 55.150001525878906,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 49.92499923706055,
+          "at": "2026-11-25T19:05:00Z"
         }
       },
       "alias_of": "hogs-dec26",
@@ -1651,1277 +1484,1197 @@
     },
     "milk": {
       "ticker": "DCX26.CME",
-      "close": 17.84,
-      "open": 17.82,
-      "netChange": 0.02,
-      "pctChange": 0.1122,
+      "close": 17.79,
+      "open": 17.74,
+      "netChange": 0.05,
+      "pctChange": 0.2818,
       "wk52_hi": 18.95,
       "wk52_lo": 15.12,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 17.59,
-      "last_time": "2026-11-13T01:23:54Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 17.84,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.02,
+      "settle": 17.74,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.01,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 17.6299991607666,
-        "2026-11-10": 17.81999969482422,
-        "2026-11-11": 17.84000015258789
+        "2026-11-20": 17.739999771118164,
+        "2026-11-23": 17.729999542236328,
+        "2026-11-24": 17.739999771118164
       },
-      "day_last": {},
+      "day_last": {
+        "2026-11-13": {
+          "px": 17.56999969482422,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.790000915527344,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      },
       "alias_of": "milk-nov26",
       "contract": "Nov '26",
       "continuous_ticker": "DC=F"
     },
     "cattle-dec26": {
       "ticker": "LEZ26.CME",
-      "close": 218.97501,
-      "open": 218.97501,
-      "netChange": 0.0,
-      "pctChange": 0.0,
+      "close": 223.575,
+      "open": 225.89999,
+      "netChange": -2.32499,
+      "pctChange": -1.0292,
       "wk52_hi": 245.9,
-      "wk52_lo": 197.05,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 201.825,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 218.97501,
-      "settle_date": "2026-11-11",
-      "settle_net": -0.22499,
+      "settle": 225.89999,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.34999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 216.1999969482422,
-        "2026-11-10": 219.1999969482422,
-        "2026-11-11": 218.97500610351562
+        "2026-11-20": 223.0,
+        "2026-11-23": 224.5500030517578,
+        "2026-11-24": 225.89999389648438
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 219.1999969482422,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 224.5500030517578,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 218.97500610351562,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 225.89999389648438,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 218.97500610351562,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 223.5749969482422,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "cattle-feb27": {
       "ticker": "LEG27.CME",
-      "close": 223.05,
-      "open": 222.7,
-      "netChange": 0.35,
-      "pctChange": 0.1572,
+      "close": 227.10001,
+      "open": 229.825,
+      "netChange": -2.72499,
+      "pctChange": -1.1857,
       "wk52_hi": 245.9,
-      "wk52_lo": 196.975,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 200.8,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 222.7,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.125,
+      "settle": 229.825,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.075,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 220.10000610351562,
-        "2026-11-10": 222.5749969482422,
-        "2026-11-11": 222.6999969482422
+        "2026-11-20": 227.6999969482422,
+        "2026-11-23": 228.75,
+        "2026-11-24": 229.8249969482422
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 222.5749969482422,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 228.75,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 222.6999969482422,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 229.8249969482422,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 223.0500030517578,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 227.10000610351562,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "cattle-apr27": {
       "ticker": "LEJ27.CME",
-      "close": 226.02499,
-      "open": 225.625,
-      "netChange": 0.39999,
-      "pctChange": 0.1773,
+      "close": 229.375,
+      "open": 231.825,
+      "netChange": -2.45,
+      "pctChange": -1.0568,
       "wk52_hi": 245.3,
-      "wk52_lo": 196.075,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 201.375,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 225.625,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.5,
+      "settle": 231.825,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.59999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 222.89999389648438,
-        "2026-11-10": 225.125,
-        "2026-11-11": 225.625
+        "2026-11-20": 230.72500610351562,
+        "2026-11-23": 231.22500610351562,
+        "2026-11-24": 231.8249969482422
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 225.125,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 231.22500610351562,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 225.625,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 231.8249969482422,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 226.02499389648438,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 229.375,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "cattle-jun27": {
       "ticker": "LEM27.CME",
-      "close": 222.27499,
-      "open": 221.05,
-      "netChange": 1.22499,
-      "pctChange": 0.5542,
+      "close": 224.27499,
+      "open": 226.625,
+      "netChange": -2.35001,
+      "pctChange": -1.037,
       "wk52_hi": 238.625,
-      "wk52_lo": 189.675,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 195.175,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 221.05,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.425,
+      "settle": 226.625,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.575,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 218.3249969482422,
-        "2026-11-10": 220.625,
-        "2026-11-11": 221.0500030517578
+        "2026-11-20": 226.0,
+        "2026-11-23": 226.0500030517578,
+        "2026-11-24": 226.625
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 220.625,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 226.0500030517578,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 221.0500030517578,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 226.625,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 222.27499389648438,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 224.27499389648438,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "hogs-dec26": {
       "ticker": "HEZ26.CME",
-      "close": 55.15,
-      "open": 56.025,
-      "netChange": -0.875,
-      "pctChange": -1.5618,
+      "close": 49.925,
+      "open": 51.8,
+      "netChange": -1.875,
+      "pctChange": -3.6197,
       "wk52_hi": 85.275,
-      "wk52_lo": 53.175,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 49.925,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 56.025,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.225,
+      "settle": 51.8,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.65,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 55.875,
-        "2026-11-10": 55.79999923706055,
-        "2026-11-11": 56.025001525878906
+        "2026-11-20": 52.599998474121094,
+        "2026-11-23": 52.45000076293945,
+        "2026-11-24": 51.79999923706055
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 55.79999923706055,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 52.45000076293945,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 56.025001525878906,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 51.79999923706055,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 55.150001525878906,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 49.92499923706055,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "hogs-feb27": {
       "ticker": "HEG27.CME",
-      "close": 60.9,
-      "open": 60.525,
-      "netChange": 0.375,
-      "pctChange": 0.6196,
+      "close": 55.5,
+      "open": 56.425,
+      "netChange": -0.925,
+      "pctChange": -1.6393,
       "wk52_hi": 87.425,
-      "wk52_lo": 58.55,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 55.5,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 60.525,
-      "settle_date": "2026-11-11",
-      "settle_net": -0.225,
+      "settle": 56.425,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.85,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 60.82500076293945,
-        "2026-11-10": 60.75,
-        "2026-11-11": 60.525001525878906
+        "2026-11-20": 56.974998474121094,
+        "2026-11-23": 57.275001525878906,
+        "2026-11-24": 56.42499923706055
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 60.75,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 57.275001525878906,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 60.525001525878906,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 56.42499923706055,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 60.900001525878906,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 55.5,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "hogs-apr27": {
       "ticker": "HEJ27.CME",
-      "close": 66.75,
-      "open": 66.475,
-      "netChange": 0.275,
-      "pctChange": 0.4137,
+      "close": 63.05,
+      "open": 63.85,
+      "netChange": -0.8,
+      "pctChange": -1.2529,
       "wk52_hi": 91.0,
-      "wk52_lo": 65.55,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 63.05,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 66.475,
-      "settle_date": "2026-11-11",
-      "settle_net": -0.425,
+      "settle": 63.85,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.175,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 66.82499694824219,
-        "2026-11-10": 66.9000015258789,
-        "2026-11-11": 66.4749984741211
+        "2026-11-20": 64.67500305175781,
+        "2026-11-23": 64.0250015258789,
+        "2026-11-24": 63.849998474121094
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 66.9000015258789,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 64.0250015258789,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 66.4749984741211,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 63.849998474121094,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 66.75,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 63.04999923706055,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "hogs-jun27": {
       "ticker": "HEM27.CME",
-      "close": 81.875,
-      "open": 81.925,
-      "netChange": -0.05,
-      "pctChange": -0.061,
+      "close": 79.8,
+      "open": 80.2,
+      "netChange": -0.4,
+      "pctChange": -0.4988,
       "wk52_hi": 101.225,
-      "wk52_lo": 80.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 79.8,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 81.925,
-      "settle_date": "2026-11-11",
-      "settle_net": -0.3,
+      "settle": 80.2,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.175,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 82.0250015258789,
-        "2026-11-10": 82.2249984741211,
-        "2026-11-11": 81.92500305175781
+        "2026-11-20": 81.2249984741211,
+        "2026-11-23": 80.375,
+        "2026-11-24": 80.19999694824219
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 82.2249984741211,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 80.375,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 81.92500305175781,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 80.19999694824219,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 81.875,
-          "at": "2026-11-12T19:05:00Z"
-        }
-      }
-    },
-    "feeders-nov26": {
-      "ticker": "GFX26.CME",
-      "close": 335.85001,
-      "open": 332.625,
-      "netChange": 3.22501,
-      "pctChange": 0.9696,
-      "wk52_hi": 372.8,
-      "wk52_lo": 284.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
-      "prev_kind": "settle",
-      "settle": 332.625,
-      "settle_date": "2026-11-11",
-      "settle_net": 2.27499,
-      "settles_v": 2,
-      "settles": {
-        "2026-11-09": 328.3500061035156,
-        "2026-11-10": 330.3500061035156,
-        "2026-11-11": 332.625
-      },
-      "day_last": {
-        "2026-11-10": {
-          "px": 330.3500061035156,
-          "at": "2026-11-10T19:05:00Z"
-        },
-        "2026-11-11": {
-          "px": 332.625,
-          "at": "2026-11-11T19:05:00Z"
-        },
-        "2026-11-12": {
-          "px": 335.8500061035156,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 79.80000305175781,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "feeders-jan27": {
       "ticker": "GFF27.CME",
-      "close": 331.79999,
-      "open": 327.79999,
-      "netChange": 4.0,
-      "pctChange": 1.2203,
+      "close": 327.42499,
+      "open": 332.89999,
+      "netChange": -5.475,
+      "pctChange": -1.6446,
       "wk52_hi": 366.425,
-      "wk52_lo": 282.6,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 291.25,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 327.79999,
-      "settle_date": "2026-11-11",
-      "settle_net": 1.125,
+      "settle": 332.89999,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.42502,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 324.17498779296875,
-        "2026-11-10": 326.67498779296875,
-        "2026-11-11": 327.79998779296875
+        "2026-11-20": 335.42498779296875,
+        "2026-11-23": 334.32501220703125,
+        "2026-11-24": 332.8999938964844
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 326.67498779296875,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 334.32501220703125,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 327.79998779296875,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 332.8999938964844,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 331.79998779296875,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 327.42498779296875,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "feeders-mar27": {
       "ticker": "GFH27.CME",
-      "close": 328.54999,
-      "open": 324.125,
-      "netChange": 4.42499,
-      "pctChange": 1.3652,
+      "close": 323.82501,
+      "open": 329.375,
+      "netChange": -5.54999,
+      "pctChange": -1.685,
       "wk52_hi": 361.6,
       "wk52_lo": 293.5,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 324.125,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.77499,
+      "settle": 329.375,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.79999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 320.20001220703125,
-        "2026-11-10": 323.3500061035156,
-        "2026-11-11": 324.125
+        "2026-11-20": 331.67498779296875,
+        "2026-11-23": 331.17498779296875,
+        "2026-11-24": 329.375
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 323.3500061035156,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 331.17498779296875,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 324.125,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 329.375,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 328.54998779296875,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 323.82501220703125,
+          "at": "2026-11-25T19:05:00Z"
         }
       }
     },
     "oats-dec26": {
       "ticker": "ZOZ26.CBT",
-      "close": 352.5,
-      "open": 350.75,
-      "netChange": 1.75,
-      "pctChange": 0.4989,
+      "close": 352.0,
+      "open": 362.0,
+      "netChange": -10.0,
+      "pctChange": -2.7624,
       "wk52_hi": 446.5,
       "wk52_lo": 305.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 352.5,
-      "last_time": "2026-11-13T01:23:52Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 350.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 5.75,
+      "settle": 362.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -2.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 334.0,
-        "2026-11-10": 345.0,
-        "2026-11-11": 350.75
+        "2026-11-20": 361.5,
+        "2026-11-23": 364.25,
+        "2026-11-24": 362.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 344.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 363.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 351.0,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 362.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 352.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 352.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "oats-mar27": {
       "ticker": "ZOH27.CBT",
-      "close": 367.5,
-      "open": 366.25,
-      "netChange": 1.25,
-      "pctChange": 0.3413,
+      "close": 369.5,
+      "open": 377.75,
+      "netChange": -8.25,
+      "pctChange": -2.184,
       "wk52_hi": 449.75,
       "wk52_lo": 309.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 367.0,
-      "last_time": "2026-11-13T01:23:52Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 366.25,
-      "settle_date": "2026-11-11",
-      "settle_net": 4.75,
+      "settle": 377.75,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.0,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 350.75,
-        "2026-11-10": 361.5,
-        "2026-11-11": 366.25
+        "2026-11-20": 373.25,
+        "2026-11-23": 377.75,
+        "2026-11-24": 377.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 361.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 377.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 367.25,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 376.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 367.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 369.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "oats-may27": {
       "ticker": "ZOK27.CBT",
-      "close": 375.5,
-      "open": 372.75,
-      "netChange": 2.75,
-      "pctChange": 0.7378,
+      "close": 378.0,
+      "open": 382.25,
+      "netChange": -4.25,
+      "pctChange": -1.1118,
       "wk52_hi": 441.75,
       "wk52_lo": 315.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 375.5,
-      "last_time": "2026-11-13T01:23:52Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 372.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 4.0,
+      "settle": 382.25,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.0,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 359.0,
-        "2026-11-10": 368.75,
-        "2026-11-11": 372.75
+        "2026-11-20": 379.25,
+        "2026-11-23": 382.25,
+        "2026-11-24": 382.25
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 370.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-20": {
+          "px": 380.5,
+          "at": "2026-11-20T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 372.25,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-23": {
+          "px": 381.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 375.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 378.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "meal-dec26": {
       "ticker": "ZMZ26.CBT",
-      "close": 325.20001,
-      "open": 329.70001,
-      "netChange": -4.5,
-      "pctChange": -1.3649,
+      "close": 361.70001,
+      "open": 353.0,
+      "netChange": 8.70001,
+      "pctChange": 2.4646,
       "wk52_hi": 376.9,
       "wk52_lo": 299.1,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 325.89999,
-      "last_time": "2026-11-13T01:23:52Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 329.70001,
-      "settle_date": "2026-11-11",
-      "settle_net": 3.20001,
+      "settle": 353.0,
+      "settle_date": "2026-11-24",
+      "settle_net": 7.29999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 320.70001220703125,
-        "2026-11-10": 326.5,
-        "2026-11-11": 329.70001220703125
+        "2026-11-20": 341.0,
+        "2026-11-23": 345.70001220703125,
+        "2026-11-24": 353.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 326.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 345.1000061035156,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 329.6000061035156,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 352.29998779296875,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 325.20001220703125,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 361.70001220703125,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "meal-jan27": {
       "ticker": "ZMF27.CBT",
-      "close": 323.10001,
-      "open": 327.5,
-      "netChange": -4.39999,
-      "pctChange": -1.3435,
+      "close": 358.10001,
+      "open": 351.10001,
+      "netChange": 7.0,
+      "pctChange": 1.9937,
       "wk52_hi": 376.1,
       "wk52_lo": 300.6,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 324.10001,
-      "last_time": "2026-11-13T01:23:53Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 327.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 1.5,
+      "settle": 351.10001,
+      "settle_date": "2026-11-24",
+      "settle_net": 6.60001,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 320.8999938964844,
-        "2026-11-10": 326.0,
-        "2026-11-11": 327.5
+        "2026-11-20": 340.29998779296875,
+        "2026-11-23": 344.5,
+        "2026-11-24": 351.1000061035156
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 326.29998779296875,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 343.8999938964844,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 327.29998779296875,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 350.6000061035156,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 323.1000061035156,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 358.1000061035156,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "meal-mar27": {
       "ticker": "ZMH27.CBT",
-      "close": 324.39999,
-      "open": 328.10001,
-      "netChange": -3.70002,
-      "pctChange": -1.1277,
+      "close": 356.79999,
+      "open": 351.39999,
+      "netChange": 5.4,
+      "pctChange": 1.5367,
       "wk52_hi": 375.0,
       "wk52_lo": 303.9,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 325.10001,
-      "last_time": "2026-11-13T01:23:53Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 328.10001,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.20001,
+      "settle": 351.39999,
+      "settle_date": "2026-11-24",
+      "settle_net": 6.19998,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 321.79998779296875,
-        "2026-11-10": 327.8999938964844,
-        "2026-11-11": 328.1000061035156
+        "2026-11-20": 340.79998779296875,
+        "2026-11-23": 345.20001220703125,
+        "2026-11-24": 351.3999938964844
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 328.1000061035156,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 344.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 328.0,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 350.79998779296875,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 324.3999938964844,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 356.79998779296875,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "soyoil-dec26": {
       "ticker": "ZLZ26.CBT",
-      "close": 63.42,
-      "open": 63.88,
-      "netChange": -0.46,
-      "pctChange": -0.7201,
+      "close": 58.01,
+      "open": 58.11,
+      "netChange": -0.1,
+      "pctChange": -0.1721,
       "wk52_hi": 74.55,
       "wk52_lo": 48.53,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 63.5,
-      "last_time": "2026-11-13T01:23:53Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 63.88,
-      "settle_date": "2026-11-11",
-      "settle_net": 1.11,
+      "settle": 58.11,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 62.029998779296875,
-        "2026-11-10": 62.77000045776367,
-        "2026-11-11": 63.880001068115234
+        "2026-11-20": 59.810001373291016,
+        "2026-11-23": 59.36000061035156,
+        "2026-11-24": 58.11000061035156
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 62.709999084472656,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 59.279998779296875,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 63.880001068115234,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 57.959999084472656,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 63.41999816894531,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 58.0099983215332,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "soyoil-jan27": {
       "ticker": "ZLF27.CBT",
-      "close": 63.66,
-      "open": 64.09,
-      "netChange": -0.43,
-      "pctChange": -0.6709,
+      "close": 58.26,
+      "open": 58.32,
+      "netChange": -0.06,
+      "pctChange": -0.1029,
       "wk52_hi": 73.95,
       "wk52_lo": 48.64,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 63.75,
-      "last_time": "2026-11-13T01:23:53Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 64.09,
-      "settle_date": "2026-11-11",
-      "settle_net": 1.15,
+      "settle": 58.32,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.23,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 62.189998626708984,
-        "2026-11-10": 62.939998626708984,
-        "2026-11-11": 64.08999633789062
+        "2026-11-20": 60.0099983215332,
+        "2026-11-23": 59.54999923706055,
+        "2026-11-24": 58.31999969482422
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 62.900001525878906,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 59.439998626708984,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 64.11000061035156,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 58.11000061035156,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 63.65999984741211,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 58.2599983215332,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "soyoil-mar27": {
       "ticker": "ZLH27.CBT",
-      "close": 64.14,
-      "open": 64.58,
-      "netChange": -0.44,
-      "pctChange": -0.6813,
+      "close": 58.75,
+      "open": 58.8,
+      "netChange": -0.05,
+      "pctChange": -0.085,
       "wk52_hi": 73.35,
       "wk52_lo": 48.93,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 64.27,
-      "last_time": "2026-11-13T01:23:53Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 64.58,
-      "settle_date": "2026-11-11",
-      "settle_net": 1.14,
+      "settle": 58.8,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 62.70000076293945,
-        "2026-11-10": 63.439998626708984,
-        "2026-11-11": 64.58000183105469
+        "2026-11-20": 60.52000045776367,
+        "2026-11-23": 60.04999923706055,
+        "2026-11-24": 58.79999923706055
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 63.380001068115234,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 59.95000076293945,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 64.58000183105469,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 58.599998474121094,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 64.13999938964844,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 58.75,
+          "at": "2026-11-25T19:20:00Z"
         }
       }
     },
     "milk-nov26": {
       "ticker": "DCX26.CME",
-      "close": 17.84,
-      "open": 17.82,
-      "netChange": 0.02,
-      "pctChange": 0.1122,
+      "close": 17.79,
+      "open": 17.74,
+      "netChange": 0.05,
+      "pctChange": 0.2818,
       "wk52_hi": 18.95,
       "wk52_lo": 15.12,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 17.59,
-      "last_time": "2026-11-13T01:23:54Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 17.84,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.02,
+      "settle": 17.74,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.01,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 17.6299991607666,
-        "2026-11-10": 17.81999969482422,
-        "2026-11-11": 17.84000015258789
+        "2026-11-20": 17.739999771118164,
+        "2026-11-23": 17.729999542236328,
+        "2026-11-24": 17.739999771118164
       },
-      "day_last": {}
+      "day_last": {
+        "2026-11-13": {
+          "px": 17.56999969482422,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.790000915527344,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      }
     },
     "milk-dec26": {
       "ticker": "DCZ26.CME",
-      "close": 17.42,
-      "open": 16.93,
-      "netChange": 0.49,
-      "pctChange": 2.8943,
+      "close": 17.33,
+      "open": 17.12,
+      "netChange": 0.21,
+      "pctChange": 1.2266,
       "wk52_hi": 18.42,
       "wk52_lo": 15.56,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 17.24,
-      "last_time": "2026-11-13T01:23:54Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 17.42,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.49,
+      "settle": 17.12,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.21,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 16.889999389648438,
-        "2026-11-10": 16.93000030517578,
-        "2026-11-11": 17.420000076293945
+        "2026-11-20": 17.040000915527344,
+        "2026-11-23": 16.90999984741211,
+        "2026-11-24": 17.1200008392334
       },
-      "day_last": {}
+      "day_last": {
+        "2026-11-13": {
+          "px": 17.280000686645508,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.329999923706055,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      }
     },
     "milk-jan27": {
       "ticker": "DCF27.CME",
-      "close": 16.93,
-      "open": 16.6,
-      "netChange": 0.33,
-      "pctChange": 1.988,
+      "close": 17.11,
+      "open": 16.8,
+      "netChange": 0.31,
+      "pctChange": 1.8452,
       "wk52_hi": 17.9,
       "wk52_lo": 15.92,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 16.7,
-      "last_time": "2026-11-13T01:23:54Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 16.93,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.33,
+      "settle": 16.8,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.18,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 16.780000686645508,
-        "2026-11-10": 16.600000381469727,
-        "2026-11-11": 16.93000030517578
+        "2026-11-20": 16.700000762939453,
+        "2026-11-23": 16.6200008392334,
+        "2026-11-24": 16.799999237060547
       },
-      "day_last": {}
+      "day_last": {
+        "2026-11-13": {
+          "px": 16.700000762939453,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.110000610351562,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      }
     },
     "milk-feb27": {
       "ticker": "DCG27.CME",
-      "close": 16.93,
-      "open": 16.69,
-      "netChange": 0.24,
-      "pctChange": 1.438,
+      "close": 17.26,
+      "open": 16.94,
+      "netChange": 0.32,
+      "pctChange": 1.889,
       "wk52_hi": 17.83,
       "wk52_lo": 16.43,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 16.73,
-      "last_time": "2026-11-13T01:23:54Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 16.93,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.24,
+      "settle": 16.94,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.16,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 16.829999923706055,
-        "2026-11-10": 16.690000534057617,
-        "2026-11-11": 16.93000030517578
+        "2026-11-20": 16.770000457763672,
+        "2026-11-23": 16.780000686645508,
+        "2026-11-24": 16.940000534057617
       },
-      "day_last": {}
+      "day_last": {
+        "2026-11-13": {
+          "px": 16.709999084472656,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.260000228881836,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      }
     },
     "milk-mar27": {
       "ticker": "DCH27.CME",
-      "close": 17.12,
-      "open": 16.98,
-      "netChange": 0.14,
-      "pctChange": 0.8245,
+      "close": 17.4,
+      "open": 17.15,
+      "netChange": 0.25,
+      "pctChange": 1.4577,
       "wk52_hi": 17.9,
       "wk52_lo": 16.76,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 17.08,
-      "last_time": "2026-11-13T01:23:54Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 17.12,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.14,
+      "settle": 17.15,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.07,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 17.09000015258789,
-        "2026-11-10": 16.979999542236328,
-        "2026-11-11": 17.1200008392334
+        "2026-11-20": 17.040000915527344,
+        "2026-11-23": 17.079999923706055,
+        "2026-11-24": 17.149999618530273
       },
-      "day_last": {}
+      "day_last": {
+        "2026-11-13": {
+          "px": 17.0,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.399999618530273,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      }
     },
     "milk-apr27": {
       "ticker": "DCJ27.CME",
-      "close": 17.2,
-      "open": 17.09,
-      "netChange": 0.11,
-      "pctChange": 0.6437,
+      "close": 17.4,
+      "open": 17.34,
+      "netChange": 0.06,
+      "pctChange": 0.346,
       "wk52_hi": 18.0,
       "wk52_lo": 16.92,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 17.14,
-      "last_time": "2026-11-13T01:23:55Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 17.2,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.11,
+      "settle": 17.34,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.08,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 17.18000030517578,
-        "2026-11-10": 17.09000015258789,
-        "2026-11-11": 17.200000762939453
+        "2026-11-20": 17.200000762939453,
+        "2026-11-23": 17.260000228881836,
+        "2026-11-24": 17.34000015258789
       },
-      "day_last": {}
+      "day_last": {
+        "2026-11-13": {
+          "px": 17.1200008392334,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.399999618530273,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      }
     },
     "meal": {
       "ticker": "ZM=F",
-      "close": 325.20001,
-      "open": 329.70001,
-      "netChange": -4.5,
-      "pctChange": -1.3649,
+      "close": 361.70001,
+      "open": 353.0,
+      "netChange": 8.70001,
+      "pctChange": 2.4646,
       "wk52_hi": 377.6,
       "wk52_lo": 286.4,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 325.89999,
-      "last_time": "2026-11-13T01:23:52Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 329.70001,
-      "settle_date": "2026-11-11",
-      "settle_net": 3.20001,
+      "settle": 353.0,
+      "settle_date": "2026-11-24",
+      "settle_net": 7.29999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 320.70001220703125,
-        "2026-11-10": 326.5,
-        "2026-11-11": 329.70001220703125
+        "2026-11-20": 341.0,
+        "2026-11-23": 345.70001220703125,
+        "2026-11-24": 353.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 326.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 345.1000061035156,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 329.6000061035156,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 352.29998779296875,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 323.1000061035156,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 361.70001220703125,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "repaired_from": "meal-dec26",
       "repair_reason": "continuous-roll-contamination",
       "_orig": {
         "ticker": "ZM=F",
-        "close": 323.10001,
-        "open": 329.70001,
-        "netChange": -6.6,
-        "pctChange": -2.0018,
-        "close_date": "2026-11-12",
-        "prev_date": "2026-11-11"
+        "close": 358.10001,
+        "open": 353.0,
+        "netChange": 5.10001,
+        "pctChange": 1.4448,
+        "close_date": "2026-11-25",
+        "prev_date": "2026-11-24"
       }
     },
     "soyoil": {
       "ticker": "ZL=F",
-      "close": 63.42,
-      "open": 63.88,
-      "netChange": -0.46,
-      "pctChange": -0.7201,
+      "close": 58.01,
+      "open": 58.11,
+      "netChange": -0.1,
+      "pctChange": -0.1721,
       "wk52_hi": 79.69,
       "wk52_lo": 47.51,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 63.5,
-      "last_time": "2026-11-13T01:23:55Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 63.88,
-      "settle_date": "2026-11-11",
-      "settle_net": 1.11,
+      "settle": 58.11,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 62.029998779296875,
-        "2026-11-10": 62.77000045776367,
-        "2026-11-11": 63.880001068115234
+        "2026-11-20": 59.810001373291016,
+        "2026-11-23": 59.36000061035156,
+        "2026-11-24": 58.11000061035156
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 62.709999084472656,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 59.279998779296875,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 63.880001068115234,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 57.959999084472656,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 63.41999816894531,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 58.0099983215332,
+          "at": "2026-11-25T19:20:00Z"
         }
+      },
+      "repaired_from": "soyoil-dec26",
+      "repair_reason": "continuous-roll-contamination",
+      "_orig": {
+        "ticker": "ZL=F",
+        "close": 58.26,
+        "open": 58.11,
+        "netChange": 0.15,
+        "pctChange": 0.2581,
+        "close_date": "2026-11-25",
+        "prev_date": "2026-11-24"
       }
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 86.53,
-      "open": 86.04,
-      "netChange": 0.49,
-      "pctChange": 0.5695,
+      "close": 83.84,
+      "open": 82.05,
+      "netChange": 1.79,
+      "pctChange": 2.1816,
       "wk52_hi": 119.48,
       "wk52_lo": 54.98,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 88.4,
-      "last_time": "2026-11-13T01:23:55Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-11T22:00:00Z"
+      "close_time": "2026-11-25T22:00:00Z"
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 3.215,
-      "open": 3.296,
-      "netChange": -0.081,
-      "pctChange": -2.4575,
+      "close": 3.678,
+      "open": 3.323,
+      "netChange": 0.355,
+      "pctChange": 10.6831,
       "wk52_hi": 7.827,
       "wk52_lo": 2.483,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 3.36,
-      "last_time": "2026-11-13T01:23:55Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-11T22:00:00Z"
+      "close_time": "2026-11-25T22:00:00Z",
+      "move_withheld": "NG=F moved +10.68% from 3.323 (2026-11-24) to 3.678 (2026-11-25), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld",
+      "roll": true
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 4000.5,
-      "open": 4030.19995,
-      "netChange": -29.69995,
-      "pctChange": -0.7369,
+      "close": 3618.80005,
+      "open": 3561.8999,
+      "netChange": 56.90015,
+      "pctChange": 1.5975,
       "wk52_hi": 5586.2002,
-      "wk52_lo": 3879.3,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 3891.3999,
-      "last_time": "2026-11-13T01:23:56Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
+      "wk52_lo": 3502.8999,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-11T22:00:00Z"
+      "close_time": "2026-11-25T22:00:00Z"
     },
     "silver": {
       "ticker": "SI=F",
-      "close": 51.881,
-      "open": 51.101,
-      "netChange": 0.78,
-      "pctChange": 1.5264,
+      "close": 42.12,
+      "open": 40.76,
+      "netChange": 1.36,
+      "pctChange": 3.3366,
       "wk52_hi": 121.3,
-      "wk52_lo": 48.125,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 49.98,
-      "last_time": "2026-11-13T01:23:56Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
+      "wk52_lo": 40.665,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-11T22:00:00Z"
+      "close_time": "2026-11-25T22:00:00Z"
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 103.182,
-      "open": 102.91,
-      "netChange": 0.272,
-      "pctChange": 0.2643,
-      "wk52_hi": 103.182,
+      "close": 103.745,
+      "open": 103.81,
+      "netChange": -0.065,
+      "pctChange": -0.0626,
+      "wk52_hi": 104.53,
       "wk52_lo": 95.55,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": null
     },
     "treasury10": {
       "ticker": "^TNX",
-      "close": 5.103,
-      "open": 4.998,
-      "netChange": 0.105,
-      "pctChange": 2.1008,
+      "close": 4.848,
+      "open": 4.904,
+      "netChange": -0.056,
+      "pctChange": -1.1419,
       "wk52_hi": 5.364,
       "wk52_lo": 3.956,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": null
     },
     "sp500": {
       "ticker": "^GSPC",
-      "close": 7592.3999,
-      "open": 7619.37988,
-      "netChange": -26.97998,
-      "pctChange": -0.3541,
+      "close": 7182.77979,
+      "open": 7201.08984,
+      "netChange": -18.31005,
+      "pctChange": -0.2543,
       "wk52_hi": 7844.52,
       "wk52_lo": 6316.9102,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": null
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 70940.86719,
-      "open": 73964.46875,
-      "netChange": -3023.60156,
-      "pctChange": -4.0879,
-      "wk52_hi": 99804.4297,
-      "wk52_lo": 57747.7656,
-      "close_date": "2026-11-13",
-      "prev_date": "2026-11-11",
+      "close": 60656.46094,
+      "open": 59747.76562,
+      "netChange": 908.69532,
+      "pctChange": 1.5209,
+      "wk52_hi": 97860.6016,
+      "wk52_lo": 55149.5664,
+      "close_date": "2026-11-26",
+      "prev_date": "2026-11-24",
       "close_kind": null
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.0311,
-      "open": 1.05284,
-      "netChange": -0.02174,
-      "pctChange": -2.0649,
+      "close": 0.9552,
+      "open": 0.92437,
+      "netChange": 0.03083,
+      "pctChange": 3.3352,
       "wk52_hi": 2.4103,
-      "wk52_lo": 0.9884,
-      "close_date": "2026-11-13",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 0.8664,
+      "close_date": "2026-11-26",
+      "prev_date": "2026-11-24",
       "close_kind": null
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.02881,
-      "open": 0.02904,
-      "netChange": -0.00023,
-      "pctChange": -0.792,
+      "close": 0.02672,
+      "open": 0.02607,
+      "netChange": 0.00065,
+      "pctChange": 2.4933,
       "wk52_hi": 0.0627,
-      "wk52_lo": 0.025,
-      "close_date": "2026-11-13",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 0.0241,
+      "close_date": "2026-11-26",
+      "prev_date": "2026-11-24",
       "close_kind": null
     },
     "corn-nearby": {
       "ticker": "ZCZ26.CBT",
-      "close": 442.25,
-      "open": 448.0,
-      "netChange": -5.75,
-      "pctChange": -1.2835,
+      "close": 439.5,
+      "open": 434.0,
+      "netChange": 5.5,
+      "pctChange": 1.2673,
       "wk52_hi": 549.75,
       "wk52_lo": 425.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 444.25,
-      "last_time": "2026-11-13T01:23:44Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 448.0,
-      "settle_date": "2026-11-11",
-      "settle_net": -1.0,
+      "settle": 434.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 439.25,
-        "2026-11-10": 449.0,
-        "2026-11-11": 448.0
+        "2026-11-20": 434.5,
+        "2026-11-23": 434.25,
+        "2026-11-24": 434.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 448.0,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 433.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 448.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 434.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 442.25,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 439.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "alias_of": "corn-dec26",
@@ -2929,43 +2682,38 @@
     },
     "beans-nearby": {
       "ticker": "ZSF27.CBT",
-      "close": 1219.5,
-      "open": 1230.75,
-      "netChange": -11.25,
-      "pctChange": -0.9141,
+      "close": 1243.25,
+      "open": 1234.0,
+      "netChange": 9.25,
+      "pctChange": 0.7496,
       "wk52_hi": 1350.25,
       "wk52_lo": 1067.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 1224.25,
-      "last_time": "2026-11-13T01:23:45Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 1230.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 2.75,
+      "settle": 1234.0,
+      "settle_date": "2026-11-24",
+      "settle_net": 5.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 1188.25,
-        "2026-11-10": 1228.0,
-        "2026-11-11": 1230.75
+        "2026-11-20": 1220.75,
+        "2026-11-23": 1228.75,
+        "2026-11-24": 1234.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 1226.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 1227.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 1230.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 1232.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 1219.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 1243.25,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "alias_of": "beans-jan27",
@@ -2973,43 +2721,38 @@
     },
     "wheat-nearby": {
       "ticker": "ZWZ26.CBT",
-      "close": 582.5,
-      "open": 599.5,
-      "netChange": -17.0,
-      "pctChange": -2.8357,
+      "close": 564.0,
+      "open": 569.75,
+      "netChange": -5.75,
+      "pctChange": -1.0092,
       "wk52_hi": 795.0,
       "wk52_lo": 557.25,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 583.5,
-      "last_time": "2026-11-13T01:23:47Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 599.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 6.75,
+      "settle": 569.75,
+      "settle_date": "2026-11-24",
+      "settle_net": -7.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 588.0,
-        "2026-11-10": 592.75,
-        "2026-11-11": 599.5
+        "2026-11-20": 574.25,
+        "2026-11-23": 577.0,
+        "2026-11-24": 569.75
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 591.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 576.25,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 600.75,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 569.25,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 582.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 564.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "alias_of": "wheat-dec26",
@@ -3017,38 +2760,38 @@
     },
     "cattle-nearby": {
       "ticker": "LEZ26.CME",
-      "close": 218.97501,
-      "open": 218.97501,
-      "netChange": 0.0,
-      "pctChange": 0.0,
+      "close": 223.575,
+      "open": 225.89999,
+      "netChange": -2.32499,
+      "pctChange": -1.0292,
       "wk52_hi": 245.9,
-      "wk52_lo": 197.05,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 201.825,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 218.97501,
-      "settle_date": "2026-11-11",
-      "settle_net": -0.22499,
+      "settle": 225.89999,
+      "settle_date": "2026-11-24",
+      "settle_net": 1.34999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 216.1999969482422,
-        "2026-11-10": 219.1999969482422,
-        "2026-11-11": 218.97500610351562
+        "2026-11-20": 223.0,
+        "2026-11-23": 224.5500030517578,
+        "2026-11-24": 225.89999389648438
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 219.1999969482422,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 224.5500030517578,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 218.97500610351562,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 225.89999389648438,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 218.97500610351562,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 223.5749969482422,
+          "at": "2026-11-25T19:05:00Z"
         }
       },
       "alias_of": "cattle-dec26",
@@ -3056,43 +2799,38 @@
     },
     "kcwheat-nearby": {
       "ticker": "KEZ26.CBT",
-      "close": 619.0,
-      "open": 639.5,
-      "netChange": -20.5,
-      "pctChange": -3.2056,
+      "close": 603.5,
+      "open": 612.5,
+      "netChange": -9.0,
+      "pctChange": -1.4694,
       "wk52_hi": 858.25,
       "wk52_lo": 564.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 619.5,
-      "last_time": "2026-11-13T01:23:48Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 639.5,
-      "settle_date": "2026-11-11",
-      "settle_net": 5.25,
+      "settle": 612.5,
+      "settle_date": "2026-11-24",
+      "settle_net": -8.75,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 632.5,
-        "2026-11-10": 634.25,
-        "2026-11-11": 639.5
+        "2026-11-20": 624.5,
+        "2026-11-23": 621.25,
+        "2026-11-24": 612.5
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 633.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 620.5,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 639.5,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 612.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 619.0,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 603.5,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "alias_of": "kcwheat-dec26",
@@ -3100,43 +2838,38 @@
     },
     "oats-nearby": {
       "ticker": "ZOZ26.CBT",
-      "close": 352.5,
-      "open": 350.75,
-      "netChange": 1.75,
-      "pctChange": 0.4989,
+      "close": 352.0,
+      "open": 362.0,
+      "netChange": -10.0,
+      "pctChange": -2.7624,
       "wk52_hi": 446.5,
       "wk52_lo": 305.75,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 352.5,
-      "last_time": "2026-11-13T01:23:52Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 350.75,
-      "settle_date": "2026-11-11",
-      "settle_net": 5.75,
+      "settle": 362.0,
+      "settle_date": "2026-11-24",
+      "settle_net": -2.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 334.0,
-        "2026-11-10": 345.0,
-        "2026-11-11": 350.75
+        "2026-11-20": 361.5,
+        "2026-11-23": 364.25,
+        "2026-11-24": 362.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 344.75,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 363.75,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 351.0,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 362.0,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 352.5,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 352.0,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "alias_of": "oats-dec26",
@@ -3144,43 +2877,38 @@
     },
     "meal-nearby": {
       "ticker": "ZMZ26.CBT",
-      "close": 325.20001,
-      "open": 329.70001,
-      "netChange": -4.5,
-      "pctChange": -1.3649,
+      "close": 361.70001,
+      "open": 353.0,
+      "netChange": 8.70001,
+      "pctChange": 2.4646,
       "wk52_hi": 376.9,
       "wk52_lo": 299.1,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 325.89999,
-      "last_time": "2026-11-13T01:23:52Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 329.70001,
-      "settle_date": "2026-11-11",
-      "settle_net": 3.20001,
+      "settle": 353.0,
+      "settle_date": "2026-11-24",
+      "settle_net": 7.29999,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 320.70001220703125,
-        "2026-11-10": 326.5,
-        "2026-11-11": 329.70001220703125
+        "2026-11-20": 341.0,
+        "2026-11-23": 345.70001220703125,
+        "2026-11-24": 353.0
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 326.5,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 345.1000061035156,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 329.6000061035156,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 352.29998779296875,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 325.20001220703125,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 361.70001220703125,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "alias_of": "meal-dec26",
@@ -3188,121 +2916,116 @@
     },
     "soyoil-nearby": {
       "ticker": "ZLZ26.CBT",
-      "close": 63.42,
-      "open": 63.88,
-      "netChange": -0.46,
-      "pctChange": -0.7201,
+      "close": 58.01,
+      "open": 58.11,
+      "netChange": -0.1,
+      "pctChange": -0.1721,
       "wk52_hi": 74.55,
       "wk52_lo": 48.53,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
-      "settled": true,
-      "last": 63.5,
-      "last_time": "2026-11-13T01:23:53Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:20:00Z",
+      "close_time": "2026-11-25T19:20:00Z",
       "prev_kind": "settle",
-      "settle": 63.88,
-      "settle_date": "2026-11-11",
-      "settle_net": 1.11,
+      "settle": 58.11,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.25,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 62.029998779296875,
-        "2026-11-10": 62.77000045776367,
-        "2026-11-11": 63.880001068115234
+        "2026-11-20": 59.810001373291016,
+        "2026-11-23": 59.36000061035156,
+        "2026-11-24": 58.11000061035156
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 62.709999084472656,
-          "at": "2026-11-10T19:20:00Z"
+        "2026-11-23": {
+          "px": 59.279998779296875,
+          "at": "2026-11-23T19:20:00Z"
         },
-        "2026-11-11": {
-          "px": 63.880001068115234,
-          "at": "2026-11-11T19:20:00Z"
+        "2026-11-24": {
+          "px": 57.959999084472656,
+          "at": "2026-11-24T19:20:00Z"
         },
-        "2026-11-12": {
-          "px": 63.41999816894531,
-          "at": "2026-11-12T19:20:00Z"
+        "2026-11-25": {
+          "px": 58.0099983215332,
+          "at": "2026-11-25T19:20:00Z"
         }
       },
       "alias_of": "soyoil-dec26",
       "contract": "Dec '26"
     },
     "feeders-nearby": {
-      "ticker": "GFX26.CME",
-      "close": 335.85001,
-      "open": 332.625,
-      "netChange": 3.22501,
-      "pctChange": 0.9696,
-      "wk52_hi": 372.8,
-      "wk52_lo": 284.0,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "ticker": "GFF27.CME",
+      "close": 327.42499,
+      "open": 332.89999,
+      "netChange": -5.475,
+      "pctChange": -1.6446,
+      "wk52_hi": 366.425,
+      "wk52_lo": 291.25,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 332.625,
-      "settle_date": "2026-11-11",
-      "settle_net": 2.27499,
+      "settle": 332.89999,
+      "settle_date": "2026-11-24",
+      "settle_net": -1.42502,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 328.3500061035156,
-        "2026-11-10": 330.3500061035156,
-        "2026-11-11": 332.625
+        "2026-11-20": 335.42498779296875,
+        "2026-11-23": 334.32501220703125,
+        "2026-11-24": 332.8999938964844
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 330.3500061035156,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 334.32501220703125,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 332.625,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 332.8999938964844,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 335.8500061035156,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 327.42498779296875,
+          "at": "2026-11-25T19:05:00Z"
         }
       },
-      "alias_of": "feeders-nov26",
-      "contract": "Nov '26"
+      "alias_of": "feeders-jan27",
+      "contract": "Jan '27"
     },
     "hogs-nearby": {
       "ticker": "HEZ26.CME",
-      "close": 55.15,
-      "open": 56.025,
-      "netChange": -0.875,
-      "pctChange": -1.5618,
+      "close": 49.925,
+      "open": 51.8,
+      "netChange": -1.875,
+      "pctChange": -3.6197,
       "wk52_hi": 85.275,
-      "wk52_lo": 53.175,
-      "close_date": "2026-11-12",
-      "prev_date": "2026-11-11",
+      "wk52_lo": 49.925,
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
       "close_kind": "last",
-      "close_time": "2026-11-12T19:05:00Z",
+      "close_time": "2026-11-25T19:05:00Z",
       "prev_kind": "settle",
-      "settle": 56.025,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.225,
+      "settle": 51.8,
+      "settle_date": "2026-11-24",
+      "settle_net": -0.65,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 55.875,
-        "2026-11-10": 55.79999923706055,
-        "2026-11-11": 56.025001525878906
+        "2026-11-20": 52.599998474121094,
+        "2026-11-23": 52.45000076293945,
+        "2026-11-24": 51.79999923706055
       },
       "day_last": {
-        "2026-11-10": {
-          "px": 55.79999923706055,
-          "at": "2026-11-10T19:05:00Z"
+        "2026-11-23": {
+          "px": 52.45000076293945,
+          "at": "2026-11-23T19:05:00Z"
         },
-        "2026-11-11": {
-          "px": 56.025001525878906,
-          "at": "2026-11-11T19:05:00Z"
+        "2026-11-24": {
+          "px": 51.79999923706055,
+          "at": "2026-11-24T19:05:00Z"
         },
-        "2026-11-12": {
-          "px": 55.150001525878906,
-          "at": "2026-11-12T19:05:00Z"
+        "2026-11-25": {
+          "px": 49.92499923706055,
+          "at": "2026-11-25T19:05:00Z"
         }
       },
       "alias_of": "hogs-dec26",
@@ -3310,32 +3033,36 @@
     },
     "milk-nearby": {
       "ticker": "DCX26.CME",
-      "close": 17.84,
-      "open": 17.82,
-      "netChange": 0.02,
-      "pctChange": 0.1122,
+      "close": 17.79,
+      "open": 17.74,
+      "netChange": 0.05,
+      "pctChange": 0.2818,
       "wk52_hi": 18.95,
       "wk52_lo": 15.12,
-      "close_date": "2026-11-11",
-      "prev_date": "2026-11-10",
-      "settled": true,
-      "last": 17.59,
-      "last_time": "2026-11-13T01:23:54Z",
-      "last_date": "2026-11-13",
-      "last_net": null,
-      "settle_pending": "2026-11-12",
-      "close_kind": "settle",
+      "close_date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "close_kind": "last",
+      "close_time": "2026-11-25T19:55:00Z",
       "prev_kind": "settle",
-      "settle": 17.84,
-      "settle_date": "2026-11-11",
-      "settle_net": 0.02,
+      "settle": 17.74,
+      "settle_date": "2026-11-24",
+      "settle_net": 0.01,
       "settles_v": 2,
       "settles": {
-        "2026-11-09": 17.6299991607666,
-        "2026-11-10": 17.81999969482422,
-        "2026-11-11": 17.84000015258789
+        "2026-11-20": 17.739999771118164,
+        "2026-11-23": 17.729999542236328,
+        "2026-11-24": 17.739999771118164
       },
-      "day_last": {},
+      "day_last": {
+        "2026-11-13": {
+          "px": 17.56999969482422,
+          "at": "2026-11-13T19:55:00Z"
+        },
+        "2026-11-25": {
+          "px": 17.790000915527344,
+          "at": "2026-11-25T19:55:00Z"
+        }
+      },
       "alias_of": "milk-nov26",
       "contract": "Nov '26"
     }

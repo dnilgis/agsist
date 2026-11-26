@@ -102,7 +102,7 @@
     var dec24 = cut.slice(0, 4) + '-12-24';   // the cutoff's own December, so a stale cutoff never runs a gift line all next year
     if (cut && today > cut && today <= dec24 && typeof cfg.gift_card_title === 'string' && cfg.gift_card_title) {
       return { angle: 'gift', title: 'Still need a gift?', href: '/rain-print', cta: 'Make yours',
-        text: 'Give this year’s Rain Print. Print a gift card for under the tree now; the print ships in January, once the year is in.', price: price };
+        text: 'Give this year’s Rain Print. Print a card to give now, for under the tree; the print ships in January, once the year is in.', price: price };
     }
     return { angle: 'evergreen', title: 'A year of rain, printed for the wall', href: '/rain-print', cta: 'Make yours',
       text: 'Type your town and see every rain of the year at the nearest weather station, printed on 13 x 19 paper. Free to make.', price: price };
@@ -117,7 +117,7 @@
     if (today <= pc && today <= fc) return 'For Christmas delivery, order a framed print by ' + shortDate(fc) + ', a print by ' + shortDate(pc) + '.';
     if (today <= pc) return 'For Christmas delivery, order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.';
     if (today <= fc) return 'For Christmas delivery, order a framed print by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
-    return 'A past year ordered now ships after Christmas. The digital file still comes by email in 1 business day, or give this year\u2019s print: a gift card now, the print in January.';
+    return 'A past year ordered now ships after Christmas. The digital file still comes by email in 1 business day, or give this year\u2019s print: a card to give now, the print in January.';
   }
   // Where "see" points: the saved ZIP and last year when known, else the plain page.
   function seeHref(zip, today) {
@@ -143,7 +143,7 @@
     var st = doc.createElement('style'); st.id = 'rp-promo-css';
     st.textContent = '.rp-promo{margin:1.2rem 0 .8rem;font-size:.9rem;line-height:1.5;color:var(--text-dim)}' +
       '.rp-promo a{color:var(--brand);text-decoration:underline;text-underline-offset:2px}' +
-      '.rp-card{margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text)}' +
+      '.rp-card{margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text)}' +
       '.rp-card:hover,.rp-card:focus-within{border-color:var(--brand)}' +
       'a.rp-card-main{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--text)}' +
       'a.rp-card-main:focus-visible,a.rp-card-alt:focus-visible{outline:2px solid var(--brand);outline-offset:2px}' +

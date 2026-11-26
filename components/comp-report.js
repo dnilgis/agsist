@@ -219,26 +219,6 @@
     return why.length ? 'No: ' + why.join('; ') : 'Passes (market sale by our rule)';
   };
 
-  // ── CSV of the comps ───────────────────────────────────────────────
-  CR.CSV_COLS = ['No', 'Deed date', 'Recorded', 'Price', 'Acres', 'Price per acre', 'Parcel number', 'Parcels in sale', 'Section township range', 'Legal description',
-    'Town', 'County', 'State', 'Class', 'Deed type', 'Arms length screen', 'Related parties', 'Fee exempt', 'Seller as recorded', 'Buyer as recorded',
-    'Miles to town center', 'Miles to parcel', 'Soil productivity NCCPI', 'Document', 'Source', 'Flags', 'Verified with a party'];
-  function cell(v) {
-    var s = v == null ? '' : String(v);
-    if (/^[=+@\t\r-]/.test(s) && !/^-?\d+(\.\d+)?$/.test(s)) s = "'" + s;   // a spreadsheet must not read a name as a formula
-    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-  }
-  CR.csv = function (list, names, today) {
-    var out = [CR.CSV_COLS.join(',')];
-    (list || []).forEach(function (r) {
-      out.push([r.no, r.dm ? String(r.date || '').slice(0, 7) : r.date || '', r.rec || '', num(r.price) > 0 ? Math.round(r.price) : '', r.acres > 0 ? +r.acres : (r.acUnsure ? 'uncertain' : ''), r.ppa != null ? r.ppa : '',
-        r.pid || '', +r.np || 1, F.strOf(F.legalText(r)) || '', F.legalHeld(r) && names !== 'shown' ? 'names a buyer or seller: tap Show buyer and seller' : F.legalText(r), r.muniName || '', r.county || '', r.st || '', F.classLabel(r.cls, r.st), r.conv || '',
-        CR.screenText(r, today), F.relatedParty(r) ? 'yes' : 'not marked', r.exempt ? 'yes' : 'no', names === 'shown' ? (r.grantor || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy', names === 'shown' ? (r.grantee || '') : names === 'later' ? 'names come after the next update' : names ? 'tap Show buyer and seller' : 'not in our copy',
-        r.mi != null ? r.mi.toFixed(1) : '', r.pmi != null ? r.pmi.toFixed(1) : '', r.soil && r.soil.np != null ? Math.round(r.soil.np * 100) : '', r.doc || '', r.src || '', CR.flags(r).join('; '), 'unverified'].map(cell).join(','));
-    });
-    return out.join('\r\n') + '\r\n';
-  };
-
   // ── soils (the worker answers SSURGO rows: [.., .., name, acres, class, .., nccpi, .., .., .., csr2]) ──
   CR.soilOf = function (d) {
     var rows = d && d.Table; if (!rows || !rows.length) return null;
@@ -250,7 +230,7 @@
   CR.soilText = function (s) {
     if (!s) return null;
     var b = [];
-    if (s.np != null) b.push(Math.round(s.np * 100) + '/100 NCCPI');
+    if (s.np != null) b.push('NCCPI ' + s.np.toFixed(2));
     if (s.cs != null) b.push('CSR2 ' + s.cs.toFixed(1));
     return b.length ? b.join(', ') : null;
   };
@@ -468,9 +448,8 @@
     var P = CR.parseParams(location.search, today());
     $('cr-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     $('cr-print').addEventListener('click', function () { window.print(); });
-    if (!P.ok) { $('cr-none').hidden = false; $('cr-print').hidden = true; $('cr-csv').hidden = true; if (P.notes.length) set('cr-none-why', ' ' + esc(P.notes.join(' '))); return; }
+    if (!P.ok) { $('cr-none').hidden = false; $('cr-print').hidden = true; if (P.notes.length) set('cr-none-why', ' ' + esc(P.notes.join(' '))); return; }
     $('cr-body').hidden = false;
-    $('cr-csv').hidden = true;   // shown once there are comps to download
     var S = { P: P, subj: P.subject, parcels: [], list: [] };
     var link = location.origin + location.pathname + '?' + CR.toQuery(P);
     set('cr-params', '<table class="fl-kv">' + CR.paramsRows(P).map(function (r) { return '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' +
@@ -581,7 +560,7 @@
         var t = CR.soilText(s);
         set('cr-soil', (t ? '<p><b class="cr-big">' + esc(t) + '</b></p>' : '') + '<table class="cr-q"><thead><tr><th>Soil</th><th class="n">Acres</th><th class="n">Class</th></tr></thead><tbody>' +
           s.top.map(function (x) { return '<tr><td>' + esc(x.name) + '</td><td class="n">' + (x.ac > 0 ? x.ac.toFixed(1) : '') + '</td><td class="n">' + (x.nicc || '') + '</td></tr>'; }).join('') + '</tbody></table>' +
-          note('Weighted by acres in the outline. NCCPI is USDA’s National Commodity Crop Productivity Index (0 to 100); class is land capability, 1 best to 8. USDA NRCS soil survey (SSURGO).'));
+          note('Weighted by acres in the outline. NCCPI is USDA’s National Commodity Crop Productivity Index (0 to 1); class is land capability, 1 best to 8. USDA NRCS soil survey (SSURGO).'));
       }).catch(function () { set('cr-soil', note('The soil survey did not answer. Reload in a minute.')); });
     }
     function loadCDL() {
@@ -594,7 +573,7 @@
       }).catch(function () { set('cr-cdl', note('USDA crop history did not answer.')); });
     }
     function loadAtlas() {
-      getJSON('/data/atlas/counties/' + S.fips + '.json', 15000).then(function (a) {
+      getJSON('https://dnilgis.github.io/agsist-data/data/atlas/counties/' + S.fips + '.json', 15000).then(function (a) {
         var v = a.value || {}, r = a.rent || {}, rows = [];
         function kv(k, x, n) { rows.push('<tr><th>' + esc(k) + '</th><td>' + x + (n ? '<div class="fl-note">' + n + '</div>' : '') + '</td></tr>'); }
         if (v.status === 'ok' && v.latest) kv('Census land and buildings value', fm(v.latest) + '/acre (' + v.latest_year + ')', 'USDA Census of Agriculture, what operators reported, buildings included. Not a sale price.' + (v.flag ? ' <span class="fl-warn">The ' + v.latest_year + ' figure ' + esc(v.flag.dir) + ' ' + Math.abs(v.flag.own_pct) + '% while ' + v.flag.n + ' neighboring counties moved a median ' + v.flag.nb_pct + '%; read with care.</span>' : ''));
@@ -624,7 +603,6 @@
         set('cr-own', ps.map(function (p, k) { return (ps.length > 1 ? '<h4>Parcel ' + esc(p.id || k + 1) + '</h4>' : '') + F.historyHTML(F.matchTransfers(p, homeRows), F.covOf(home)); }).join(''));
       } else set('cr-own', note(home ? 'Without a parcel number for the subject we cannot pick its own transfers out of the county record.' : 'We hold no transfer file for the subject’s county.'));
       drawSummary(); drawFunnel(); drawComps(); drawMap(); drawSources();
-      if (S.list.length) { $('cr-csv').hidden = false; $('cr-csv').addEventListener('click', downloadCSV); }
       G.addEventListener('beforeprint', function () { S.printing = true; drawMap(); });
       G.addEventListener('afterprint', function () { S.printing = false; drawMap(); });
       lookupComps();
@@ -706,12 +684,6 @@
       status();
       for (var i = 0; i < 3; i++) next();
     }
-    function downloadCSV() {
-      var blob = new Blob([CR.csv(S.list, S.names, P.today)], { type: 'text/csv;charset=utf-8' });
-      var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-      a.download = 'comparable-sales-' + (S.county || S.st).toLowerCase().replace(/[^a-z]+/g, '-') + '-' + today() + '.csv';
-      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-    }
     function drawSources() {
       var h = S.sales.files.map(function (f) {
         var cov = F.coverageText(f.coverage, f.state);
@@ -742,7 +714,6 @@
     function noData(s) {
       hideAll(true);
       var noteSt = (S.reg.salesNote || {})[S.st];
-      $('cr-csv').hidden = true;
       // the state's index lists counties but none of their files came back: a load failure, not a missing state
       if (s && s.ix && s.ix.counties && s.ix.counties.length) {
         set('cr-sum', '<div class="cr-held"><b>The county sales files did not load just now, so this report has no comps.</b>' + note('Reload in a minute. ' + esc(F.searchedText(s, S.stName))) + '</div>');

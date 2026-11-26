@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "17 9 12 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 06"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -38,7 +38,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 06' || (contains(github.event.workflow_run.display_title, ' farmland-atlas.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -298,6 +300,11 @@ jobs:
             python scripts/atlas_reads.py
           fi
 
+      - name: County files to the data host (agsist-data)
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: python3 scripts/atlas_hosted.py sync
+
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
@@ -321,7 +328,7 @@ jobs:
             if git pull --rebase --autostash origin main && git push; then exit 0; fi
             sleep $((30 * i))
           done
-          echo "push failed after 4 attempts"; exit 1
+          echo "::error::push failed after 4 attempts. rerun farmland-atlas now: the host has the new build (the county files were sent to agsist-data before this commit), and until the commit lands the checks that fetch them stop on the older index"; exit 1
 
       - name: Save the raw pulls to the raw branch
         if: ${{ !cancelled() }}

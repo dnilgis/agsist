@@ -100,11 +100,15 @@
   }
   /* Nearest first, one row per elevator for this crop. An elevator whose
      best posted bid sits in a later period than its nearest one is read
-     first: it is known to post a later month. */
+     first: it is known to post a later month.
+     Nov 20, 2026: a premium row (Plenish, white corn: components/bid-filter.js
+     gradeOk) is not a board's grain to hold, and bestPeriod is only set when the
+     best row is the same commodity (bids-network.js bestFor). */
   function candidates(snap, crop, skip, max) {
-    var seen = {}, out = [];
+    var seen = {}, out = [], BF = window.AG && window.AG.bidFilter;
     (snap && snap.bids || []).forEach(function (r) {
       if (r.crop !== crop || !r.place || seen[r.place] || (skip && skip[r.place])) return;
+      if (!BF || !BF.gradeOk || !BF.gradeOk(r, { wheatClasses: true })) return;
       seen[r.place] = 1;
       out.push(r);
     });

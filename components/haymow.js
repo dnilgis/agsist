@@ -367,7 +367,7 @@
     var link = editLink(j.id, j.key);
     mineSave(j.id, j.key, kind);
     var held = j.status === 'held';
-    $('hb-out').innerHTML = '<div class="cl-msg ok"><p><b>' + (held ? 'Got it. Your post shows once Sig takes a quick look at it.' : 'Your post is up.') + '</b> ' +
+    $('hb-out').innerHTML = '<div class="cl-msg ok"><p><b>' + (held ? 'Got it. Your post shows once AGSIST takes a quick look at it.' : 'Your post is up.') + '</b> ' +
       'It comes down by itself in 30 days.</p><p>This is your private link to change, renew or take down your post. Keep it: there is no account and no password, ' +
       'and anyone with the link can change the post. This browser saves it too.</p>' +
       '<textarea readonly rows="2" id="hb-link" aria-label="Your private edit link">' + esc(link) + '</textarea>' +
@@ -393,7 +393,7 @@
       if (S.edit) {
         b.id = S.edit.id; b.key = S.edit.key;
         return post('/hay/edit', b).then(function (j) {
-          $('hb-out').innerHTML = '<div class="cl-msg ok"><p><b>Saved.</b> ' + (j.post.status === 'live' ? 'The change shows on the board within a minute.' : 'It shows once Sig takes a look.') + '</p></div>';
+          $('hb-out').innerHTML = '<div class="cl-msg ok"><p><b>Saved.</b> ' + (j.post.status === 'live' ? 'The change shows on the board within a minute.' : 'It shows once AGSIST takes a look.') + '</p></div>';
           load();
         });
       }
@@ -466,7 +466,7 @@
       var why = t.getAttribute('data-why');
       if (why) {
         var b2 = t.closest('.hb-contact'), id2 = b2.getAttribute('data-for');
-        post('/hay/report', { id: id2, why: why }).then(function () { b2.textContent = 'Thanks. Three reports from different people take a post down until Sig looks at it.'; },
+        post('/hay/report', { id: id2, why: why }).then(function () { b2.textContent = 'Thanks. Three reports from different people take a post down until AGSIST looks at it.'; },
           function () { b2.textContent = 'Could not send that. Try again.'; });
       }
     });

@@ -258,7 +258,8 @@
   },
   "a00062": {
    "first": "basis:IA|LINN COOP OIL COMPANY|ALBURNETT",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e5mp0qxwa3"
   },
   "a00063": {
    "first": "basis:IA|LINN COOP OIL COMPANY|CEDAR RAPIDS",
@@ -521,7 +522,8 @@
   },
   "a00122": {
    "first": "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ep34r1a79j"
   },
   "a00123": {
    "first": "basis:IL|BUNGE|GRIGGSVILLE",
@@ -587,7 +589,8 @@
   },
   "a00138": {
    "first": "basis:IL|LEGACY GRAIN COOPERATIVE|BLUE MOUND",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e5fmzap0ev"
   },
   "a00139": {
    "first": "basis:IL|LITCHFIELD FARMERS GRAIN|DECATUR",
@@ -842,7 +845,8 @@
   },
   "a00200": {
    "first": "basis:KS|COMARK EQUITY ALLIANCE LLC|HILLSBORO",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e4n3mtbs8b"
   },
   "a00201": {
    "first": "basis:KS|COMARK EQUITY ALLIANCE LLC|MT. HOPE",
@@ -851,7 +855,8 @@
   },
   "a00202": {
    "first": "basis:KS|COMARK EQUITY ALLIANCE LLC|WELLINGTON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ecsg64stej"
   },
   "a00203": {
    "first": "basis:KS|FARMERS COOP OF DORCHESTER|BEATTIE",
@@ -917,7 +922,8 @@
   },
   "a00217": {
    "first": "basis:KS|TURON MILL & ELEVATOR, INC.|TURON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ek6pq1kgxx"
   },
   "a00218": {
    "first": "basis:MI|BROWN MILLING, INC.|SHEPHERD",
@@ -1053,7 +1059,8 @@
   },
   "a00251": {
    "first": "basis:MN|FARMWARD COOPERATIVE|COMFREY",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e7t0e7g2zj"
   },
   "a00252": {
    "first": "basis:MN|FARMWARD COOPERATIVE|MORGAN",
@@ -1061,11 +1068,13 @@
   },
   "a00253": {
    "first": "basis:MN|FARMWARD COOPERATIVE|MORTON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "etnpn76gn0"
   },
   "a00254": {
    "first": "basis:MN|FARMWARD COOPERATIVE|SPRINGFIELD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e1ddkdprca"
   },
   "a00255": {
    "first": "basis:MN|GREEN PLAINS|FERGUS FALLS",
@@ -1270,7 +1279,8 @@
   },
   "a00303": {
    "first": "basis:MO|JBS LIVE PORK|CENTRALIA",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e5vkdkh4qx"
   },
   "a00304": {
    "first": "basis:MO|JBS LIVE PORK|SMITHTON",
@@ -1396,7 +1406,8 @@
   },
   "a00334": {
    "first": "basis:NE|CENTRAL VALLEY AG|DAYKIN",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "etkr0abr2r"
   },
   "a00335": {
    "first": "basis:NE|CENTRAL VALLEY AG|GOTHENBURG",
@@ -1428,7 +1439,8 @@
   },
   "a00342": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|BEATRICE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "etbzjsj9wx"
   },
   "a00343": {
    "first": "basis:NE|FARMERS COOP OF DORCHESTER|BLUE SPRINGS",
@@ -1564,7 +1576,8 @@
   },
   "a00370": {
    "first": "basis:NE|FARMERS UNION COOPERATIVE CO.|FRIEND",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eft4nkw8qj"
   },
   "a00371": {
    "first": "basis:NE|FRENCHMAN VALLEY COOP|GRANT",
@@ -1654,7 +1667,8 @@
   },
   "a00391": {
    "first": "basis:OH|LEGACY FARMERS COOP|DEFIANCE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ee0zt2qhkf"
   },
   "a00392": {
    "first": "basis:OH|MERCER LANDMARK|ROCKFORD",
@@ -1684,7 +1698,8 @@
   },
   "a00398": {
    "first": "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE CORNERS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ejx99j1dkp"
   },
   "a00399": {
    "first": "basis:OH|SUNRISE COOPERATIVE|BELLEVUE",
@@ -1734,7 +1749,8 @@
   },
   "a00410": {
    "first": "basis:SD|AGTEGRA|REDFIELD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ermemxz12n"
   },
   "a00411": {
    "first": "basis:SD|CENTRAL FARMERS COOP (CFC)|CANOVA",
@@ -1832,7 +1848,8 @@
   },
   "a00434": {
    "first": "basis:WI|ALCIVIA|MENOMONIE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e9mzrqaz1e"
   },
   "a00435": {
    "first": "basis:WI|ALCIVIA|NEW RICHMOND",
@@ -1860,7 +1877,8 @@
   },
   "a00441": {
    "first": "basis:WI|MEDFORD COOPERATIVE|MEDFORD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eaptfre4ay"
   },
   "a00442": {
    "first": "basis:WI|MIDWEST COMMODITY SERVICES INC.|BALDWIN",
@@ -5136,6 +5154,125 @@
    "merge": "a00298",
    "into": "esf055a2zt",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00062",
+   "into": "e5mp0qxwa3",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00122",
+   "into": "ep34r1a79j",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00138",
+   "into": "e5fmzap0ev",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "split": "a00152",
+   "moved": [
+    "basis:IL|PREMIER COOPERATIVE - IL|CHAMPAIGN"
+   ],
+   "to": [
+    "eefg1h4nqg"
+   ],
+   "why": "some keys now match a bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00200",
+   "into": "e4n3mtbs8b",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00202",
+   "into": "ecsg64stej",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00217",
+   "into": "ek6pq1kgxx",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00251",
+   "into": "e7t0e7g2zj",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00253",
+   "into": "etnpn76gn0",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00254",
+   "into": "e1ddkdprca",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00303",
+   "into": "e5vkdkh4qx",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00334",
+   "into": "etkr0abr2r",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00342",
+   "into": "etbzjsj9wx",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00370",
+   "into": "eft4nkw8qj",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00391",
+   "into": "ee0zt2qhkf",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00398",
+   "into": "ejx99j1dkp",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00410",
+   "into": "ermemxz12n",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00434",
+   "into": "e9mzrqaz1e",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-21",
+   "merge": "a00441",
+   "into": "eaptfre4ay",
+   "why": "every key now matches that bids-repo row"
   }
  ],
  "keys": {
@@ -5712,7 +5849,7 @@
   "basis:IA|LINCOLNWAY ENERGY LLC|LINCOLNWAY ENERGY": "e6s5vp846g",
   "basis:IA|LINCOLNWAY ENERGY LLC|NEVADA": "a00061",
   "basis:IA|LINN COOP OIL COMPANY|ADM": "ey0be7c0b4",
-  "basis:IA|LINN COOP OIL COMPANY|ALBURNETT": "a00062",
+  "basis:IA|LINN COOP OIL COMPANY|ALBURNETT": "e5mp0qxwa3",
   "basis:IA|LINN COOP OIL COMPANY|ALBURNETT & SPRINGVILLE ELEVATOR": "e7ppqmvm5p",
   "basis:IA|LINN COOP OIL COMPANY|CARGILL (BEANS)": "etstdfjqnw",
   "basis:IA|LINN COOP OIL COMPANY|CARGILL (STARCH)": "ed0wc4zq8e",
@@ -5814,6 +5951,8 @@
   "basis:IA|NEW COOPERATIVE, INC.|MAPLETON": "e1kw4f1e4a",
   "basis:IA|NEW COOPERATIVE, INC.|MILFORD": "ewp9r3vv8v",
   "basis:IA|NEW COOPERATIVE, INC.|MOORLAND": "e7r8vd6w67",
+  "basis:IA|NEW COOPERATIVE, INC.|MORTON MILLS": "e2kvxs0w55",
+  "basis:IA|NEW COOPERATIVE, INC.|MT. AYR": "e88zxe14x0",
   "basis:IA|NEW COOPERATIVE, INC.|ONAWA": "edy2pyacey",
   "basis:IA|NEW COOPERATIVE, INC.|OSCEOLA": "e9y7qzwtph",
   "basis:IA|NEW COOPERATIVE, INC.|OTHO": "e7670zc491",
@@ -6100,7 +6239,7 @@
   "basis:IL|BAB GRAIN|WAVERLY RAIL": "eqbgkq61bk",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|CGB-MT. CARROLL": "edsr084ks3",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|MT CARROLL": "eptrx32m06",
-  "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA": "a00122",
+  "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA": "ep34r1a79j",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|SAVANNA DEPOT/AREA 51": "eqknjy8em7",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|THOMSON": "eqknjy8em7",
   "basis:IL|BALK GRAIN AND TRUCKING, INC.|VISERION GRAIN": "e30jm2y0nd",
@@ -6265,7 +6404,7 @@
   "basis:IL|JERSEY COUNTY GRAIN|HARDIN ELEVATOR": "eh7q2e9ev0",
   "basis:IL|JERSEY COUNTY GRAIN|JERSEYVILLE ELEVATOR": "e59fkg39nw",
   "basis:IL|JERSEY COUNTY GRAIN|WHITE HALL": "e4556xsvtz",
-  "basis:IL|LEGACY GRAIN COOPERATIVE|BLUE MOUND": "a00138",
+  "basis:IL|LEGACY GRAIN COOPERATIVE|BLUE MOUND": "e5fmzap0ev",
   "basis:IL|LEGACY GRAIN COOPERATIVE|LEGACY GRAIN": "e6xydgm3bz",
   "basis:IL|LITCHFIELD FARMERS GRAIN|DECATUR": "a00139",
   "basis:IL|LITCHFIELD FARMERS GRAIN|FILLMORE": "ec56624trq",
@@ -6299,7 +6438,7 @@
   "basis:IL|PRAIRIELAND FS, INC.|FRANKLIN": "ep3wp8da1b",
   "basis:IL|PRAIRIELAND FS, INC.|MURRAYVILLE": "ekrxce37pe",
   "basis:IL|PREMIER COOPERATIVE - IL|BROADLANDS": "er4py0r3be",
-  "basis:IL|PREMIER COOPERATIVE - IL|CHAMPAIGN": "a00152",
+  "basis:IL|PREMIER COOPERATIVE - IL|CHAMPAIGN": "eefg1h4nqg",
   "basis:IL|PREMIER COOPERATIVE - IL|COLLISON": "es1v4xp0j7",
   "basis:IL|PREMIER COOPERATIVE - IL|DEWEY": "ee8cr1j0ce",
   "basis:IL|PREMIER COOPERATIVE - IL|DILLSBURG": "e2g6dc9mmm",
@@ -6799,7 +6938,7 @@
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HARPER": "erwve3hkaj",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HAZELTON": "er068xvhra",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HERNDON ELEVATOR": "exhcjkjj69",
-  "basis:KS|COMARK EQUITY ALLIANCE LLC|HILLSBORO": "a00200",
+  "basis:KS|COMARK EQUITY ALLIANCE LLC|HILLSBORO": "e4n3mtbs8b",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HILLSBORO ELEVATOR": "etxn3fjbzm",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|HUNTER": "e89jqnwstc",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|JENNINGS ELEVATOR": "ewwtcgb639",
@@ -6826,7 +6965,7 @@
   "basis:KS|COMARK EQUITY ALLIANCE LLC|SMOKY HILL TERMINAL": "e9w98v21h6",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|SPRING": "ecmfdemax2",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|UDALL": "eqzvh4v3fg",
-  "basis:KS|COMARK EQUITY ALLIANCE LLC|WELLINGTON": "a00202",
+  "basis:KS|COMARK EQUITY ALLIANCE LLC|WELLINGTON": "ecsg64stej",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|WELLINGTON GRAIN TERMINAL": "eqrwysh0ts",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|WELLINGTON TERM-CEA": "eb6w7vd3av",
   "basis:KS|COMARK EQUITY ALLIANCE LLC|WINFIELD": "e45d19gann",
@@ -7071,7 +7210,7 @@
   "basis:KS|THE SCOULAR COMPANY|PITTSBURG": "e2rnmjcpn2",
   "basis:KS|THE SCOULAR COMPANY|PRATT": "ee1ggmvyat",
   "basis:KS|THE SCOULAR COMPANY|SALINA": "e3dkyp8v85",
-  "basis:KS|TURON MILL & ELEVATOR, INC.|TURON": "a00217",
+  "basis:KS|TURON MILL & ELEVATOR, INC.|TURON": "ek6pq1kgxx",
   "basis:KS|TURON MILL & ELEVATOR, INC.|TURON MILL & ELEVATOR, INC.": "ekczh06wkj",
   "basis:KS|UNKNOWN|ALMA": "e8xqfhfyhk",
   "basis:KY|ADM|HENDERSON": "ewpkkavtfj",
@@ -7309,7 +7448,7 @@
   "basis:MN|FARMERS WIN COOP|MABEL": "eex0g3jpxp",
   "basis:MN|FARMERS WIN COOP|RUSHFORD": "effntz1688",
   "basis:MN|FARMERS WIN COOP|SPRING GROVE": "e6326bt4sx",
-  "basis:MN|FARMWARD COOPERATIVE|COMFREY": "a00251",
+  "basis:MN|FARMWARD COOPERATIVE|COMFREY": "e7t0e7g2zj",
   "basis:MN|FARMWARD COOPERATIVE|FARMWARD COOPERATIVE - CLEMENTS": "e571vnvenc",
   "basis:MN|FARMWARD COOPERATIVE|FARMWARD COOPERATIVE - COMFREY": "ef6z244jkx",
   "basis:MN|FARMWARD COOPERATIVE|FARMWARD COOPERATIVE - DANUBE EAST": "epms3p2jj0",
@@ -7321,8 +7460,8 @@
   "basis:MN|FARMWARD COOPERATIVE|FARMWARD COOPERATIVE - SPRINGFIELD": "et07x5zmbj",
   "basis:MN|FARMWARD COOPERATIVE|FARMWARD COOPERATIVE - WOOD LAKE": "e878cqvd1d",
   "basis:MN|FARMWARD COOPERATIVE|MORGAN": "a00252",
-  "basis:MN|FARMWARD COOPERATIVE|MORTON": "a00253",
-  "basis:MN|FARMWARD COOPERATIVE|SPRINGFIELD": "a00254",
+  "basis:MN|FARMWARD COOPERATIVE|MORTON": "etnpn76gn0",
+  "basis:MN|FARMWARD COOPERATIVE|SPRINGFIELD": "e1ddkdprca",
   "basis:MN|FOSSTON TRI-COOP|FOSSTON": "em9jgymfh9",
   "basis:MN|GLACIAL PLAINS COOPERATIVE|BENSON": "epvq0s6t93",
   "basis:MN|GLACIAL PLAINS COOPERATIVE|MILAN": "exvsefzvt7",
@@ -7520,7 +7659,7 @@
   "basis:MO|HEART OF MISSOURI MFA|SALISBURY": "erteaj8q8b",
   "basis:MO|HILLSIDE GRAIN, LLC|GOLDEN CITY": "efrfq0gmqz",
   "basis:MO|HILLSIDE GRAIN, LLC|GOLDEN CITY, MO": "efrfq0gmqz",
-  "basis:MO|JBS LIVE PORK|CENTRALIA": "a00303",
+  "basis:MO|JBS LIVE PORK|CENTRALIA": "e5vkdkh4qx",
   "basis:MO|JBS LIVE PORK|CENTRALIA, MO FEED MILL": "exhd279234",
   "basis:MO|JBS LIVE PORK|MILL 240 AT TARKIO, MO FEED MILL": "ec3rmhj7ax",
   "basis:MO|JBS LIVE PORK|SMITHTON": "a00304",
@@ -7562,6 +7701,7 @@
   "basis:MO|MID-MISSOURI ENERGY|MID-MISSOURI ENERGY, LLC": "epp589se1z",
   "basis:MO|MID-MISSOURI MFA|SWEET SPRINGS": "eq3wveqj17",
   "basis:MO|MONTROSE GRAIN AND LLC|MONTROSE": "ejm9nwcgg0",
+  "basis:MO|NEW COOPERATIVE, INC.|CAINSVILLE": "ebnzyyperk",
   "basis:MO|POET BIOREFINING|LADDONIA": "en8r6yh6kk",
   "basis:MO|POET BIOREFINING|MACON": "e5n3034rdq",
   "basis:MO|POET GRAIN|LADDONIA": "e3911yst55",
@@ -7800,7 +7940,7 @@
   "basis:NE|CENTRAL VALLEY AG|CARGILL BLAIR": "etd6raa3jg",
   "basis:NE|CENTRAL VALLEY AG|COLUMBUS": "ejtjhb7qmd",
   "basis:NE|CENTRAL VALLEY AG|DAVID CITY": "e1asv4sm9g",
-  "basis:NE|CENTRAL VALLEY AG|DAYKIN": "a00334",
+  "basis:NE|CENTRAL VALLEY AG|DAYKIN": "etkr0abr2r",
   "basis:NE|CENTRAL VALLEY AG|DAYKIN MILLING LLC": "ewmhgbzwhx",
   "basis:NE|CENTRAL VALLEY AG|EAST HUB": "evj4086djn",
   "basis:NE|CENTRAL VALLEY AG|ELGIN": "e3h4axwq99",
@@ -7910,7 +8050,7 @@
   "basis:NE|ELKHORN VALLEY GRAIN|WAHOO": "e3gza51zvd",
   "basis:NE|FARMERS COOP OF DORCHESTER|ADAMS": "e0hc0srdw2",
   "basis:NE|FARMERS COOP OF DORCHESTER|BARNESTON": "a00341",
-  "basis:NE|FARMERS COOP OF DORCHESTER|BEATRICE": "a00342",
+  "basis:NE|FARMERS COOP OF DORCHESTER|BEATRICE": "etbzjsj9wx",
   "basis:NE|FARMERS COOP OF DORCHESTER|BLUE SPRINGS": "eq03cwvjsv",
   "basis:NE|FARMERS COOP OF DORCHESTER|BURCHARD": "ey0g3zxjff",
   "basis:NE|FARMERS COOP OF DORCHESTER|CORDOVA": "e2wrs3sd24",
@@ -7984,7 +8124,7 @@
   "basis:NE|FARMERS PRIDE COOP|NELIGH-OAKDALE": "e69xfv4yxp",
   "basis:NE|FARMERS PRIDE COOP|NEWMAN GROVE": "e894mr6wb3",
   "basis:NE|FARMERS PRIDE COOP|OSMOND": "ev285d6wjh",
-  "basis:NE|FARMERS UNION COOPERATIVE CO.|FRIEND": "a00370",
+  "basis:NE|FARMERS UNION COOPERATIVE CO.|FRIEND": "eft4nkw8qj",
   "basis:NE|FARMERS UNION COOPERATIVE COMPANY|FARMERS UNION COOP": "eakd3f0f6z",
   "basis:NE|FIRST RATE TRADE LLC|DUNBAR": "ej9t1x95ft",
   "basis:NE|FIRST RATE TRADE LLC|WAHOO": "e3gza51zvd",
@@ -8200,7 +8340,7 @@
   "basis:OH|LEGACY FARMERS COOPERATIVE|NORTH FINDLAY": "e0ch7x5yek",
   "basis:OH|LEGACY FARMERS COOPERATIVE|WEST FINDLAY": "e3cxz3wyxe",
   "basis:OH|LEGACY FARMERS COOP|CUSTAR": "ezcw1nmwad",
-  "basis:OH|LEGACY FARMERS COOP|DEFIANCE": "a00391",
+  "basis:OH|LEGACY FARMERS COOP|DEFIANCE": "ee0zt2qhkf",
   "basis:OH|LEGACY FARMERS COOP|DESHLER": "es9v22ey9f",
   "basis:OH|LEGACY FARMERS COOP|FINDLAY": "e3cxz3wyxe",
   "basis:OH|LEGACY FARMERS COOP|FOSTORIA": "e53bbd72cv",
@@ -8250,7 +8390,7 @@
   "basis:OH|PREMIER GRAIN, LLC|SOUTH SALEM": "a00396",
   "basis:OH|PREMIER GRAIN, LLC|WILMINGTON": "e89q9hy5w7",
   "basis:OH|RIDGEVILLE ELEVATOR|FAYETTE": "ed1pzt3yj3",
-  "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE CORNERS": "a00398",
+  "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE CORNERS": "ejx99j1dkp",
   "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE ELEVATOR- FAYETTE BRANCH": "ed1pzt3yj3",
   "basis:OH|RIDGEVILLE ELEVATOR|RIDGEVILLE ELEVATOR- RIDGEVILLE CORNERS": "ea2xyw2922",
   "basis:OH|SCOTT EQUITY EXCHANGE|DELPHOS": "e7z7bba3nv",
@@ -8446,7 +8586,7 @@
   "basis:SD|AGTEGRA|MELLETTE": "emeneqn17y",
   "basis:SD|AGTEGRA|NORTHVILLE": "ezahyzp1t4",
   "basis:SD|AGTEGRA|POLLOCK": "e2q0q2tvh3",
-  "basis:SD|AGTEGRA|REDFIELD": "a00410",
+  "basis:SD|AGTEGRA|REDFIELD": "ermemxz12n",
   "basis:SD|AGTEGRA|REDFIELD ELEVATOR": "epxy1rk8zr",
   "basis:SD|AGTEGRA|REDFIELD ENERGY": "eed974t47w",
   "basis:SD|AGTEGRA|ROSCOE": "ej5n26kx92",
@@ -8670,7 +8810,7 @@
   "basis:WI|ALCIVIA|FOUR CORNERS (NEW RICHMOND)": "ejz1kpgsh4",
   "basis:WI|ALCIVIA|HAGER CITY": "e4f691cgat",
   "basis:WI|ALCIVIA|KINGS VALLEY (OSSEO)": "e184ge8mdk",
-  "basis:WI|ALCIVIA|MENOMONIE": "a00434",
+  "basis:WI|ALCIVIA|MENOMONIE": "e9mzrqaz1e",
   "basis:WI|ALCIVIA|MENOMONIE FEED MILL": "eqajyk0dhh",
   "basis:WI|ALCIVIA|MONDOVI": "emcf7h3wjy",
   "basis:WI|ALCIVIA|NEW RICHMOND": "a00435",
@@ -8741,7 +8881,7 @@
   "basis:WI|INSIGHT FS|SPRING GREEN": "a00440",
   "basis:WI|JENNIE-O TURKEY STORE|BARRON": "er8nm49hqe",
   "basis:WI|LANDMARK SERVICES COOPERATIVE|BURLINGTON": "etykedhvfk",
-  "basis:WI|MEDFORD COOPERATIVE|MEDFORD": "a00441",
+  "basis:WI|MEDFORD COOPERATIVE|MEDFORD": "eaptfre4ay",
   "basis:WI|MEDFORD COOPERATIVE|MEDFORD COOPERATIVE": "ew7m06c83v",
   "basis:WI|MELROSE FARM SERVICE INC_MOBILE|MELROSE FARM SERVICE": "ezvwgta5fp",
   "basis:WI|MELROSE FARM SERVICE INC_|COUNTRY FARM SUPPLY": "e5fm802d5g",
@@ -8865,6 +9005,7 @@
   "bids:ADM||Havana|IL": "ej8re5fxpt",
   "bids:ADM||Hensler|ND": "e9kd9vqdh8",
   "bids:ADM||Hoopeston|IL": "e2s812gym8",
+  "bids:ADM||Hume|IL": "eh6yfs5kkb",
   "bids:ADM||Hutchinson|KS": "e8pnxq2f04",
   "bids:ADM||Indianapolis|IN": "ev1yjkvfdd",
   "bids:ADM||Jackson|TN": "evbmpg5gks",
@@ -8873,6 +9014,7 @@
   "bids:ADM||Mankato|MN": "eyy4xc0vvj",
   "bids:ADM||Memphis|TN": "ec15w2w3a0",
   "bids:ADM||Mexico|MO": "epcyyqt4sf",
+  "bids:ADM||New Berlin|IL": "et8tbsn8wr",
   "bids:ADM||Rensselaer|IN": "erz5bgpfpp",
   "bids:ADM||Spokane|WA": "erbj1pv080",
   "bids:ADM||St. Paul|MN": "e3hz8pkdmv",
@@ -8892,10 +9034,12 @@
   "bids:ALCIVIA||Kings Valley (Osseo)|WI": "e184ge8mdk",
   "bids:ALCIVIA||MENOMONIE FEED MILL|WI": "eqajyk0dhh",
   "bids:ALCIVIA||MONDOVI|WI": "emcf7h3wjy",
+  "bids:ALCIVIA||WHITEWATER|WI": "e3trrfsbv3",
   "bids:Abbyville Farmers Co-op Grain Co.||Abbyville|KS": "epb8e8r7nr",
   "bids:Ag Partners Cooperative||Bellechester|MN": "e3peh7w11t",
   "bids:Ag Partners Cooperative||Cannon Falls|MN": "ekpcq5z50r",
   "bids:Ag Partners Cooperative||Red Wing|MN": "ehez8hts87",
+  "bids:Ag Partners Cooperative||Traverse|MN": "ensjtjtpsy",
   "bids:Ag Valley Co-op||Eustis|NE": "eyxz40vjkc",
   "bids:Ag Valley Co-op||Hershey|NE": "ejawthtveb",
   "bids:Ag Valley Co-op||Maywood|NE": "etby8qtza8",
@@ -8932,6 +9076,7 @@
   "bids:Allied Cooperative||ADAMS|WI": "e2qmdjyzk1",
   "bids:Allied Cooperative||BLAIR|WI": "ee1qjqg48x",
   "bids:Allied Cooperative||Clintonville|WI": "efky9pkdp0",
+  "bids:Allied Cooperative||HIXTON|WI": "ezn3ywbg63",
   "bids:Allied Cooperative||WISC RAPIDS|WI": "e0cnscb0fx",
   "bids:American Plains Co-op - Cash Bid Include||Ellinwood|KS": "eeg8r3wx18",
   "bids:American Plains Co-op - Cash Bid Include||Seward|KS": "escd673s36",
@@ -8940,8 +9085,10 @@
   "bids:Assumption Coop||Palmer Facility|IL": "evc4jpc38t",
   "bids:Assumption Coop||Pana Facility|IL": "e02gjc98ye",
   "bids:BAB Grain||Auburn|IL": "ec9dja0g87",
+  "bids:BAB Grain||Waverly Rail|IL": "eqbgkq61bk",
   "bids:Badger Grain Supply, LLC||Wheeler|WI": "ephwex6d49",
   "bids:Balk Grain and Trucking, Inc.||Viserion Grain|IL": "e30jm2y0nd",
+  "bids:Bambauer Fertilizer and Seed||Bambauer Cash Bids|OH": "eaktn61ab0",
   "bids:Baring Elevator||Baring Elevator|MO": "ew8bxp55cw",
   "bids:Beachner Grain||Afton|OK": "eedpfw6eme",
   "bids:Berthold Farmers||Berthold|ND": "e8swttzymb",
@@ -8960,6 +9107,7 @@
   "bids:CHS Ag Services||Ada|MN": "e72fx9vevc",
   "bids:CHS Ag Services||Callaway|MN": "e76ftnv376",
   "bids:CHS Ag Services||Mahnomen|MN": "esv1phzjyx",
+  "bids:CHS Ag Services||Ulen|MN": "eq6zz1bk9m",
   "bids:CHS Brandon (South Dakota/Minnesota)|Worthing Ag Grain|Worthing|SD": "eq462ykmqh",
   "bids:CHS Brandon (South Dakota/Minnesota)||Brandon|SD": "e9611kmgx2",
   "bids:CHS Brandon (South Dakota/Minnesota)||Canton|SD": "eqbn9er4j9",
@@ -8969,7 +9117,10 @@
   "bids:CHS Dakota Plains Ag||Galchutt|ND": "e4x5y1gaeh",
   "bids:CHS Dakota Plains Ag||Harwood|ND": "e8e0gwk58k",
   "bids:CHS Dakota Plains Ag||Kindred Terminal|ND": "ekx909698z",
+  "bids:CHS Herman||Fergus Falls South (8¢ Dump fee)|MN": "ejw79vf5wj",
+  "bids:CHS Herman||French|MN": "e5fbz2ghk9",
   "bids:CHS High Plains||Byers|CO": "eq6kcw9tbf",
+  "bids:CHS Illinois||Lowder|IL": "eszv3k3vmb",
   "bids:CHS Illinois||Shipman|IL": "e2c8d9p9s2",
   "bids:CHS River Terminals & Processing Plants||Absolute Energy|IA": "e3704ztyzk",
   "bids:CHS River Terminals & Processing Plants||Fairmont|MN": "ej5703cv24",
@@ -8989,6 +9140,7 @@
   "bids:Central Farm Service||Truman|MN": "e2wba4y7aj",
   "bids:Central Farmers Cooperative||Viborg|SD": "eys4paxxt0",
   "bids:Central Missouri AgriService, LLC||Marshall|MO": "ek9wkh4k7a",
+  "bids:Central Ohio Farmers Co-op||Marion|OH": "eds6cf6y38",
   "bids:Central Ohio Farmers Co-op||Mt Gilead|OH": "eq5mf12xbw",
   "bids:Central Ohio Farmers Co-op||Mt Vernon|OH": "e29qvpet42",
   "bids:Central Ohio Farmers Co-op||Prospect|OH": "e35rfwe0gt",
@@ -9034,6 +9186,7 @@
   "bids:Current Grain Bids - Fremont Farms||Fremont Farms|IA": "ed80v2v611",
   "bids:Cushing Cooperative Society||Cushing Coop|WI": "ezsvwq42aq",
   "bids:Dakota Midland Grain||Voltaire|ND": "eq5kv3kac7",
+  "bids:Danvers Farmers Elevator Co||Congerville, IL|IL": "et6zbjk1aj",
   "bids:Dell Rapids Co-op Grain||Dell Rapids|SD": "evj9e4wg5z",
   "bids:Doon Elevator, Inc||Doon Elevator, Inc.|IA": "e0kv3k22xg",
   "bids:Duffy Grain, Inc.||Columbus|WI": "edb5mw0vvc",
@@ -9072,11 +9225,13 @@
   "bids:Farmers Cooperative Dorchester||FRANKFORT|KS": "e1564bmx25",
   "bids:Farmers Cooperative Dorchester||HERKIMER|KS": "e1308tcjg2",
   "bids:Farmers Cooperative Dorchester||{ADM - Lincoln}|NE": "edb03ytxwb",
+  "bids:Farmers Cooperative Dorchester||{AGP - DAVID CITY}|NE": "ebbb1axj14",
   "bids:Farmers Cooperative Dorchester||{E-ENERGY ADAMS}|NE": "e0hc0srdw2",
   "bids:Farmers Cooperative Dorchester||{GREEN PLAINS - YORK}|NE": "e3ma049fmc",
   "bids:Farmers Elevator & Exchange, Inc.||Cedar Rapids|IA": "env893tdbj",
   "bids:Farmers Union Cooperative Company||Farmers Union Coop|NE": "eakd3f0f6z",
   "bids:Farmers Win Cooperative||Cresco|IA": "e5cpezkas0",
+  "bids:Farmers Win Cooperative||SRSP|IA": "ecceeev3av",
   "bids:Farmers Win Cooperative||Viserion|IA": "ey734h2jkj",
   "bids:Flash Grain||Granton|WI": "ebqgww8r5r",
   "bids:Flash Grain||Thorp|WI": "e8kfz2zf51",
@@ -9084,6 +9239,8 @@
   "bids:Franklin Elevator Inc.||Scottville|IL": "ejh0yt2zvw",
   "bids:Frenchman Valley Farmers Cooperative, Inc.||Burns|WY": "ep14efwqny",
   "bids:Frenchman Valley Farmers Cooperative, Inc.||Pine Bluffs|WY": "e8qpv4f3f1",
+  "bids:Frontier Cooperative||Adams|NE": "es3z3wf02r",
+  "bids:Frontier Cooperative||Bellwood|NE": "e7ns30tmbb",
   "bids:Frontier Cooperative||Murdock|NE": "e2zh1k49hn",
   "bids:Frontier Cooperative||Schuyler|NE": "eedd2xfs2h",
   "bids:Frontier Cooperative||Sire CB|IA": "e37vd7xwx3",
@@ -9093,8 +9250,10 @@
   "bids:Gold-Eagle Cooperative||Kiester|MN": "esndvcyz93",
   "bids:Grainland Farmers||Roanoke|IL": "egfw1xj467",
   "bids:H&B Specialties, Inc.||Naples|IL": "e5ydx7sekg",
+  "bids:Hartsburg Grain Company||Hartsburg|IL": "enxga5y6y4",
   "bids:Heartland Co-op||Cambridge|IA": "ep46q3wwm1",
   "bids:Heartland Co-op||Council Bluffs|IA": "escncvss9k",
+  "bids:Heartland Co-op||Jewell|IA": "ekr8tjgrck",
   "bids:Heartland Feeds||West Mansfield|OH": "e9mwpa259a",
   "bids:Heritage Coop||Kenton|OH": "eee9kyrz9a",
   "bids:Heritage Coop||Marysville|OH": "ebaz5px8p5",
@@ -9103,6 +9262,7 @@
   "bids:Heritage Coop||Richwood|OH": "evsjtj3e89",
   "bids:Heritage Coop||Thackery|OH": "eenam0mbaf",
   "bids:Heritage Coop||Upper Sandusky|OH": "e5r9jkbx6t",
+  "bids:Heritage Coop||Urbana|OH": "efw33822s6",
   "bids:Home City Grain, Inc.||Home|KS": "erhhf6t32v",
   "bids:Home City Grain, Inc.||Wakefield|KS": "etr03hhtnv",
   "bids:Hoven Equity Exchange||AGP - Direct Ship|SD": "e5x4qs87tx",
@@ -9154,10 +9314,14 @@
   "bids:Kokomo Grain Co.||Edinburgh|IN": "ezf47w4ftv",
   "bids:Kokomo Grain Co.||Kokomo|IN": "efxhb85jfh",
   "bids:Kokomo Grain Co.||T-L Laf|IN": "et242ngjry",
+  "bids:Landus Cooperative||Aredale|IA": "ew41gmrp2d",
   "bids:Landus Cooperative||Atlantic|IA": "e3bk27chzk",
   "bids:Landus Cooperative||Bricelyn|MN": "eydf4pz3bt",
   "bids:Landus Cooperative||Collins|IA": "eat5w1bpfx",
   "bids:Landus Cooperative||Conrad|IA": "e9hgzzsw7g",
+  "bids:Landus Cooperative||Farnhamville|IA": "e8ssnk35z5",
+  "bids:Landus Cooperative||Gowrie|IA": "ek1tqff1r4",
+  "bids:Landus Cooperative||Jefferson|IA": "ek1ptw7qt3",
   "bids:Landus Cooperative||Plainfield|IA": "ewd2h1cv5j",
   "bids:Landus Cooperative||Rake|IA": "et07wp0tkh",
   "bids:Landus Cooperative||Wellsburg|IA": "expg34z2b2",
@@ -9206,18 +9370,23 @@
   "bids:NEW Cooperative, Inc.||Badger|IA": "e72j905k9a",
   "bids:NEW Cooperative, Inc.||Blencoe|IA": "ehrebc6a7c",
   "bids:NEW Cooperative, Inc.||Essex|IA": "ekp29dc30w",
+  "bids:NEW Cooperative, Inc.||Morton Mills|IA": "e2kvxs0w55",
   "bids:NEW Cooperative, Inc.||Red Oak|IA": "eck4xk3rjs",
   "bids:New Vision Co-op||ADM Mankato|MN": "ep824x6ehs",
   "bids:New Vision Co-op||BEAVER CREEK|MN": "e4x484axrx",
   "bids:New Vision Co-op||CHS Mankato|MN": "e7vg56qeq9",
   "bids:New Vision Co-op||ELLSWORTH|MN": "emyznk633n",
   "bids:New Vision Co-op||HILLS TERMINAL|MN": "evs7yaaxyz",
+  "bids:New Vision Co-op||MAGNOLIA|MN": "er2eac8xw2",
   "bids:New Vision Co-op||MANKATO|MN": "e1t9ev88eg",
   "bids:New Vision Co-op||MOUNTAIN LAKE|MN": "e3h90amkjp",
   "bids:Nexus Cooperative||AGP Eagle Grove, IA|IA": "e3yxz3j8hg",
+  "bids:Nexus Cooperative||Adams, MN|MN": "egjjav4b0a",
   "bids:Nexus Cooperative||Cargill Iowa Falls, IA|IA": "efdggq02m7",
   "bids:Nexus Cooperative||Harlan, IA|IA": "e1rfsrbjgh",
+  "bids:Nexus Cooperative||Leroy, MN|MN": "epr32qgrc2",
   "bids:Nexus Cooperative||Poet Fairbank, IA|IA": "ekr2jj8was",
+  "bids:Nexus Cooperative||Shellrock, IA|IA": "e08hrq7ata",
   "bids:Nexus Cooperative||Stacyville, IA|IA": "ecm9x3eqhj",
   "bids:Nexus Cooperative||Toeterville, IA|IA": "ewzzwxqwxb",
   "bids:Nexus Cooperative||Valero Charles City, IA|IA": "ev4rkxwapd",
@@ -9229,6 +9398,7 @@
   "bids:POET Grain||Alexandria|IN": "ec6m2zb2wa",
   "bids:POET Grain||Chancellor|SD": "e9c3ks2ctg",
   "bids:POET Grain||Cloverdale|IN": "enkc894fxj",
+  "bids:POET Grain||Fairbank|IA": "e4re5q755b",
   "bids:POET Grain||Fostoria|OH": "exjf644fkq",
   "bids:POET Grain||Gowrie|IA": "etn949d8kj",
   "bids:POET Grain||Groton|SD": "en7tx5098r",
@@ -9239,11 +9409,14 @@
   "bids:POET Grain||Lake Crystal|MN": "e29pn28z2c",
   "bids:POET Grain||Leipsic|OH": "emp0p1ff7p",
   "bids:POET Grain||Shelbyville|IN": "ej38bs2hxx",
+  "bids:POET Grain||Shell Rock|IA": "e1kttpsmdw",
   "bids:Pilgrims Gold N' Plump||Arcadia|WI": "en60nwypx8",
   "bids:PineBluffs Feed & Grain||PineBluffs Feed|WY": "esjpqqqkr4",
   "bids:Premier Cooperative - IL||Dewey|IL": "ee8cr1j0ce",
+  "bids:Premier Cooperative - IL||Farmer City|IL": "e4mq4z8p6j",
   "bids:Premier Cooperative - IL||Gifford|IL": "etzd5dcfvs",
   "bids:Premier Cooperative - IL||Tolono|IL": "e0jpfbvn1q",
+  "bids:Premier Cooperative||Manchester|IA": "eat3yvjdeb",
   "bids:Premier Cooperative||Mazomanie|WI": "enz550eynm",
   "bids:Premier Grain, LLC||Jamestown|OH": "egb1vfpnv9",
   "bids:Premier Grain, LLC||Lyndon|OH": "ejpne6qb1a",
@@ -9261,6 +9434,7 @@
   "bids:Pro Cooperative||AGP- EAGLE GROVE|IA": "ezah1nyyw4",
   "bids:Quality Roasting, Inc.||Owen|WI": "ensz85e9yg",
   "bids:Ramsey Grain, Inc.||Ramsey Grain|IL": "e9tjk3czve",
+  "bids:Reddy Feed and Grain||Stitzer|WI": "ew1vm1q1mw",
   "bids:Riceland Foods||Des Arc|AR": "e8mk5z4vm5",
   "bids:Riceland Foods||Hazen|AR": "e5ftf2xp4b",
   "bids:Riceland Foods||Stuttgart|AR": "eqey1fx6ry",
@@ -9289,6 +9463,7 @@
   "bids:Southwest Iowa Renewable Energy||SIRE|IA": "eym4z7s97t",
   "bids:St. Ansgar Mills||St. Ansgar Mills, Inc|IA": "eyt22nx602",
   "bids:Stafford County Flour Mills||Hudson|KS": "ez6afav0t2",
+  "bids:Stanford Grain Company||Stanford|IL": "ehe86tg25d",
   "bids:Synergy Cooperative||Elk Mound|WI": "e9v3vspc3c",
   "bids:Tama Benton Cooperative||DS-ADM|IA": "ehttvjy7g2",
   "bids:Tama Benton Cooperative||DS-CRG-CR|IA": "ecp080r65b",
@@ -9296,6 +9471,7 @@
   "bids:Tama Benton Cooperative||DS-SHELLROCK|IA": "ef9cqn0nbg",
   "bids:The Andersons|Clymers|Logansport|IN": "e12e73xvrn",
   "bids:The Andersons|Toledo - Edwin Dr|Toledo|OH": "e808z400aw",
+  "bids:The Andersons|Toledo - Kuhlman Dr|Toledo|OH": "e4d7rggwnn",
   "bids:The Andersons||Albion|MI": "ervd0hkmkt",
   "bids:The Andersons||Delphi|IN": "ectx14h59c",
   "bids:The Andersons||Hemlock|MI": "enhd82fsbx",
@@ -9304,6 +9480,7 @@
   "bids:The Andersons||Oakville|IN": "e3j6w5hdj1",
   "bids:The Equity||Horace|IL": "ec96b6301z",
   "bids:The Equity||Westfield|IL": "e75hbgmwxm",
+  "bids:The Mill, Inc.||Colwell|IA": "e8d8kfrphx",
   "bids:Total Grain Marketing||Arcola|IL": "e7m2vbgas4",
   "bids:Total Grain Marketing||Cadwell|IL": "e20fcpjtk2",
   "bids:Total Grain Marketing||Champaign|IL": "ea3cxbcde4",
@@ -9311,7 +9488,9 @@
   "bids:Total Grain Marketing||Lovington|IL": "ezh15a7nvh",
   "bids:Tremont Co-operative Grain Co.||Adwell|IL": "ebz591w5f6",
   "bids:Tremont Co-operative Grain Co.||Toboggan|IL": "ehqn92atrv",
+  "bids:Tremont Co-operative Grain Co.||Tremont|IL": "e7k2m55n4k",
   "bids:Tri-Cities Grain, LLC.||TCG Bids|WA": "eyhtm9gj9t",
+  "bids:Turon Mill & Elevator, Inc.||Turon Mill & Elevator, Inc.|KS": "ekczh06wkj",
   "bids:United Cooperative||Belmont Grain|WI": "e31pffb41j",
   "bids:United Cooperative||Boscobel Grain|WI": "e46skphmcs",
   "bids:United Cooperative||Horicon Grain|WI": "exwztx553s",
@@ -9330,8 +9509,10 @@
   "bids:Wheaton Grain||Chippewa Falls|WI": "ewxf7ap08q",
   "bids:Wolf River Grain||Wolf River Grain|WI": "ef1x183z59",
   "bids:Yoder Grain, Inc.||Bluffton|IN": "empjt4mecb",
+  "bids:Yoder Grain, Inc.||Shideler|IN": "egx3bb0m3x",
   "bids:iframe - Pearl City Elevator, Inc.||Adkins Energy|IL": "es6rbep7jr",
   "bids:iframe - Pearl City Elevator, Inc.||Alliance Commodities|IL": "ev9sdqr7qt",
+  "bids:zHanenkratt Grain Co, Inc. OLD||Idaville|IN": "eecxsxez3e",
   "bids:zHanenkratt Grain Co, Inc. OLD||Monticello|IN": "e7wg7g6gbm",
   "bids:zPCE Producers Coop Elevator||Floydada|TX": "eh69nb2dka",
   "bids:zShawnee Feed Old||Cashion|OK": "ev3yyf8nmr",
@@ -9344,7 +9525,7 @@
   "dir:11994": "a00456",
   "dir:12579": "eh5qw3bj7j",
   "dir:15375": "ey1dp6h9gg",
-  "dir:16319": "a00217",
+  "dir:16319": "ek6pq1kgxx",
   "dir:16320": "e8nf5r8vxv",
   "dir:16333": "em69fbkzt7",
   "dir:16365": "ed8s5rwsmm",
@@ -9373,7 +9554,7 @@
   "dir:19691": "ezdfvefxjf",
   "dir:19692": "er43wwhqft",
   "dir:19929": "a00059",
-  "dir:19988": "a00138",
+  "dir:19988": "e5fmzap0ev",
   "dir:20012": "e530xcpzv6",
   "dir:20122": "eqv9mrqsrw",
   "dir:20407": "ey1dtdnyvc",
@@ -9432,7 +9613,7 @@
   "dir:28213": "ehk2sxm0x3",
   "dir:28479": "eh8h7h57g5",
   "dir:28581": "em0g2ckhy0",
-  "dir:28586": "a00441",
+  "dir:28586": "eaptfre4ay",
   "dir:28696": "a00469",
   "dir:28726": "egyax2rgxc",
   "dir:28727": "eq66fg7a31",
@@ -9872,7 +10053,7 @@
   "dir:84988": "egc3atjygm",
   "dir:85029": "eak5ep15wn",
   "dir:85032": "e0m504ma9s",
-  "dir:85036": "a00391",
+  "dir:85036": "ee0zt2qhkf",
   "dir:85058": "ebhwc5ca0z",
   "dir:85229": "emt178qm7f",
   "dir:85304": "ex50bmd7s0",
@@ -9954,7 +10135,7 @@
   "dir:86427": "a00051",
   "dir:86431": "a00526",
   "dir:86439": "e31ktf6x01",
-  "dir:86443": "a00370",
+  "dir:86443": "eft4nkw8qj",
   "dir:86454": "a00527",
   "dir:86455": "eg4wpqkzm1",
   "dir:86460": "ey16q409ct",
@@ -10012,7 +10193,7 @@
   "dir:87414": "ejz1kpgsh4",
   "dir:87420": "e507ds65mn",
   "dir:87422": "emxsc3m52d",
-  "dir:87432": "a00251",
+  "dir:87432": "e7t0e7g2zj",
   "dir:87477": "eqh3nzkjxg",
   "dir:87490": "ewprje4gdp",
   "dir:87491": "efse1rxgxp",
@@ -10046,7 +10227,7 @@
   "dir:87768": "e8be7qc7k3",
   "dir:87769": "e701ajtmzv",
   "dir:87773": "e39bqrj5cx",
-  "dir:87779": "a00202",
+  "dir:87779": "ecsg64stej",
   "dir:87784": "a00055",
   "dir:87786": "exw94y0esr",
   "dir:87793": "eb3gz347tm",

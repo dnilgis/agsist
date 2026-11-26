@@ -17,6 +17,8 @@
  "spread_label": "lowest to highest answer",
  "includes": "Rates are for machinery, fuel and labor, now and then with a product such as lime or bale wrap. The material being applied is not included unless the row says so.",
  "range_note": "The range is the lowest and highest answer, and the median (the middle answer) is shown under each average, as G302 prints them. For a few jobs with too few answers to report in full, G302 prints only a median, calls it anecdotal and says to give it much less weight; those rows show no average, range or count. Rows priced as a share of the crop are the guide's own percent-of-crop lines.",
+ "listed": "2026-10-17",
+ "typed": "2026-10-17",
  "rows": [
   {
    "s": "Full-service custom farming",

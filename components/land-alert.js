@@ -71,18 +71,18 @@
   }
 
   var CSS = [
-    '.la-ask{font-family:var(--font-body,Inter,system-ui,sans-serif);color:var(--text);margin:16px 0;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface,transparent)}',
+    '.la-ask{font-family:var(--font-body,Inter,system-ui,sans-serif);color:var(--text);margin:16px 0;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface,transparent)}',
     '.la-ask[hidden]{display:none!important}',
     '.la-h{margin:0 0 4px;font-size:.9375rem;font-weight:700;line-height:1.35}',
     '.la-s{margin:0 0 10px;font-size:.8125rem;line-height:1.45;color:var(--text-muted)}',
     '.la-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 10px;margin:0}',
     '.la-fl{display:flex;flex-direction:column;gap:2px;font-size:.8125rem;color:var(--text-muted);min-width:0}',
     '.la-fe{flex:1 1 14rem}.la-fz{flex:0 0 6.5rem}.la-fm{flex:0 0 auto}',
-    '.la-in,.la-sel{box-sizing:border-box;width:100%;min-height:44px;padding:.5rem .7rem;font:inherit;font-size:1rem;color:var(--text);background:var(--surface,#fff);border:1px solid var(--border-2,var(--border));border-radius:6px}',
+    '.la-in,.la-sel{box-sizing:border-box;width:100%;min-height:44px;padding:.5rem .7rem;font:inherit;font-size:1rem;color:var(--text);background:var(--surface,#fff);border:1px solid var(--border-2,var(--border));border-radius:var(--r-md)}',
     '.la-sel{padding-right:1.6rem}',
     '.la-in:focus,.la-sel:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}',
     '.la-in[aria-invalid="true"]{border-color:var(--red)}',
-    '.la-b{min-height:44px;padding:.5rem .9rem;font:inherit;font-size:.9375rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:6px;cursor:pointer;white-space:nowrap}',
+    '.la-b{min-height:44px;padding:.5rem .9rem;font:inherit;font-size:.9375rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:var(--r-md);cursor:pointer;white-space:nowrap}',
     '.la-b:hover{filter:brightness(.94)}.la-b:focus-visible{outline:2px solid var(--text);outline-offset:2px}.la-b[disabled]{opacity:.75;cursor:default}',
     '.la-m{flex:1 1 100%;margin:0;font-size:.875rem;line-height:1.4;color:var(--red)}.la-m:empty{display:none}',
     '.la-ok{margin:0;font-size:.9375rem;font-weight:700;line-height:1.4;color:var(--green)}.la-ok:focus{outline:none}',

@@ -656,25 +656,6 @@
     }
    ]
   },
-  "/developer": {
-   "links": [
-    {
-     "href": "/editorial-standards#sources",
-     "text": "Where the numbers come from",
-     "why": "Every main data source, in one short list"
-    },
-    {
-     "href": "/tools",
-     "text": "All tools"
-    },
-    {
-     "href": "/contact",
-     "text": "Contact",
-     "why": "Questions, corrections, ideas"
-    }
-   ],
-   "signup": false
-  },
   "/field-scout": {
    "links": [
     {
@@ -777,7 +758,7 @@
      "why": "Grids, intervals and payments in plain terms"
     },
     {
-     "href": "/rain#drought",
+     "href": "/farmland-atlas#l=drought",
      "text": "Drought monitor",
      "why": "This week by county"
     },
@@ -1058,7 +1039,7 @@
      "why": "What calves and cattle brought at local auctions"
     },
     {
-     "href": "/rain#drought",
+     "href": "/farmland-atlas#l=drought",
      "text": "Drought monitor",
      "why": "This week by county"
     },
@@ -1270,7 +1251,7 @@
      "why": "What calves and cattle brought at local auctions"
     },
     {
-     "href": "/rain#drought",
+     "href": "/farmland-atlas#l=drought",
      "text": "Drought monitor",
      "why": "This week by county"
     }

@@ -17,6 +17,7 @@
       '/watch-subscribe': 'farmland watch', '/elevator-watch-subscribe': 'elevator alert', '/price-watch-subscribe': 'price alert' };
     var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
     var QUEUED = "Got it. You'll be added within a day.";
+    var KEEP_DAYS = 7, KEEP_TRIES = 8;
     var real = window.fetch;
     function routeOf(u) {
       try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] && /^(www\.)?agsist\.com$/.test(location.hostname) ? x.pathname : ''; }
@@ -38,7 +39,7 @@
         var old = document.getElementById('signup-queued'); if (old) old.remove();
         var bar = document.createElement('div');
         bar.id = 'signup-queued'; bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center';
         bar.textContent = QUEUED + ' No need to look for a confirmation email for now.';
         var x = document.createElement('button');
         x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.textContent = '×';
@@ -49,7 +50,31 @@
         setTimeout(function () { if (bar.parentNode) bar.remove(); }, 15000);
       } catch (e) {}
     }
-    function queue(route, init, orig, err) {
+    // one kept copy per signup: the route, the address (trimmed, lower case) and every field that names what is
+    // watched (topic, county, elevator, crop, price...); where it was asked (source, askId) does not count
+    function signupKey(route, f) {
+      var o = {};
+      Object.keys(f).sort().forEach(function (k) {
+        if (['source', 'src', 'askId', 'zipField', '_gotcha'].indexOf(k) < 0) o[k] = k === 'email' ? String(f[k]).trim().toLowerCase() : f[k];
+      });
+      return route + ' ' + JSON.stringify(o);
+    }
+    function keep(url, route, f) {
+      try {
+        if (!f.email) return;
+        var a = JSON.parse(localStorage.getItem('agsist-outbox') || '[]'), t = Date.now(), k = signupKey(route, f);
+        a = (Array.isArray(a) ? a : []).filter(function (x) {
+          return !(x && x.kind === 'signup' && signupKey(x.route, x.body || {}) === k);
+        });
+        a.push({ id: t.toString(36) + Math.random().toString(36).slice(2, 8), t: t, url: new URL(String(url), location.href).href, method: 'POST',
+          label: 'your ' + LISTS[route] + ' signup', kind: 'signup', route: route, okIf: 'json', body: f,
+          expires: t + KEEP_DAYS * 86400000, max: KEEP_TRIES, n: 0 });
+        var sg = a.filter(function (x) { return x && x.kind === 'signup'; });
+        if (sg.length > 10) a = a.filter(function (x) { var i = sg.indexOf(x); return i < 0 || i >= sg.length - 10; });   // the oldest signups go; other items stay
+        localStorage.setItem('agsist-outbox', JSON.stringify(a));
+      } catch (e) { }
+    }
+    function queue(route, init, orig, err, url) {
       var f = fields(init && init.body), fd = new FormData(), extra = {};
       var list = LISTS[route] + (f.topic ? ' (' + String(f.topic).slice(0, 60) + ')' : '');
       Object.keys(f).forEach(function (k) {
@@ -63,11 +88,12 @@
       fd.append('source', String(f.source || f.src || '').slice(0, 60));
       fd.append('page', location.pathname);
       if (Object.keys(extra).length) fd.append('details', JSON.stringify(extra).slice(0, 1500));
-      fd.append('note', 'Not on the list yet and not confirmed: add by hand when the worker is back; mail nothing before that.');
+      fd.append('note', 'Not on the list yet and not confirmed. The reader\'s browser retries this signup with the worker on their next visits for 7 days (if it goes through, the worker handles it as usual): check the list before adding by hand; mail nothing before that.');
       return real.call(window, FORMSPREE, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
         .then(function (r) { return r.ok ? r.json().catch(function () { return {}; }) : null; })
         .then(function (j) {
           if (!j || j.ok === false || j.errors) throw new Error('not sent');
+          keep(url, route, f);
           window.dispatchEvent(new CustomEvent('agsist:signup-queued', { detail: { list: LISTS[route] } }));
           say();
           return new Response(JSON.stringify({ ok: true, queued: true, message: QUEUED }),
@@ -75,10 +101,10 @@
         })
         .catch(function () { if (orig) return orig; throw err || new Error('not sent'); });
     }
-    window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS };
+    window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS, realFetch: real };
     try {
       if (!window.AgOutbox && localStorage.getItem('agsist-outbox') && !document.querySelector('script[src^="/components/outbox.js"]')) {
-        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=3'; ob.defer = true;
+        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=5'; ob.defer = true;
         (document.head || document.documentElement).appendChild(ob);
       }
     } catch (e) { }
@@ -89,17 +115,17 @@
       if (!route) return real.apply(this, arguments);
       return real.apply(this, arguments).then(function (r) {
         if (r.status === 403 || r.status === 404 || r.status === 405 || r.status >= 500) {
-          return r.clone().json().then(function () { return r; }, function () { return queue(route, init, r); });
+          return r.clone().json().then(function () { return r; }, function () { return queue(route, init, r, null, url); });
         }
         return r;
-      }, function (err) { return queue(route, init, null, err); });
+      }, function (err) { return queue(route, init, null, err, url); });
     };
   })();
   var BASE = (function () {
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '106';
+  var CV = '114';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -193,7 +219,7 @@
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
       if (!a) return;
       var dd = a.closest('.nav-dd');
-      send(a, 'desktop', txt(dd && dd.querySelector('.nav-btn')));
+      send(a, 'desktop', dd ? txt(dd.querySelector('.nav-btn')) : 'Top');   // a link straight on the bar (Cash bids) is group Top
     }, true);   // capture: each panel keeps its own clicks from bubbling (it stays open on a click inside)
     var dr = document.getElementById('drawer');
     if (dr) dr.addEventListener('click', function (e) {
@@ -284,8 +310,6 @@
     var ov  = document.getElementById('draw-ov');
     var dc  = document.getElementById('draw-close');
     if (ham) {
-      ham.style.minHeight = '44px';
-      ham.style.minWidth  = '44px';
       ham.setAttribute('aria-expanded', 'false');
       ham.setAttribute('aria-controls', 'drawer');
       if (!ham.getAttribute('aria-label')) ham.setAttribute('aria-label', 'Open navigation menu');
@@ -599,30 +623,40 @@
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=4';
+    s.src = BASE + '/components/geo-sponsor.js?v=8';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
-  /* Sitewide sponsor line under the nav (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot. */
+  /* Sitewide sponsor line: sold, else the open spot (no reader figure). It fills #sw-slot after the answer; with no
+     slot it goes above the footer. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
-  function swSold(sp) {
-    return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
+  // Sold: on, not the house ad, a name, an https link, and today (Central) in start..end, both days counted in.
+  // Outside them, or a date that does not read: the open strip. day: YYYY-MM-DD, else today.
+  function swSold(sp, day) {
+    if (!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''))) return false;
+    var bad = function (v) {
+      if (v == null || v === '') return false;
+      var t = /^\d{4}-\d{2}-\d{2}$/.test(v) ? Date.parse(v + 'T12:00:00Z') : NaN;
+      return isNaN(t) || new Date(t).toISOString().slice(0, 10) !== v;
+    };
+    if (bad(sp.start) || bad(sp.end)) return false;
+    if (!sp.start && !sp.end) return true;
+    if (!day) {
+      try { day = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
+      catch (e) { day = new Date().toISOString().slice(0, 10); }
+    }
+    return !(sp.start && day < sp.start) && !(sp.end && day > sp.end);
   }
-  function swLine(sp, card, spots, preview) {
+  function swLine(sp, card, spots, preview, day) {
     if (preview) sp = { active: true, advertiser: 'Your Business', headline: 'Your one line here.', cta_url: 'https://agsist.com/sponsor' };
-    if (swSold(sp)) {
+    if (swSold(sp, day)) {
       var href = sp.cta_url + (sp.cta_url.indexOf('?') < 0 ? '?' : '&') + 'utm_source=agsist&utm_medium=sitewide';
       return { sold: true, html: '<span class="sw-in"><span class="sw-tag">Sponsor</span>Supported by <b>' + slotEsc(sp.advertiser) + '</b>' +
         (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
         (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
     }
-    var t = card && (card.tiers || []).filter(function (x) { return x.id === 'sitewide'; })[0];
-    var n = spots && spots.sitewide && spots.sitewide.engaged;
-    return { sold: false, html: '<span class="sw-in">Sponsor spot open. ' +
-      (typeof n === 'number' && n > 0 ? n.toLocaleString('en-US') + ' engaged visits in the last 28 days. ' : '') +
-      (t && t.price_month ? '$' + Number(t.price_month).toLocaleString('en-US') + ' a month, one business. ' : '') +
-      '<a href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">See it</a></span>' };
+    return { sold: false, html: '' };
   }
   function sitewide(noSponsor, before, parent) {
     if (noSponsor || GEO_SKIP.test(location.pathname) || !parent || document.getElementById('ag-sw') || document.getElementById('site-header') ||
@@ -631,21 +665,30 @@
     line.id = 'ag-sw';
     line.className = 'sw-line';
     line.setAttribute('aria-label', 'Sponsor');
-    var home = document.getElementById('sw-home');
-    var inHome = false;
-    try { inHome = !!home && window.getComputedStyle(home).display !== 'none'; } catch (e) {}
-    var nav = document.getElementById('topnav');
-    if (inHome) home.appendChild(line);
-    else if (nav && nav.parentNode === parent) parent.insertBefore(line, nav.nextSibling);
-    else if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
+    var slot = document.getElementById('sw-slot');
+    // one sponsor ask after the answer: a page whose state card follows its answer holds no slot and shows no line
+    if (!slot && document.querySelector('[data-state-spot]')) return;
+    if (!slot) {
+      var foot = document.getElementById('site-footer') || document.querySelector('footer.footer');
+      if (!foot || !foot.parentNode) return;
+      slot = document.createElement('div');
+      slot.id = 'sw-slot'; slot.className = 'sw-slot sw-slot--wide';
+      foot.parentNode.insertBefore(slot, foot);
+    }
+    slot.appendChild(line);
     var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
-    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json'), swGet('/data/sponsor-spots.json')]).then(function (r) {
-      var o = swLine(r[0], r[1], r[2], preview);
+    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json')]).then(function (r) {
+      var o = swLine(r[0], r[1], null, preview);
       if (o.sold) {
         line.className = 'sw-line sw-line--sold';
         if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
       }
-      line.innerHTML = o.html;
+      if (o.sold) { line.innerHTML = o.html; return; }
+      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(null, BASE); } catch (e) {} };
+      if (window.AgsistSwOpen) return f();
+      var s = document.createElement('script');
+      s.src = BASE + '/components/sw-open.js?v=3'; s.async = true; s.onload = f;
+      document.head.appendChild(s);
     });
   }
   window.AgsistSitewide = { line: swLine };
@@ -754,7 +797,7 @@
         var bar = document.createElement('div');
         bar.id = 'site-notice';
         bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center';
         var msg = document.createElement('span');
         msg.textContent = n.text;
         bar.appendChild(msg);
@@ -791,7 +834,7 @@
       try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}
     });
     fillPageRibbons(noSponsor);
-    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=2'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })();
+    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=3'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })();
   });
 })();
 (function () {
@@ -816,12 +859,12 @@
     var css =
       '.agt{display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:inherit;line-height:1.2;color:inherit;white-space:nowrap}' +
       '.agt-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}' +
-      '.agt-dot-live{background:var(--green,#3a8b3c);animation:agt-pulse 2s ease-in-out infinite}' +
+      '.agt-dot-live{background:var(--green,#3a8b3c);}' +
       '.agt-dot-stale{background:var(--gold-fill,var(--gold,#daa520))}' +
       '.agt-dot-offline{background:var(--red,#c8322e)}' +
       '.agt-stale{color:var(--gold,#daa520)}' +
       '.agt-offline{color:var(--red,#c8322e)}' +
-      '.agt-tag{font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.92em}' +
+      '.agt-tag{font-weight:700;letter-spacing:0;text-transform:none;font-size:.92em}' +
       '.agt-next{opacity:.55;margin-left:2px}' +
       '@keyframes agt-pulse{0%,100%{opacity:1}50%{opacity:.35}}' +
       '@media(prefers-reduced-motion:reduce){.agt-dot-live{animation:none}}';
@@ -984,7 +1027,7 @@
     EV.forEach(function (t) { window.removeEventListener(t, go, true); });
     if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/signup-ask.js?v=22';
+    s.src = '/components/signup-ask.js?v=23';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -1010,7 +1053,7 @@
     if (window.AgLandAlert || document.querySelector('script[src^="/components/land-alert.js"]')) return;
     if (!document.querySelector('[data-land-alert],section[data-atlas-sales="county"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/land-alert.js?v=4';
+    s.src = '/components/land-alert.js?v=5';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -1023,7 +1066,7 @@
         && !/^\/rent\/(illinois|wisconsin|indiana|vermont|new-jersey)(\.html)?\/?$/.test(location.pathname)
         && !/^\/farmland-atlas\/(indiana|vermont|new-jersey|florida)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=6';
+    s.src = '/components/land-sales.js?v=8';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -1205,7 +1248,7 @@
       bar = document.createElement('p');
       bar.className = 'asof-offline sw-saved-note';
       bar.setAttribute('role', 'status');
-      bar.style.cssText = 'margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);border-radius:var(--r-sm,6px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4';
+      bar.style.cssText = 'margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);border-radius:var(--r-sm,2px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4';
       var host = document.querySelector('main') || document.body;
       if (!host) return;
       host.insertBefore(bar, host.firstChild);

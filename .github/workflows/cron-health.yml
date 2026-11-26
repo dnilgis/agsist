@@ -2,7 +2,7 @@ name: Cron health
 
 on:
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 02"]
     types: [completed]
   schedule:
     - cron: '26 */2 * * *'
@@ -13,12 +13,14 @@ permissions:
   actions: read
 
 concurrency:
-  group: cron-health
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 02' && !(contains(github.event.workflow_run.display_title, ' cron-health.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('cron-health-{0}', github.run_id) || 'cron-health' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 02' || (contains(github.event.workflow_run.display_title, ' cron-health.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -155,6 +157,8 @@ jobs:
           python3 scripts/cron_health.py --selftest
           python3 scripts/delivery_check.py --selftest
           python3 scripts/send_cap.py --selftest
+          python3 scripts/bid_network.py --selftest
+          python3 scripts/worker_watch.py --selftest
 
       - name: Get the last health file (private repo)
         env:
@@ -170,6 +174,9 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           ENGINE_MODE: ${{ vars.ENGINE_MODE }}
           CUSTOMRATES_NOTICE_LIVE: ${{ vars.CUSTOMRATES_NOTICE_LIVE }}
+          LEASE_NOTICE_LIVE: ${{ vars.LEASE_NOTICE_LIVE }}
+          HFR_NOTICE_LIVE: ${{ vars.HFR_NOTICE_LIVE }}
+          DAILY_WELCOME_LIVE: ${{ vars.DAILY_WELCOME_LIVE }}
           DAIRY_MONTHLY_LIVE: ${{ vars.DAIRY_MONTHLY_LIVE }}
           FUNDS_WEEKLY_LIVE: ${{ vars.FUNDS_WEEKLY_LIVE }}
           LANDSALES_MONTHLY_LIVE: ${{ vars.LANDSALES_MONTHLY_LIVE }}
@@ -179,6 +186,7 @@ jobs:
           SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
           BREVO_MONTHLY: ${{ vars.BREVO_MONTHLY }}
           BREVO_RENEW_DAY: ${{ vars.BREVO_RENEW_DAY }}
+          CLOCK_LIVE: ${{ vars.CLOCK_LIVE }}
         run: python3 scripts/cron_health.py --out private/data/cron-health.json
 
       - name: Save
@@ -192,6 +200,6 @@ jobs:
       - name: Late
         if: steps.h.outputs.red == '1'
         run: |
-          echo "::error::Time-critical check failed (a workflow past its clock, a reader email not delivered, or published-size over budget): ${{ steps.h.outputs.late }}"
+          echo "::error::Time-critical check failed (a workflow past its clock, a reader email not delivered, published-size over budget, or worker-api: the signup service missed twice in a row): ${{ steps.h.outputs.late }}"
           echo "See private/data/cron-health.json (private repo, branch private-data) or the log above for which tick was missed and why."
           exit 1

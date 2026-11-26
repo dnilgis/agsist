@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-12-alert-expiry",
+ "date": "2026-11-12",
+ "title": "Price alerts end with their contract",
+ "line": "When the contract a price alert watches stops trading, you get one email saying it ended, and the alert no longer counts toward your limit.",
+ "link": "/#f-price-alert",
+ "rank": 3
+}
