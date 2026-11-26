@@ -164,10 +164,7 @@
       })
       .catch(function () {});
   }
-  /* Rain Print from the footer (2026-11-13): the footer's Rain Print line is counted, and its link carries from=footer so
-     /rain-print can say where its visitor came from (the page sends the bare path to Analytics, so rain-print.js reports
-     from= on its own event). Every footer on the site has the line, the live one and the static ones, so one listener on
-     the page reads the click (and a new-tab click) and adds the mark at that moment. */
+  /* Footer Rain Print link: counted, and carries from=footer (2026-11-13). */
   function initRainPrintFooter() {
     var go = function (e) {
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
@@ -183,12 +180,7 @@
     document.addEventListener('click', go, true);
     document.addEventListener('auxclick', go, true);
   }
-  /* Own-browser mark (2026-11-13): visiting any page with ?sigdev=<the private word> on a device marks that browser
-     (localStorage agsist-sig-device = 1); ?sigdev=off clears it. Only the word's SHA-256 is here, so the page does not
-     give the word away. A marked browser puts a set command (traffic_type=internal, sig_device=yes) in the Analytics queue
-     ahead of the page's own config, so the first page view carries it and GA4's internal-traffic filter and a report can leave
-     the owner's own visits out. Nothing is sent for any other browser. The word is in the private notes (howto/sig-device.md).
-     The address is cleaned of it at once. */
+  /* Own-browser mark (2026-11-13): ?sigdev=<private word> marks this browser (SHA-256 below); it is kept out of Analytics. */
   var SIG_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
   function markInternal() {
     try {
