@@ -28,7 +28,7 @@
    The card: Christmas wording from promote_from through the framed order-by
    date; then, through Dec 24 and only while the gift flow is in the data
    (gift_card_title), "give this year's print"; otherwise year-round wording.
-   The Christmas card links /rain-print (2026-11-13: it went to /gifts-for-farmers, one page too many), says
+   The Christmas card links /rain-print (2026-11-26: it went to /gifts-for-farmers, one page too many), says
    "$89 framed, order by Dec 9" from the data, and keeps "Gift ideas" as a smaller second link to
    /gifts-for-farmers; the other two link /rain-print. While the Christmas wording
    runs (through the framed order-by date), the card moves up to the page's
@@ -97,7 +97,7 @@
       var fr = typeof cfg.framed12x18 === 'number' && cfg.framed12x18 > 0 ? '$' + cfg.framed12x18 + ' framed' : 'Framed';
       return { angle: 'christmas', title: 'Their farm\u2019s year of rain, framed', href: '/rain-print', cta: 'Make yours',
         alt: { href: '/gifts-for-farmers', text: 'Gift ideas' },
-        text: fr + ', order by ' + shortDate(cut) + ' for Christmas. Shipping included.', price: '' };
+        text: fr + ', order by ' + shortDate(cut) + ' for Christmas.', price: price };
     }
     var dec24 = cut.slice(0, 4) + '-12-24';   // the cutoff's own December, so a stale cutoff never runs a gift line all next year
     if (cut && today > cut && today <= dec24 && typeof cfg.gift_card_title === 'string' && cfg.gift_card_title) {

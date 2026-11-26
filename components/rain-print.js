@@ -3146,7 +3146,7 @@
     var J = OJ().j || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
     // no dates (a Canadian design: no Christmas promise unless data/rain-print.json canada sets one): no Christmas lines
     $('rp-xmas-alt').hidden = true;
-    var sh = $('rp-xmas-short'); if (sh) sh.textContent = '';   // the one short date on the phone's first screen (2026-11-13), set below; its room is held in the CSS so it never pushes the button
+    var sh = $('rp-xmas-short'); if (sh) sh.textContent = '';   // the one short date on the phone's first screen (2026-11-26), set below; its room is held in the CSS so it never pushes the button
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) { $('rp-xmas-top').hidden = true; $('rp-xmas-why').hidden = true; return; }
     var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
@@ -4015,7 +4015,7 @@
   }
   /* The frame color (Nov 4): one pair under the picker, one on the
      review sheet and one on the order form, all the same choice; shown for
-     the framed print only. (2026-11-13: the mockup picture is gone.) */
+     the framed print only. (2026-11-26: the mockup picture is gone.) */
   function setFrame(c) {
     FRAME = frameColor(c);
     syncFrame();
@@ -5801,7 +5801,7 @@
   syncCounts();
   /* 2026-11-01 (audit): a screen reader on a shut Pay button hears the reason under it. */
   try { $('rp-pay').setAttribute('aria-describedby', 'rp-buy-why'); $('rp-buy-why').setAttribute('role', 'status'); } catch (e) {}
-  /* THE OCCASION (2026-11-13, "start from the occasion"): four choices at the top of the designer. A tap presets what the
+  /* THE OCCASION (2026-11-26, "start from the occasion"): four choices at the top of the designer. A tap presets what the
      page already has: the marked-day chip (Born, Wedding, Anniversary), a ready line under the name, and the example words
      in the empty boxes. It never overwrites words the reader typed: the line is replaced only while it is still the last
      ready line, and a day only while it is still the unpicked chip. The gift pages link here with ?from=birthyear,

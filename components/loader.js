@@ -164,7 +164,7 @@
       })
       .catch(function () {});
   }
-  /* Footer Rain Print link: counted, and carries from=footer (2026-11-13). */
+  /* Footer Rain Print link: counted, and carries from=footer (2026-11-26). */
   function initRainPrintFooter() {
     var go = function (e) {
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
@@ -180,33 +180,33 @@
     document.addEventListener('click', go, true);
     document.addEventListener('auxclick', go, true);
   }
-  /* Own-browser mark (2026-11-13): ?sigdev=<private word> marks this browser (SHA-256 below); it is kept out of Analytics. */
-  var SIG_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
+  /* Own-browser mark (2026-11-26): ?ownerdev=<private word> marks this browser (SHA-256 below); it is kept out of Analytics. */
+  var OWNER_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
   function markInternal() {
     try {
       if (window.__agsistInternalSet) return;
       window.__agsistInternalSet = 1;
-      var cmd = (function () { return arguments; })('set', { traffic_type: 'internal', sig_device: 'yes' });
+      var cmd = (function () { return arguments; })('set', { traffic_type: 'internal', owner_device: 'yes' });
       var dl = window.dataLayer = window.dataLayer || [], at = dl.length, i;
       for (i = 0; i < dl.length; i++) if (dl[i] && dl[i][0] === 'config') { at = i; break; }
       dl.splice(at, 0, cmd);
     } catch (e) {}
   }
-  function initSigDevice() {
+  function initOwnerDevice() {
     try {
       var marked = false;
-      try { marked = localStorage.getItem('agsist-sig-device') === '1'; } catch (x) {}
+      try { marked = localStorage.getItem('agsist-owner-device') === '1'; } catch (x) {}
       if (marked) markInternal();
       var q = new URLSearchParams(location.search);
-      if (!q.has('sigdev')) return;
-      var w = q.get('sigdev'), clean = function () {
-        try { q.delete('sigdev'); var qs = q.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (x) {}
+      if (!q.has('ownerdev')) return;
+      var w = q.get('ownerdev'), clean = function () {
+        try { q.delete('ownerdev'); var qs = q.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (x) {}
       };
-      if (w === 'off') { try { localStorage.removeItem('agsist-sig-device'); } catch (x) {} clean(); return; }
+      if (w === 'off') { try { localStorage.removeItem('agsist-owner-device'); } catch (x) {} clean(); return; }
       if (!window.crypto || !crypto.subtle || typeof TextEncoder === 'undefined') { clean(); return; }
       crypto.subtle.digest('SHA-256', new TextEncoder().encode(w)).then(function (buf) {
         var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
-        if (hex === SIG_HASH) { try { localStorage.setItem('agsist-sig-device', '1'); } catch (x) {} markInternal(); }
+        if (hex === OWNER_HASH) { try { localStorage.setItem('agsist-owner-device', '1'); } catch (x) {} markInternal(); }
         clean();
       }, clean);
     } catch (e) {}
@@ -827,7 +827,7 @@
       .catch(function () {});
   }
   document.addEventListener('DOMContentLoaded', function () {
-    initSigDevice();
+    initOwnerDevice();
     initRainPrintFooter();
     injectAnalytics();
     siteNotice();

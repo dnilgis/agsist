@@ -2368,7 +2368,7 @@ a.wl-c:focus-visible,.wl a.rp-card-main:focus-visible,.wl a.rp-card-alt:focus-vi
 .wl-rp{min-height:9.4rem}
 .wl-rp>aside{display:flex;flex:1 1 auto;min-height:0}
 .wl .rp-card{flex:1 1 auto;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:none}
-/* 2026-11-13: the card is a picture you can see (128px), one main link to the print and a small Gift ideas link under it */
+/* 2026-11-26: the card is a picture you can see (128px), one main link to the print and a small Gift ideas link under it */
 .wl a.rp-card-main{flex-direction:row;align-items:flex-start;gap:12px}
 .wl .rp-card-i{width:128px}
 /* Nov 19: the picture's box is the picture's own shape whether or not the file arrives. A picture that fails (a
