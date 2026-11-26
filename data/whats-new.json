@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-26-rain-totals-kind",
+   "date": "2026-11-26",
+   "title": "Rain totals say which kind",
+   "line": "County rain pages now label each total: a county-wide estimate (PRISM grid average), or one station's gauge, named, with its source. The state page says the same.",
+   "link": "/rain"
+  },
+  {
    "id": "2026-11-26-signup-retry",
    "date": "2026-11-26",
    "title": "Signups retried",
