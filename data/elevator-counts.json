@@ -125,9 +125,9 @@
   }
  },
  "coverage": {
-  "generated": "2026-11-26T03:46:47.443Z",
-  "read": 2177,
-  "quiet": 155,
+  "generated": "2026-11-26T13:09:20.620Z",
+  "read": 2163,
+  "quiet": 169,
   "known": 5874,
   "elevators": 8206
  }
