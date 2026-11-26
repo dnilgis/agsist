@@ -1,0 +1,1 @@
+County Atlas files load from the data host: the Atlas map and county sheet, Fast Facts, the comp report, Field Scout and the drought county tool read their county record from there
