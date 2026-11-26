@@ -605,7 +605,7 @@
     drawFingerprint(p);
     drawUnusual(p);
     drawLong(S.county);
-    S.depth = Promise.all([css('/components/rain-county.css?v=19'), drawFirst(p), loadElev(p.fips, S.where)]);
+    S.depth = Promise.all([css('/components/rain-county.css?v=20'), drawFirst(p), loadElev(p.fips, S.where)]);
     return S.depth;
   }
   function drawFingerprint(p) {
@@ -666,7 +666,7 @@
 
   /* The county station's year of rain, drawn by the county rain page's own Rain Print, and
      ranked against the same days of every earlier year the station kept in full (NOAA). */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=58';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=59';
   var porMemo = {};
   function porRows(sid) {
     if (porMemo[sid]) return porMemo[sid];

@@ -236,14 +236,27 @@
       if (!a || !/^\/rain-print(?:[?#]|$)/.test(a.getAttribute('href') || '')) return;
       try {
         if (typeof root.gtag === 'function') root.gtag('event', 'rain_print_promo_click', {
-          placement: a.closest('.rc-buy') ? 'county-preview' : 'county-sell', src: 'rain-county', page: root.location.pathname, transport_type: 'beacon' });
+          placement: a.classList.contains('rc-ly') ? 'county-preview-lastyear' : a.closest('.rc-buy') ? 'county-preview' : 'county-sell', src: 'rain-county', page: root.location.pathname, transport_type: 'beacon' });
       } catch (x) {}
     };
     doc.addEventListener('click', go, true);
     doc.addEventListener('auxclick', go, true);
   }
 
-  if (doc && doc.getElementById('rc-print')) track();
+  /* Last year's dated clause in the line under the print (2026-11-26): the page was built with it through the framed cutoff
+     (data-until, from data/rain-print.json); once the Chicago date is past that day, the plain text shows in its place and the clause
+     and its button go unseen, in place (rain-county.css .rc-buy-late), so nothing moves. window.AGSIST_TODAY ("YYYY-MM-DD") is
+     set only by tests. */
+  function dateClause() {
+    var b = doc.querySelector('.rc-buy[data-until]');
+    if (!b) return;
+    var t = typeof root.AGSIST_TODAY === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(root.AGSIST_TODAY) ? root.AGSIST_TODAY : '';
+    if (!t) {
+      try { t = new root.Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { t = ''; }
+    }
+    if (t && t > b.getAttribute('data-until')) b.classList.add('rc-buy-late');
+  }
+  if (doc && doc.getElementById('rc-print')) { track(); dateClause(); }
   var own = doc && doc.getElementById('rc-print');
   if (own) mount(own);
 })(typeof window !== 'undefined' ? window : this);

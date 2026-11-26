@@ -141,7 +141,15 @@
    page from the first byte and held unseen until the print draws, so drawing it moves nothing; without scripts it is not shown (it names
    a picture that is not there); when the print cannot be drawn it goes on a phone and stays held wider, as the caption does. */
 .rc-buy { margin: .6rem 0 0; max-width: 46em; }
-.rc-buy .btn { display: block; width: fit-content; margin: .5rem 0 0; }   /* its own line: a 44 px tap, never wrapped after a word */
+.rc-buy-go { display: flex; flex-wrap: wrap; gap: 0 .5rem; }   /* the buttons: their own line, a 44 px tap each, never wrapped after a word */
+.rc-buy .btn { display: inline-block; margin: .5rem 0 0; }
+/* Through the framed cutoff the line holds two texts in one grid cell (the box is the longer one, so neither choice moves anything) and a
+   second button, last year's. Past data-until (components/rain-county-print.js adds .rc-buy-late by the Chicago date) the dated text and
+   that button go unseen, in place: the plain text shows in the same room. */
+.rc-buy-t { display: grid; }
+.rc-buy-t > span { grid-area: 1 / 1; }
+.rc-buy:not(.rc-buy-late) .rc-b-a { visibility: hidden; }
+.rc-buy-late .rc-b-b, .rc-buy-late .rc-ly { visibility: hidden; }
 @media (scripting: none) { .rc-buy { display: none; } }
 @media (scripting: enabled) { .rc-print-top:not(.rc-print-on) .rc-buy { visibility: hidden; } }
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
