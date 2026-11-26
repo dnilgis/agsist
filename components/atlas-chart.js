@@ -48,8 +48,8 @@
       take += ' Best year shown: ' + top[2] + ' bu in ' + top[0] + '.';
     } else if (k === 'loss') {
       var hi = pts.filter(function (p) { return p[1] > 1; }).length;
-      head = hi ? 'Claims topped premium in ' + hi + ' of ' + pts.length + ' crop years in ' + lab
-        : 'Claims stayed under premium in all ' + pts.length + ' crop years shown in ' + lab;
+      head = hi ? 'Claims for all insured crops topped premium in ' + hi + ' of ' + pts.length + ' crop years in ' + lab
+        : 'Claims for all insured crops stayed under premium in all ' + pts.length + ' crop years shown in ' + lab;
       take = 'Loss ratio ' + last[2] + ' in ' + last[0] + '; the highest was ' + top[2] + ' in ' + top[0] + '.';
     } else {
       head = lab + ': ' + (last[1] === 0 ? 'no weeks' : last[1] === 1 ? '1 week' : last[2] + ' weeks') + ' of severe drought in ' + last[0];

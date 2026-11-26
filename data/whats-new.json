@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-26-county-crop-risk",
+   "date": "2026-11-26",
+   "title": "County crop risk",
+   "line": "County pages show each county's own crop insurance record for corn and soybeans since 1989: loss ratio by year, how often claims topped premium, and what caused them.",
+   "link": "/farmland-atlas"
+  },
+  {
    "id": "2026-11-26-daily-closed-days",
    "date": "2026-11-26",
    "title": "The Daily: market holidays say so up top",
