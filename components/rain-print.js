@@ -5805,8 +5805,9 @@
      page already has: the marked-day chip (Born, Wedding, Anniversary), a ready line under the name, and the example words
      in the empty boxes. It never overwrites words the reader typed: the line is replaced only while it is still the last
      ready line, and a day only while it is still the unpicked chip. The gift pages link here with ?from=birthyear,
-     weddingyear, anniversary, retirement or christmas, which is the same tap made for the reader (2026-11-01 did Born and
-     Wedding alone). It sends rain_print_occasion {occasion} (never a word the reader typed). */
+     weddingyear, anniversary, retirement or christmas; that sets only the choice, the placeholders and the one line under
+     the choices, and leaves the words and the marked day empty until the reader taps (example words are never pre-filled
+     on a buyer's print). It sends rain_print_occasion {occasion} (never a word the reader typed). */
   var OCCASIONS = {
     christmas: { line: 'Every inch of the year you farmed.', day: '', name: 'The Johnson Farm', ded: 'For Dad, his 40th crop. Love, Kate',
       say: 'Christmas for a farmer. The line under the name is ready; change it any way you like. Now type the town nearest the farm.' },
@@ -5815,9 +5816,11 @@
     married: { line: 'The year we married', day: 'Wedding', name: 'Tom and Anna Olson', ded: 'The year we married',
       say: 'The year we married. Day 1 is marked Wedding. Type the town you married in, pick the year, then pick the day.' },
     farm: { line: 'A year on the home farm', day: 'Anniversary', name: 'The Olson Farm', ded: 'Since 1952, with love from the family',
-      say: 'Farm anniversary or last crop. Day 1 is marked Anniversary; change it to Retired if that fits better. Type the town nearest the farm, then the year.' }
+      say: 'Farm anniversary or last crop. Day 1 is marked Anniversary; change it to Retired if that fits better. Type the town nearest the farm, then the year.' },
+    retired: { line: 'The last crop', day: 'Retired', name: 'Dale Olson', ded: 'His last crop, after 41 years. Love, the family',
+      say: 'A retirement or a last crop. Type the town nearest the farm, then the year. The words under the name are yours to write.' }
   };
-  var FROM_OCC = { christmas: 'christmas', birthyear: 'born', weddingyear: 'married', anniversary: 'farm', retirement: 'farm' };
+  var FROM_OCC = { christmas: 'christmas', birthyear: 'born', weddingyear: 'married', anniversary: 'farm', retirement: 'retired' };
   var OCC_NOW = '', OCC_LINE = '', OCC_DAY = '';
   function occDay(word) {
     var i, row;
@@ -5843,6 +5846,8 @@
     doc.querySelectorAll('#rp-occ .rp-occ-b').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-occ') === key)); });
     var ded = $('rp-ded'), nm = $('rp-name');
     nm.placeholder = o.name; ded.placeholder = o.ded;
+    // arriving from a gift page (quiet): only the choice and the placeholders; no words go on the print until a tap
+    if (quiet) { var sy = $('rp-occ-say'); if (sy) sy.textContent = o.say; return; }
     if (!ded.value.trim() || ded.value === OCC_LINE) { ded.value = o.line; OCC_LINE = o.line; cleanField('rp-ded'); }
     occDay(o.day);
     syncRows(); syncDates(); restyle();
