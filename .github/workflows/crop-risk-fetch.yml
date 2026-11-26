@@ -1,7 +1,6 @@
 name: County crop risk inputs
 
-# Reads the USDA county loss, insurance and yield files behind the county crop risk section and keeps them
-# privately as first prints. Nothing is published or committed here. Started by hand.
+# County loss and yield inputs, kept privately. Started by hand.
 on:
   workflow_dispatch:
     inputs:
