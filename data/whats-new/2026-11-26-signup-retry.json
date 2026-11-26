@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-26-signup-retry",
+ "date": "2026-11-26",
+ "title": "Signups retried",
+ "line": "A signup made while our signup service is down is kept on your device and tried again on your next visits for up to 7 days.",
+ "link": "/daily",
+ "rank": 5
+}
