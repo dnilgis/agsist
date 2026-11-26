@@ -5,6 +5,18 @@
    "to": "/rain/alabama",
    "since": "2026-11-17"
   },
+  "rain/alabama/sumter-county.html": {
+   "to": "/rain/alabama",
+   "since": "2026-11-26"
+  },
+  "rain/alaska/dillingham-census-area.html": {
+   "to": "/rain/alaska",
+   "since": "2026-11-26"
+  },
+  "rain/alaska/lake-and-peninsula-borough.html": {
+   "to": "/rain/alaska",
+   "since": "2026-11-26"
+  },
   "rain/arkansas/bradley-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
@@ -21,9 +33,17 @@
    "to": "/rain/arkansas",
    "since": "2026-11-17"
   },
+  "rain/california/alpine-county.html": {
+   "to": "/rain/california",
+   "since": "2026-11-26"
+  },
   "rain/california/sutter-county.html": {
    "to": "/rain/california",
    "since": "2026-11-12"
+  },
+  "rain/colorado/san-juan-county.html": {
+   "to": "/rain/colorado",
+   "since": "2026-11-26"
   },
   "rain/florida/okeechobee-county.html": {
    "to": "/rain/florida",
@@ -33,6 +53,10 @@
    "to": "/rain/georgia",
    "since": "2026-10-14"
   },
+  "rain/georgia/baker-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-11-26"
+  },
   "rain/georgia/crisp-county.html": {
    "to": "/rain/georgia",
    "since": "2026-11-20"
@@ -41,9 +65,25 @@
    "to": "/rain/georgia",
    "since": "2026-10-14"
   },
+  "rain/idaho/clark-county.html": {
+   "to": "/rain/idaho",
+   "since": "2026-11-26"
+  },
+  "rain/idaho/franklin-county.html": {
+   "to": "/rain/idaho",
+   "since": "2026-11-26"
+  },
+  "rain/idaho/fremont-county.html": {
+   "to": "/rain/idaho",
+   "since": "2026-11-26"
+  },
   "rain/idaho/lewis-county.html": {
    "to": "/rain/idaho",
    "since": "2026-10-19"
+  },
+  "rain/idaho/washington-county.html": {
+   "to": "/rain/idaho",
+   "since": "2026-11-26"
   },
   "rain/indiana/scott-county.html": {
    "to": "/rain/indiana",
@@ -89,6 +129,10 @@
    "to": "/rain/mississippi",
    "since": "2026-11-01"
   },
+  "rain/mississippi/jefferson-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-11-26"
+  },
   "rain/mississippi/tishomingo-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-11-16"
@@ -113,9 +157,25 @@
    "to": "/rain/missouri",
    "since": "2026-10-14"
   },
+  "rain/montana/jefferson-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-11-26"
+  },
+  "rain/montana/meagher-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-11-26"
+  },
   "rain/montana/petroleum-county.html": {
    "to": "/rain/montana",
    "since": "2026-11-24"
+  },
+  "rain/montana/pondera-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-11-26"
+  },
+  "rain/montana/powell-county.html": {
+   "to": "/rain/montana",
+   "since": "2026-11-26"
   },
   "rain/montana/wheatland-county.html": {
    "to": "/rain/montana",
@@ -165,6 +225,14 @@
    "to": "/rain/oregon",
    "since": "2026-11-12"
   },
+  "rain/oregon/wasco-county.html": {
+   "to": "/rain/oregon",
+   "since": "2026-11-26"
+  },
+  "rain/oregon/wheeler-county.html": {
+   "to": "/rain/oregon",
+   "since": "2026-11-26"
+  },
   "rain/south-carolina/allendale-county.html": {
    "to": "/rain/south-carolina",
    "since": "2026-10-14"
@@ -184,6 +252,10 @@
   "rain/south-dakota/dewey-county.html": {
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
+  },
+  "rain/texas/coke-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-26"
   },
   "rain/texas/concho-county.html": {
    "to": "/rain/texas",
@@ -209,13 +281,25 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
+  "rain/texas/reeves-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-26"
+  },
   "rain/texas/sutton-county.html": {
    "to": "/rain/texas",
    "since": "2026-11-12"
   },
-  "rain/virginia/dickenson-county.html": {
-   "to": "/rain/virginia",
-   "since": "2026-11-17"
+  "rain/texas/ward-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-26"
+  },
+  "rain/utah/morgan-county.html": {
+   "to": "/rain/utah",
+   "since": "2026-11-26"
+  },
+  "rain/utah/piute-county.html": {
+   "to": "/rain/utah",
+   "since": "2026-11-26"
   },
   "rain/virginia/fredericksburg-city.html": {
    "to": "/rain/virginia",
@@ -228,6 +312,10 @@
   "rain/west-virginia/clay-county.html": {
    "to": "/rain/west-virginia",
    "since": "2026-11-24"
+  },
+  "rain/west-virginia/pendleton-county.html": {
+   "to": "/rain/west-virginia",
+   "since": "2026-11-26"
   }
  }
 }
