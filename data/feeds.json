@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 97,
- "with_known_cadence": 97,
+ "count": 107,
+ "with_known_cadence": 107,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -1481,6 +1481,29 @@
    "why_quiet": null
   },
   {
+   "path": "data/land-sales/map/ia.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/land-sales/map/il.json",
    "pages": [
     "land-sales/index.html"
@@ -1527,6 +1550,98 @@
    "why_quiet": null
   },
   {
+   "path": "data/land-sales/map/ky.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/mi.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/mo.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/ne.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/land-sales/map/nj.json",
    "pages": [
     "land-sales/index.html"
@@ -1550,7 +1665,122 @@
    "why_quiet": null
   },
   {
+   "path": "data/land-sales/map/oh.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/ok.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/pa.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/sd.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/land-sales/map/vt.json",
+   "pages": [
+    "land-sales/index.html"
+   ],
+   "written_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "touched_by": [
+    "Land data (parcel services + transfers)"
+   ],
+   "cadence": "1 launch monthly, on day 3 at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 3 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/land-sales/map/wa.json",
    "pages": [
     "land-sales/index.html"
    ],
