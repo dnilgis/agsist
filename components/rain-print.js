@@ -5566,7 +5566,7 @@
     if (INS_P) return INS_P;
     INS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-insert.js?v=6';
+      sc.src = '/components/rp-insert.js?v=7';
       sc.onload = function () { res(!!root.AgRpInsert); };
       sc.onerror = function () { INS_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -5594,7 +5594,8 @@
       facts: F, mini: mini, serial: guide ? '' : SERIAL, guide: !!guide, drawn: drawn, gift: printable(gift || ''), giftFrom: printable(cleanText(from, 40)), qr: standardMatrix(), fontCss: fontCssText, px: px,
       station: { words: gaugeWords(META), away: META.approx ? '' : milesText(miles(META.km)).replace(/ mi$/, ' miles'), kind: stationKind(META) },
       source: META && META.ca ? 'Environment and Climate Change Canada\u2019s daily records' : 'NOAA\u2019s daily records',
-      offer: (PRICES && PRICES.letter_offer) || null, today: TODAY   // data/rain-print.json letter_offer: empty code, no line
+      offer: (PRICES && PRICES.letter_offer) || null, today: TODAY,   // data/rain-print.json letter_offer: empty code, no line
+      gauge: (PRICES && PRICES.gauge_hook) || null   // the reading guide's one rain gauge line (guide only); data/rain-print.json gauge_hook
     });
     return { svg: svg, facts: F, drawn: drawn, overflow: root.AgRpInsert.lastOverflow() };
   }

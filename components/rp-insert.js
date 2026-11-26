@@ -25,6 +25,7 @@
  *   giftFrom: a business name for the note's heading ("A NOTE FROM ..."), or '',
  *   qr: the standard code's matrix, fontCss, measure(text, style) -> width (optional), px [w, h],
  *   offer: data/rain-print.json letter_offer {code, dollars_off, expires} or null, today: YYYY-MM-DD (the day the letter is made)
+ *   gauge: data/rain-print.json gauge_hook {line, link} or null: the reading guide's one rain gauge line (guide only)
  * }
  * The offer line (2026-10-17) prints only when the code, the dollars and the
  * date all read clean and the letter is made on or before the last day; otherwise
@@ -75,6 +76,14 @@
     var p = exp.split('-').map(Number);
     return 'Want one for another year or another farm? Use code ' + code.toUpperCase() + ' for $' + off + ' off a print or framed print at agsist.com/rain-print.' +
       (exp ? ' Good through ' + MONTHS[p[1] - 1] + ' ' + p[2] + ', ' + p[0] + '.' : '');
+  }
+  /* The reading guide's one rain gauge line (Nov 26, 2026): the gauge hook from data/rain-print.json ({line, link},
+     the same two strings every gauge ask uses), then where the waitlist is. '' when the hook is missing, too long
+     or carries a dash, so the guide never prints a line the rest of the site would not. */
+  function gaugeLine(g) {
+    var ok = function (t, n) { return typeof t === 'string' && t.trim() && t.length <= n && !/[\u2013\u2014]/.test(t); };
+    if (!g || !ok(g.line, 90) || !ok(g.link, 60)) return '';
+    return g.line.trim() + ' ' + g.link.trim() + ' at agsist.com/rain-gauge.';
   }
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -167,6 +176,7 @@
         'Smaller or bigger? Keep the 3:2 shape: 8 x 12, 12 x 18 or 16 x 24 in.'];
       c.offer = '';
     }
+    c.gauge = guide ? gaugeLine(o.gauge) : '';   // the guide only: the letter in the box has its own code line
     return c;
   }
 
@@ -373,9 +383,9 @@
       y = Math.max(y1 - 19, y2 - 22);
       // the code line, when there is one, sits just above the foot (its last line 16 over the rule)
       var lim = fb - qs - 30;
-      if (c.offer) {
-        var ol = wrap(meas, c.offer, ost, CW), oy = fb - qs - 30 - (ol.length - 1) * 19;
-        out.push('<g data-rp="offer">');
+      if (c.offer || c.gauge) {
+        var ol = wrap(meas, c.offer || c.gauge, ost, CW), oy = fb - qs - 30 - (ol.length - 1) * 19;
+        out.push('<g data-rp="' + (c.offer ? 'offer' : 'gauge') + '">');
         ol.forEach(function (t, k) { out.push(T(M, oy + k * 19, t, ost)); });
         out.push('</g>');
         lim = oy - 30;
@@ -394,10 +404,10 @@
       wrap(meas, c.footerSub, bst, fw).forEach(function (t) { out.push(T(cx2, y2, t, Object.assign({}, bst, { fill: MUTE }))); y2 += 19; });
       out.push(qrMark(o.qr, W0 - M, y - 14 + qs, qs));
       y = Math.max(y1 - 19, y2 - 19, y - 14 + qs);
-      if (c.offer) {
+      if (c.offer || c.gauge) {
         y += 28;
-        out.push('<g data-rp="offer">');
-        wrap(meas, c.offer, ost, CW).forEach(function (t, k) { if (k) y += 19; out.push(T(M, y, t, ost)); });
+        out.push('<g data-rp="' + (c.offer ? 'offer' : 'gauge') + '">');
+        wrap(meas, c.offer || c.gauge, ost, CW).forEach(function (t, k) { if (k) y += 19; out.push(T(M, y, t, ost)); });
         out.push('</g>');
       }
       render.overflow = y > fb ? Math.round(y - fb) : 0;
@@ -406,5 +416,5 @@
     return out.join('');
   }
 
-  root.AgRpInsert = { copy: copy, render: render, offerLine: offerLine, W: W0, H: H0, lastOverflow: function () { return render.overflow || 0; } };
+  root.AgRpInsert = { copy: copy, render: render, offerLine: offerLine, gaugeLine: gaugeLine, W: W0, H: H0, lastOverflow: function () { return render.overflow || 0; } };
 })(typeof window !== 'undefined' ? window : this);

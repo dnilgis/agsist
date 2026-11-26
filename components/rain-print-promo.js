@@ -25,6 +25,19 @@
    Bids, markets and rent pages never take "auto": they keep the gift line,
    which ends at promote_until (Dec 9).
 
+   Source tag (Nov 26, 2026): rain-print.html keeps only src= in its Analytics
+   address, so every link here to /rain-print carries src=<tag>, which counts
+   the page the click came from. The tag is data-src on the element when it is
+   a valid tag, else the page's first folder ("/prf" is prf, "/cash-bids" is
+   cash-bids, "/daily" and every Daily archive page is daily, the home page is
+   home; anything deeper under /rain is rain-county, the tag the county pages'
+   own links carry). A tag starts with a letter, runs a to z, 0 to 9 and
+   hyphens, at most 24 characters and never five digits (srcTag).
+
+   Held space (data-hold on the element): the line's box is held up front
+   (min-height, invisible) so filling it moves nothing; a day with no line
+   gives the box back after the data has answered, at the foot of the page.
+
    The card: Christmas wording from promote_from through the framed order-by
    date; then, through Dec 24 and only while the gift flow is in the data
    (gift_card_title), "give this year's print"; otherwise year-round wording.
@@ -54,6 +67,20 @@
               today >= cfg.promote_from && today <= cfg.promote_until);
   }
   function shortDate(iso) { var p = iso.split('-').map(Number); return MON[p[1] - 1] + ' ' + p[2]; }
+  // The source tag a link to /rain-print carries (the rule rain-print.html applies before it reports src=).
+  var SRC_OK = /^(?!(?:\D*\d){5})[a-z][a-z0-9-]{0,23}$/;
+  function srcTag(explicit, path) {
+    if (SRC_OK.test(explicit || '')) return explicit;
+    var seg = String(path || '/').split(/[?#]/)[0].split('/').filter(Boolean);
+    if (!seg.length || /^index(\.html)?$/.test(seg[0])) return 'home';
+    var first = seg[0].replace(/\.html$/, '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+    if (first === 'rain' && seg.length > 1) first = 'rain-county';
+    return SRC_OK.test(first) ? first : '';
+  }
+  function withSrc(href, tag) {
+    if (!tag || /[?&]src=/.test(href)) return href;
+    return href + (href.indexOf('?') < 0 ? '?' : '&') + 'src=' + tag;
+  }
   // The text for one line placement, or '' for none.
   // The gauge hook from data/rain-print.json: {line, link}, or null when it is
   // missing, empty, too long or carries a dash the house style rules out.
@@ -120,7 +147,7 @@
     if (/^\d{5}$/.test(String(zip || '')) && y > 1900) return '/rain-print?place=' + zip + '&year=' + (y - 1);
     return '/rain-print';
   }
-  var api = { isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday, gaugeHook: gaugeHook, autoMode: autoMode };
+  var api = { isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday, gaugeHook: gaugeHook, autoMode: autoMode, srcTag: srcTag, withSrc: withSrc };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.AgsistRainPromo = api;
 
@@ -165,7 +192,7 @@
         var c = cardFor(cfg, today);
         if (!c) continue;
         css();
-        el.innerHTML = '<a class="rp-card" href="' + esc(c.href) + '" data-placement="home-card-' + c.angle + '">' +
+        el.innerHTML = '<a class="rp-card" href="' + esc(c.href === '/rain-print' ? withSrc(c.href, srcTag(el.getAttribute('data-src'), root.location && root.location.pathname)) : c.href) + '" data-placement="home-card-' + c.angle + '">' +
           '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="240" alt="An example Rain Print from Ames, Iowa, a dry year: rain stepping up across the months, well under a usual year" loading="lazy" decoding="async"></span>' +
           '<span class="rp-card-b"><span class="rp-card-t">' + esc(c.title) + '</span><span class="rp-card-x">' + esc(c.text) + '</span>' +
           '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>';
@@ -189,15 +216,23 @@
         track(el.querySelector('a'), 'rain_gauge_promo_click');
         continue;
       }
-      var href = mode === 'see' ? seeHref(savedZip(), today) : '/rain-print';
+      var href = withSrc(mode === 'see' ? seeHref(savedZip(), today) : '/rain-print', srcTag(el.getAttribute('data-src'), root.location && root.location.pathname));
       el.innerHTML = '<a href="' + esc(href) + '" data-placement="' + esc(place) + '">' + esc(t) + '</a>';
       el.hidden = false;
+      el.style.visibility = '';
       track(el.firstChild, 'rain_print_promo_click');
+    }
+  }
+  // a held box with no line to show (outside the dates, or the data would not load) is given back
+  function release() {
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.hasAttribute('data-hold') && el.style.visibility === 'hidden') el.hidden = true;
     }
   }
   // every line reads data/rain-print.json (the gauge hook lives there too); no file, no line
   fetch('/data/rain-print.json', { cache: 'no-cache' })
     .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (cfg) { fill(cfg); })
-    .catch(function () {});
+    .then(function (cfg) { fill(cfg); release(); })
+    .catch(release);
 })(typeof window !== 'undefined' ? window : this);
