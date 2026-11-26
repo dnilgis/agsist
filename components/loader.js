@@ -125,7 +125,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '113';
+  var CV = '114';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -1023,7 +1023,7 @@
         && !/^\/rent\/(illinois|wisconsin|indiana|vermont|new-jersey)(\.html)?\/?$/.test(location.pathname)
         && !/^\/farmland-atlas\/(indiana|vermont|new-jersey|florida)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=7';
+    s.src = '/components/land-sales.js?v=8';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
