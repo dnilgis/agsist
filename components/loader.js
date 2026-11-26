@@ -125,7 +125,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '114';
+  var CV = '115';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -163,6 +163,53 @@
         });
       })
       .catch(function () {});
+  }
+  /* Footer Rain Print link: counted, and carries from=footer (2026-11-26). */
+  function initRainPrintFooter() {
+    var go = function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || !a.closest('#site-footer, footer')) return;
+      var href = a.getAttribute('href') || '';
+      if (!/^\/rain-print(?:[?#]|$)/.test(href)) return;
+      if (!/[?&]from=/.test(href)) {
+        var at = href.indexOf('#'), hash = at < 0 ? '' : href.slice(at), base = at < 0 ? href : href.slice(0, at);
+        a.setAttribute('href', base + (base.indexOf('?') < 0 ? '?' : '&') + 'from=footer' + hash);
+      }
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_print_promo_click', { placement: 'footer', from: 'footer', page: location.pathname, transport_type: 'beacon' }); } catch (x) {}
+    };
+    document.addEventListener('click', go, true);
+    document.addEventListener('auxclick', go, true);
+  }
+  /* Own-browser mark (2026-11-26): ?ownerdev=<private word> marks this browser (SHA-256 below); it is kept out of Analytics. */
+  var OWNER_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
+  function markInternal() {
+    try {
+      if (window.__agsistInternalSet) return;
+      window.__agsistInternalSet = 1;
+      var cmd = (function () { return arguments; })('set', { traffic_type: 'internal', owner_device: 'yes' });
+      var dl = window.dataLayer = window.dataLayer || [], at = dl.length, i;
+      for (i = 0; i < dl.length; i++) if (dl[i] && dl[i][0] === 'config') { at = i; break; }
+      dl.splice(at, 0, cmd);
+    } catch (e) {}
+  }
+  function initOwnerDevice() {
+    try {
+      var marked = false;
+      try { marked = localStorage.getItem('agsist-owner-device') === '1'; } catch (x) {}
+      if (marked) markInternal();
+      var q = new URLSearchParams(location.search);
+      if (!q.has('ownerdev')) return;
+      var w = q.get('ownerdev'), clean = function () {
+        try { q.delete('ownerdev'); var qs = q.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (x) {}
+      };
+      if (w === 'off') { try { localStorage.removeItem('agsist-owner-device'); } catch (x) {} clean(); return; }
+      if (!window.crypto || !crypto.subtle || typeof TextEncoder === 'undefined') { clean(); return; }
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode(w)).then(function (buf) {
+        var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+        if (hex === OWNER_HASH) { try { localStorage.setItem('agsist-owner-device', '1'); } catch (x) {} markInternal(); }
+        clean();
+      }, clean);
+    } catch (e) {}
   }
   function initMenuClicks() {
     var txt = function (el) { return el ? String(el.textContent || '').replace(/[\u2192]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : ''; };
@@ -780,6 +827,8 @@
       .catch(function () {});
   }
   document.addEventListener('DOMContentLoaded', function () {
+    initOwnerDevice();
+    initRainPrintFooter();
     injectAnalytics();
     siteNotice();
     loadSponsorMetrics();
