@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-26-daily-teaser-latest",
+   "date": "2026-11-26",
+   "title": "Daily teaser wording",
+   "line": "The home page briefing strip no longer says \"Today's\" over an older issue when that issue has no summary line; it says latest.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-26-rain-totals-kind",
    "date": "2026-11-26",
    "title": "Rain totals say which kind",
@@ -28,6 +35,13 @@
    "title": "Land auction results on the farm sale pages",
    "line": "Land auction results from five auction companies now sit beside the state's recorded sales in county lists and on the map, marked Auction result and drawn as squares.",
    "link": "/land-sales/"
+  },
+  {
+   "id": "2026-11-26-rain-print-first-look",
+   "date": "2026-11-26",
+   "title": "Rain Print starts with the picture",
+   "line": "The Rain Print page opens on a photo, the price and the Christmas date, with three finished years to open and four gift choices to start from.",
+   "link": "/rain-print"
   },
   {
    "id": "2026-11-25-daily-lock-followup",
