@@ -43,7 +43,20 @@
    analytics event (rain_print_promo_click / rain_gauge_promo_click) with placement, from and page. Every
    Rain Print link here carries from= (home, or promo-<placement>), so /rain-print can report where its visitor came from
    (components/rain-print.js sends rain_print_landing {from}; the page's own Analytics address is the bare path).
-   scripts/brief_email.py rain_print_line applies the briefing rule to the email. */
+   scripts/brief_email.py rain_print_line applies the briefing rule to the email.
+
+   Source tag (Nov 26, 2026): rain-print.html keeps only src= in its Analytics
+   address, so every link here to /rain-print also carries src=<tag>, which counts
+   the page the click came from. The tag is data-src on the element when it is
+   a valid tag, else the page's first folder ("/prf" is prf, "/cash-bids" is
+   cash-bids, "/daily" and every Daily archive page is daily, the home page is
+   home; /rain/<state> is rain-state and /rain/<state>/<county> is rain-county, the
+   tags the rain pages' own links carry). A tag starts with a letter, runs a to z, 0 to 9 and
+   hyphens, at most 24 characters and never five digits (srcTag).
+
+   Held space (data-hold on the element): the line's box is held up front
+   (min-height, invisible) so filling it moves nothing; a day with no line
+   gives the box back after the data has answered, at the foot of the page. */
 (function (root) {
   'use strict';
   var ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -57,6 +70,21 @@
               today >= cfg.promote_from && today <= cfg.promote_until);
   }
   function shortDate(iso) { var p = iso.split('-').map(Number); return MON[p[1] - 1] + ' ' + p[2]; }
+  // The source tag a link to /rain-print carries (the rule rain-print.html applies before it reports src=).
+  var SRC_OK = /^(?!(?:\D*\d){5})[a-z][a-z0-9-]{0,23}$/;
+  function srcTag(explicit, path) {
+    if (SRC_OK.test(explicit || '')) return explicit;
+    var seg = String(path || '/').split(/[?#]/)[0].split('/').filter(Boolean);
+    if (!seg.length || /^index(\.html)?$/.test(seg[0])) return 'home';
+    var first = seg[0].replace(/\.html$/, '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+    if (first === 'rain' && seg.length > 1) first = seg.length > 2 ? 'rain-county' : 'rain-state';   // /rain/<state> and /rain/<state>/<county>: the tags the builder's own links carry
+    return SRC_OK.test(first) ? first : '';
+  }
+  function withSrc(href, tag) {
+    if (!tag || /[?&]src=/.test(href)) return href;
+    var at = href.indexOf('#'), hash = at < 0 ? '' : href.slice(at), base = at < 0 ? href : href.slice(0, at);
+    return base + (base.indexOf('?') < 0 ? '?' : '&') + 'src=' + tag + hash;
+  }
   // The text for one line placement, or '' for none.
   // The gauge hook from data/rain-print.json: {line, link}, or null when it is
   // missing, empty, too long or carries a dash the house style rules out.
@@ -125,7 +153,7 @@
     if (/^\d{5}$/.test(String(zip || '')) && y > 1900) return '/rain-print?place=' + zip + '&year=' + (y - 1);
     return '/rain-print';
   }
-  var api = { withFrom: function (h, f) { return withFrom(h, f); }, isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday, gaugeHook: gaugeHook, autoMode: autoMode };
+  var api = { srcTag: srcTag, withSrc: withSrc, withFrom: function (h, f) { return withFrom(h, f); }, isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday, gaugeHook: gaugeHook, autoMode: autoMode };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.AgsistRainPromo = api;
 
@@ -180,7 +208,7 @@
         var c = cardFor(cfg, today);
         if (!c) continue;
         css();
-        el.innerHTML = '<div class="rp-card"><a class="rp-card-main" href="' + esc(withFrom(c.href, 'home')) + '" data-from="home" data-placement="home-card-' + c.angle + '">' +
+        el.innerHTML = '<div class="rp-card"><a class="rp-card-main" href="' + esc(withSrc(withFrom(c.href, 'home'), c.href === '/rain-print' ? srcTag(el.getAttribute('data-src'), root.location && root.location.pathname) : '')) + '" data-from="home" data-placement="home-card-' + c.angle + '">' +
           '<span class="rp-card-i"><img src="/img/photos/rp-slot-card.jpg" width="720" height="480" alt="A framed Rain Print of Chetek, Wisconsin, 2025, hanging on a wall: the year\u2019s rain below the line, snow above" loading="lazy" decoding="async"></span>' +
           '<span class="rp-card-b"><span class="rp-card-t">' + esc(c.title) + '</span><span class="rp-card-x">' + esc(c.text) + '</span>' +
           '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>' +
@@ -206,14 +234,23 @@
         continue;
       }
       var href = mode === 'see' ? seeHref(savedZip(), today) : '/rain-print';
-      el.innerHTML = '<a href="' + esc(withFrom(href, 'promo-' + place.replace(/[^a-z0-9-]/g, ''))) + '" data-from="promo-' + esc(place.replace(/[^a-z0-9-]/g, '')) + '" data-placement="' + esc(place) + '">' + esc(t) + '</a>';
+      var tagged = withSrc(withFrom(href, 'promo-' + place.replace(/[^a-z0-9-]/g, '')), srcTag(el.getAttribute('data-src'), root.location && root.location.pathname));
+      el.innerHTML = '<a href="' + esc(tagged) + '" data-from="promo-' + esc(place.replace(/[^a-z0-9-]/g, '')) + '" data-placement="' + esc(place) + '">' + esc(t) + '</a>';
       el.hidden = false;
+      el.style.visibility = '';
       track(el.firstChild, 'rain_print_promo_click');
+    }
+  }
+  // a held box with no line to show (outside the dates, or the data would not load) is given back
+  function release() {
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.hasAttribute('data-hold') && el.style.visibility === 'hidden') el.hidden = true;
     }
   }
   // every line reads data/rain-print.json (the gauge hook lives there too); no file, no line
   fetch('/data/rain-print.json', { cache: 'no-cache' })
     .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (cfg) { fill(cfg); })
-    .catch(function () {});
+    .then(function (cfg) { fill(cfg); release(); })
+    .catch(release);
 })(typeof window !== 'undefined' ? window : this);
