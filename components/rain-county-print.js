@@ -243,6 +243,7 @@
     doc.addEventListener('auxclick', go, true);
   }
 
+  if (doc && doc.getElementById('rc-print')) track();
   var own = doc && doc.getElementById('rc-print');
-  if (own) { track(); mount(own); }
+  if (own) mount(own);
 })(typeof window !== 'undefined' ? window : this);
