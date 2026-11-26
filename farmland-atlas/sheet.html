@@ -414,7 +414,7 @@ function load(f){
   $('msg').style.display=''; $('msg').textContent='Loading the county record…';
   var st0=A.counties[f].state;
   var AS=window.AtlasSales, wantS=AS&&AS.STATES[st0];
-  Promise.all([j(DATA+'counties/'+f+'.json'), CR&&CR.state===st0?Promise.resolve(CR):j('/data/cash-rent/'+st0+'.json'), wantS?AS.load(st0):Promise.resolve(null)]).then(function(r){
+  Promise.all([j('https://dnilgis.github.io/agsist-data/data/atlas/counties/'+f+'.json'), CR&&CR.state===st0?Promise.resolve(CR):j('/data/cash-rent/'+st0+'.json'), wantS?AS.load(st0):Promise.resolve(null)]).then(function(r){
     var d=r[0]; if(F!==f) return;
     SALES=r[2]&&r[2].state===st0?r[2]:null;
     CR=r[1]; TR={}; if(CR&&CR.counties) CR.counties.forEach(function(c){ var t=trendOf(c,CR); if(t) TR[c.fips]=t; });

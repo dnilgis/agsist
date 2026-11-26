@@ -129,3 +129,8 @@ build/shots/
 # Worklists of elevator coordinates and board URLs are private engine data (scripts/worklists, Nov 13); a job that
 # commits all of data/ must not publish them.
 /data/gaps/
+
+# The county Atlas files (data/atlas/counties/<fips>.json, 3,148 files, 59.9 MiB) are served from dnilgis/agsist-data
+# since Nov 26, 2026 (scripts/atlas_hosted.py; test/atlas-hosted.test.mjs). A job that builds from them or tests them
+# has a copy here, fetched from there; it is never committed. farmland-atlas.yml sends a rebuilt folder to agsist-data.
+/data/atlas/counties/

@@ -956,7 +956,7 @@ function openPanel(fips,how){
   var done=false, slow=setTimeout(function(){ if(!done&&SEL===fips) $('fa-p-sub').textContent='Still loading: the county file is slow. It will appear here when it arrives.'; },8000);
   var net=false;
   // the outlines are only for the next-door list and the Field Scout link: fetched with the record, never on first paint
-  Promise.all([fetch(DATA+'counties/'+fips+'.json',{cache:'no-cache'}).then(function(r){ if(!r.ok&&r.status!==404) net=true; return r.ok?r.json():null;}).catch(function(){ net=true; return null;}), loadGeo(), loadSide('tenure')]).then(function(res){
+  Promise.all([fetch('https://dnilgis.github.io/agsist-data/data/atlas/counties/'+fips+'.json',{cache:'no-cache'}).then(function(r){ if(!r.ok&&r.status!==404) net=true; return r.ok?r.json():null;}).catch(function(){ net=true; return null;}), loadGeo(), loadSide('tenure')]).then(function(res){
     var d=res[0];
     done=true; clearTimeout(slow);
     if(SEL!==fips) return;             // a later click won
