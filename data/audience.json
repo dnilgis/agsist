@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-26T16:54:00+00:00",
+ "built": "2026-11-26T19:21:40+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -6204,7 +6204,7 @@
  "email": {
   "subscribers": 309,
   "asOf": "2026-11-26",
-  "people": 378
+  "people": 379
  },
  "returns": {
   "through": "2026-11-24",
@@ -7111,41 +7111,41 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-24",
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-24",
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   },
   "cotKit": {
    "ok": true,
    "through": "2026-11-24",
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   },
   "aiVisits": {
    "ok": true,
    "through": "2026-11-24",
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   },
   "fieldKit": {
    "ok": true,
    "through": "2026-11-24",
-   "fetched": "2026-11-26T16:54:00+00:00"
+   "fetched": "2026-11-26T19:21:40+00:00"
   }
  }
 }
