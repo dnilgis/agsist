@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T14:40:44Z",
+ "updated": "2026-11-26T02:21:40Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, auction reports",
  "classes": [
   300,
@@ -275,7 +275,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -521,7 +521,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -724,7 +724,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -951,7 +951,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -964,7 +964,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -1673,7 +1673,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -1820,7 +1820,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -1833,7 +1833,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -2266,7 +2266,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -2451,7 +2451,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -2750,7 +2750,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -3085,7 +3085,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -3456,7 +3456,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -3735,7 +3735,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -3746,6 +3746,111 @@
    "lon": -93.5,
    "id": "humeston-ia",
    "sales": [
+    {
+     "date": "2026-11-25",
+     "receipts": 850,
+     "classes": {
+      "steers|1": {
+       "300": {
+        "head": 10,
+        "avg_wt": 394,
+        "cwt": 483.96,
+        "per_head": 1906.8,
+        "lo": 475.0,
+        "hi": 490.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 52,
+        "avg_wt": 606,
+        "cwt": 391.62,
+        "per_head": 2373.22,
+        "lo": 381.0,
+        "hi": 403.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 62,
+        "avg_wt": 726,
+        "cwt": 349.0,
+        "per_head": 2533.74,
+        "lo": 346.0,
+        "hi": 370.0,
+        "rows": 1
+       }
+      },
+      "steers|1-2": {
+       "600": {
+        "head": 9,
+        "avg_wt": 646,
+        "cwt": 327.0,
+        "per_head": 2112.42,
+        "lo": 327.0,
+        "hi": 327.0,
+        "rows": 1
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 6,
+        "avg_wt": 398,
+        "cwt": 455.0,
+        "per_head": 1810.9,
+        "lo": 455.0,
+        "hi": 455.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 75,
+        "avg_wt": 534,
+        "cwt": 381.11,
+        "per_head": 2035.04,
+        "lo": 372.0,
+        "hi": 393.0,
+        "rows": 2
+       },
+       "600": {
+        "head": 51,
+        "avg_wt": 670,
+        "cwt": 335.37,
+        "per_head": 2245.6,
+        "lo": 335.0,
+        "hi": 337.0,
+        "rows": 2
+       },
+       "700": {
+        "head": 73,
+        "avg_wt": 773,
+        "cwt": 322.5,
+        "per_head": 2492.92,
+        "lo": 322.5,
+        "hi": 322.5,
+        "rows": 1
+       },
+       "800": {
+        "head": 125,
+        "avg_wt": 849,
+        "cwt": 303.01,
+        "per_head": 2571.07,
+        "lo": 300.5,
+        "hi": 305.25,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "500": {
+        "head": 12,
+        "avg_wt": 594,
+        "cwt": 342.52,
+        "per_head": 2034.57,
+        "lo": 340.0,
+        "hi": 345.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 139
+    },
     {
      "date": "2026-11-11",
      "receipts": 850,
@@ -3886,98 +3991,6 @@
       }
      },
      "noted_head": 182
-    },
-    {
-     "date": "2026-10-14",
-     "receipts": 750,
-     "classes": {
-      "steers|1": {
-       "300": {
-        "head": 34,
-        "avg_wt": 336,
-        "cwt": 636.0,
-        "per_head": 2136.96,
-        "lo": 636.0,
-        "hi": 636.0,
-        "rows": 1
-       },
-       "400": {
-        "head": 84,
-        "avg_wt": 429,
-        "cwt": 548.11,
-        "per_head": 2351.39,
-        "lo": 527.5,
-        "hi": 565.0,
-        "rows": 1
-       },
-       "500": {
-        "head": 213,
-        "avg_wt": 567,
-        "cwt": 431.99,
-        "per_head": 2449.38,
-        "lo": 424.5,
-        "hi": 446.0,
-        "rows": 1
-       },
-       "600": {
-        "head": 73,
-        "avg_wt": 649,
-        "cwt": 383.46,
-        "per_head": 2489.93,
-        "lo": 377.0,
-        "hi": 387.5,
-        "rows": 2
-       }
-      },
-      "heifers|1": {
-       "300": {
-        "head": 72,
-        "avg_wt": 376,
-        "cwt": 476.49,
-        "per_head": 1793.67,
-        "lo": 465.0,
-        "hi": 499.0,
-        "rows": 2
-       },
-       "400": {
-        "head": 31,
-        "avg_wt": 492,
-        "cwt": 401.15,
-        "per_head": 1973.66,
-        "lo": 387.5,
-        "hi": 407.0,
-        "rows": 1
-       },
-       "500": {
-        "head": 62,
-        "avg_wt": 567,
-        "cwt": 360.85,
-        "per_head": 2045.56,
-        "lo": 340.0,
-        "hi": 402.0,
-        "rows": 2
-       },
-       "600": {
-        "head": 14,
-        "avg_wt": 630,
-        "cwt": 340.29,
-        "per_head": 2143.86,
-        "lo": 327.5,
-        "hi": 346.0,
-        "rows": 2
-       },
-       "800": {
-        "head": 8,
-        "avg_wt": 889,
-        "cwt": 306.5,
-        "per_head": 2724.79,
-        "lo": 306.5,
-        "hi": 306.5,
-        "rows": 1
-       }
-      }
-     },
-     "noted_head": 22
     }
    ],
    "slug": "2018",
@@ -3985,7 +3998,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -3998,7 +4011,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -4599,7 +4612,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -4612,7 +4625,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -5146,7 +5159,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -5499,7 +5512,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -5780,7 +5793,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -5992,7 +6005,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -6453,7 +6466,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -6665,7 +6678,7 @@
    "status": {
     "ok": false,
     "note": "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -6937,7 +6950,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -6950,7 +6963,7 @@
    "status": {
     "ok": false,
     "note": "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -6985,7 +6998,7 @@
    "status": {
     "ok": false,
     "note": "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -7302,7 +7315,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -7355,7 +7368,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -7798,7 +7811,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -8241,7 +8254,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -8254,7 +8267,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -8876,7 +8889,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -9059,7 +9072,7 @@
    "status": {
     "ok": false,
     "note": "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -9195,7 +9208,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -9405,7 +9418,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -9633,7 +9646,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -9870,7 +9883,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -10116,7 +10129,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -10362,7 +10375,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -10498,7 +10511,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -10735,7 +10748,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -10748,7 +10761,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -11164,7 +11177,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -11383,7 +11396,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -11394,6 +11407,89 @@
    "lon": -84.81,
    "id": "owenton-ky",
    "sales": [
+    {
+     "date": "2026-11-25",
+     "receipts": 122,
+     "classes": {
+      "steers|1-2": {
+       "400": {
+        "head": 1,
+        "avg_wt": 460,
+        "cwt": 367.5,
+        "per_head": 1690.5,
+        "lo": 367.5,
+        "hi": 367.5,
+        "rows": 1
+       },
+       "500": {
+        "head": 6,
+        "avg_wt": 548,
+        "cwt": 356.0,
+        "per_head": 1950.88,
+        "lo": 356.0,
+        "hi": 356.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 2,
+        "avg_wt": 628,
+        "cwt": 317.15,
+        "per_head": 1991.7,
+        "lo": 300.0,
+        "hi": 335.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 1,
+        "avg_wt": 700,
+        "cwt": 290.0,
+        "per_head": 2030.0,
+        "lo": 290.0,
+        "hi": 290.0,
+        "rows": 1
+       },
+       "800": {
+        "head": 1,
+        "avg_wt": 820,
+        "cwt": 255.0,
+        "per_head": 2091.0,
+        "lo": 255.0,
+        "hi": 255.0,
+        "rows": 1
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 6,
+        "avg_wt": 346,
+        "cwt": 379.16,
+        "per_head": 1311.88,
+        "lo": 355.0,
+        "hi": 405.0,
+        "rows": 2
+       },
+       "400": {
+        "head": 7,
+        "avg_wt": 476,
+        "cwt": 366.17,
+        "per_head": 1741.93,
+        "lo": 360.0,
+        "hi": 367.5,
+        "rows": 2
+       },
+       "500": {
+        "head": 3,
+        "avg_wt": 539,
+        "cwt": 308.29,
+        "per_head": 1660.63,
+        "lo": 290.0,
+        "hi": 335.0,
+        "rows": 2
+       }
+      }
+     },
+     "noted_head": 0
+    },
     {
      "date": "2026-11-18",
      "receipts": 333,
@@ -11485,116 +11581,6 @@
       }
      },
      "noted_head": 76
-    },
-    {
-     "date": "2026-11-11",
-     "receipts": 298,
-     "classes": {
-      "steers|1-2": {
-       "300": {
-        "head": 1,
-        "avg_wt": 310,
-        "cwt": 400.0,
-        "per_head": 1240.0,
-        "lo": 400.0,
-        "hi": 400.0,
-        "rows": 1
-       },
-       "400": {
-        "head": 4,
-        "avg_wt": 453,
-        "cwt": 363.96,
-        "per_head": 1648.73,
-        "lo": 360.0,
-        "hi": 367.5,
-        "rows": 2
-       },
-       "500": {
-        "head": 5,
-        "avg_wt": 537,
-        "cwt": 338.59,
-        "per_head": 1817.56,
-        "lo": 332.5,
-        "hi": 340.0,
-        "rows": 2
-       },
-       "600": {
-        "head": 9,
-        "avg_wt": 647,
-        "cwt": 327.28,
-        "per_head": 2118.94,
-        "lo": 320.0,
-        "hi": 345.0,
-        "rows": 2
-       },
-       "700": {
-        "head": 3,
-        "avg_wt": 723,
-        "cwt": 329.11,
-        "per_head": 2379.47,
-        "lo": 317.5,
-        "hi": 335.0,
-        "rows": 1
-       },
-       "800": {
-        "head": 1,
-        "avg_wt": 825,
-        "cwt": 275.0,
-        "per_head": 2268.75,
-        "lo": 275.0,
-        "hi": 275.0,
-        "rows": 1
-       }
-      },
-      "heifers|1-2": {
-       "300": {
-        "head": 12,
-        "avg_wt": 359,
-        "cwt": 342.56,
-        "per_head": 1228.65,
-        "lo": 325.0,
-        "hi": 365.0,
-        "rows": 2
-       },
-       "400": {
-        "head": 18,
-        "avg_wt": 459,
-        "cwt": 348.01,
-        "per_head": 1598.53,
-        "lo": 330.0,
-        "hi": 365.0,
-        "rows": 2
-       },
-       "500": {
-        "head": 19,
-        "avg_wt": 535,
-        "cwt": 320.3,
-        "per_head": 1712.79,
-        "lo": 300.0,
-        "hi": 330.0,
-        "rows": 2
-       },
-       "600": {
-        "head": 10,
-        "avg_wt": 633,
-        "cwt": 304.41,
-        "per_head": 1925.72,
-        "lo": 290.0,
-        "hi": 325.0,
-        "rows": 2
-       },
-       "700": {
-        "head": 4,
-        "avg_wt": 729,
-        "cwt": 288.76,
-        "per_head": 2105.05,
-        "lo": 285.0,
-        "hi": 292.5,
-        "rows": 2
-       }
-      }
-     },
-     "noted_head": 18
     }
    ],
    "slug": "2203",
@@ -11602,7 +11588,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -11857,7 +11843,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -12094,7 +12080,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -12331,7 +12317,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -12411,7 +12397,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -12657,7 +12643,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -12912,7 +12898,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -13158,7 +13144,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -13377,7 +13363,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -13674,7 +13660,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -14072,7 +14058,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -14551,7 +14537,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -14931,7 +14917,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -15365,7 +15351,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -15754,7 +15740,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -16044,7 +16030,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -16379,7 +16365,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -16768,7 +16754,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -17103,7 +17089,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -17447,7 +17433,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -17755,7 +17741,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -18162,7 +18148,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -18405,7 +18391,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -18830,7 +18816,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -18843,9 +18829,150 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
+    {
+     "date": "2026-11-25",
+     "receipts": 177,
+     "classes": {
+      "steers|1": {
+       "400": {
+        "head": 5,
+        "avg_wt": 460,
+        "cwt": 490.0,
+        "per_head": 2254.0,
+        "lo": 490.0,
+        "hi": 490.0,
+        "rows": 2
+       }
+      },
+      "steers|1-2": {
+       "300": {
+        "head": 13,
+        "avg_wt": 378,
+        "cwt": 450.37,
+        "per_head": 1702.4,
+        "lo": 430.0,
+        "hi": 460.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 5,
+        "avg_wt": 472,
+        "cwt": 414.44,
+        "per_head": 1956.16,
+        "lo": 397.5,
+        "hi": 440.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 8,
+        "avg_wt": 534,
+        "cwt": 372.62,
+        "per_head": 1989.79,
+        "lo": 365.0,
+        "hi": 395.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 5,
+        "avg_wt": 618,
+        "cwt": 368.03,
+        "per_head": 2274.43,
+        "lo": 360.0,
+        "hi": 375.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 6,
+        "avg_wt": 736,
+        "cwt": 324.45,
+        "per_head": 2386.88,
+        "lo": 317.5,
+        "hi": 330.0,
+        "rows": 2
+       }
+      },
+      "heifers|1": {
+       "300": {
+        "head": 2,
+        "avg_wt": 375,
+        "cwt": 460.0,
+        "per_head": 1725.0,
+        "lo": 460.0,
+        "hi": 460.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 5,
+        "avg_wt": 418,
+        "cwt": 423.87,
+        "per_head": 1771.78,
+        "lo": 420.0,
+        "hi": 430.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 18,
+        "avg_wt": 547,
+        "cwt": 347.91,
+        "per_head": 1903.46,
+        "lo": 335.0,
+        "hi": 370.0,
+        "rows": 2
+       }
+      },
+      "heifers|1-2": {
+       "300": {
+        "head": 7,
+        "avg_wt": 396,
+        "cwt": 405.62,
+        "per_head": 1606.26,
+        "lo": 400.0,
+        "hi": 420.0,
+        "rows": 1
+       },
+       "400": {
+        "head": 5,
+        "avg_wt": 431,
+        "cwt": 396.08,
+        "per_head": 1707.1,
+        "lo": 365.0,
+        "hi": 415.0,
+        "rows": 1
+       },
+       "500": {
+        "head": 3,
+        "avg_wt": 563,
+        "cwt": 318.37,
+        "per_head": 1792.42,
+        "lo": 315.0,
+        "hi": 320.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 2,
+        "avg_wt": 660,
+        "cwt": 307.44,
+        "per_head": 2029.1,
+        "lo": 300.0,
+        "hi": 315.0,
+        "rows": 1
+       },
+       "700": {
+        "head": 2,
+        "avg_wt": 705,
+        "cwt": 305.0,
+        "per_head": 2150.25,
+        "lo": 305.0,
+        "hi": 305.0,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 5
+    },
     {
      "date": "2026-11-18",
      "receipts": 916,
@@ -19031,228 +19158,6 @@
       }
      },
      "noted_head": 118
-    },
-    {
-     "date": "2026-11-11",
-     "receipts": 1789,
-     "classes": {
-      "steers|1": {
-       "300": {
-        "head": 2,
-        "avg_wt": 335,
-        "cwt": 550.0,
-        "per_head": 1842.5,
-        "lo": 550.0,
-        "hi": 550.0,
-        "rows": 1
-       },
-       "400": {
-        "head": 19,
-        "avg_wt": 460,
-        "cwt": 444.31,
-        "per_head": 2045.68,
-        "lo": 430.0,
-        "hi": 470.0,
-        "rows": 2
-       },
-       "500": {
-        "head": 87,
-        "avg_wt": 564,
-        "cwt": 411.18,
-        "per_head": 2319.45,
-        "lo": 395.0,
-        "hi": 450.0,
-        "rows": 2
-       },
-       "600": {
-        "head": 69,
-        "avg_wt": 631,
-        "cwt": 379.46,
-        "per_head": 2394.4,
-        "lo": 362.5,
-        "hi": 390.0,
-        "rows": 2
-       },
-       "700": {
-        "head": 58,
-        "avg_wt": 745,
-        "cwt": 347.71,
-        "per_head": 2591.79,
-        "lo": 340.0,
-        "hi": 355.0,
-        "rows": 2
-       },
-       "800": {
-        "head": 120,
-        "avg_wt": 890,
-        "cwt": 320.48,
-        "per_head": 2850.8,
-        "lo": 317.0,
-        "hi": 342.5,
-        "rows": 2
-       }
-      },
-      "steers|1-2": {
-       "300": {
-        "head": 15,
-        "avg_wt": 349,
-        "cwt": 468.37,
-        "per_head": 1634.61,
-        "lo": 440.0,
-        "hi": 505.0,
-        "rows": 2
-       },
-       "400": {
-        "head": 65,
-        "avg_wt": 450,
-        "cwt": 415.82,
-        "per_head": 1871.65,
-        "lo": 390.0,
-        "hi": 435.0,
-        "rows": 2
-       },
-       "500": {
-        "head": 54,
-        "avg_wt": 557,
-        "cwt": 382.74,
-        "per_head": 2130.12,
-        "lo": 355.0,
-        "hi": 415.0,
-        "rows": 2
-       },
-       "600": {
-        "head": 84,
-        "avg_wt": 635,
-        "cwt": 345.74,
-        "per_head": 2195.77,
-        "lo": 325.0,
-        "hi": 365.0,
-        "rows": 2
-       },
-       "700": {
-        "head": 68,
-        "avg_wt": 730,
-        "cwt": 332.69,
-        "per_head": 2427.72,
-        "lo": 315.0,
-        "hi": 342.5,
-        "rows": 2
-       },
-       "800": {
-        "head": 7,
-        "avg_wt": 821,
-        "cwt": 305.76,
-        "per_head": 2510.29,
-        "lo": 300.0,
-        "hi": 309.0,
-        "rows": 1
-       }
-      },
-      "heifers|1": {
-       "300": {
-        "head": 2,
-        "avg_wt": 355,
-        "cwt": 440.0,
-        "per_head": 1562.0,
-        "lo": 440.0,
-        "hi": 440.0,
-        "rows": 1
-       },
-       "400": {
-        "head": 37,
-        "avg_wt": 454,
-        "cwt": 402.39,
-        "per_head": 1826.4,
-        "lo": 390.0,
-        "hi": 425.0,
-        "rows": 2
-       },
-       "500": {
-        "head": 34,
-        "avg_wt": 550,
-        "cwt": 367.73,
-        "per_head": 2022.07,
-        "lo": 360.0,
-        "hi": 385.0,
-        "rows": 2
-       },
-       "600": {
-        "head": 68,
-        "avg_wt": 620,
-        "cwt": 341.31,
-        "per_head": 2117.73,
-        "lo": 335.0,
-        "hi": 352.5,
-        "rows": 2
-       },
-       "700": {
-        "head": 24,
-        "avg_wt": 702,
-        "cwt": 331.57,
-        "per_head": 2327.62,
-        "lo": 330.0,
-        "hi": 337.5,
-        "rows": 1
-       }
-      },
-      "heifers|1-2": {
-       "300": {
-        "head": 15,
-        "avg_wt": 359,
-        "cwt": 424.36,
-        "per_head": 1524.28,
-        "lo": 400.0,
-        "hi": 460.0,
-        "rows": 2
-       },
-       "400": {
-        "head": 78,
-        "avg_wt": 455,
-        "cwt": 379.65,
-        "per_head": 1727.87,
-        "lo": 355.0,
-        "hi": 405.0,
-        "rows": 2
-       },
-       "500": {
-        "head": 81,
-        "avg_wt": 544,
-        "cwt": 351.43,
-        "per_head": 1910.83,
-        "lo": 335.0,
-        "hi": 362.5,
-        "rows": 2
-       },
-       "600": {
-        "head": 52,
-        "avg_wt": 645,
-        "cwt": 320.68,
-        "per_head": 2069.58,
-        "lo": 300.0,
-        "hi": 330.0,
-        "rows": 2
-       },
-       "700": {
-        "head": 22,
-        "avg_wt": 738,
-        "cwt": 305.84,
-        "per_head": 2257.1,
-        "lo": 295.0,
-        "hi": 317.5,
-        "rows": 1
-       },
-       "800": {
-        "head": 29,
-        "avg_wt": 868,
-        "cwt": 279.12,
-        "per_head": 2422.76,
-        "lo": 262.5,
-        "hi": 295.0,
-        "rows": 1
-       }
-      }
-     },
-     "noted_head": 68
     }
    ],
    "slug": "1255",
@@ -19626,7 +19531,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -19961,7 +19866,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -20350,7 +20255,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -20363,7 +20268,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -21200,7 +21105,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -21310,7 +21215,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -21323,9 +21228,36 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
+    {
+     "date": "2026-11-25",
+     "receipts": 934,
+     "classes": {
+      "heifers|1-2": {
+       "400": {
+        "head": 3,
+        "avg_wt": 490,
+        "cwt": 370.0,
+        "per_head": 1813.0,
+        "lo": 370.0,
+        "hi": 370.0,
+        "rows": 1
+       },
+       "600": {
+        "head": 6,
+        "avg_wt": 649,
+        "cwt": 307.5,
+        "per_head": 1995.67,
+        "lo": 307.5,
+        "hi": 307.5,
+        "rows": 1
+       }
+      }
+     },
+     "noted_head": 117
+    },
     {
      "date": "2026-11-20",
      "receipts": 696,
@@ -21421,28 +21353,10 @@
       }
      },
      "noted_head": 374
-    },
-    {
-     "date": "2026-11-18",
-     "receipts": 1788,
-     "classes": {
-      "heifers|1": {
-       "800": {
-        "head": 15,
-        "avg_wt": 849,
-        "cwt": 324.03,
-        "per_head": 2749.68,
-        "lo": 321.0,
-        "hi": 332.5,
-        "rows": 2
-       }
-      }
-     },
-     "noted_head": 212
     }
    ],
-   "slug": "1776",
-   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1776"
+   "slug": "1774",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1774"
   },
   {
    "name": "Miles City Livestock Commission",
@@ -21454,7 +21368,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -21565,7 +21479,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -21954,7 +21868,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -22647,7 +22561,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -22973,7 +22887,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -22986,7 +22900,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -23598,7 +23512,7 @@
    "status": {
     "ok": false,
     "note": "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -23821,7 +23735,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -24129,7 +24043,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -24390,7 +24304,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -24761,7 +24675,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -24774,7 +24688,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -25001,7 +24915,7 @@
    "status": {
     "ok": false,
     "note": "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -25318,7 +25232,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -25331,7 +25245,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -26024,7 +25938,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -26303,7 +26217,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -26737,7 +26651,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -27189,7 +27103,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -27623,7 +27537,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -27994,7 +27908,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -28300,7 +28214,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -28761,7 +28675,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -29240,7 +29154,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -29495,7 +29409,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -29508,7 +29422,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -30291,7 +30205,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -30304,7 +30218,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -30970,7 +30884,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -30983,7 +30897,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -31622,7 +31536,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -31939,7 +31853,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -32274,7 +32188,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -32555,7 +32469,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -32899,7 +32813,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -32912,7 +32826,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -33480,7 +33394,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -33493,7 +33407,7 @@
    "status": {
     "ok": false,
     "note": "report 1952 title 'FEEDER CATTLE STEERS - Medium and Large 1 (Per Cwt / Actual Wt) Head Wt Range' does not name this barn",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -33819,7 +33733,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -34056,7 +33970,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -34436,7 +34350,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -34744,7 +34658,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -35043,7 +34957,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -35378,7 +35292,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -35621,7 +35535,7 @@
    "status": {
     "ok": false,
     "note": "no feeder steer or heifer Medium and Large 1 / 1-2 rows (Per Cwt, Actual Wt)",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -35723,7 +35637,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -35993,7 +35907,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -36239,7 +36153,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   }
  ],
@@ -36716,7 +36630,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -36967,7 +36881,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -37322,7 +37236,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -37734,7 +37648,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -38173,7 +38087,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -38621,7 +38535,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -39042,7 +38956,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -39490,7 +39404,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -39803,7 +39717,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -40027,7 +39941,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -40493,7 +40407,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -40815,7 +40729,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -41039,7 +40953,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -41303,7 +41217,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -41697,7 +41611,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -42163,7 +42077,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -42172,7 +42086,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    },
    "sales": [
     {
@@ -43086,7 +43000,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -43258,7 +43172,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -43733,7 +43647,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44190,7 +44104,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   }
  ],
@@ -44307,7 +44221,7 @@
    "status": {
     "ok": false,
     "note": "a steers line with no readable price: 'Beef Str 200#-400# – 300-450 LT'",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44394,7 +44308,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44409,7 +44323,7 @@
    "status": {
     "ok": false,
     "note": "not read: the barn has posted no report since 2024-10-15",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44424,7 +44338,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44439,7 +44353,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44526,7 +44440,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44541,7 +44455,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44556,7 +44470,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44571,7 +44485,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44658,7 +44572,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44745,7 +44659,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44760,7 +44674,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44775,7 +44689,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44790,7 +44704,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44805,7 +44719,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44920,7 +44834,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44935,7 +44849,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44950,7 +44864,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44965,7 +44879,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   },
   {
@@ -44980,7 +44894,7 @@
    "status": {
     "ok": false,
     "note": "needs first read",
-    "checked": "2026-11-25T14:40:44Z"
+    "checked": "2026-11-26T02:21:40Z"
    }
   }
  ]
