@@ -3496,11 +3496,15 @@
     if (/couldn.t be reached/.test(m)) return 'unreachable';
     if (/isn.t data/.test(m)) return 'bad-data';
     if (/None of the stations/.test(m)) return 'no-data';
+    if (err && (err.suggest || /Couldn.t find/.test(m))) return 'no-town';
     if (/station/i.test(m)) return 'no-station';
-    if (err && (err.suggest || /find|lookup|town/i.test(m))) return 'no-town';
     return 'other';
   }
-  function drawFailed(err) { if (!(err && err.pick)) ga('rain_print_draw_fail', { reason: failReason(err) }); }
+  function drawFailed(err) {
+    // a box left empty is the reader's typing, not a failed draw
+    if (err && (err.pick || /^(Type a town and state|Pick a year\.|That link has no town)/.test(String(err.message || '')))) return;
+    ga('rain_print_draw_fail', { reason: failReason(err) });
+  }
   function keepDrawn(snap, err) {
     drawFailed(err);
     var want = ST;
@@ -4523,6 +4527,11 @@
     }
   }
   // the review sheet's message line: a reason, or "Opening checkout"
+  // the two "go to checkout" links in the sheet's message count as the hand-off too
+  $('rp-proof-msg').addEventListener('click', function (ev) {
+    var a = ev.target && ev.target.closest && ev.target.closest('a[data-co]');
+    if (a) ga('rain_print_checkout', { product: PICK, transport_type: 'beacon' });
+  });
   function proofSay(t, go) {
     var m = $('rp-proof-msg');
     if (go) m.innerHTML = t; else m.textContent = t || '';
@@ -4535,17 +4544,26 @@
      service fails, or a product has no payment link, the order form takes the
      order with the full design code. */
   var MINT_WAIT_MS = 4000, GIFT_KEPT = {};
+  // checkIt's two questions, for pay(): a marked day that can't go on the print (rows), or no name and no OK to go without one
+  function stepBack(rows) {
+    if (rows) { dayNums().forEach(function (i) { if (rowUsed(i)) TOUCHED[i] = true; }); syncDates(); return !!badRow(); }
+    return !ST.name && !NONAME_OK;
+  }
   function pay(opts) {
     var id = PICK;
     proofSay('');
     if (!canOrder()) { closeProof(true); checkIt(); return; }
     var why = orderBlock();
     if (why) { proofSay(why); return; }
+    /* The sheet also opens from a tap on the print or Up close, which skip checkIt's questions. Pay asks the same ones
+       before it goes to Stripe (2026-11-26, with the tick gone): a bad marked day, then a print with no name. */
+    if (stepBack(true)) { closeProof(true); checkIt(); return; }
     /* No tick box (2026-11-26, Rain Print checkout drop): the buyer approves the proof by email before anything is made, so
        a required tick here was a second approval that only stopped people at the last step. Pay is the one tap; the line
        above it says what to check, and the lines around Pay say the email proof is the real OK. */
     PROOF_OK = encodeCode(ST);
     if (GIFT && GIFT.usable) { closeProof(true); useGift(); return; }
+    if (stepBack(false)) { closeProof(true); checkIt(); return; }
     var gift = pgOn();
     if (gift) {
       var chk = pgOrder('');
@@ -4583,7 +4601,7 @@
         // kept in this browser and sent on the next visit (the way back from Stripe), whichever way the buyer goes now
         if (!GIFT_KEPT[code]) GIFT_KEPT[code] = outboxAdd({ to: 'form', kind: 'rain-print-order', data: g, fields: fs });
         var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
-        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
+        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '" data-co="1">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
       });
       return;
     }
@@ -4596,7 +4614,7 @@
       flushRedraw();
       updateUrlNow();
       // the same tab: a link to tap in case the browser holds it back (an in-app browser); no design code in the words, it travels with the payment
-      proofSay('Opening checkout\u2026 If nothing happens, <a href="' + esc(u) + '">go to checkout</a>.' + (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : ''), true);
+      proofSay('Opening checkout\u2026 If nothing happens, <a href="' + esc(u) + '" data-co="1">go to checkout</a>.' + (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : ''), true);
       // one order record per press, then Stripe; a second tap while it goes counts once
       if (PRESS_BUSY) return;
       PRESS_BUSY = true;
