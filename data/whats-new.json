@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-26-daily-teaser-latest",
+   "date": "2026-11-26",
+   "title": "Daily teaser wording",
+   "line": "The home page briefing strip no longer says \"Today's\" over an older issue when that issue has no summary line; it says latest.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-26-rain-totals-kind",
    "date": "2026-11-26",
    "title": "Rain totals say which kind",
