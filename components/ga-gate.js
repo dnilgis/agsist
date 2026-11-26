@@ -79,18 +79,6 @@
     return false;
   }
   if (switchedOff()) return;
-  /* Own-browser mark (2026-11-13): a browser marked by ?sigdev= (components/loader.js; localStorage agsist-sig-device) sends
-     traffic_type=internal, which GA4's internal-traffic data filter drops, and sig_device=yes, which a report can split on.
-     The set command goes in the queue ahead of the page's own config, so the first page view carries it too. Nothing is
-     sent for any other browser. */
-  try {
-    if (w.localStorage.getItem('agsist-sig-device') === '1') {
-      var cmd = (function () { return arguments; })('set', { traffic_type: 'internal', sig_device: 'yes' });
-      var dl = w.dataLayer = w.dataLayer || [], at = dl.length, i;
-      for (i = 0; i < dl.length; i++) if (dl[i] && dl[i][0] === 'config') { at = i; break; }
-      dl.splice(at, 0, cmd);
-    }
-  } catch (e) {}
   var host = '';
   try { host = String(w.location.hostname || ''); } catch (e) {}
   if (host !== 'agsist.com' && host !== 'www.agsist.com') return;

@@ -125,7 +125,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '114';
+  var CV = '115';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -185,12 +185,26 @@
   }
   /* Own-browser mark (2026-11-13): visiting any page with ?sigdev=<the private word> on a device marks that browser
      (localStorage agsist-sig-device = 1); ?sigdev=off clears it. Only the word's SHA-256 is here, so the page does not
-     give the word away. components/ga-gate.js reads the mark and sends traffic_type=internal and sig_device=yes with every
-     Analytics event from that browser, so GA4's internal-traffic filter and a report can leave the owner's own visits out. The
-     word is in the private notes (howto/sig-device.md). The address is cleaned of it at once. */
+     give the word away. A marked browser puts a set command (traffic_type=internal, sig_device=yes) in the Analytics queue
+     ahead of the page's own config, so the first page view carries it and GA4's internal-traffic filter and a report can leave
+     the owner's own visits out. Nothing is sent for any other browser. The word is in the private notes (howto/sig-device.md).
+     The address is cleaned of it at once. */
   var SIG_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
+  function markInternal() {
+    try {
+      if (window.__agsistInternalSet) return;
+      window.__agsistInternalSet = 1;
+      var cmd = (function () { return arguments; })('set', { traffic_type: 'internal', sig_device: 'yes' });
+      var dl = window.dataLayer = window.dataLayer || [], at = dl.length, i;
+      for (i = 0; i < dl.length; i++) if (dl[i] && dl[i][0] === 'config') { at = i; break; }
+      dl.splice(at, 0, cmd);
+    } catch (e) {}
+  }
   function initSigDevice() {
     try {
+      var marked = false;
+      try { marked = localStorage.getItem('agsist-sig-device') === '1'; } catch (x) {}
+      if (marked) markInternal();
       var q = new URLSearchParams(location.search);
       if (!q.has('sigdev')) return;
       var w = q.get('sigdev'), clean = function () {
@@ -200,7 +214,7 @@
       if (!window.crypto || !crypto.subtle || typeof TextEncoder === 'undefined') { clean(); return; }
       crypto.subtle.digest('SHA-256', new TextEncoder().encode(w)).then(function (buf) {
         var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
-        if (hex === SIG_HASH) { try { localStorage.setItem('agsist-sig-device', '1'); } catch (x) {} }
+        if (hex === SIG_HASH) { try { localStorage.setItem('agsist-sig-device', '1'); } catch (x) {} markInternal(); }
         clean();
       }, clean);
     } catch (e) {}
