@@ -328,7 +328,7 @@ jobs:
             if git pull --rebase --autostash origin main && git push; then exit 0; fi
             sleep $((30 * i))
           done
-          echo "push failed after 4 attempts"; exit 1
+          echo "::error::push failed after 4 attempts. rerun farmland-atlas now: the host has the new build (the county files were sent to agsist-data before this commit), and until the commit lands the checks that fetch them stop on the older index"; exit 1
 
       - name: Save the raw pulls to the raw branch
         if: ${{ !cancelled() }}
