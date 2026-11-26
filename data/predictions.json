@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T20:11:11Z",
+ "updated": "2026-11-26T19:54:56Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -64,7 +64,7 @@
     "entry_final": true,
     "mark": {
      "date": "2026-11-25",
-     "close": 456.25
+     "close": 456.5
     }
    },
    {
@@ -89,7 +89,7 @@
     "entry_final": true,
     "mark": {
      "date": "2026-11-25",
-     "close": 1243.25
+     "close": 1244.0
     }
    },
    {
@@ -114,7 +114,7 @@
     "entry_final": true,
     "mark": {
      "date": "2026-11-25",
-     "close": 586.5
+     "close": 587.5
     }
    },
    {
@@ -139,7 +139,7 @@
     "entry_final": true,
     "mark": {
      "date": "2026-11-25",
-     "close": 629.5
+     "close": 630.5
     }
    }
   ]
@@ -743,7 +743,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 439.5
+    "close": 439.75
    }
   },
   {
@@ -768,7 +768,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 1243.25
+    "close": 1244.0
    }
   },
   {
@@ -793,7 +793,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 564.0
+    "close": 565.5
    }
   },
   {
@@ -818,7 +818,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 603.5
+    "close": 604.0
    }
   },
   {
@@ -842,7 +842,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 439.5
+    "close": 439.75
    }
   },
   {
@@ -866,7 +866,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 1243.25
+    "close": 1244.0
    }
   },
   {
@@ -891,7 +891,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 564.0
+    "close": 565.5
    }
   },
   {
@@ -915,7 +915,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 603.5
+    "close": 604.0
    }
   },
   {
@@ -940,7 +940,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 456.25
+    "close": 456.5
    }
   },
   {
@@ -965,7 +965,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 1243.25
+    "close": 1244.0
    }
   },
   {
@@ -990,7 +990,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 586.5
+    "close": 587.5
    }
   },
   {
@@ -1015,7 +1015,7 @@
    "entry_final": true,
    "mark": {
     "date": "2026-11-25",
-    "close": 629.5
+    "close": 630.5
    }
   }
  ],
@@ -1079,7 +1079,7 @@
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-11-25T20:11:11Z",
+  "computed": "2026-11-26T19:54:56Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
