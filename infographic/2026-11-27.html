@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0c0d">
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
+  <!-- static-nav:fonts -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=31" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=31">
+  <link rel="stylesheet" href="/infographic/infographic.css?v=4">
+  <style>.dr-lede{color:var(--text);font-size:1rem;line-height:1.6;margin:8px 0}
+.ig-wrap .ig-big{border-radius:3px}
+.ig-wrap .ig-big b{font-family:Inter,system-ui,sans-serif;font-weight:800;font-variant-numeric:tabular-nums}
+.dr-pic{display:block;width:100%;max-width:540px;height:auto;aspect-ratio:1080/1350;border:1px solid var(--border);border-radius:3px;margin:14px 0;background:#0a0c0d}
+.dr-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.dr-tools a,.dr-tools button{font:inherit;font-size:.88rem;padding:8px 14px;border-radius:3px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;min-height:40px;text-decoration:none;display:inline-flex;align-items:center}
+.dr-tools a:hover,.dr-tools button:hover{border-color:var(--gold)}
+.dr-tools .ig-main{border-color:var(--gold);color:var(--gold);font-weight:700}
+.dr-fig{margin:12px 0;max-width:720px}
+.dr-svg{display:block;width:100%;height:auto;font-family:Inter,system-ui,sans-serif}
+.dr-svg text{fill:var(--text);font-size:14px}
+.dr-svg .dr-s{font-size:16px;font-weight:700;fill:var(--text-muted)}
+.dr-svg .dr-on{fill:var(--text);font-weight:800}
+.dr-svg .dr-k{font-size:12px;fill:var(--text-muted)}
+.dr-svg .dr-v{font-weight:700;font-variant-numeric:tabular-nums}
+.dr-svg .dr-m{fill:var(--text-muted);font-weight:400}
+.dr-trk{fill:var(--surface2)}
+.dr-d3{fill:#964638}
+.dr-d4{fill:#f06850}
+[data-theme="light"] .dr-d3{fill:#f0b4a6}
+[data-theme="light"] .dr-d4{fill:#a8321f}
+.dr-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.85rem;color:var(--text);margin:0 0 8px}
+.dr-sw{display:inline-block;width:14px;height:14px;margin-right:6px;vertical-align:-2px}
+.dr-cap{caption-side:top;text-align:left;color:var(--text-muted);font-size:.8rem;padding:2px 0 6px}
+.dr-t th{text-transform:none;letter-spacing:0;font-size:.8rem}
+.dr-po{display:none}
+@media print{
+  @page{size:letter portrait;margin:.45in}
+  html,body{background:#fff!important;color:#000!important}
+  body>:not(#main),#site-header,#site-footer,.dr-pic,.dr-tools,.ig-st,.ig-links,.dr-recent,.dr-crumb,details,.ig-facts small{display:none!important}
+  .dr-po{display:block}
+  .ig-wrap{max-width:none;padding:0}
+  .ig-wrap,.ig-wrap *{color:#000!important;border-color:#000!important;background:transparent!important}
+  .ig-wrap h1{font-size:21pt;margin:4pt 0}
+  .ig-wrap h2{font-size:11pt;margin:8pt 0 3pt}
+  .dr-po-top{display:flex;justify-content:space-between;font:700 9.5pt/1.2 Inter,Arial,sans-serif;border-bottom:2pt solid #000;padding-bottom:3pt}
+  .ig-big{border:0;border-left:4pt solid #000!important;padding:2pt 8pt;margin:6pt 0;border-radius:0}
+  .ig-big b{font-size:24pt}
+  .dr-lede{font-size:9.5pt;margin:2pt 0}
+  .ig-facts{font-size:9pt;line-height:1.35;margin:4pt 0}
+  .ig-facts small{font-size:7.5pt}
+  .dr-cols{display:grid;grid-template-columns:1.2fr 1fr;grid-template-areas:"a c";column-gap:.25in;align-items:start}
+  .dr-b{display:none!important}
+  .dr-a{grid-area:a}.dr-b{grid-area:b}.dr-c{grid-area:c}
+  .dr-src{display:none}
+  .ig-big b{font-family:Inter,Arial,sans-serif;font-weight:800}
+  .dr-t th{font-size:8pt}
+  .dr-fig{margin:4pt 0 2pt;max-width:5.4in}
+  .dr-key{font-size:9pt;margin:0 0 3pt}
+  .dr-svg text{fill:#000!important}
+  .dr-svg .dr-m,.dr-svg .dr-k,.dr-svg .dr-s{fill:#333!important}
+  .dr-trk{fill:#fff!important;stroke:#000;stroke-width:.6}
+  .ig-wrap .dr-d3{fill:#bdbdbd!important;stroke:#000;stroke-width:.6}
+  .ig-wrap .dr-d4{fill:#000!important}
+  .dr-sw,.dr-svg{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.ig-t{font-size:8pt;line-height:1.15;margin:1pt 0}
+  .ig-t td,.ig-t th{padding:1pt 4pt}
+  .dr-cap{font-size:7.5pt;padding:0 0 2pt;line-height:1.2}
+  .ig-t tr.hi td{font-weight:700}
+  .ig-scroll{overflow:visible}
+  .dr-po-foot{margin-top:6pt;border-top:1pt solid #000;padding-top:4pt;font-size:8pt;line-height:1.35}
+  .dr-po-foot b{font-size:10pt}
+}</style>
+  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <title>63.4% of Arkansas is in exceptional drought | Friday Chart | AGSIST</title>
+  <meta name="description" content="63.4% of Arkansas is in exceptional drought, Nov 27, 2026. 63.4% of Arkansas was in exceptional drought (D4) on the Nov 24 map, up from 55.8% a week earlier. It was 37.1% four weeks earlier (Oct 27) and 0% a year earlier (Nov 25, 2025).">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://agsist.com/infographic/2026-11-27">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AGSIST">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:title" content="63.4% of Arkansas is in exceptional drought | Friday Chart | AGSIST">
+  <meta property="og:description" content="63.4% of Arkansas is in exceptional drought, Nov 27, 2026. 63.4% of Arkansas was in exceptional drought (D4) on the Nov 24 map, up from 55.8% a week earlier. It was 37.1% four weeks earlier (Oct 27) and 0% a year earlier (Nov 25, 2025).">
+  <meta property="og:url" content="https://agsist.com/infographic/2026-11-27">
+  <meta property="og:image" content="https://agsist.com/infographic/og/2026-11-27.jpg?v=debc1bae">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="63.4% of Arkansas is in exceptional drought">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@agsist">
+  <meta name="twitter:title" content="63.4% of Arkansas is in exceptional drought | Friday Chart | AGSIST">
+  <meta name="twitter:description" content="63.4% of Arkansas is in exceptional drought, Nov 27, 2026. 63.4% of Arkansas was in exceptional drought (D4) on the Nov 24 map, up from 55.8% a week earlier. It was 37.1% four weeks earlier (Oct 27) and 0% a year earlier (Nov 25, 2025).">
+  <meta name="twitter:image" content="https://agsist.com/infographic/og/2026-11-27.jpg?v=debc1bae">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ImageObject", "contentUrl": "https://agsist.com/infographic/pic/2026-11-27.png", "url": "https://agsist.com/infographic/2026-11-27", "width": 1080, "height": 1350, "caption": "63.4% of Arkansas is in exceptional drought", "datePublished": "2026-11-27", "creditText": "AGSIST, from U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA)", "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "63.4% of Arkansas is in exceptional drought", "description": "63.4% of Arkansas was in exceptional drought (D4) on the Nov 24 map, up from 55.8% a week earlier. It was 37.1% four weeks earlier (Oct 27) and 0% a year earlier (Nov 25, 2025). 86.5% of Arkansas was in extreme drought or worse (D3 or D4), the same as 86.5% a week earlier. 62 of Arkansas's 75 counties had some exceptional drought, up from 60 a week earlier and 48 four weeks earlier. In 47 of those counties, at least half the land was in exceptional drought. Louisiana: 22.3% in exceptional drought, 66.5% in D3 or worse. Mississippi: 27.8% in exceptional drought, 66.9% in D3 or worse.", "url": "https://agsist.com/infographic/2026-11-27", "datePublished": "2026-11-27", "temporalCoverage": "2026-11-24", "creator": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com"}, "isBasedOn": [{"@type": "CreativeWork", "name": "U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA) (Map valid Nov 24, 2026 (Tuesday), released Nov 26, 2026)"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AGSIST", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Friday Chart", "item": "https://agsist.com/infographic/"}, {"@type": "ListItem", "position": 3, "name": "63.4% of Arkansas is in exceptional drought", "item": "https://agsist.com/infographic/2026-11-27"}]}</script>
+</head>
+<body>
+<div id="site-header">
+<!-- static-nav:header -->
+  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Prices:</b> Near you: <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/fertilizer">Fertilizer prices</a> · Futures: <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/ag-stocks">Ag stocks</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · Reports: <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress, size and yield</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
+        <b>Field:</b> Weather: <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> Land: <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
+        <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a><br>
+        <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
+        <b>More:</b> <a href="/about">About</a> · <a href="/sponsor">Advertise with AGSIST</a> · <a href="/contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+<main class="ig-wrap" id="main">
+  <p class="ig-sub dr-crumb" style="margin-top:14px"><a href="/infographic/" style="color:var(--text-muted)">Friday Chart</a> <span>&middot; Infographic of the Week</span> &rsaquo; <b style="color:var(--text)">Nov 27, 2026</b></p>
+  <div class="dr-po dr-po-top"><span>AGSIST Friday Chart</span><span>Nov 27, 2026</span></div>
+  <h1>63.4% of Arkansas is in exceptional drought</h1>
+  <div class="ig-big"><b>63.4%</b><span>of Arkansas&#x27;s land area in exceptional drought (D4), map valid Nov 24, 2026</span></div>
+  <p class="dr-lede">Exceptional drought (D4) is the worst of the Drought Monitor&#x27;s five drought levels. We show how much of each state&#x27;s land was at that level on four maps.</p>
+  <img class="dr-pic" src="/infographic/pic/2026-11-27.png?v=8bf4c4b9" width="1080" height="1350" alt="63.4% of Arkansas is in exceptional drought. 63.4% of Arkansas&#x27;s land area in exceptional drought (D4), map valid Nov 24, 2026. Arkansas: Nov 24 63.4% in D4 and 86.5% in D3 or worse, Nov 17 55.8% in D4 and 86.5% in D3 or worse, Oct 27 37.1% in D4 and 80.4% in D3 or worse, Nov 25, 2025 0% in D4 and 0% in D3 or worse. Louisiana: Nov 24 22.3% in D4 and 66.5% in D3 or worse, Nov 17 22.3% in D4 and 59.9% in D3 or worse, Oct 27 11.8% in D4 and 51.4% in D3 or worse, Nov 25, 2025 0% in D4 and 0% in D3 or worse. Mississippi: Nov 24 27.8% in D4 and 66.9% in D3 or worse, Nov 17 27.8% in D4 and 53.6% in D3 or worse, Oct 27 3.6% in D4 and 28.8% in D3 or worse, Nov 25, 2025 0% in D4 and 0% in D3 or worse. 62 of 75 Arkansas counties have some D4. Source: U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 24, 2026, released Nov 26, 2026. droughtmonitor.unl.edu.">
+  <div class="dr-tools" id="dr-tools">
+    <a class="ig-main" href="/infographic/pic/2026-11-27.png?v=8bf4c4b9" download="agsist-friday-chart-2026-11-27.png">Save the phone picture</a>
+    <button type="button" id="dr-print">Print the one-page sheet</button>
+  </div>
+  <div class="dr-po"><figure class="dr-fig"><p class="dr-key"><span><svg class="dr-sw" viewBox="0 0 14 14" aria-hidden="true"><rect class="dr-d4" x=".5" y=".5" width="13" height="13"/></svg>Exceptional drought (D4)</span> <span><svg class="dr-sw" viewBox="0 0 14 14" aria-hidden="true"><rect class="dr-d3" x=".5" y=".5" width="13" height="13"/></svg>Extreme drought or worse (D3 or D4)</span></p><svg class="dr-svg" viewBox="0 0 720 394" role="img" aria-label="Share of each state&#x27;s land in drought, four Drought Monitor maps. Arkansas: Nov 24 D4 63.4%, D3 or worse 86.5%, Nov 17 D4 55.8%, D3 or worse 86.5%, Oct 27 D4 37.1%, D3 or worse 80.4%, Nov 25, 2025 D4 0%, D3 or worse 0%; Louisiana: Nov 24 D4 22.3%, D3 or worse 66.5%, Nov 17 D4 22.3%, D3 or worse 59.9%, Oct 27 D4 11.8%, D3 or worse 51.4%, Nov 25, 2025 D4 0%, D3 or worse 0%; Mississippi: Nov 24 D4 27.8%, D3 or worse 66.9%, Nov 17 D4 27.8%, D3 or worse 53.6%, Oct 27 D4 3.6%, D3 or worse 28.8%, Nov 25, 2025 D4 0%, D3 or worse 0%"><text class="dr-k" x="616" y="16" text-anchor="end">D4</text><text class="dr-k" x="720" y="16" text-anchor="end">D3 or worse</text><text class="dr-s dr-on" x="0" y="48">Arkansas</text><text class="dr-l" x="0" y="69.5">Nov 24</text><rect class="dr-trk" x="150" y="57.0" width="408" height="15"/><rect class="dr-d3" x="150" y="57.0" width="352.9" height="15"/><rect class="dr-d4" x="150" y="57.0" width="258.7" height="15"/><text class="dr-v" x="616" y="69.5" text-anchor="end">63.4%</text><text class="dr-v dr-m" x="720" y="69.5" text-anchor="end">86.5%</text><text class="dr-l" x="0" y="90.5">Nov 17</text><rect class="dr-trk" x="150" y="78.0" width="408" height="15"/><rect class="dr-d3" x="150" y="78.0" width="352.9" height="15"/><rect class="dr-d4" x="150" y="78.0" width="227.7" height="15"/><text class="dr-v" x="616" y="90.5" text-anchor="end">55.8%</text><text class="dr-v dr-m" x="720" y="90.5" text-anchor="end">86.5%</text><text class="dr-l" x="0" y="111.5">Oct 27</text><rect class="dr-trk" x="150" y="99.0" width="408" height="15"/><rect class="dr-d3" x="150" y="99.0" width="328.0" height="15"/><rect class="dr-d4" x="150" y="99.0" width="151.4" height="15"/><text class="dr-v" x="616" y="111.5" text-anchor="end">37.1%</text><text class="dr-v dr-m" x="720" y="111.5" text-anchor="end">80.4%</text><text class="dr-l" x="0" y="132.5">Nov 25, 2025</text><rect class="dr-trk" x="150" y="120.0" width="408" height="15"/><text class="dr-v" x="616" y="132.5" text-anchor="end">0%</text><text class="dr-v dr-m" x="720" y="132.5" text-anchor="end">0%</text><text class="dr-s" x="0" y="164">Louisiana</text><text class="dr-l" x="0" y="185.5">Nov 24</text><rect class="dr-trk" x="150" y="173.0" width="408" height="15"/><rect class="dr-d3" x="150" y="173.0" width="271.3" height="15"/><rect class="dr-d4" x="150" y="173.0" width="91.0" height="15"/><text class="dr-v" x="616" y="185.5" text-anchor="end">22.3%</text><text class="dr-v dr-m" x="720" y="185.5" text-anchor="end">66.5%</text><text class="dr-l" x="0" y="206.5">Nov 17</text><rect class="dr-trk" x="150" y="194.0" width="408" height="15"/><rect class="dr-d3" x="150" y="194.0" width="244.4" height="15"/><rect class="dr-d4" x="150" y="194.0" width="91.0" height="15"/><text class="dr-v" x="616" y="206.5" text-anchor="end">22.3%</text><text class="dr-v dr-m" x="720" y="206.5" text-anchor="end">59.9%</text><text class="dr-l" x="0" y="227.5">Oct 27</text><rect class="dr-trk" x="150" y="215.0" width="408" height="15"/><rect class="dr-d3" x="150" y="215.0" width="209.7" height="15"/><rect class="dr-d4" x="150" y="215.0" width="48.1" height="15"/><text class="dr-v" x="616" y="227.5" text-anchor="end">11.8%</text><text class="dr-v dr-m" x="720" y="227.5" text-anchor="end">51.4%</text><text class="dr-l" x="0" y="248.5">Nov 25, 2025</text><rect class="dr-trk" x="150" y="236.0" width="408" height="15"/><text class="dr-v" x="616" y="248.5" text-anchor="end">0%</text><text class="dr-v dr-m" x="720" y="248.5" text-anchor="end">0%</text><text class="dr-s" x="0" y="280">Mississippi</text><text class="dr-l" x="0" y="301.5">Nov 24</text><rect class="dr-trk" x="150" y="289.0" width="408" height="15"/><rect class="dr-d3" x="150" y="289.0" width="273.0" height="15"/><rect class="dr-d4" x="150" y="289.0" width="113.4" height="15"/><text class="dr-v" x="616" y="301.5" text-anchor="end">27.8%</text><text class="dr-v dr-m" x="720" y="301.5" text-anchor="end">66.9%</text><text class="dr-l" x="0" y="322.5">Nov 17</text><rect class="dr-trk" x="150" y="310.0" width="408" height="15"/><rect class="dr-d3" x="150" y="310.0" width="218.7" height="15"/><rect class="dr-d4" x="150" y="310.0" width="113.4" height="15"/><text class="dr-v" x="616" y="322.5" text-anchor="end">27.8%</text><text class="dr-v dr-m" x="720" y="322.5" text-anchor="end">53.6%</text><text class="dr-l" x="0" y="343.5">Oct 27</text><rect class="dr-trk" x="150" y="331.0" width="408" height="15"/><rect class="dr-d3" x="150" y="331.0" width="117.5" height="15"/><rect class="dr-d4" x="150" y="331.0" width="14.7" height="15"/><text class="dr-v" x="616" y="343.5" text-anchor="end">3.6%</text><text class="dr-v dr-m" x="720" y="343.5" text-anchor="end">28.8%</text><text class="dr-l" x="0" y="364.5">Nov 25, 2025</text><rect class="dr-trk" x="150" y="352.0" width="408" height="15"/><text class="dr-v" x="616" y="364.5" text-anchor="end">0%</text><text class="dr-v dr-m" x="720" y="364.5" text-anchor="end">0%</text><text class="dr-l dr-m" x="150.0" y="386" text-anchor="start">0%</text><text class="dr-l dr-m" x="354.0" y="386" text-anchor="middle">50%</text><text class="dr-l dr-m" x="558.0" y="386" text-anchor="end">100%</text></svg></figure></div>
+  <div class="dr-cols">
+    <div class="dr-a">
+      <h2>The facts</h2>
+      <ul class="ig-facts"><li>63.4% of Arkansas was in exceptional drought (D4) on the Nov 24 map, up from 55.8% a week earlier.</li><li>It was 37.1% four weeks earlier (Oct 27) and 0% a year earlier (Nov 25, 2025).</li><li>86.5% of Arkansas was in extreme drought or worse (D3 or D4), the same as 86.5% a week earlier.</li><li>62 of Arkansas&#x27;s 75 counties had some exceptional drought, up from 60 a week earlier and 48 four weeks earlier.</li><li>In 47 of those counties, at least half the land was in exceptional drought.</li><li>Louisiana: 22.3% in exceptional drought, 66.5% in D3 or worse. Mississippi: 27.8% in exceptional drought, 66.9% in D3 or worse.</li></ul>
+      <p class="ig-sub dr-src">Source: U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 24, 2026, released Nov 26, 2026. droughtmonitor.unl.edu.</p>
+    </div>
+    <div class="dr-b">
+      <h2>Share of each state&#x27;s land in drought, four Drought Monitor maps</h2><div class="ig-scroll"><table class="ig-t dr-t"><caption class="dr-cap">Percent of each state's land, U.S. Drought Monitor</caption><thead><tr><th>State</th><th>Map valid</th><th class="n">D4</th><th class="n">D3 or worse</th></tr></thead><tbody><tr class="hi"><td>Arkansas</td><td>Nov 24, 2026</td><td class="n">63.4%</td><td class="n">86.5%</td></tr><tr><td></td><td>Nov 17, 2026</td><td class="n">55.8%</td><td class="n">86.5%</td></tr><tr><td></td><td>Oct 27, 2026</td><td class="n">37.1%</td><td class="n">80.4%</td></tr><tr><td></td><td>Nov 25, 2025</td><td class="n">0%</td><td class="n">0%</td></tr><tr><td>Louisiana</td><td>Nov 24, 2026</td><td class="n">22.3%</td><td class="n">66.5%</td></tr><tr><td></td><td>Nov 17, 2026</td><td class="n">22.3%</td><td class="n">59.9%</td></tr><tr><td></td><td>Oct 27, 2026</td><td class="n">11.8%</td><td class="n">51.4%</td></tr><tr><td></td><td>Nov 25, 2025</td><td class="n">0%</td><td class="n">0%</td></tr><tr><td>Mississippi</td><td>Nov 24, 2026</td><td class="n">27.8%</td><td class="n">66.9%</td></tr><tr><td></td><td>Nov 17, 2026</td><td class="n">27.8%</td><td class="n">53.6%</td></tr><tr><td></td><td>Oct 27, 2026</td><td class="n">3.6%</td><td class="n">28.8%</td></tr><tr><td></td><td>Nov 25, 2025</td><td class="n">0%</td><td class="n">0%</td></tr></tbody></table></div>
+    </div>
+    <div class="dr-c">
+      <h2>Arkansas counties with exceptional drought</h2><div class="ig-scroll"><table class="ig-t dr-t"><caption class="dr-cap">Counties out of 75. The county figures have no map from a year earlier.</caption><thead><tr><th>Map valid</th><th class="n">Any D4</th><th class="n">At least half D4</th></tr></thead><tbody><tr><td>Nov 24, 2026</td><td class="n">62</td><td class="n">47</td></tr><tr><td>Nov 17, 2026</td><td class="n">60</td><td class="n">41</td></tr><tr><td>Oct 27, 2026</td><td class="n">48</td><td class="n">26</td></tr></tbody></table></div>
+    </div>
+  </div>
+  <div class="dr-po dr-po-foot">Source: U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA), map valid Nov 24, 2026, released Nov 26, 2026. droughtmonitor.unl.edu<br><b>agsist.com/infographic/2026-11-27</b></div>
+  <details><summary>Sources</summary><ul><li>U.S. Drought Monitor (National Drought Mitigation Center, USDA, NOAA): Map valid Nov 24, 2026 (Tuesday), released Nov 26, 2026. The U.S. Drought Monitor is jointly produced by the National Drought Mitigation Center at the University of Nebraska-Lincoln, the U.S. Department of Agriculture, the National Oceanic and Atmospheric Administration and NASA. Map and data courtesy of NDMC, via https://droughtmonitor.unl.edu.</li></ul><p>Facts from the source above and plain counting on its numbers, not advice. Percents are of each state's land, as the Drought Monitor publishes them. A county counts as having exceptional drought when any part of it is in D4.</p></details>
+  <p class="ig-links ig-sub">Related: <a href="/rain">Rain and drought</a> &middot; <a href="/infographic/">Every Friday Chart</a></p>
+  <div class="dr-recent"><h2>Recent Friday Charts</h2><ul class="ig-list"><li><a href="/infographic/2026-11-20">Corn funds&#x27; net position fell 9 weeks in a row</a><time datetime="2026-11-20">Nov 20, 2026</time></li></ul></div>
+</main>
+<div id="site-footer">
+<!-- static-nav:footer -->
+  <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a> · <a href="/rain-print">Rain Print: your farm’s year of rain, framed</a><br>
+    <b>Prices:</b> <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/fertilizer">Fertilizer prices</a> · <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress, size and yield</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a> · <a href="/usda-quick-stats">USDA crop data by state</a><br>
+    <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
+    <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
+    <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
+    <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
+    <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+<script>(function(){var b=document.getElementById('dr-print');if(b)b.addEventListener('click',function(){window.print();});})();</script>
+<script src="/components/loader.js?v=27" defer></script>
+</body>
+</html>
