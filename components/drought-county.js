@@ -117,7 +117,7 @@
     function pick(h){
       list.innerHTML='';q.value=h[1];out.textContent='Loading '+h[1]+'\u2026';
       var wkP=loadWeek();
-      fetch('/data/atlas/counties/'+h[0]+'.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(c){return wkP.then(function(w){return [c,w];});}).then(function(cw){
+      fetch('https://dnilgis.github.io/agsist-data/data/atlas/counties/'+h[0]+'.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(c){return wkP.then(function(w){return [c,w];});}).then(function(cw){
         var c=cw[0],wkb=weekHtml(cw[1],h[0])+streakHtml(cw[1],h[0])+'<div id="dm-county-rain"></div>';
         remember(h);
         if(q.value!==h[1])return;

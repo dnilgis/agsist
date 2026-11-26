@@ -573,7 +573,7 @@
       }).catch(function () { set('cr-cdl', note('USDA crop history did not answer.')); });
     }
     function loadAtlas() {
-      getJSON('/data/atlas/counties/' + S.fips + '.json', 15000).then(function (a) {
+      getJSON('https://dnilgis.github.io/agsist-data/data/atlas/counties/' + S.fips + '.json', 15000).then(function (a) {
         var v = a.value || {}, r = a.rent || {}, rows = [];
         function kv(k, x, n) { rows.push('<tr><th>' + esc(k) + '</th><td>' + x + (n ? '<div class="fl-note">' + n + '</div>' : '') + '</td></tr>'); }
         if (v.status === 'ok' && v.latest) kv('Census land and buildings value', fm(v.latest) + '/acre (' + v.latest_year + ')', 'USDA Census of Agriculture, what operators reported, buildings included. Not a sale price.' + (v.flag ? ' <span class="fl-warn">The ' + v.latest_year + ' figure ' + esc(v.flag.dir) + ' ' + Math.abs(v.flag.own_pct) + '% while ' + v.flag.n + ' neighboring counties moved a median ' + v.flag.nb_pct + '%; read with care.</span>' : ''));
