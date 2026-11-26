@@ -159,7 +159,7 @@
     <div class="legal-page">
 
       <h1>Privacy policy</h1>
-      <p class="updated">Last updated: Oct 27, 2026</p>
+      <p class="updated">Last updated: Nov 26, 2026</p>
 
       <div class="tldr">
         <strong>Summary</strong>
@@ -215,7 +215,7 @@
       <p>Futures prices (Yahoo Finance) and prediction-market odds are fetched by AGSIST&rsquo;s own scheduled jobs and saved as files on this site. Your browser does not contact those services, and they learn nothing about you.</p>
 
       <h2 id="alerts">Alerts and watches</h2>
-      <p>Each of these stores your email address on Cloudflare together with what you asked for, and nothing else.</p>
+      <p>Each of these stores your email address on Cloudflare together with what you asked for. If our signup service cannot take a signup, the form sends the same details to me through Formspree instead, and this browser keeps a copy for up to 7 days to try the signup again (<code>agsist-outbox</code>, under Cookies and local storage below).</p>
       <ul>
         <li><strong>AGSIST Daily</strong>: your email, the page you signed up on, and when.</li>
         <li><strong>Futures price alert</strong> (home page): your email, the contract, above or below, and your target price. It fires once, when the price reaches your target, and is then deleted.</li>
@@ -262,6 +262,7 @@
         <li>Sponsor proofs: <code>agsist_approved_&lt;code&gt;</code></li>
         <li>Rain Print: <code>agsist-rps:&lt;design&gt;</code> (the short links this browser made), and <code>agsist-rp-gift</code> (a gift card code, for that visit only, in session storage)</li>
         <li>Privacy: <code>agsist-ga-off</code> (the switch above), and <code>agsist-ga-ok</code> (the answer of the analytics check, for that visit only, in session storage)</li>
+        <li>Saved while our system is down: <code>agsist-outbox</code>. If our signup service is down when you sign up, this browser keeps your email and what you asked for, for up to 7 days, and tries the signup again on your next visits. It is removed once the signup goes through. A gift card order, a business quote, a hay board post or an elevator&rsquo;s bids sent while our system is down are kept there the same way, for up to 30 days, until they go through.</li>
       </ul>
       <p>Clearing your browser data removes all of it. Clearing local storage also resets the theme to dark.</p>
 
@@ -307,7 +308,7 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=24" defer></script>
+  <script src="/components/loader.js?v=25" defer></script>
 <script>
 /* 2026-10-01 consent B: the analytics switch. Sets or clears localStorage
    'agsist-ga-off'; the guard in every page's head reads the same key. */
