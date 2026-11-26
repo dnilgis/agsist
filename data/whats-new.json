@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-26-daily-closed-days",
+   "date": "2026-11-26",
+   "title": "The Daily: market holidays say so up top",
+   "line": "On a day the markets are closed, the Daily's headline, summary line and email preview say so and name the last trading day, instead of leading with an old move.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-26-daily-teaser-latest",
    "date": "2026-11-26",
    "title": "Daily teaser wording",
