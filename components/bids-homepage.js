@@ -1409,7 +1409,7 @@
   function normalLine(stName, cropTxt, s, rej){
     var head = '<strong style="color:var(--text-dim)">' + escHtml(stName + ' ' + cropTxt) + ':</strong> ';
     if(rej && s) return normalLine(stName, cropTxt, s) + rej;
-    if(!s) return head + 'no USDA state series here, and our elevator record (from Oct 12, 2026) is too short.';
+    if(!s) return head + 'no USDA state series here, and our elevator basis history (from Oct 12, 2026) is too short.';
     var age = (Date.now() - Date.parse(s.date + 'T12:00:00Z')) / 864e5;
     if(!(age <= NORMAL_MAX_AGE_DAYS)) return head + 'USDA’s latest week for this series is ' + escHtml(s.date) + ', too old to compare.';
     if(s.avg5_n == null) return head + 'the number of years behind USDA’s same-week average is not in the file yet, so no comparison is printed.';

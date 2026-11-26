@@ -158,6 +158,7 @@ jobs:
           python3 scripts/delivery_check.py --selftest
           python3 scripts/send_cap.py --selftest
           python3 scripts/bid_network.py --selftest
+          python3 scripts/worker_watch.py --selftest
 
       - name: Get the last health file (private repo)
         env:
@@ -199,6 +200,6 @@ jobs:
       - name: Late
         if: steps.h.outputs.red == '1'
         run: |
-          echo "::error::Time-critical check failed (a workflow past its clock, a reader email not delivered, or published-size over budget): ${{ steps.h.outputs.late }}"
+          echo "::error::Time-critical check failed (a workflow past its clock, a reader email not delivered, published-size over budget, or worker-api: the signup service missed twice in a row): ${{ steps.h.outputs.late }}"
           echo "See private/data/cron-health.json (private repo, branch private-data) or the log above for which tick was missed and why."
           exit 1

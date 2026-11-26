@@ -2,11 +2,116 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-26-county-crop-risk",
+   "date": "2026-11-26",
+   "title": "County crop risk",
+   "line": "County pages show each county's own crop insurance record for corn and soybeans since 1989: loss ratio by year, how often claims topped premium, and what caused them.",
+   "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-26-daily-closed-days",
+   "date": "2026-11-26",
+   "title": "The Daily: market holidays say so up top",
+   "line": "On a day the markets are closed, the Daily's headline, summary line and email preview say so and name the last trading day, instead of leading with an old move.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-26-daily-teaser-latest",
+   "date": "2026-11-26",
+   "title": "Daily teaser wording",
+   "line": "The home page briefing strip no longer says \"Today's\" over an older issue when that issue has no summary line; it says latest.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-26-rain-totals-kind",
+   "date": "2026-11-26",
+   "title": "Rain totals say which kind",
+   "line": "County rain pages now label each total: a county-wide estimate (PRISM grid average), or one station's gauge, named, with its source. The state page says the same.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-11-26-signup-retry",
+   "date": "2026-11-26",
+   "title": "Signups retried",
+   "line": "A signup made while our signup service is down is kept on your device and tried again on your next visits for up to 7 days.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-26-hail-repeats",
+   "date": "2026-11-26",
+   "title": "Hail reports counted once",
+   "line": "A hail report listed twice by the weather service, same day, spot and size, now counts once on the hail map and storm day pages.",
+   "link": "/hail-map"
+  },
+  {
+   "id": "2026-11-26-land-auctions",
+   "date": "2026-11-26",
+   "title": "Land auction results on the farm sale pages",
+   "line": "Land auction results from five auction companies now sit beside the state's recorded sales in county lists and on the map, marked Auction result and drawn as squares.",
+   "link": "/land-sales/"
+  },
+  {
+   "id": "2026-11-26-rain-print-first-look",
+   "date": "2026-11-26",
+   "title": "Rain Print starts with the picture",
+   "line": "The Rain Print page opens on a photo, the price and the Christmas date, with three finished years to open and four gift choices to start from.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-11-25-daily-lock-followup",
+   "date": "2026-11-25",
+   "title": "The Daily: market moves read by what each sentence is about",
+   "line": "When a Daily line says the board or the market moved, the move comes from the morning's price table; lines about cash, crop ratings or exports stay as written.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-25-daily-locked-prices",
+   "date": "2026-11-25",
+   "title": "The Daily: board prices come from the price table",
+   "line": "Futures prices and their moves in the Daily are set from the morning's price table, one trading session per sentence, and a basis change always says basis.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-25-ad-reps",
+   "date": "2026-11-25",
+   "title": "Ad reps wanted",
+   "line": "Know the farm businesses near you? We are looking for commission ad reps. How it works and how to apply is on the advertise page.",
+   "link": "/sponsor#sell-for-us"
+  },
+  {
+   "id": "2026-11-25-county-links-faq",
+   "date": "2026-11-25",
+   "title": "County pages link each other, and answer questions",
+   "line": "County rain, ARC/PLC, farm sale and Atlas pages link the same county's other pages, and yield, rain and county pages answer common questions from their own numbers.",
+   "link": "/yield/iowa"
+  },
+  {
    "id": "2026-11-25-gauge-ask",
    "date": "2026-11-25",
    "title": "Rain gauge waitlist on the rain pages",
    "line": "I'm building a rain gauge that keeps its own log. The rain pages and Rain Print now have a short note and an email box if you want one.",
    "link": "/rain-gauge"
+  },
+  {
+   "id": "2026-11-25-cash-index-v5",
+   "date": "2026-11-25",
+   "title": "Cash Bid Index: method in plain words",
+   "line": "The Cash Bid Index now explains its method in plain words and lists the 2027 release dates and any corrections. A USDA long view follows once USDA is read.",
+   "link": "/cash-bid-index"
+  },
+  {
+   "id": "2026-11-25-croptour-terms-fold",
+   "date": "2026-11-25",
+   "title": "Tidier Crop Tour page",
+   "line": "The Crop Tour page keeps its sources and notices in one short fold at the bottom.",
+   "link": "/crop-tour"
+  },
+  {
+   "id": "2026-11-25-prf-county-rows",
+   "date": "2026-11-25",
+   "title": "PRF state pages: a priced example in every county row",
+   "line": "Each county row on the PRF state pages now shows what the 100-acre grazing example costs you a year and in how many of 75 years it would have paid.",
+   "link": "/prf/texas"
   },
   {
    "id": "2026-11-24-daily-fertilizer-line",

@@ -5,6 +5,22 @@
    "to": "/land-sales/2026-09",
    "since": "2026-11-12"
   },
+  "farmland-sales/arkansas/chicot-county.html": {
+   "to": "/land-sales/arkansas/chicot-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/arkansas/pulaski-county.html": {
+   "to": "/land-sales/arkansas/pulaski-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/colorado/phillips-county.html": {
+   "to": "/land-sales/colorado/phillips-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/colorado/weld-county.html": {
+   "to": "/land-sales/colorado/weld-county",
+   "since": "2026-11-12"
+  },
   "farmland-sales/florida.html": {
    "to": "/land-sales/florida/",
    "since": "2026-11-12"
@@ -271,6 +287,14 @@
   },
   "farmland-sales/florida/washington-county.html": {
    "to": "/land-sales/florida/washington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/georgia/coffee-county.html": {
+   "to": "/land-sales/georgia/coffee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/georgia/sumter-county.html": {
+   "to": "/land-sales/georgia/sumter-county",
    "since": "2026-11-12"
   },
   "farmland-sales/illinois.html": {
@@ -1061,6 +1085,158 @@
    "to": "/land-sales/indiana/whitley-county",
    "since": "2026-11-12"
   },
+  "farmland-sales/iowa/clayton-county.html": {
+   "to": "/land-sales/iowa/clayton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/iowa/page-county.html": {
+   "to": "/land-sales/iowa/page-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/iowa/pocahontas-county.html": {
+   "to": "/land-sales/iowa/pocahontas-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/iowa/shelby-county.html": {
+   "to": "/land-sales/iowa/shelby-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/iowa/taylor-county.html": {
+   "to": "/land-sales/iowa/taylor-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kansas/brown-county.html": {
+   "to": "/land-sales/kansas/brown-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kansas/jewell-county.html": {
+   "to": "/land-sales/kansas/jewell-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/breckinridge-county.html": {
+   "to": "/land-sales/kentucky/breckinridge-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/carroll-county.html": {
+   "to": "/land-sales/kentucky/carroll-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/hart-county.html": {
+   "to": "/land-sales/kentucky/hart-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/hopkins-county.html": {
+   "to": "/land-sales/kentucky/hopkins-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/madison-county.html": {
+   "to": "/land-sales/kentucky/madison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/mason-county.html": {
+   "to": "/land-sales/kentucky/mason-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/mercer-county.html": {
+   "to": "/land-sales/kentucky/mercer-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/rowan-county.html": {
+   "to": "/land-sales/kentucky/rowan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/kentucky/wayne-county.html": {
+   "to": "/land-sales/kentucky/wayne-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/berrien-county.html": {
+   "to": "/land-sales/michigan/berrien-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/branch-county.html": {
+   "to": "/land-sales/michigan/branch-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/calhoun-county.html": {
+   "to": "/land-sales/michigan/calhoun-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/cass-county.html": {
+   "to": "/land-sales/michigan/cass-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/hillsdale-county.html": {
+   "to": "/land-sales/michigan/hillsdale-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/ingham-county.html": {
+   "to": "/land-sales/michigan/ingham-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/jackson-county.html": {
+   "to": "/land-sales/michigan/jackson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/kalamazoo-county.html": {
+   "to": "/land-sales/michigan/kalamazoo-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/kent-county.html": {
+   "to": "/land-sales/michigan/kent-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/lake-county.html": {
+   "to": "/land-sales/michigan/lake-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/lenawee-county.html": {
+   "to": "/land-sales/michigan/lenawee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/osceola-county.html": {
+   "to": "/land-sales/michigan/osceola-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/sanilac-county.html": {
+   "to": "/land-sales/michigan/sanilac-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/shiawassee-county.html": {
+   "to": "/land-sales/michigan/shiawassee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/st-joseph-county.html": {
+   "to": "/land-sales/michigan/st-joseph-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/michigan/van-buren-county.html": {
+   "to": "/land-sales/michigan/van-buren-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/missouri/atchison-county.html": {
+   "to": "/land-sales/missouri/atchison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/missouri/gentry-county.html": {
+   "to": "/land-sales/missouri/gentry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/missouri/nodaway-county.html": {
+   "to": "/land-sales/missouri/nodaway-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/nebraska/adams-county.html": {
+   "to": "/land-sales/nebraska/adams-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/nebraska/cass-county.html": {
+   "to": "/land-sales/nebraska/cass-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/nebraska/howard-county.html": {
+   "to": "/land-sales/nebraska/howard-county",
+   "since": "2026-11-12"
+  },
   "farmland-sales/new-jersey.html": {
    "to": "/land-sales/new-jersey/",
    "since": "2026-11-12"
@@ -1145,6 +1321,438 @@
    "to": "/land-sales/new-jersey/warren-county",
    "since": "2026-11-12"
   },
+  "farmland-sales/ohio/adams-county.html": {
+   "to": "/land-sales/ohio/adams-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/allen-county.html": {
+   "to": "/land-sales/ohio/allen-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/auglaize-county.html": {
+   "to": "/land-sales/ohio/auglaize-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/butler-county.html": {
+   "to": "/land-sales/ohio/butler-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/champaign-county.html": {
+   "to": "/land-sales/ohio/champaign-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/clark-county.html": {
+   "to": "/land-sales/ohio/clark-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/clinton-county.html": {
+   "to": "/land-sales/ohio/clinton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/defiance-county.html": {
+   "to": "/land-sales/ohio/defiance-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/fayette-county.html": {
+   "to": "/land-sales/ohio/fayette-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/fulton-county.html": {
+   "to": "/land-sales/ohio/fulton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/guernsey-county.html": {
+   "to": "/land-sales/ohio/guernsey-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/hancock-county.html": {
+   "to": "/land-sales/ohio/hancock-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/henry-county.html": {
+   "to": "/land-sales/ohio/henry-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/highland-county.html": {
+   "to": "/land-sales/ohio/highland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/jackson-county.html": {
+   "to": "/land-sales/ohio/jackson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/jefferson-county.html": {
+   "to": "/land-sales/ohio/jefferson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/logan-county.html": {
+   "to": "/land-sales/ohio/logan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/madison-county.html": {
+   "to": "/land-sales/ohio/madison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/meigs-county.html": {
+   "to": "/land-sales/ohio/meigs-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/mercer-county.html": {
+   "to": "/land-sales/ohio/mercer-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/miami-county.html": {
+   "to": "/land-sales/ohio/miami-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/montgomery-county.html": {
+   "to": "/land-sales/ohio/montgomery-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/morgan-county.html": {
+   "to": "/land-sales/ohio/morgan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/muskingum-county.html": {
+   "to": "/land-sales/ohio/muskingum-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/noble-county.html": {
+   "to": "/land-sales/ohio/noble-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/paulding-county.html": {
+   "to": "/land-sales/ohio/paulding-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/pickaway-county.html": {
+   "to": "/land-sales/ohio/pickaway-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/pike-county.html": {
+   "to": "/land-sales/ohio/pike-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/preble-county.html": {
+   "to": "/land-sales/ohio/preble-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/putnam-county.html": {
+   "to": "/land-sales/ohio/putnam-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/richland-county.html": {
+   "to": "/land-sales/ohio/richland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/ross-county.html": {
+   "to": "/land-sales/ohio/ross-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/sandusky-county.html": {
+   "to": "/land-sales/ohio/sandusky-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/union-county.html": {
+   "to": "/land-sales/ohio/union-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/van-wert-county.html": {
+   "to": "/land-sales/ohio/van-wert-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/williams-county.html": {
+   "to": "/land-sales/ohio/williams-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/wood-county.html": {
+   "to": "/land-sales/ohio/wood-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/ohio/wyandot-county.html": {
+   "to": "/land-sales/ohio/wyandot-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/canadian-county.html": {
+   "to": "/land-sales/oklahoma/canadian-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/carter-county.html": {
+   "to": "/land-sales/oklahoma/carter-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/cherokee-county.html": {
+   "to": "/land-sales/oklahoma/cherokee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/cleveland-county.html": {
+   "to": "/land-sales/oklahoma/cleveland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/creek-county.html": {
+   "to": "/land-sales/oklahoma/creek-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/custer-county.html": {
+   "to": "/land-sales/oklahoma/custer-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/dewey-county.html": {
+   "to": "/land-sales/oklahoma/dewey-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/garfield-county.html": {
+   "to": "/land-sales/oklahoma/garfield-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/garvin-county.html": {
+   "to": "/land-sales/oklahoma/garvin-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/grady-county.html": {
+   "to": "/land-sales/oklahoma/grady-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/harper-county.html": {
+   "to": "/land-sales/oklahoma/harper-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/haskell-county.html": {
+   "to": "/land-sales/oklahoma/haskell-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/hughes-county.html": {
+   "to": "/land-sales/oklahoma/hughes-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/kay-county.html": {
+   "to": "/land-sales/oklahoma/kay-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/le-flore-county.html": {
+   "to": "/land-sales/oklahoma/le-flore-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/logan-county.html": {
+   "to": "/land-sales/oklahoma/logan-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/mayes-county.html": {
+   "to": "/land-sales/oklahoma/mayes-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/mcclain-county.html": {
+   "to": "/land-sales/oklahoma/mcclain-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/mcintosh-county.html": {
+   "to": "/land-sales/oklahoma/mcintosh-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/murray-county.html": {
+   "to": "/land-sales/oklahoma/murray-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/muskogee-county.html": {
+   "to": "/land-sales/oklahoma/muskogee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/noble-county.html": {
+   "to": "/land-sales/oklahoma/noble-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/oklahoma-county.html": {
+   "to": "/land-sales/oklahoma/oklahoma-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/okmulgee-county.html": {
+   "to": "/land-sales/oklahoma/okmulgee-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/osage-county.html": {
+   "to": "/land-sales/oklahoma/osage-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/payne-county.html": {
+   "to": "/land-sales/oklahoma/payne-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/pittsburg-county.html": {
+   "to": "/land-sales/oklahoma/pittsburg-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/pottawatomie-county.html": {
+   "to": "/land-sales/oklahoma/pottawatomie-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/roger-mills-county.html": {
+   "to": "/land-sales/oklahoma/roger-mills-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/rogers-county.html": {
+   "to": "/land-sales/oklahoma/rogers-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/seminole-county.html": {
+   "to": "/land-sales/oklahoma/seminole-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/texas-county.html": {
+   "to": "/land-sales/oklahoma/texas-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/tulsa-county.html": {
+   "to": "/land-sales/oklahoma/tulsa-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/wagoner-county.html": {
+   "to": "/land-sales/oklahoma/wagoner-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/woods-county.html": {
+   "to": "/land-sales/oklahoma/woods-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/oklahoma/woodward-county.html": {
+   "to": "/land-sales/oklahoma/woodward-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/pennsylvania/berks-county.html": {
+   "to": "/land-sales/pennsylvania/berks-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/pennsylvania/chester-county.html": {
+   "to": "/land-sales/pennsylvania/chester-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/pennsylvania/cumberland-county.html": {
+   "to": "/land-sales/pennsylvania/cumberland-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/pennsylvania/snyder-county.html": {
+   "to": "/land-sales/pennsylvania/snyder-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/aurora-county.html": {
+   "to": "/land-sales/south-dakota/aurora-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/beadle-county.html": {
+   "to": "/land-sales/south-dakota/beadle-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/bon-homme-county.html": {
+   "to": "/land-sales/south-dakota/bon-homme-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/brule-county.html": {
+   "to": "/land-sales/south-dakota/brule-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/charles-mix-county.html": {
+   "to": "/land-sales/south-dakota/charles-mix-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/clay-county.html": {
+   "to": "/land-sales/south-dakota/clay-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/codington-county.html": {
+   "to": "/land-sales/south-dakota/codington-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/davison-county.html": {
+   "to": "/land-sales/south-dakota/davison-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/douglas-county.html": {
+   "to": "/land-sales/south-dakota/douglas-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/gregory-county.html": {
+   "to": "/land-sales/south-dakota/gregory-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/hand-county.html": {
+   "to": "/land-sales/south-dakota/hand-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/hanson-county.html": {
+   "to": "/land-sales/south-dakota/hanson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/hutchinson-county.html": {
+   "to": "/land-sales/south-dakota/hutchinson-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/hyde-county.html": {
+   "to": "/land-sales/south-dakota/hyde-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/jerauld-county.html": {
+   "to": "/land-sales/south-dakota/jerauld-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/kingsbury-county.html": {
+   "to": "/land-sales/south-dakota/kingsbury-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/lake-county.html": {
+   "to": "/land-sales/south-dakota/lake-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/lincoln-county.html": {
+   "to": "/land-sales/south-dakota/lincoln-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/mccook-county.html": {
+   "to": "/land-sales/south-dakota/mccook-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/miner-county.html": {
+   "to": "/land-sales/south-dakota/miner-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/minnehaha-county.html": {
+   "to": "/land-sales/south-dakota/minnehaha-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/tripp-county.html": {
+   "to": "/land-sales/south-dakota/tripp-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/turner-county.html": {
+   "to": "/land-sales/south-dakota/turner-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/walworth-county.html": {
+   "to": "/land-sales/south-dakota/walworth-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/south-dakota/yankton-county.html": {
+   "to": "/land-sales/south-dakota/yankton-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/texas/hartley-county.html": {
+   "to": "/land-sales/texas/hartley-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/texas/hill-county.html": {
+   "to": "/land-sales/texas/hill-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/texas/hockley-county.html": {
+   "to": "/land-sales/texas/hockley-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/texas/parker-county.html": {
+   "to": "/land-sales/texas/parker-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/texas/van-zandt-county.html": {
+   "to": "/land-sales/texas/van-zandt-county",
+   "since": "2026-11-12"
+  },
   "farmland-sales/vermont.html": {
    "to": "/land-sales/vermont/",
    "since": "2026-11-12"
@@ -1203,6 +1811,10 @@
   },
   "farmland-sales/vermont/windsor-county.html": {
    "to": "/land-sales/vermont/windsor-county",
+   "since": "2026-11-12"
+  },
+  "farmland-sales/washington/franklin-county.html": {
+   "to": "/land-sales/washington/franklin-county",
    "since": "2026-11-12"
   },
   "farmland-sales/wisconsin.html": {

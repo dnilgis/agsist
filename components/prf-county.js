@@ -254,6 +254,20 @@
           return;
         }
         body.innerHTML = render(d);
+        // County crop risk (components/crop-risk.js): the county's own corn and soybean insurance record, under the view,
+        // only for a county with a record (d.crk: the Atlas's own county code, renamed codes folded)
+        if (/^\d{5}$/.test(String(d.crk || ''))) {
+          var crk = document.createElement('section');
+          crk.className = 'crk';
+          crk.setAttribute('data-crop-risk', '');
+          crk.setAttribute('data-fips', String(d.crk));
+          crk.setAttribute('data-place', d.name);
+          crk.setAttribute('data-h', '3');
+          crk.setAttribute('aria-label', 'County crop risk');
+          crk.innerHTML = '<p class="crk-n">Loading the county crop insurance record.</p>';
+          body.appendChild(crk);
+          if (root.AgCropRisk) root.AgCropRisk.mount(crk);
+        }
         nowGrids(d);
         if (focus) {
           var h = body.querySelector('.prf-cp-h');

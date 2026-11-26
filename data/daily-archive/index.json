@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-26",
+      "date_display": "Thursday, November 26, 2026",
+      "headline": "December lean hogs fell $1.87 Wednesday to $49.93",
+      "teaser": "December lean hogs settled at $49.925 on Wednesday, down 3.6% from Tuesday's $51.80 settle. Cash pork cutout was $66.98 per hundredweight, u...",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-26",
+      "market_closed": true
+    },
+    {
       "date": "2026-11-25",
       "date_display": "Wednesday, November 25, 2026",
       "headline": "Ohio soybeans basis firmed 5 cents in a week",
@@ -2932,5 +2943,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-25T13:49:16.585639+00:00"
+  "updated": "2026-11-26T12:06:21.797340+00:00"
 }

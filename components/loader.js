@@ -17,6 +17,7 @@
       '/watch-subscribe': 'farmland watch', '/elevator-watch-subscribe': 'elevator alert', '/price-watch-subscribe': 'price alert' };
     var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
     var QUEUED = "Got it. You'll be added within a day.";
+    var KEEP_DAYS = 7, KEEP_TRIES = 8;
     var real = window.fetch;
     function routeOf(u) {
       try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] && /^(www\.)?agsist\.com$/.test(location.hostname) ? x.pathname : ''; }
@@ -49,7 +50,31 @@
         setTimeout(function () { if (bar.parentNode) bar.remove(); }, 15000);
       } catch (e) {}
     }
-    function queue(route, init, orig, err) {
+    // one kept copy per signup: the route, the address (trimmed, lower case) and every field that names what is
+    // watched (topic, county, elevator, crop, price...); where it was asked (source, askId) does not count
+    function signupKey(route, f) {
+      var o = {};
+      Object.keys(f).sort().forEach(function (k) {
+        if (['source', 'src', 'askId', 'zipField', '_gotcha'].indexOf(k) < 0) o[k] = k === 'email' ? String(f[k]).trim().toLowerCase() : f[k];
+      });
+      return route + ' ' + JSON.stringify(o);
+    }
+    function keep(url, route, f) {
+      try {
+        if (!f.email) return;
+        var a = JSON.parse(localStorage.getItem('agsist-outbox') || '[]'), t = Date.now(), k = signupKey(route, f);
+        a = (Array.isArray(a) ? a : []).filter(function (x) {
+          return !(x && x.kind === 'signup' && signupKey(x.route, x.body || {}) === k);
+        });
+        a.push({ id: t.toString(36) + Math.random().toString(36).slice(2, 8), t: t, url: new URL(String(url), location.href).href, method: 'POST',
+          label: 'your ' + LISTS[route] + ' signup', kind: 'signup', route: route, okIf: 'json', body: f,
+          expires: t + KEEP_DAYS * 86400000, max: KEEP_TRIES, n: 0 });
+        var sg = a.filter(function (x) { return x && x.kind === 'signup'; });
+        if (sg.length > 10) a = a.filter(function (x) { var i = sg.indexOf(x); return i < 0 || i >= sg.length - 10; });   // the oldest signups go; other items stay
+        localStorage.setItem('agsist-outbox', JSON.stringify(a));
+      } catch (e) { }
+    }
+    function queue(route, init, orig, err, url) {
       var f = fields(init && init.body), fd = new FormData(), extra = {};
       var list = LISTS[route] + (f.topic ? ' (' + String(f.topic).slice(0, 60) + ')' : '');
       Object.keys(f).forEach(function (k) {
@@ -63,11 +88,12 @@
       fd.append('source', String(f.source || f.src || '').slice(0, 60));
       fd.append('page', location.pathname);
       if (Object.keys(extra).length) fd.append('details', JSON.stringify(extra).slice(0, 1500));
-      fd.append('note', 'Not on the list yet and not confirmed: add by hand when the worker is back; mail nothing before that.');
+      fd.append('note', 'Not on the list yet and not confirmed. The reader\'s browser retries this signup with the worker on their next visits for 7 days (if it goes through, the worker handles it as usual): check the list before adding by hand; mail nothing before that.');
       return real.call(window, FORMSPREE, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
         .then(function (r) { return r.ok ? r.json().catch(function () { return {}; }) : null; })
         .then(function (j) {
           if (!j || j.ok === false || j.errors) throw new Error('not sent');
+          keep(url, route, f);
           window.dispatchEvent(new CustomEvent('agsist:signup-queued', { detail: { list: LISTS[route] } }));
           say();
           return new Response(JSON.stringify({ ok: true, queued: true, message: QUEUED }),
@@ -75,10 +101,10 @@
         })
         .catch(function () { if (orig) return orig; throw err || new Error('not sent'); });
     }
-    window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS };
+    window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS, realFetch: real };
     try {
       if (!window.AgOutbox && localStorage.getItem('agsist-outbox') && !document.querySelector('script[src^="/components/outbox.js"]')) {
-        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=4'; ob.defer = true;
+        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=5'; ob.defer = true;
         (document.head || document.documentElement).appendChild(ob);
       }
     } catch (e) { }
@@ -89,17 +115,17 @@
       if (!route) return real.apply(this, arguments);
       return real.apply(this, arguments).then(function (r) {
         if (r.status === 403 || r.status === 404 || r.status === 405 || r.status >= 500) {
-          return r.clone().json().then(function () { return r; }, function () { return queue(route, init, r); });
+          return r.clone().json().then(function () { return r; }, function () { return queue(route, init, r, null, url); });
         }
         return r;
-      }, function (err) { return queue(route, init, null, err); });
+      }, function (err) { return queue(route, init, null, err, url); });
     };
   })();
   var BASE = (function () {
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '111';
+  var CV = '115';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -137,6 +163,53 @@
         });
       })
       .catch(function () {});
+  }
+  /* Footer Rain Print link: counted, and carries from=footer (2026-11-26). */
+  function initRainPrintFooter() {
+    var go = function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || !a.closest('#site-footer, footer')) return;
+      var href = a.getAttribute('href') || '';
+      if (!/^\/rain-print(?:[?#]|$)/.test(href)) return;
+      if (!/[?&]from=/.test(href)) {
+        var at = href.indexOf('#'), hash = at < 0 ? '' : href.slice(at), base = at < 0 ? href : href.slice(0, at);
+        a.setAttribute('href', base + (base.indexOf('?') < 0 ? '?' : '&') + 'from=footer' + hash);
+      }
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_print_promo_click', { placement: 'footer', from: 'footer', page: location.pathname, transport_type: 'beacon' }); } catch (x) {}
+    };
+    document.addEventListener('click', go, true);
+    document.addEventListener('auxclick', go, true);
+  }
+  /* Own-browser mark (2026-11-26): ?ownerdev=<private word> marks this browser (SHA-256 below); it is kept out of Analytics. */
+  var OWNER_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
+  function markInternal() {
+    try {
+      if (window.__agsistInternalSet) return;
+      window.__agsistInternalSet = 1;
+      var cmd = (function () { return arguments; })('set', { traffic_type: 'internal', owner_device: 'yes' });
+      var dl = window.dataLayer = window.dataLayer || [], at = dl.length, i;
+      for (i = 0; i < dl.length; i++) if (dl[i] && dl[i][0] === 'config') { at = i; break; }
+      dl.splice(at, 0, cmd);
+    } catch (e) {}
+  }
+  function initOwnerDevice() {
+    try {
+      var marked = false;
+      try { marked = localStorage.getItem('agsist-owner-device') === '1'; } catch (x) {}
+      if (marked) markInternal();
+      var q = new URLSearchParams(location.search);
+      if (!q.has('ownerdev')) return;
+      var w = q.get('ownerdev'), clean = function () {
+        try { q.delete('ownerdev'); var qs = q.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (x) {}
+      };
+      if (w === 'off') { try { localStorage.removeItem('agsist-owner-device'); } catch (x) {} clean(); return; }
+      if (!window.crypto || !crypto.subtle || typeof TextEncoder === 'undefined') { clean(); return; }
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode(w)).then(function (buf) {
+        var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+        if (hex === OWNER_HASH) { try { localStorage.setItem('agsist-owner-device', '1'); } catch (x) {} markInternal(); }
+        clean();
+      }, clean);
+    } catch (e) {}
   }
   function initMenuClicks() {
     var txt = function (el) { return el ? String(el.textContent || '').replace(/[\u2192]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : ''; };
@@ -556,7 +629,7 @@
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=7';
+    s.src = BASE + '/components/geo-sponsor.js?v=8';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
@@ -754,6 +827,8 @@
       .catch(function () {});
   }
   document.addEventListener('DOMContentLoaded', function () {
+    initOwnerDevice();
+    initRainPrintFooter();
     injectAnalytics();
     siteNotice();
     loadSponsorMetrics();
@@ -997,7 +1072,7 @@
         && !/^\/rent\/(illinois|wisconsin|indiana|vermont|new-jersey)(\.html)?\/?$/.test(location.pathname)
         && !/^\/farmland-atlas\/(indiana|vermont|new-jersey|florida)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=7';
+    s.src = '/components/land-sales.js?v=8';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }

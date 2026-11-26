@@ -284,7 +284,7 @@
     var st = P.stateOf(fips);
     if (!st) { say('I don\u2019t know that county code. Try a ZIP or the county name.', true); return Promise.resolve(false); }
     say('Reading the county figures…');
-    return Promise.all([stFile(st), getJSON('/data/atlas/counties/' + fips + '.json'), getJSON('/data/layers.json')]).then(function (a) {
+    return Promise.all([stFile(st), getJSON(ATLAS_COUNTY_HOST + fips + '.json'), getJSON('/data/layers.json')]).then(function (a) {
       if (my != null && my !== S.seq) return false;
       var pct = a[0], county = a[1], reg = null;
       try { reg = a[2] && L ? L.load(a[2]) : null; } catch (e) { reg = null; }
@@ -335,6 +335,8 @@
   function hasSales(st) { var A = window.AtlasSales; return /^(IL|WI|FL)$/.test(st) || !!(A && A.STATES && A.STATES[st]); }
   /* Florida's county files and their index are on agsist-data (FSLand.LAND_HOST, Nov 5, 2026) */
   var LAND_HOST = { FL: 'https://dnilgis.github.io/agsist-data/land/fl/' };
+  /* The county Atlas files (data/atlas/counties/<fips>.json) are on agsist-data too (Nov 26, 2026) */
+  var ATLAS_COUNTY_HOST = 'https://dnilgis.github.io/agsist-data/data/atlas/counties/';
   function salesIn(st) {
     if (!hasSales(st)) return Promise.resolve(false);
     if (!(st in S.sales)) S.sales[st] = getJSON((LAND_HOST[st] || '/data/land/' + st.toLowerCase() + '/') + 'index.json', 10000).then(function (ix) { return !!(ix && ix.counties && ix.counties.length); });
@@ -664,7 +666,7 @@
 
   /* The county station's year of rain, drawn by the county rain page's own Rain Print, and
      ranked against the same days of every earlier year the station kept in full (NOAA). */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=55';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=56';
   var porMemo = {};
   function porRows(sid) {
     if (porMemo[sid]) return porMemo[sid];

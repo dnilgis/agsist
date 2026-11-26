@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 25 Nov 2026 13:50:15 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 26 Nov 2026 12:07:08 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>December lean hogs fell $1.87 Wednesday to $49.93</title>
+      <link>https://agsist.com/daily/2026-11-26</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-26</guid>
+      <pubDate>Thu, 26 Nov 2026 12:06:16 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>December lean hogs settled at $49.925 on Wednesday, down 3.6% from Tuesday's $51.80 settle. Cash pork cutout was $66.98 per hundredweight, up $0.74, so packers are still paying less for hogs while pork itself is holding. Markets are closed today for Thanksgiving.
+• Hogs drop, cattle slip
+• Grains firm before the holiday
+Read more: https://agsist.com/daily/2026-11-26</description>
+    </item>
     <item>
       <title>Ohio soybeans basis firmed 5 cents in a week</title>
       <link>https://agsist.com/daily/2026-11-25</link>
@@ -340,18 +351,6 @@ Read more: https://agsist.com/daily/2026-10-29</description>
 • Hogs fall, cattle hold
 • Crude firm, gas gains
 Read more: https://agsist.com/daily/2026-10-28</description>
-    </item>
-    <item>
-      <title>Corn slips ½¢ to $4.54½ after three lower closes</title>
-      <link>https://agsist.com/daily/2026-10-27</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-27</guid>
-      <pubDate>Tue, 27 Oct 2026 10:47:59 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Dec corn is at $4.54½ overnight, ½ cent under Monday's settle, and has given back a few cents all week. Beans are up 7½ cents to $12.48¾ after Monday's drop.
-• Corn quiet, beans bounce
-• Crude firm, gas gains
-• Cattle firm, hogs lower
-Read more: https://agsist.com/daily/2026-10-27</description>
     </item>
   </channel>
 </rss>

@@ -2122,9 +2122,11 @@ window.__fsRead = function (FSX) {
   }
   // ── The county's long record, from the same file the Farmland Atlas and its county sheet print ──
   var ATLAS_CO={};
+  // the county files are on agsist-data (Nov 26, 2026), the host Florida's land files use
+  var ATLAS_COUNTY_HOST='https://dnilgis.github.io/agsist-data/data/atlas/counties/';
   function atlasCounty(fips){
     if(!fips) return Promise.resolve(null);
-    if(!ATLAS_CO[fips]) ATLAS_CO[fips]=getJSON('/data/atlas/counties/'+fips+'.json').catch(function(){ return null; });
+    if(!ATLAS_CO[fips]) ATLAS_CO[fips]=getJSON(ATLAS_COUNTY_HOST+fips+'.json').catch(function(){ return null; });
     return ATLAS_CO[fips];
   }
   // the Atlas's recent yield level, same rule: five years ending at the county's newest, four needed, high and low dropped

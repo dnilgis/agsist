@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       layers:
-        description: "Which fetches to run, comma-separated: heat,water,loss,sob,value,practices,crp,drought,energy,wells,climate,storms,livestock,frost,reads. Blank = all. build = no fetch, rebuild only."
+        description: "Which fetches to run, comma-separated: heat,water,loss,sob,value,practices,crp,drought,energy,wells,climate,storms,livestock,frost,yields,reads. Blank = all. build = no fetch, rebuild only."
         required: false
         default: ""
       loss_all:
@@ -118,6 +118,7 @@ jobs:
           python fetch_atlas_storms.py --selftest
           python fetch_atlas_livestock.py --selftest
           python fetch_atlas_frost.py --selftest
+          python fetch_county_yields.py --selftest
           python atlas_layers_p1.py --selftest
           python atlas_layers_p2.py --selftest
           python atlas_reads.py --selftest
@@ -135,12 +136,13 @@ jobs:
             [ -s "data/atlas/raw/$f.json" ] || { echo "::error::data/atlas/raw/$f.json did not come back from the raw branch; not building"; exit 1; }
           done
           echo "raw pulls: $n files"
+          RAW_SOFT=0 bash scripts/pull_raw.sh vintage/nass-county-yield
 
       - name: Which layers
         id: which
         run: |
-          L="${LAYERS:-heat,water,loss,sob,value,practices,crp,drought,energy,wells,climate,storms,livestock,frost,reads}"
-          for k in heat water loss sob value practices crp drought energy wells climate storms livestock frost reads; do
+          L="${LAYERS:-heat,water,loss,sob,value,practices,crp,drought,energy,wells,climate,storms,livestock,frost,yields,reads}"
+          for k in heat water loss sob value practices crp drought energy wells climate storms livestock frost yields reads; do
             case ",$L," in *",$k,"*) echo "$k=1" >> "$GITHUB_OUTPUT";; *) echo "$k=0" >> "$GITHUB_OUTPUT";; esac
           done
           echo "running: $L"
@@ -264,6 +266,24 @@ jobs:
             python scripts/fetch_atlas_sob.py
           fi
 
+      - name: Fetch county yields (NASS)
+        if: steps.which.outputs.yields == '1'
+        continue-on-error: true
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_county_yields.py
+
+      - name: Keep county yields as first prints
+        if: ${{ !cancelled() && steps.which.outputs.yields == '1' }}
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_KEEP: '1'
+          RAW_SOFT: '1'
+        run: |
+          [ -d vintage/nass-county-yield ] || { echo "nothing read from NASS this run"; exit 0; }
+          bash scripts/push_raw.sh "nass county yield first print" vintage/nass-county-yield
+
       - name: Fetch drought history (USDM)
         if: steps.which.outputs.drought == '1'
         continue-on-error: true
@@ -300,6 +320,11 @@ jobs:
             python scripts/atlas_reads.py
           fi
 
+      - name: County files to the data host (agsist-data)
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: python3 scripts/atlas_hosted.py sync
+
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
@@ -323,7 +348,7 @@ jobs:
             if git pull --rebase --autostash origin main && git push; then exit 0; fi
             sleep $((30 * i))
           done
-          echo "push failed after 4 attempts"; exit 1
+          echo "::error::push failed after 4 attempts. rerun farmland-atlas now: the host has the new build (the county files were sent to agsist-data before this commit), and until the commit lands the checks that fetch them stop on the older index"; exit 1
 
       - name: Save the raw pulls to the raw branch
         if: ${{ !cancelled() }}

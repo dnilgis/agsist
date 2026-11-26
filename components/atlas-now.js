@@ -252,7 +252,7 @@ function oldList(){
     OLDP=new Promise(function(ok,no){
       if(window.AtlasLayers) return ok();
       var s=document.createElement('script'), to=setTimeout(function(){ s.onload=s.onerror=null; OLDP=null; no(new Error('layers')); },10000);   // 10 s, as every read
-      s.src='/components/atlas-layers.js?v=3'; s.onload=function(){ clearTimeout(to); ok(); }; s.onerror=function(){ clearTimeout(to); OLDP=null; no(new Error('layers')); };
+      s.src='/components/atlas-layers.js?v=4'; s.onload=function(){ clearTimeout(to); ok(); }; s.onerror=function(){ clearTimeout(to); OLDP=null; no(new Error('layers')); };
       document.head.appendChild(s);
     }).then(function(){
       var names={}; for(var k in NOW.states) names[k]=NOW.states[k].name;

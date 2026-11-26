@@ -112,6 +112,9 @@ build/shots/
 # the twenty-year COT history behind data/cot-analysis.json.
 /data/site-usage.json
 /data/cot-deep.json
+# Cash Bid Index month files are per board: they live under private/cash-index on the
+# private-data branch, never here (test/cash-index-private.test.mjs).
+/data/cash-index/acc-*.json
 
 # Share images live in dnilgis/agsist-data since Nov 4, 2026 (scripts/share_host.py); never commit them here
 /farmland-atlas/og/
@@ -126,3 +129,8 @@ build/shots/
 # Worklists of elevator coordinates and board URLs are private engine data (scripts/worklists, Nov 13); a job that
 # commits all of data/ must not publish them.
 /data/gaps/
+
+# The county Atlas files (data/atlas/counties/<fips>.json, 3,148 files, 59.9 MiB) are served from dnilgis/agsist-data
+# since Nov 26, 2026 (scripts/atlas_hosted.py; test/atlas-hosted.test.mjs). A job that builds from them or tests them
+# has a copy here, fetched from there; it is never committed. farmland-atlas.yml sends a rebuilt folder to agsist-data.
+/data/atlas/counties/
