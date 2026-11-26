@@ -1,8 +1,0 @@
-{
- "id": "2026-11-18-signup-retry",
- "date": "2026-11-18",
- "title": "Signups retried",
- "line": "A signup made while our signup service is down is kept on your device and sent again on your next visit, so it still reaches the list.",
- "link": "/daily",
- "rank": 5
-}

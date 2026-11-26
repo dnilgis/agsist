@@ -226,14 +226,15 @@
           if (!x) return;                                              // sent by another tab, or expired
           if (x.sending && now() - x.sending < LEASE_MS) { out.kept++; return; }
           if (x.max && (triedHere[id] || (x.next && now() < x.next) || !realFetch(x))) { out.kept++; return; }
-          if (!mark(id, now())) return;
+          // a try is counted before it goes, so a page closed mid-send still uses up that try
+          var n = (x.n || 0) + 1;
+          if (!mark(id, now(), x.max ? { n: n, next: now() + Math.min(WAIT_MAX, WAIT_MS * Math.pow(4, n - 1)) } : null)) return;
           if (x.max) triedHere[id] = 1;
           return send(x).then(function (r) {
             if (r.keep) {
               if (!x.max) { mark(id, 0); out.kept++; return 'stop'; }
-              var n = (x.n || 0) + 1;
               if (n >= x.max) { drop(id); return; }                     // its last try: the backup form copy stands
-              mark(id, 0, { n: n, next: now() + Math.min(WAIT_MAX, WAIT_MS * Math.pow(4, n - 1)) });
+              mark(id, 0);
               out.kept++; return 'stop';
             }
             drop(id);
