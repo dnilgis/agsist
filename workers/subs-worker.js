@@ -5,6 +5,15 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.73 (2026-11-26): A KEPT SIGNUP NEVER PUTS BACK A READER WHO STOPPED. A signup the reader's browser kept while
+ *   this Worker did not answer (components/outbox.js) is sent later with queued_at, the time of the signup. Every stop
+ *   link (Daily, hail alerts, notices, county watches, elevator and price alerts) writes usm:<kind>:<item>:<email>
+ *   with an 8-day life (item "*" when it stops all of that kind). /subscribe, /notice, /alert-subscribe and the three
+ *   watch routes answer {ok:true} and write nothing when queued_at is older than such a mark, or older than the record
+ *   it would write (sub ts, the hail pin's ts, a notice topic's last write lw[topic], else ts), so an older kept hail
+ *   pin, gauge ZIP or note never replaces a newer one. note:<email> gains lw {topic: time of its last write}, beside
+ *   t, so the topic rows and /notice-list read the same. A request without queued_at (every live form) is answered
+ *   and stored as before, apart from that lw. No new binding, no new secret.
  * v5.72 (2026-11-25): RAIN GAUGE WAITLIST KEEPS WHERE AND HOW MANY. /notice with topic rain-gauge also takes
  *   fips (a state FIPS of 2 digits or a county FIPS of 5, state code real, else dropped), n ("1", "2-5" or "6+")
  *   and biz (true: "for my customers"), kept on note:<email>.t["rain-gauge"] next to zip and note; src (the
@@ -1501,6 +1510,36 @@ function subEl(v) {
     if (/^[0-9a-f]{8}$/.test(id) && !out.includes(id)) out.push(id);
   }
   return out.slice(0, SUB_EL_MAX);
+}
+
+// v5.73: a signup the reader's browser kept while this Worker did not answer (components/outbox.js) comes back
+// later carrying queued_at, the time the reader signed up. A stop link leaves a mark, usm:<kind>:<item>:<email>
+// (item "*" for every item of that kind), for UNSUB_MARK_TTL_S: longer than the browser's 7 days of retries.
+// A kept signup made before such a mark, or before the record it would write was last written, is answered
+// {ok:true} and writes nothing: a reader who stopped mail is never put back, and an older kept signup never
+// replaces a newer pin, ZIP or note. A signup without queued_at (every live form) is not touched by this.
+const UNSUB_MARK_TTL_S = 8 * 86400;
+function queuedAt(v) {
+  const n = Number(v);
+  return v !== undefined && v !== null && v !== "" && Number.isFinite(n) && n > 0 ? n : null;
+}
+async function markUnsub(env, kind, email, item) {
+  await env.SUBS.put("usm:" + kind + ":" + (item || "*") + ":" + email, String(Date.now()), { expirationTtl: UNSUB_MARK_TTL_S });
+}
+// true when a kept signup (qa = its queued_at) must write nothing; items: the item keys it would touch
+async function staleQueued(env, kind, email, qa, items, recTs) {
+  if (qa === null) return false;
+  if (Number.isFinite(recTs) && recTs > qa) return true;
+  for (const it of ["*"].concat(items || [])) {
+    let m = NaN;
+    try { m = Number(await env.SUBS.get("usm:" + kind + ":" + it + ":" + email)); } catch (e) { m = NaN; }
+    if (Number.isFinite(m) && m > 0 && m >= qa) return true;
+  }
+  return false;
+}
+async function subTs(env, email) {
+  try { const v = await env.SUBS.get("sub:" + email); const p = v ? JSON.parse(v) : null; return p && Number.isFinite(p.ts) ? p.ts : null; }
+  catch (e) { return null; }
 }
 
 // v5.4 merge, shared by /subscribe and /notice (daily:true). A bad ZIP is
@@ -3708,17 +3747,17 @@ async function handle(req, env) {
 
     // ---------- daily briefing: subscribe ----------
     if (path === "/subscribe" && req.method === "POST") {
-      let email = "", src = "", trap = "", zipIn = null, repIn = null, cwIn = null;
+      let email = "", src = "", trap = "", zipIn = null, repIn = null, cwIn = null, qa = null;
       const ct = req.headers.get("Content-Type") || "";
       try {
         if (ct.includes("json")) {
           const b = await req.json();
           email = b.email || ""; src = b.source || ""; trap = b._gotcha || "";
-          zipIn = b.zip; repIn = b.reports; cwIn = b.cw;
+          zipIn = b.zip; repIn = b.reports; cwIn = b.cw; qa = queuedAt(b.queued_at);
         } else {
           const f = await req.formData();
           email = f.get("email") || ""; src = f.get("source") || ""; trap = f.get("_gotcha") || "";
-          zipIn = f.get("zip"); repIn = f.get("reports"); cwIn = f.get("cw");
+          zipIn = f.get("zip"); repIn = f.get("reports"); cwIn = f.get("cw"); qa = queuedAt(f.get("queued_at"));
         }
       } catch (e) { /* validation below */ }
       email = String(email).trim().toLowerCase();
@@ -3727,6 +3766,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link, or from before this address's record: nothing written
+      if (qa !== null && await staleQueued(env, "daily", email, qa, [], await subTs(env, email))) return json({ ok: true }, 200, cors(req));
       await putSub(env, email, src, zipIn, repIn, cwIn);
       return json({ ok: true }, 200, cors(req));
     }
@@ -3754,6 +3795,16 @@ async function handle(req, env) {
         return json({ ok: false, error: "too many notices for this address" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link, or from before this topic was last written (r.lw[topic], else
+      // its ts): nothing written, so an older kept ask never replaces a newer ZIP or note
+      if (!r.lw || typeof r.lw !== "object" || Array.isArray(r.lw)) r.lw = {};
+      const qa = queuedAt(b.queued_at);
+      if (qa !== null) {
+        const cur = r.t[topic] && typeof r.t[topic] === "object" ? r.t[topic] : null;
+        const items = [topic].concat(topic.startsWith(LAND_ALL + ":") ? [LAND_ALL] : []);
+        if (await staleQueued(env, "note", email, qa, items, cur ? Math.max(Number(r.lw[topic]) || 0, Number(cur.ts) || 0) : null))
+          return json({ ok: true }, 200, cors(req));
+      }
       // v5.32: a rent notice is one release a year. Asked again after it was
       // sent, it starts over (new ts, no sent), so send_rent_notice.py mails
       // the next release after this ask, as it does for a first ask.
@@ -3775,9 +3826,11 @@ async function handle(req, env) {
         const af = prfInterval(b.after);
         if (af) r.t[topic].after = af;
       }
+      r.lw[topic] = Date.now();   // v5.73: when this topic was last written (beside the topics, so their rows read the same)
       await env.SUBS.put("note:" + email, JSON.stringify(r));
       const daily = subBool(b.daily) === true;
-      if (daily) await putSub(env, email, src, b.zip, b.reports, b.cw);
+      if (daily && !(qa !== null && await staleQueued(env, "daily", email, qa, [], await subTs(env, email))))
+        await putSub(env, email, src, b.zip, b.reports, b.cw);
       return json({ ok: true, topic, daily }, 200, cors(req));
     }
 
@@ -3805,12 +3858,14 @@ async function handle(req, env) {
         if (one && r && r.t && typeof r.t === "object") {
           if (one === LAND_ALL) { for (const k of Object.keys(r.t)) if (k.startsWith(LAND_ALL + ":")) delete r.t[k]; }
           else delete r.t[one];
+          if (r.lw && typeof r.lw === "object") for (const k of Object.keys(r.lw)) if (!(k in r.t)) delete r.lw[k];   // v5.73
           if (Object.keys(r.t).length) await env.SUBS.put("note:" + e, JSON.stringify(r));
           else await env.SUBS.delete("note:" + e);
         } else {
           await env.SUBS.delete("note:" + e);
         }
         for (const l of gone) await countUnsub(env, l, req);
+        await markUnsub(env, "note", e, one || "*");   // v5.73: a kept signup from before now is not put back
         if (one && LIST_DONE[one]) return htmlPage(LIST_DONE[one]);
         if (one === LAND_ALL) return htmlPage(LAND_DONE);
         if (one && one.startsWith("rain-month:")) return htmlPage(RAIN_MONTH_DONE);
@@ -3837,6 +3892,13 @@ async function handle(req, env) {
         return json({ ok: false, error: "pin outside the continental US" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link, or older than the pin now saved: the newer pin stays
+      const qa = queuedAt(b.queued_at);
+      if (qa !== null) {
+        let cur = null;
+        try { const v = await env.SUBS.get("alert:" + email); cur = v ? JSON.parse(v) : null; } catch (e) { cur = null; }
+        if (await staleQueued(env, "alert", email, qa, [], cur && Number.isFinite(cur.ts) ? cur.ts : null)) return json({ ok: true }, 200, cors(req));
+      }
       await env.SUBS.put("alert:" + email, JSON.stringify(
         { lat: +lat.toFixed(4), lon: +lon.toFixed(4), place, radius_mi: radius, ts: Date.now() }));
       return json({ ok: true }, 200, cors(req));
@@ -3872,6 +3934,9 @@ async function handle(req, env) {
         if (had) await countUnsub(env, isAlert ? "alerts" : "daily", req);
         // v5.11: "No more emails" covers the one-time notices too.
         if (!isAlert) await env.SUBS.delete("note:" + e);
+        // v5.73: a kept signup from before now is not put back (the Daily stop also stops the notices)
+        await markUnsub(env, isAlert ? "alert" : "daily", e);
+        if (!isAlert) await markUnsub(env, "note", e);
         return htmlPage(isAlert
           ? "Hail alerts stopped for this address. No more alert emails."
           : "You're unsubscribed. No more emails.");
@@ -4028,6 +4093,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid county" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link for this county or all: nothing written
+      if (await staleQueued(env, "watch", email, queuedAt(b.queued_at), [fips])) return json({ ok: true }, 200, cors(req));
       const r = await getWatch(email);
       const now = Date.now();
       for (const f of Object.keys(r.pend)) if (now - r.pend[f].ts > PEND_TTL) delete r.pend[f];
@@ -4074,6 +4141,7 @@ async function handle(req, env) {
         }
         if (f) { delete r.pend[f]; delete r.w[f]; } else { r.pend = {}; r.w = {}; }
         await putWatch(e, r);
+        await markUnsub(env, "watch", e, f || "*");   // v5.73
         return htmlPage(f ? "Stopped. No more emails about this county." : "Stopped. No more county watch emails.");
       }
     }
@@ -4342,6 +4410,8 @@ async function handle(req, env) {
       if (ev.error) return json({ ok: false, error: ev.error }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link for this alert or all: nothing written
+      if (await staleQueued(env, "ewatch", email, queuedAt(b.queued_at), [wid])) return json({ ok: true }, 200, cors(req));
       const r = await getEWatch(email);
       const now = Date.now();
       for (const w of Object.keys(r.pend)) if (now - r.pend[w].ts > EPEND_TTL) delete r.pend[w];
@@ -4398,6 +4468,7 @@ async function handle(req, env) {
         }
         if (w) { delete r.pend[w]; delete r.w[w]; } else { r.pend = {}; r.w = {}; }
         await putEWatch(e, r);
+        await markUnsub(env, "ewatch", e, w || "*");   // v5.73
         return htmlPage(w ? "Stopped. No more emails about " + escHtml(label) + "." : "Stopped. No more elevator watch emails.");
       }
     }
@@ -4479,6 +4550,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid label" }, 400, cors(req));
       const slow = await rateLimit(req, env, path);
       if (slow) return slow;
+      // v5.73: a kept signup from before a stop link for this alert or all: nothing written
+      if (await staleQueued(env, "pwatch", email, queuedAt(b.queued_at), [pid])) return json({ ok: true }, 200, cors(req));
       const r = await getPWatch(email);
       const now = Date.now();
       for (const p of Object.keys(r.pend)) if (now - r.pend[p].ts > PPEND_TTL) delete r.pend[p];
@@ -4528,6 +4601,7 @@ async function handle(req, env) {
         }
         if (p) { delete r.pend[p]; delete r.w[p]; } else { r.pend = {}; r.w = {}; }
         await putPWatch(e, r);
+        await markUnsub(env, "pwatch", e, p || "*");   // v5.73
         return htmlPage(p ? "Cancelled. No email for " + escHtml(label) + "." : "Cancelled. No more price alert emails.");
       }
     }

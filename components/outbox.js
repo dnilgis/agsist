@@ -40,10 +40,16 @@
  * form wrapper, so a retry that misses sends nothing anywhere else. Sent: the
  * worker does what it always does for that route (a watch or price alert mails
  * its confirmation; the Daily, notices and hail alerts do not) and the page says
- * that route's usual success line (SIGNED). Expired items leave storage when a
- * page loads, so an address is never kept past its 7 days. Signups are capped at
- * SIGNUPS_MAX and never push out the other kept items.
- * Refused by the worker: dropped quietly (the backup form copy stands). The
+ * that route's usual success line (SIGNED). An item past its 7 days leaves
+ * storage at the first page load after that, so the address is removed then,
+ * not at the minute it turns 7 days old. Signups are capped at SIGNUPS_MAX and
+ * never push out the other kept items. A signup sends queued_at (when the reader
+ * signed up), so the worker writes nothing for a signup older than a stop link
+ * or older than what it already holds. A try is counted before it goes, and a
+ * signup at its last try is dropped before it would go again. A signup that
+ * misses does not hold up the other kept items behind it.
+ * Refused by the worker: dropped quietly (the backup form copy stands); a watch
+ * refused for its 5-item limit is dropped with the page's own limit line. The
  * address in it stays in this browser's storage only and is never logged.
  */
 (function (root) {
@@ -57,10 +63,24 @@
   var SIGNED = {
     '/subscribe': 'You are on AGSIST Daily, first email tomorrow morning.',
     '/notice': 'You are signed up for that email.',
-    '/alert-subscribe': 'You are signed up for hail alerts. They arrive the morning after radar-estimated hail touches your spot.',
-    '/watch-subscribe': 'Check your email to confirm the alert. Nothing is sent until you press that link.',
+    '/alert-subscribe': 'Hail alerts are on. They arrive the morning after radar-estimated hail touches your spot.',
+    '/watch-subscribe': 'Check your inbox for a confirmation link for the county watch. It can take up to 30 minutes. Look in spam if it is not there.',
     '/elevator-watch-subscribe': 'Check your email to confirm the price alert. Nothing about it is sent until you press that link.',
     '/price-watch-subscribe': 'Check your email to confirm the futures alert. Nothing about it is sent until you press that link.'
+  };
+  // the rain gauge waiting list is a notice topic with its own line (signup-ask.js)
+  var GAUGE_LINE = 'You are on the rain gauge waitlist. You will hear from me when the first batch is ready.';
+  function signedLine(x) {
+    var b = x.body || {};
+    if (x.route === '/notice' && b.topic === 'rain-gauge') return GAUGE_LINE;
+    if (x.route === '/alert-subscribe' && b.place) return 'Watching ' + String(b.place).slice(0, 120) + '. Hail alerts arrive the morning after radar-estimated hail touches it.';
+    return SIGNED[x.route] || 'You are signed up.';
+  }
+  // a watch refused for its 5-item limit: final, with the page's own line (cb-alerts.js, signup-ask.js, the Atlas)
+  var LIMIT = {
+    '/watch-subscribe': 'This address already watches 5 counties, the most one address can hold. Nothing new was saved.',
+    '/elevator-watch-subscribe': 'This address already has 5 elevator alerts, the most one address can hold. Nothing new was saved.',
+    '/price-watch-subscribe': 'This address already has 5 price alerts set, the most one address can hold. Nothing new was saved.'
   };
   var SIGNUPS_MAX = 10;
   var WAIT_MS = 60000, WAIT_MAX = 6 * 3600000;
@@ -148,12 +168,16 @@
     var timer = setTimeout(function () { if (ctl) ctl.abort(); }, SEND_MS);
     var init = { method: x.method, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', signal: ctl ? ctl.signal : undefined,
       headers: { Accept: 'application/json' } };
-    if (x.body !== undefined) { init.body = JSON.stringify(x.body); init.headers['Content-Type'] = 'application/json'; }
+    // a signup carries when the reader signed up: the worker writes nothing for one older than a stop link
+    var body = x.kind === 'signup' && x.body && typeof x.body === 'object' ? Object.assign({}, x.body, { queued_at: x.t }) : x.body;
+    if (body !== undefined) { init.body = JSON.stringify(body); init.headers['Content-Type'] = 'application/json'; }
     return realFetch(x).call(root, target(x.url), init).then(function (r) {
       clearTimeout(timer);
       return r.json().then(function (j) { return { status: r.status, ok: r.ok, json: true, j: j }; },
         function () { return { status: r.status, ok: r.ok, json: false, j: null }; });
     }, function () { clearTimeout(timer); return { status: 0, ok: false, json: false, j: null }; }).then(function (a) {
+      // a watch at its 5-item limit is the worker's real answer, not a busy one: final
+      if (x.kind === 'signup' && a.status === 429 && a.json && a.j && a.j.error === 'limit') return { refused: true, error: 'limit' };
       if (blocked(a.status, a.json)) return { keep: true };
       var j = a.j && typeof a.j === 'object' ? a.j : {};
       var good = a.ok && (x.okIf === 'json' ? j.ok !== false : j.ok === true);
@@ -225,6 +249,7 @@
           var x = read().filter(function (y) { return y.id === id; })[0];
           if (!x) return;                                              // sent by another tab, or expired
           if (x.sending && now() - x.sending < LEASE_MS) { out.kept++; return; }
+          if (x.max && (x.n || 0) >= x.max) { drop(id); return; }       // its tries are used up (a page closed mid-send): never a ninth
           if (x.max && (triedHere[id] || (x.next && now() < x.next) || !realFetch(x))) { out.kept++; return; }
           // a try is counted before it goes, so a page closed mid-send still uses up that try
           var n = (x.n || 0) + 1;
@@ -235,15 +260,14 @@
               if (!x.max) { mark(id, 0); out.kept++; return 'stop'; }
               if (n >= x.max) { drop(id); return; }                     // its last try: the backup form copy stands
               mark(id, 0);
-              out.kept++; return 'stop';
+              out.kept++; return;                                         // a missed signup does not hold up the items behind it
             }
             drop(id);
             if (x.kind === 'signup') {
-              if (r.sent) {
-                out.signed = (out.signed || 0) + 1;
-                var line = SIGNED[x.route] || 'You are signed up.';
-                out.signedLines = (out.signedLines || []).filter(function (l) { return l !== line; }).concat([line]);
-              }
+              var line = r.sent ? signedLine(x) : r.error === 'limit' ? LIMIT[x.route] : '';
+              if (r.sent) out.signed = (out.signed || 0) + 1;
+              else if (line) out.limited = (out.limited || 0) + 1;
+              if (line) out.signedLines = (out.signedLines || []).filter(function (l) { return l !== line; }).concat([line]);
               return;
             }
             if (r.sent) { afterSent(x, r.j); out.sent.push(x.label); }
@@ -254,12 +278,12 @@
     })).then(function (out) {
       running = null;
       out = out || { sent: [], kept: 0, refused: [] };
-      try { if (out.sent.length || out.refused.length || out.signed) root.dispatchEvent(new root.CustomEvent('agsist:outbox', { detail: out })); } catch (e) {}
+      try { if (out.sent.length || out.refused.length || out.signed || out.limited) root.dispatchEvent(new root.CustomEvent('agsist:outbox', { detail: out })); } catch (e) {}
       if (!quiet) {
         if (out.refused.length) bar(['Something you saved while our system was down did not go through.'].concat(out.refused,
           ['Write to ' + CONTACT + ' if you need a hand.']), true);
         else if (out.sent.length) bar(['Sent now that our system is back: ' + out.sent.join('; ') + '.'].concat(out.signedLines || []));
-        else if (out.signed) bar(out.signedLines);
+        else if (out.signed || out.limited) bar(out.signedLines);
       }
       return out;
     }, function () { running = null; return { sent: [], kept: read().length, refused: [] }; });
