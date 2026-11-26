@@ -1,0 +1,1 @@
+County rain pages: a line under each county's Rain Print says what the picture is, what it costs and that shipping is in it, and its buttons are counted (rain-county.css?v=19, rain-county-print.js?v=58, here.js?v=64)

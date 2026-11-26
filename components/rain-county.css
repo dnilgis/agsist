@@ -141,7 +141,7 @@
    page from the first byte and held unseen until the print draws, so drawing it moves nothing; without scripts it is not shown (it names
    a picture that is not there); when the print cannot be drawn it goes on a phone and stays held wider, as the caption does. */
 .rc-buy { margin: .6rem 0 0; max-width: 46em; }
-.rc-buy .btn { display: inline-block; margin: .1rem 0 0 .2rem; vertical-align: middle; }
+.rc-buy .btn { display: block; width: fit-content; margin: .5rem 0 0; }   /* its own line: a 44 px tap, never wrapped after a word */
 @media (scripting: none) { .rc-buy { display: none; } }
 @media (scripting: enabled) { .rc-print-top:not(.rc-print-on) .rc-buy { visibility: hidden; } }
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
