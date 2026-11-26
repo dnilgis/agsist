@@ -281,10 +281,20 @@
      draws the small print smaller until everything fits above the foot. */
   function render(o) {
     // tight 5, the last two: only a guide with every extra keyed (six more key lines) and a full note gets there; the key one size smaller again
-    var fits = [[400, 0], [360, 0], [340, 1], [320, 2], [320, 3], [280, 3], [280, 4], [240, 4], [240, 5], [200, 5]], svg = '';
-    for (var k = 0; k < fits.length; k++) {
-      svg = draw(Object.assign({}, o, { miniW: fits[k][0], tight: fits[k][1] }));
+    var fits = [[400, 0], [360, 0], [340, 1], [320, 2], [320, 3], [280, 3], [280, 4], [240, 4], [240, 5], [200, 5]], svg = '', k, bare = Object.assign({}, o, { gauge: null });
+    // the guide's rain gauge line (Nov 26, 2026) is the first thing to go: the page is fitted without it, and the line is
+    // added only at that same fit and only if it still fits, so it never runs the page long, never makes the print smaller
+    // and never prompts "shorten the gift note"
+    for (k = 0; k < fits.length; k++) {
+      svg = draw(Object.assign({}, bare, { miniW: fits[k][0], tight: fits[k][1] }));
       if (!render.overflow) break;
+    }
+    render.gaugeDropped = false;
+    if (o.guide && gaugeLine(o.gauge) && k < fits.length) {
+      var withIt = draw(Object.assign({}, o, { miniW: fits[k][0], tight: fits[k][1] }));
+      if (!render.overflow) return withIt;
+      render.gaugeDropped = true;
+      svg = draw(Object.assign({}, bare, { miniW: fits[k][0], tight: fits[k][1] }));
     }
     return svg;
   }
@@ -416,5 +426,5 @@
     return out.join('');
   }
 
-  root.AgRpInsert = { copy: copy, render: render, offerLine: offerLine, gaugeLine: gaugeLine, W: W0, H: H0, lastOverflow: function () { return render.overflow || 0; } };
+  root.AgRpInsert = { copy: copy, render: render, offerLine: offerLine, gaugeLine: gaugeLine, W: W0, H: H0, lastOverflow: function () { return render.overflow || 0; }, gaugeDropped: function () { return !!render.gaugeDropped; } };
 })(typeof window !== 'undefined' ? window : this);

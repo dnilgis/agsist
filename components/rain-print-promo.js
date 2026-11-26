@@ -50,8 +50,8 @@
    the page the click came from. The tag is data-src on the element when it is
    a valid tag, else the page's first folder ("/prf" is prf, "/cash-bids" is
    cash-bids, "/daily" and every Daily archive page is daily, the home page is
-   home; anything deeper under /rain is rain-county, the tag the county pages'
-   own links carry). A tag starts with a letter, runs a to z, 0 to 9 and
+   home; /rain/<state> is rain-state and /rain/<state>/<county> is rain-county, the
+   tags the rain pages' own links carry). A tag starts with a letter, runs a to z, 0 to 9 and
    hyphens, at most 24 characters and never five digits (srcTag).
 
    Held space (data-hold on the element): the line's box is held up front
@@ -77,7 +77,7 @@
     var seg = String(path || '/').split(/[?#]/)[0].split('/').filter(Boolean);
     if (!seg.length || /^index(\.html)?$/.test(seg[0])) return 'home';
     var first = seg[0].replace(/\.html$/, '').toLowerCase().replace(/[^a-z0-9-]/g, '');
-    if (first === 'rain' && seg.length > 1) first = 'rain-county';
+    if (first === 'rain' && seg.length > 1) first = seg.length > 2 ? 'rain-county' : 'rain-state';   // /rain/<state> and /rain/<state>/<county>: the tags the builder's own links carry
     return SRC_OK.test(first) ? first : '';
   }
   function withSrc(href, tag) {
