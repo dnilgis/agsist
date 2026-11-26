@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-11-26T17:47:30Z",
+  "fetched": "2026-11-26T18:01:24Z",
   "ok": 74,
   "failed": 1,
   "stale_keys": [],
@@ -73,7 +73,7 @@
   ],
   "withheld_keys": {},
   "move_withheld": {
-    "natgas": "NG=F moved +10.16% from 3.269 (2026-11-25) to 3.601 (2026-11-26), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld"
+    "natgas": "NG=F moved +10.28% from 3.269 (2026-11-25) to 3.605 (2026-11-26), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld"
   },
   "change_withheld": {},
   "spreads": {
@@ -2389,44 +2389,44 @@
     },
     "crude": {
       "ticker": "CL=F",
-      "close": 84.82,
+      "close": 84.71,
       "open": 83.68,
-      "netChange": 1.14,
-      "pctChange": 1.3623,
+      "netChange": 1.03,
+      "pctChange": 1.2309,
       "wk52_hi": 119.48,
       "wk52_lo": 54.98,
       "close_date": "2026-11-26",
       "prev_date": "2026-11-25",
       "close_kind": "last",
-      "close_time": "2026-11-26T17:47:28Z"
+      "close_time": "2026-11-26T18:01:22Z"
     },
     "natgas": {
       "ticker": "NG=F",
-      "close": 3.601,
+      "close": 3.605,
       "open": 3.269,
-      "netChange": 0.332,
-      "pctChange": 10.156,
+      "netChange": 0.336,
+      "pctChange": 10.2784,
       "wk52_hi": 7.827,
       "wk52_lo": 2.483,
       "close_date": "2026-11-26",
       "prev_date": "2026-11-25",
       "close_kind": "last",
-      "close_time": "2026-11-26T17:47:28Z",
-      "move_withheld": "NG=F moved +10.16% from 3.269 (2026-11-25) to 3.601 (2026-11-26), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld",
+      "close_time": "2026-11-26T18:01:22Z",
+      "move_withheld": "NG=F moved +10.28% from 3.269 (2026-11-25) to 3.605 (2026-11-26), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld",
       "roll": true
     },
     "gold": {
       "ticker": "GC=F",
-      "close": 3594.0,
+      "close": 3594.30005,
       "open": 3535.80005,
-      "netChange": 58.19995,
-      "pctChange": 1.646,
+      "netChange": 58.5,
+      "pctChange": 1.6545,
       "wk52_hi": 5586.2002,
       "wk52_lo": 3425.2,
       "close_date": "2026-11-26",
       "prev_date": "2026-11-25",
       "close_kind": "last",
-      "close_time": "2026-11-26T17:47:29Z"
+      "close_time": "2026-11-26T18:01:22Z"
     },
     "silver": {
       "ticker": "SI=F",
@@ -2439,14 +2439,14 @@
       "close_date": "2026-11-26",
       "prev_date": "2026-11-25",
       "close_kind": "last",
-      "close_time": "2026-11-26T17:47:29Z"
+      "close_time": "2026-11-26T18:01:23Z"
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 103.782,
+      "close": 103.777,
       "open": 103.67,
-      "netChange": 0.112,
-      "pctChange": 0.108,
+      "netChange": 0.107,
+      "pctChange": 0.1032,
       "wk52_hi": 104.53,
       "wk52_lo": 95.55,
       "close_date": "2026-11-26",
@@ -2479,10 +2479,10 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 60373.85938,
+      "close": 60486.92188,
       "open": 60378.19922,
-      "netChange": -4.33984,
-      "pctChange": -0.0072,
+      "netChange": 108.72266,
+      "pctChange": 0.1801,
       "wk52_hi": 97860.6016,
       "wk52_lo": 55149.5664,
       "close_date": "2026-11-26",
@@ -2491,10 +2491,10 @@
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 0.9478,
+      "close": 0.9517,
       "open": 0.93695,
-      "netChange": 0.01085,
-      "pctChange": 1.158,
+      "netChange": 0.01475,
+      "pctChange": 1.5743,
       "wk52_hi": 2.4103,
       "wk52_lo": 0.8664,
       "close_date": "2026-11-26",
