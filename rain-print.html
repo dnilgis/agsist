@@ -872,6 +872,7 @@
     <div class="rp-top">
       <div class="rp-paid" id="rp-paid" tabindex="-1" role="status" hidden></div>
       <div id="rp-gift-banner" hidden></div>
+      <figure class="rp-photo" id="rp-photo"><img class="rp-slot rp-slot-hero" src="/img/photos/rp-slot-hero.jpg" width="1348" height="1011" loading="eager" fetchpriority="high" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."><figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek. This test print is shown without its white mat.</figcaption></figure>
       <p class="sec-label rp-kick">Rainfall art, a gift for a farmer</p>
       <h1>A year of rain and snow on the farm, or back home, printed for the wall</h1>
       <p class="rp-lede">A framed print of the farm&rsquo;s year of rain, from the gauge nearest it. Type a town and a year, and I draw every rain and snow the nearest weather station caught. A gift for a farmer, or for the year you married or a child was born. Drawing it is free.</p>
@@ -880,6 +881,7 @@
       <p class="rp-xmas-top" id="rp-xmas-top" hidden></p>
       <p class="rp-xmas-top" id="rp-xmas-early" data-pc="2026-12-10" data-fc="2026-12-09" hidden></p>
       <p class="rp-xmas-alt" id="rp-xmas-alt" hidden><button type="button" class="rp-linkbtn" id="rp-xmas-last">Make it last year, by Christmas</button></p>
+      <p class="rp-start"><a class="btn btn-primary" id="rp-start" href="#rp-place">Make yours, free</a></p>
       <script>/* The Christmas line, written before the first paint (Nov 24, 2026). rain-print.js writes it (#rp-xmas-top) once
         the price file is in, and it pushed the page down 43 px at 1280 and 92 px at 390 when it came (0.017 and 0.046 of
         layout shift; 0.038 and 0.064 after the cutoffs, when the one tap under it and the change from the frame to the
@@ -911,7 +913,6 @@
         var pr=document.querySelector('[data-price="digital"]');
         if(pr&&window.MutationObserver){var mo=new MutationObserver(function(){mo.disconnect();if(e.parentNode)e.parentNode.removeChild(e);});mo.observe(pr,{childList:true,characterData:true,subtree:true});}
       }catch(err){}})();</script>
-      <p class="rp-start"><a class="btn btn-primary" id="rp-start" href="#rp-place">Make yours, free</a></p>
       <div class="rp-fm" id="rp-fm">
         <p class="rp-fm-t"><b>Rather not fiddle with it?</b> Call or text me at <a href="tel:+17157972428">(715) 797-2428</a>, or <button type="button" class="rp-linkbtn" id="rp-fm-open" aria-expanded="false" aria-controls="rp-fm-form">leave your number and the place</button>. I&rsquo;ll make two or three versions and email them to you to pick one. No charge for the design help; you only pay if you order.</p>
         <form class="rp-fm-f" id="rp-fm-form" novalidate hidden>
@@ -927,7 +928,6 @@
         </form>
         <div id="rp-fm-out" aria-live="polite"></div>
       </div>
-      <figure class="rp-photo" id="rp-photo"><img class="rp-slot rp-slot-hero" src="/img/photos/rp-slot-hero.jpg" width="1348" height="1011" loading="eager" fetchpriority="high" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."><figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek. This test print is shown without its white mat.</figcaption></figure>
     </div>
 
 <section class="rp-eg" id="rp-eg" aria-labelledby="rp-eg-h">

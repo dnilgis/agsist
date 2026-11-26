@@ -79,10 +79,6 @@
     return false;
   }
   if (switchedOff()) return;
-  var host = '';
-  try { host = String(w.location.hostname || ''); } catch (e) {}
-  if (host !== 'agsist.com' && host !== 'www.agsist.com') return;
-  function keep(v) { try { w.sessionStorage.setItem(K, v); } catch (e) {} }
   /* "This is Sig" (2026-11-13): a browser marked by ?sigdev= (components/loader.js; localStorage agsist-sig-device) sends
      traffic_type=internal, which GA4's internal-traffic data filter drops, and sig_device=yes, which a report can split on.
      The set command goes in the queue ahead of the page's own config, so the first page view carries it too. Nothing is
@@ -95,6 +91,10 @@
       dl.splice(at, 0, cmd);
     }
   } catch (e) {}
+  var host = '';
+  try { host = String(w.location.hostname || ''); } catch (e) {}
+  if (host !== 'agsist.com' && host !== 'www.agsist.com') return;
+  function keep(v) { try { w.sessionStorage.setItem(K, v); } catch (e) {} }
 
   // ------------------------------------------------------------ 1. the score
   var AUTO_GLOBALS = ['__nightmare', '_phantom', 'callPhantom', '__phantomas', '_selenium', 'calledSelenium',
