@@ -2391,7 +2391,7 @@ a.wl-c:focus-visible,.wl a.rp-card-main:focus-visible,.wl a.rp-card-alt:focus-vi
 @media(min-width:1100px){
   .wl-h{margin:0 0 6px}
   .wl-row{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
-  .wl-c{min-height:8.4rem;padding:10px 14px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface)}
+  .wl-c{min-height:8.4rem;padding:10px 14px;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface)}
   a.wl-c:hover,.wl-rp:has(.rp-card:hover){border-color:var(--gold)}
   .wl .rp-card-i{width:128px}
   .wl-c.wl-rp{min-height:10.8rem}
