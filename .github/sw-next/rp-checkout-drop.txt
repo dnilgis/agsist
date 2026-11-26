@@ -1,0 +1,1 @@
+Rain Print: Check it and pay goes straight to Pay with no tick box, and failed draws and the Stripe hand-off are counted (rain-print.js?v=101, rain-county-print.js?v=58, here.js?v=64)
