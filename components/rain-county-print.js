@@ -227,6 +227,22 @@
     });
   }
 
+  /* Clicks on the county page's two Rain Print offers (the line under the print, .rc-buy, and the block under the month table,
+     .rc-sell) are counted as rain_print_promo_click with a placement and the source tag (2026-11-26; the block's links were not
+     counted before). No ZIP, name or place beyond the page's own path. Beacon transport: the click leaves the page. */
+  function track() {
+    var go = function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('.rc-buy a, .rc-sell a') : null;
+      if (!a || !/^\/rain-print(?:[?#]|$)/.test(a.getAttribute('href') || '')) return;
+      try {
+        if (typeof root.gtag === 'function') root.gtag('event', 'rain_print_promo_click', {
+          placement: a.closest('.rc-buy') ? 'county-preview' : 'county-sell', src: 'rain-county', page: root.location.pathname, transport_type: 'beacon' });
+      } catch (x) {}
+    };
+    doc.addEventListener('click', go, true);
+    doc.addEventListener('auxclick', go, true);
+  }
+
   var own = doc && doc.getElementById('rc-print');
-  if (own) mount(own);
+  if (own) { track(); mount(own); }
 })(typeof window !== 'undefined' ? window : this);

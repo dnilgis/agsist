@@ -137,6 +137,13 @@
 .rc-sell p { margin: 0 0 .4rem; }
 .rc-sell .btn { display: inline-block; margin: .3rem .3rem 0 0; vertical-align: middle; }
 .rc-sell .rc-fine { margin: .5rem 0 0; }
+/* The line under the print (Nov 26 2026, scripts/build_county_rain.py buy): what the picture is, the prices, one button. Its words are in the
+   page from the first byte and held unseen until the print draws, so drawing it moves nothing; without scripts it is not shown (it names
+   a picture that is not there); when the print cannot be drawn it goes on a phone and stays held wider, as the caption does. */
+.rc-buy { margin: .6rem 0 0; max-width: 46em; }
+.rc-buy .btn { display: inline-block; margin: .1rem 0 0 .2rem; vertical-align: middle; }
+@media (scripting: none) { .rc-buy { display: none; } }
+@media (scripting: enabled) { .rc-print-top:not(.rc-print-on) .rc-buy { visibility: hidden; } }
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
 .rc-sell .btn-secondary { border-color: var(--text-muted); }
 /* The county page's print up top (Oct 28 2026). While scripts run, the print's box (3:2, the art's 1800 x 1200), its picker
@@ -214,6 +221,8 @@
   .rc-print-top > .rc-print-styles { order: 2; }
   .rc-print-top > .rc-print-art { order: 3; }
   .rc-print-top .rc-cap-print { order: 4; }
+  .rc-print-top > .rc-buy { order: 4; }   /* the same order as the caption, and ahead of it in the page: the line sits between the print and its caption */
+  .rc-print-top.rc-print-off > .rc-buy { display: none; }   /* the print gave up: a phone lets the room go */
   /* rain-county-print.js hides the chart's caption when the print draws; on a phone the chart stays, so its caption does (over the held-room rule above) */
   .rc-print-top:not(.rc-print-off) > figcaption > span.rc-cap-chart[hidden] { display: block !important; visibility: visible !important; }
 }
@@ -226,7 +235,8 @@
   .rc-print-top:not(.rc-print-on) > .rce-top .rce { max-width: none; height: 100%; display: flex; }
   .rc-print-top:not(.rc-print-on) > .rce-top .rce .rce-art { height: 100%; aspect-ratio: auto; }
   .rc-print-top:not(.rc-print-on) > .rce-top .rce-art svg { height: 100%; width: auto; max-width: 100%; }
-  .rc-print-top > figcaption { grid-row: 3; }
+  .rc-print-top > .rc-buy { grid-row: 3; grid-column: 1; }
+  .rc-print-top > figcaption { grid-row: 4; }
   /* the print gave up: its box, its picker row and its caption stay held, with the chart in the box, so nothing moves */
   .rc-print-top.rc-print-off .rc-print-art { aspect-ratio: 3 / 2; }
   .rc-print-top.rc-print-off > .rc-print-styles[hidden] { display: flex !important; visibility: hidden; }
