@@ -79,7 +79,7 @@
     return false;
   }
   if (switchedOff()) return;
-  /* "This is Sig" (2026-11-13): a browser marked by ?sigdev= (components/loader.js; localStorage agsist-sig-device) sends
+  /* Own-browser mark (2026-11-13): a browser marked by ?sigdev= (components/loader.js; localStorage agsist-sig-device) sends
      traffic_type=internal, which GA4's internal-traffic data filter drops, and sig_device=yes, which a report can split on.
      The set command goes in the queue ahead of the page's own config, so the first page view carries it too. Nothing is
      sent for any other browser. */

@@ -183,10 +183,10 @@
     document.addEventListener('click', go, true);
     document.addEventListener('auxclick', go, true);
   }
-  /* "This is Sig" (2026-11-13): visiting any page with ?sigdev=<the private word> on a device marks that browser
+  /* Own-browser mark (2026-11-13): visiting any page with ?sigdev=<the private word> on a device marks that browser
      (localStorage agsist-sig-device = 1); ?sigdev=off clears it. Only the word's SHA-256 is here, so the page does not
      give the word away. components/ga-gate.js reads the mark and sends traffic_type=internal and sig_device=yes with every
-     Analytics event from that browser, so GA4's internal-traffic filter and a report can leave Sig's own visits out. The
+     Analytics event from that browser, so GA4's internal-traffic filter and a report can leave the owner's own visits out. The
      word is in the private notes (howto/sig-device.md). The address is cleaned of it at once. */
   var SIG_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
   function initSigDevice() {
