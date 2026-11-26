@@ -918,6 +918,8 @@ window.hydrateDaily = function(data) {
       setHTML('daily-teaser-date',tdd);
       var tAct=document.querySelector('#daily-teaser .teaser-action')||document.querySelector('.teaser-action');
       if(tAct&&age>=1)tAct.textContent=(age>2?'Read it':'Read the latest briefing')+' \u2193';
+      /* an issue that is not today's, with no teaser of its own, must not keep the page's "Today's" starter line */
+      if(age>=1&&!data.teaser)setText('daily-teaser-text','The latest AGSIST Daily briefing. Click to read');
     }catch(e){}
   }
   if(data.teaser){setText('daily-teaser-text',data.teaser);window.__s7daily=data;if(window.S7)window.S7.teaser(data);}
