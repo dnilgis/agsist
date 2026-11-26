@@ -1,0 +1,41 @@
+name: gov-probe
+
+# A one-off reachability check of the USDA and STB data hosts, started by hand.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gov-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch each source once and log the status, type and first bytes
+        env:
+          UA: "AGSIST-research/1.0 (+https://agsist.com)"
+        run: |
+          set +e
+          probe() {
+            echo "=================== $1"
+            code=$(curl -sS -L -A "$UA" --max-time 30 --max-filesize 5000000 -o body.out \
+              -w "%{http_code} type=%{content_type} size=%{size_download}" "$1" 2>err.out)
+            echo "HTTP $code"
+            [ -s err.out ] && head -c 300 err.out && echo
+            echo "--- first 300 bytes"
+            head -c 300 body.out | tr -c '[:print:]\n' '?'
+            echo
+            rm -f body.out err.out
+            sleep 2
+          }
+          for id in tb7q-kn5i cvu8-kpyk deqi-uken sruw-w49i; do
+            probe "https://agtransport.usda.gov/resource/$id.json?\$limit=3"
+          done
+          probe "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/cause_of_loss/"
+          probe "https://quickstats.nass.usda.gov/api/api_GET/?commodity_desc=CORN&year=2025&state_alpha=IA&format=JSON"
+          probe "https://www.stb.gov/reports-data/rail-service-data/"
