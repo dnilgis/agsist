@@ -1,0 +1,1 @@
+Rain Print: the gift line on PRF, Cash bids and Custom rates, source tags on its links, and a rain gauge line in the reading guide (rain-print-promo.js?v=10, rain-print.js?v=100, rp-insert.js?v=7, here.js?v=63)
