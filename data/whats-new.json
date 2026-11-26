@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-26-signup-retry",
+   "date": "2026-11-26",
+   "title": "Signups retried",
+   "line": "A signup made while our signup service is down is kept on your device and tried again on your next visits for up to 7 days.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-26-hail-repeats",
    "date": "2026-11-26",
    "title": "Hail reports counted once",

@@ -1,1 +1,0 @@
-Signups: a signup the backup form took is kept on the reader's device and tried again with the signup service, at most once per page view, 8 tries in 7 days (outbox.js?v=5, loader.js?v=25 and CV 113)
