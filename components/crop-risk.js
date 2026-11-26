@@ -25,7 +25,6 @@
   function ratio(x) { return x === null || x === undefined ? NA : Number(x).toFixed(2); }
   function cents(x) { return x === null || x === undefined ? NA : '$' + Number(x).toFixed(2); }
   function bushels(x) { return x === null || x === undefined ? NA : Number(x).toFixed(1); }
-  function pct(x) { return Math.round(x * 100) + '%'; }
   /* whole dollars, millions with one decimal */
   function usd(n) {
     if (n >= 1e6) return '$' + (Math.round(n / 1e5) / 10).toFixed(1) + ' million';
@@ -45,9 +44,10 @@
 
   function causes(c) {
     if (!c.causes) {
-      return '<p class="crk-w"><span>What caused the claims</span> not shown: in no year did the cause-of-loss total match the claims record within 5%.</p>';
+      return '<p class="crk-w"><span>What caused the claims</span> not shown: in no year did the cause-of-loss total match the claims record.</p>';
     }
-    var parts = CAUSE.map(function (k) { return k[1] + ' ' + pct(c.causes[k[0]]); });
+    // whole percents rounded once by the builder (they sum to 100); printed as given
+    var parts = CAUSE.map(function (k) { return k[1] + ' ' + c.causes[k[0]] + '%'; });
     return '<p class="crk-w"><span>What caused the claims</span> ' + parts.join(' &middot; ') +
       '<small>share of dollars paid, ' + c.cause_years + ' of ' + c.insured_years + ' years; other is wind, freeze, price decline and the rest</small></p>';
   }
@@ -58,22 +58,22 @@
       '<th scope="col">Loss ratio</th><th scope="col">Claims per insured acre</th>' + (yld ? '<th scope="col">County yield, bu/ac</th>' : '') + '</tr></thead><tbody>';
     for (var i = 0; i < c.years.length; i++) {
       var r = c.years[i];
-      h += '<tr' + (r[1] > 1 ? ' class="crk-o"' : '') + '><th scope="row">' + r[0] + '</th><td>' + ratio(r[1]) + '</td><td>' + cents(r[2]) + '</td>' +
+      // r[4]: claims topped premium that year, on the dollars (the headline counts the same flag)
+      h += '<tr' + (r[4] ? ' class="crk-o"' : '') + '><th scope="row">' + r[0] + '</th><td>' + ratio(r[1]) + '</td><td>' + cents(r[2]) + '</td>' +
         (yld ? '<td>' + bushels(r[3]) + '</td>' : '') + '</tr>';
     }
-    return h + '</tbody></table></div><p class="crk-n">Only insured years are listed (premium above $0). n/a: not reported. A ratio above 1.00 means claims were more than premium that year. ' +
-      'The cause shares count only the years whose cause-of-loss total matches the claims record within 5%.</p></details>';
+    return h + '</tbody></table></div><p class="crk-n">Only insured years are listed (premium above $0). n/a: not reported. A bold ratio means claims were more than premium that year. ' +
+      'The cause shares count only the years whose cause-of-loss total matches the claims record.</p></details>';
   }
 
-  /* the section's inside for one crop; rec is the county file's crop_risk, or null */
+  /* the section's inside for one crop; rec is the county file's crop_risk. With no record (null, or neither crop has
+     one) it is '' and the section is hidden: no empty heading, no "no record" line */
   function render(rec, crop, o) {
     o = o || {};
+    if (empty(rec) || !rec.corn || !rec.soy) return '';
     var lvl = o.h === 3 ? 3 : 2;
     var place = esc(o.place || 'this county');
     var out = '<h' + lvl + ' class="crk-t">County crop risk</h' + lvl + '>';
-    if (!rec || !rec.corn || !rec.soy) {
-      return out + '<p class="crk-n">No crop insurance record to show for ' + place + '.</p>';
-    }
     out += '<div class="crk-b" role="group" aria-label="Crop">';
     CROPS.forEach(function (k) {
       out += '<button type="button" data-crk-crop="' + k[0] + '" aria-pressed="' + (k[0] === crop ? 'true' : 'false') + '">' + k[1] + '</button>';
@@ -95,7 +95,8 @@
       out += table(c, meta[2]);
     }
     var nass = rec[crop] && rec[crop].status === 'ok' && rec[crop].yield_years > 0;
-    out += '<p class="crk-n">A record of past crop years, not a forecast. Loss ratio: claims paid over total premium, all plans.</p>';
+    out += '<p class="crk-n">A record of past crop years, not a forecast. Loss ratio: claims paid over total premium, all plans.' +
+      (rec.open_year ? ' Crop year ' + esc(rec.open_year) + ' is still being settled and is left out.' : '') + '</p>';
     out += '<p class="crk-s">Source: USDA RMA, Summary of Business and Cause of Loss, crop years 1989 to ' + esc(rec.through) + (nass ? '; county yields, USDA NASS' : '') + '.</p>';
     return out;
   }
@@ -107,8 +108,13 @@
   }
 
   function draw(el, rec, crop) {
+    if (empty(rec)) {
+      el.classList.add('crk-none');
+      el.hidden = true;
+      el.innerHTML = '';
+      return;
+    }
     el.innerHTML = render(rec, crop, { h: Number(el.getAttribute('data-h')), place: el.getAttribute('data-place') });
-    if (empty(rec)) el.classList.add('crk-none');
     var bs = el.querySelectorAll('[data-crk-crop]');
     for (var i = 0; i < bs.length; i++) {
       bs[i].addEventListener('click', function (ev) {

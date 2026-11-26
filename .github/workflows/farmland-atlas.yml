@@ -136,7 +136,7 @@ jobs:
             [ -s "data/atlas/raw/$f.json" ] || { echo "::error::data/atlas/raw/$f.json did not come back from the raw branch; not building"; exit 1; }
           done
           echo "raw pulls: $n files"
-          RAW_SOFT=1 bash scripts/pull_raw.sh vintage/nass-county-yield
+          RAW_SOFT=0 bash scripts/pull_raw.sh vintage/nass-county-yield
 
       - name: Which layers
         id: which
