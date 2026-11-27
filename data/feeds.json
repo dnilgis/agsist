@@ -57,6 +57,7 @@
    "touched_by": [
     "Build Analyst Scorecard",
     "Generate Daily Briefing",
+    "Forecast registry",
     "Rebuild Call Scorecard",
     "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
@@ -2405,6 +2406,7 @@
     "Fertilizer USDA AMS series",
     "Fertilizer co-op posted prices",
     "fetch-fsa-arcplc",
+    "Forecast registry",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Hail data refresh",
     "Hail state pages \u2014 generate from monthly data",
