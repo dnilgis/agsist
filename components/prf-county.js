@@ -261,10 +261,10 @@
           crk.className = 'crk';
           crk.setAttribute('data-crop-risk', '');
           crk.setAttribute('data-fips', String(d.crk));
-          crk.setAttribute('data-place', d.name);
+          crk.setAttribute('data-place', d.crkn || d.name);
           crk.setAttribute('data-h', '3');
           crk.setAttribute('aria-label', 'County crop risk');
-          crk.innerHTML = '<p class="crk-n">Loading the county crop insurance record.</p>';
+          crk.innerHTML = '<p class="crk-n crk-ld">Loading the county crop insurance record.</p>';
           body.appendChild(crk);
           if (root.AgCropRisk) root.AgCropRisk.mount(crk);
         }
