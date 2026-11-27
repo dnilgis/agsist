@@ -1,21 +1,16 @@
 {
-  "headline": "Corn basis firms 5 cents in Iowa and Minnesota in a week",
-  "lead": "Basis firmed this week: Iowa corn +5¢ (34 of 45 bids moved) and Minnesota corn +5¢ (28 of 45). December corn traded at $4.46¾ in Friday's last trade, up 7¢ from Wednesday's $4.39¾ settle.",
-  "teaser": "Iowa and Minnesota corn basis each firmed 5 cents on the week; Friday trade lifted corn and beans.",
-  "one_number": {
-    "value": "+5¢",
-    "unit": "Iowa corn basis change on the week",
-    "context": "This is the median of 45 bids at 40 companies. Thirty-four of those bids moved."
-  },
+  "headline": "Iowa corn basis firmed 5 cents in a week",
+  "lead": "Beans did the work on a thin post-Thanksgiving Friday, with January up 22¼¢ from Wednesday's settle while corn added only 7¢. October feedlot placements came in the lowest on record, and tight feeder supplies point to smaller beef output into 2027.",
+  "teaser": "Soybeans lead the grains higher after Thanksgiving; October feedlot placements hit a record low.",
   "sections": [
     {
-      "title": "Grains lean higher",
-      "body": "- December corn traded at $4.46¾ in Friday's last trade, up 7¢ from Wednesday's $4.39¾ settle.\n- January soybeans traded at $12.66¼ in Friday's last trade, up 22¼¢ from Wednesday's $12.44 settle.",
-      "conviction_level": "low",
+      "title": "Beans lead grains higher",
+      "body": "- January soybeans traded at $12.66¼ in Friday's last trade, up 22¼¢ from Wednesday's $12.44 settle.\n- December corn traded at $4.46¾ in Friday's last trade, up 7¢ from Wednesday's $4.39¾ settle.",
+      "conviction_level": "medium",
       "overnight_surprise": true
     },
     {
-      "title": "Livestock bounce",
+      "title": "Livestock bounces",
       "body": "- December lean hogs traded at $50.975 in Friday's last trade, up 2.1% from Wednesday's $49.925 settle.\n- January feeder cattle traded at $331.20 in Friday's last trade, up 1.1% from Wednesday's $327.525 settle.",
       "conviction_level": "low",
       "overnight_surprise": true
@@ -23,53 +18,48 @@
   ],
   "outside_the_pit": [
     {
-      "title": "October feedlot placements are the lowest on record",
-      "body": "Tighter feeder supplies are driving placements and marketings lower, a trend expected to run into 2027.",
+      "title": "October feedlot placements lowest on record",
+      "body": "Tight feeder supplies are cutting placements and marketings, and Beef Magazine expects that into 2027.",
       "tag": "LIVESTOCK",
       "link": "https://www.beefmagazine.com/market-news/lowest-october-placements-into-feedlots-on-record",
       "source": "beefmagazine.com",
       "news_id": "N11"
     },
     {
-      "title": "USTR proposes new Section 301 tariffs on 14 countries",
-      "body": "Tariffs of 15% or more are proposed; farm export markets are among those named in the proposals.",
+      "title": "USTR proposes tariffs on Brazilian sugar and 14 countries",
+      "body": "The proposed Section 301 tariffs could draw retaliation that reaches US farm exports.",
       "tag": "TRADE",
       "link": "https://www.feedstuffs.com/policy/ustr-proposes-new-section-301-tariffs-on-14-countries",
       "source": "feedstuffs.com",
       "news_id": "N20"
     },
     {
-      "title": "Ukraine says Russia hit two grain ships near Odesa",
-      "body": "Black Sea shipping risk stays in the news for world grain trade.",
-      "tag": "GRAINS",
-      "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNYlR6OVYzNjI0N0hVQ2FsMVFSWU13djRFWmZDLUFQSUNoOFdWZ2RSdlZuLVZvbjc3bDlwWGlrN3NLMnktVFQtTndObHZZQVBFTjRGSkY0SmJVSkVteFYyY2RXRDNfRkdlQ1VNVWtkbjBQZmgtbXhpYTFXOElWeDYxNVlHdUlwVnhDV28xZlJoSC1GQ0tjcGRvXzZjNnpvZ2l4SHNqS1pLaFpaUQ?oc=5",
-      "source": "Reuters",
-      "news_id": "N5"
+      "title": "Screwworm detected in a Texas pig",
+      "body": "A first for swine, Pork Business reported. Hog producers should know the symptoms and reporting steps.",
+      "tag": "DISEASE",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQcXRDRjZlSV92U3dGTWllNFZpTjFnVDJ5akhQVFFER0lUU1JITGxFWjZUSkE0SkVkektpNk9RQ2E5aUE1cGd5Mk42cGRjREY2eWYyTi1VRHlOeWpyc05IUHJNMm10U1c0RmZnVFpwcF90WXIyN3NGZTZLa3FVeGtxdjU5UnNKU2swWlgwTlg1eDNwUk9mNElJX1p2X1lDamdST0lhQzN3?oc=5",
+      "source": "Pork Business",
+      "news_id": "N2"
     }
   ],
   "watch_list": [
-    {
-      "time": "Thursday, Dec 3, 7:30 a.m. CT",
-      "desc": "USDA weekly export sales, moved from Thursday for Thanksgiving."
-    },
     {
       "time": "Friday, Dec 11",
       "desc": "FSA 2026 ARC/PLC signup deadline."
     }
   ],
-  "source_summary": "CME Group futures, USDA, AGSIST basis data, trade press",
+  "source_summary": "CME Group futures via AGSIST data feeds, USDA, NASS, Beef Magazine, Pork Business, Oilprice.com",
   "date": "Friday, November 27, 2026",
   "meta": {
-    "market_mood": "cautious",
+    "market_mood": "mixed",
     "heat_section": 0,
     "overnight_surprises_count": 8,
-    "word_count": 213,
+    "word_count": 188,
     "news_coverage": {
-      "ok": 20,
+      "ok": 21,
       "total": 26,
-      "items": 101,
+      "items": 102,
       "dark": [
-        "nass.usda.gov",
         "brownfieldagnews.com",
         "dairyherd.com",
         "extension.iastate.edu",
@@ -81,28 +71,35 @@
   "figures": {
     "made": {
       "lead": [
-        "+5¢",
-        "+5¢",
+        "$12.66¼",
+        "22¼¢",
+        "$12.44",
         "$4.46¾",
         "7¢",
         "$4.39¾"
       ],
-      "one_number.value": [
-        "+5¢"
-      ],
       "sections": [
-        "$4.46¾",
-        "7¢",
-        "$4.39¾",
         "$12.66¼",
         "22¼¢",
         "$12.44",
+        "$4.46¾",
+        "7¢",
+        "$4.39¾",
+        "$366.30",
+        "1.3%",
+        "$361.60",
+        "$58.86",
+        "1.3%",
+        "$58.08",
         "$50.975",
         "2.1%",
         "$49.925",
         "$331.20",
         "1.1%",
         "$327.525"
+      ],
+      "headline": [
+        "5 cents"
       ]
     },
     "board": {
@@ -137,10 +134,10 @@
         58.86
       ],
       "crude": [
-        82.99
+        83.08
       ],
       "natgas": [
-        3.5
+        3.49
       ],
       "gold": [
         3668.5
@@ -174,13 +171,13 @@
     "milk": 17.77,
     "meal": 366.29999,
     "soyoil": 58.86,
-    "crude": 82.99,
-    "natgas": 3.505,
+    "crude": 83.08,
+    "natgas": 3.491,
     "gold": 3668.5,
     "silver": 43.702,
-    "dollar": 104.051,
+    "dollar": 104.049,
     "sp500": 7297.49023,
-    "bitcoin": 59887.96875
+    "bitcoin": 59926.42969
   },
   "locked_changes": {
     "corn": {
@@ -298,9 +295,9 @@
     },
     "crude": {
       "prev": 83.68,
-      "pct": -0.8246,
+      "pct": -0.717,
       "kind": "last",
-      "at": "2026-11-27T19:31:18Z",
+      "at": "2026-11-27T19:46:06Z",
       "date": "2026-11-27",
       "prev_date": "2026-11-25"
     },
@@ -308,16 +305,16 @@
       "prev": null,
       "pct": null,
       "kind": "last",
-      "at": "2026-11-27T19:31:18Z",
+      "at": "2026-11-27T19:46:06Z",
       "date": "2026-11-27",
       "prev_date": "2026-11-25",
-      "withheld": "NG=F moved +7.22% from 3.269 (2026-11-25) to 3.505 (2026-11-27), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld"
+      "withheld": "NG=F moved +6.79% from 3.269 (2026-11-25) to 3.491 (2026-11-27), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld"
     },
     "gold": {
       "prev": 3535.8,
       "pct": 3.753,
       "kind": "last",
-      "at": "2026-11-27T19:31:19Z",
+      "at": "2026-11-27T19:46:07Z",
       "date": "2026-11-27",
       "prev_date": "2026-11-25"
     },
@@ -325,15 +322,15 @@
       "prev": 40.052,
       "pct": 9.1132,
       "kind": "last",
-      "at": "2026-11-27T19:31:19Z",
+      "at": "2026-11-27T19:46:07Z",
       "date": "2026-11-27",
       "prev_date": "2026-11-25"
     },
     "dollar": {
       "prev": 103.67,
-      "pct": 0.3675,
+      "pct": 0.3656,
       "kind": "last",
-      "at": "2026-11-27T19:31:21Z",
+      "at": "2026-11-27T19:46:08Z",
       "date": "2026-11-27",
       "prev_date": "2026-11-25"
     },
@@ -341,21 +338,21 @@
       "prev": 7182.7798,
       "pct": 1.597,
       "kind": "last",
-      "at": "2026-11-27T19:31:21Z",
+      "at": "2026-11-27T19:46:08Z",
       "date": "2026-11-27",
       "prev_date": "2026-11-25"
     },
     "bitcoin": {
       "prev": 60494.7109,
-      "pct": -1.003,
+      "pct": -0.9394,
       "kind": "last",
-      "at": "2026-11-27T19:31:21Z",
+      "at": "2026-11-27T19:46:08Z",
       "date": "2026-11-27",
       "prev_date": "2026-11-26"
     }
   },
   "board": {
-    "fetched": "2026-11-27T19:31:21Z",
+    "fetched": "2026-11-27T19:46:08Z",
     "quote_session": "2026-11-27",
     "prev_close_session": "2026-11-25"
   },
@@ -386,7 +383,7 @@
   },
   "edge": {
     "label": "Only on AGSIST",
-    "generated": "2026-11-27T19:42:47Z",
+    "generated": "2026-11-27T20:21:10Z",
     "facts": [
       {
         "id": "basis_wow",
@@ -466,7 +463,7 @@
   },
   "chart_window": "Nov 12 - Nov 25",
   "quote_strip": {
-    "asof": "2026-11-27T19:31:21Z",
+    "asof": "2026-11-27T19:46:08Z",
     "session": "2026-11-27",
     "vs_session": "2026-11-25",
     "quotes": [
@@ -546,7 +543,7 @@
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
     "is_house_ad": true
   },
-  "generated_at": "2026-11-27T19:42:47.428198+00:00",
+  "generated_at": "2026-11-27T20:21:11.061119+00:00",
   "generator_version": "5.5.0",
   "surprise_count": 8,
   "surprises": [
@@ -661,6 +658,56 @@
       }
     ],
     "withheld": []
+  },
+  "critic_pass": {
+    "version": "2.0",
+    "ran_at": "2026-11-27T20:21:15.981276+00:00",
+    "threshold": 7,
+    "final_scores": {
+      "rule_1_lead_so_what": 3,
+      "rule_2_conviction_earned": 6,
+      "rule_3_lede_no_deferral": 7,
+      "rule_4_watch_conditional": 9,
+      "rule_5_so_what_synthesizes": 9,
+      "rule_6_quiet_days_quiet": 8,
+      "rule_7_yc_honesty": 10,
+      "rule_8_word_budget": 9,
+      "rule_9_voice": 4,
+      "rule_10_forward_test": 3,
+      "rule_11_action_thresholded": 10,
+      "rule_12_one_fact_one_home": 3,
+      "rule_13_level_coherence": 10,
+      "rule_14_one_number_coherence": 10,
+      "rule_15_markdown_not_html": 10,
+      "rule_16_macro_anchoring": 10
+    },
+    "rewrites_applied": [
+      {
+        "pass": 1,
+        "target": "lead",
+        "rule": "rule_12_one_fact_one_home",
+        "scores_before": {
+          "rule_1_lead_so_what": 3,
+          "rule_2_conviction_earned": 6,
+          "rule_3_lede_no_deferral": 7,
+          "rule_4_watch_conditional": 9,
+          "rule_5_so_what_synthesizes": 9,
+          "rule_6_quiet_days_quiet": 8,
+          "rule_7_yc_honesty": 10,
+          "rule_8_word_budget": 9,
+          "rule_9_voice": 4,
+          "rule_10_forward_test": 3,
+          "rule_11_action_thresholded": 10,
+          "rule_12_one_fact_one_home": 3,
+          "rule_13_level_coherence": 10,
+          "rule_14_one_number_coherence": 10,
+          "rule_15_markdown_not_html": 10,
+          "rule_16_macro_anchoring": 10
+        }
+      }
+    ],
+    "consistency": [],
+    "dry_run": false
   },
   "first_published_at": "2026-11-27T13:04:34.082112+00:00"
 }
