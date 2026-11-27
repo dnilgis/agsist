@@ -77,6 +77,8 @@ jobs:
           sparse-checkout: |
             /scripts/
             /data/daily-sent/
+            /data/daily-hold.json
+            /data/daily-archive/
             /.github/workflows/daily.yml
             /.github/actions/engine/
             /.github/engine-paths
