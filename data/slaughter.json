@@ -1,38 +1,33 @@
 {
  "schema": "agsist-slaughter/1",
- "generated": "2026-11-26T23:26:34Z",
+ "generated": "2026-11-27T23:21:14Z",
  "note": "USDA's estimated federally inspected slaughter, head. week_ago and year_ago are USDA's figures for the same day; week_to_date runs Monday through this day.",
  "report": "Daily Livestock and Poultry Slaughter",
- "report_date": "2026-11-25",
- "source": "USDA AMS, Daily Livestock and Poultry Slaughter, Nov 25, 2026",
+ "report_date": "2026-11-27",
+ "source": "USDA AMS, Daily Livestock and Poultry Slaughter, Nov 27, 2026",
  "stale": false,
  "cattle": {
-  "date": "2026-11-25",
-  "head": 111000,
-  "week_ago": 110000,
-  "year_ago": 123597,
-  "week_to_date": 332000,
-  "prev_week_to_date": 328000,
-  "year_ago_week_to_date": 372302,
+  "date": "2026-11-27",
+  "head": 104000,
+  "week_ago": 101000,
+  "year_ago": 101377,
+  "week_to_date": 438000,
+  "prev_week_to_date": 539000,
+  "year_ago_week_to_date": 476176,
   "previous": {
-   "date": "2026-11-24",
-   "head": 112000,
+   "date": "2026-11-26",
+   "head": 2000,
    "revised": false
   }
  },
  "hogs": {
-  "date": "2026-11-25",
-  "head": 492000,
-  "week_ago": 495000,
-  "year_ago": 484335,
-  "week_to_date": 1470000,
-  "prev_week_to_date": 1480000,
-  "year_ago_week_to_date": 1482944,
-  "previous": {
-   "date": "2026-11-24",
-   "head": 494000,
-   "revised": false
-  }
+  "date": "2026-11-27",
+  "head": 453000,
+  "week_ago": 476000,
+  "year_ago": 393750,
+  "week_to_date": 1923000,
+  "prev_week_to_date": 2443000,
+  "year_ago_week_to_date": 1876694
  },
- "daily_line": "Estimated federally inspected slaughter, Wed Nov 25: cattle 111,000 head (110,000 a week ago, 123,597 a year ago); hogs 492,000 head (495,000 a week ago, 484,335 a year ago). USDA AMS, Daily Livestock and Poultry Slaughter, Nov 25, 2026."
+ "daily_line": "Estimated federally inspected slaughter, Fri Nov 27: cattle 104,000 head (101,000 a week ago, 101,377 a year ago); hogs 453,000 head (476,000 a week ago, 393,750 a year ago). USDA AMS, Daily Livestock and Poultry Slaughter, Nov 27, 2026."
 }
