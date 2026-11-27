@@ -1,0 +1,556 @@
+{
+  "headline": "December lean hogs settled down 3.6% Wednesday at $49.925",
+  "lead": "Silver traded at $44.17 in Friday's last trade, up 10.3% from Wednesday's $40.05 settle. Gold traded at $3,693.00 in Friday's last trade, up 4.4% from Wednesday's $3,535.80 settle. WTI crude traded at $84.96 in Friday's last trade, up 1.5% from Wednesday's $83.68 settle.",
+  "teaser": "Silver and gold jump overnight, crude gains on tanker-attack reports, and export sales print at 7:30 a.m. CT.",
+  "one_number": {
+    "value": "3.6 million",
+    "unit": "barrels per day, Iraq oil exports",
+    "context": "Iraq's oil minister says exports reached that level. Separately, Bloomberg reports Iraq delayed 20 to 30 million barrels of crude loadings, with no reason given."
+  },
+  "sections": [
+    {
+      "title": "Metals jump, crude firms",
+      "body": "- WTI crude traded at $84.96 in Friday's last trade, up 1.5% from Wednesday's $83.68 settle.\n- Oilprice.com reports more tanker attacks in the Strait of Hormuz, enough to put crude on track for a weekly gain after a string of losses.",
+      "conviction_level": "medium",
+      "overnight_surprise": true
+    },
+    {
+      "title": "Grains and meal into the weekend",
+      "body": "- Soybean meal settled at $361.60 on Wednesday, up 2.4% from Tuesday's $353.00 settle.\n- December wheat settled at $5.65½ on Wednesday, down 4¼¢ from Tuesday's $5.69¾ settle.\n- Export sales print at 7:30 a.m. CT, moved from Thursday for the holiday.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    }
+  ],
+  "outside_the_pit": [
+    {
+      "title": "October feedlot placements hit record low",
+      "body": "Beef Magazine says tighter feeder supplies are pulling placements and marketings lower, a trend expected to run into 2027.",
+      "tag": "LIVESTOCK",
+      "link": "https://www.beefmagazine.com/market-news/lowest-october-placements-into-feedlots-on-record",
+      "source": "beefmagazine.com",
+      "news_id": "N8"
+    },
+    {
+      "title": "USTR proposes tariffs on Brazilian sugar and 14 countries' goods",
+      "body": "Greer proposed tariffs of 15% or more on manufactured goods from 14 countries, and invited comment on out-of-quota Brazilian sugar.",
+      "tag": "TRADE",
+      "link": "https://www.feedstuffs.com/policy/ustr-proposes-new-section-301-tariffs-on-14-countries",
+      "source": "feedstuffs.com",
+      "news_id": "N22"
+    },
+    {
+      "title": "Ukraine says Russia hit two grain ships near Odesa",
+      "body": "Reuters reported the attacks near Ukrainian ports, a risk to Black Sea grain shipments that compete with US exports.",
+      "tag": "GRAINS",
+      "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNYlR6OVYzNjI0N0hVQ2FsMVFSWU13djRFWmZDLUFQSUNoOFdWZ2RSdlZuLVZvbjc3bDlwWGlrN3NLMnktVFQtTndObHZZQVBFTjRGSkY0SmJVSkVteFYyY2RXRDNfRkdlQ1VNVWtkbjBQZmgtbXhpYTFXOElWeDYxNVlHdUlwVnhDV28xZlJoSC1GQ0tjcGRvXzZjNnpvZ2l4SHNqS1pLaFpaUQ?oc=5",
+      "source": "Reuters",
+      "news_id": "N3"
+    },
+    {
+      "title": "Screwworm found in a Texas pig",
+      "body": "Pork Business says the detection matters to swine producers.",
+      "tag": "DISEASE",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQcXRDRjZlSV92U3dGTWllNFZpTjFnVDJ5akhQVFFER0lUU1JITGxFWjZUSkE0SkVkektpNk9RQ2E5aUE1cGd5Mk42cGRjREY2eWYyTi1VRHlOeWpyc05IUHJNMm10U1c0RmZnVFpwcF90WXIyN3NGZTZLa3FVeGtxdjU5UnNKU2swWlgwTlg1eDNwUk9mNElJX1p2X1lDamdST0lhQzN3?oc=5",
+      "source": "Pork Business",
+      "news_id": "N2"
+    }
+  ],
+  "watch_list": [
+    {
+      "time": "Friday, Nov 27, 7:30 a.m. CT",
+      "desc": "USDA Weekly Export Sales, moved from Thursday for Thanksgiving."
+    },
+    {
+      "time": "Friday, Dec 11",
+      "desc": "FSA 2026 ARC/PLC signup deadline."
+    }
+  ],
+  "source_summary": "CME Group settlements, overnight trade data, USDA calendar, Oilprice.com, Reuters, Beef Magazine, Pork Business, DTN",
+  "date": "Friday, November 27, 2026",
+  "meta": {
+    "market_mood": "cautious",
+    "heat_section": 0,
+    "overnight_surprises_count": 2,
+    "word_count": 278,
+    "news_coverage": {
+      "ok": 20,
+      "total": 26,
+      "items": 95,
+      "dark": [
+        "nass.usda.gov",
+        "brownfieldagnews.com",
+        "dairyherd.com",
+        "extension.iastate.edu",
+        "extension.umn.edu",
+        "extension.purdue.edu"
+      ]
+    }
+  },
+  "figures": {
+    "made": {
+      "lead": [
+        "$44.17",
+        "10.3%",
+        "$40.05",
+        "$3,693.00",
+        "4.4%",
+        "$3,535.80",
+        "$84.96",
+        "1.5%",
+        "$83.68"
+      ],
+      "sections": [
+        "$84.96",
+        "1.5%",
+        "$83.68",
+        "0.1%",
+        "$361.60",
+        "2.4%",
+        "$353.00",
+        "$5.65½",
+        "4¼¢",
+        "$5.69¾"
+      ],
+      "headline": [
+        "3.6%",
+        "$49.925"
+      ]
+    },
+    "board": {
+      "corn": [
+        4.39
+      ],
+      "beans": [
+        12.44
+      ],
+      "wheat": [
+        5.65
+      ],
+      "oats": [
+        3.53
+      ],
+      "cattle": [
+        223.325
+      ],
+      "feeders": [
+        327.525
+      ],
+      "hogs": [
+        49.925
+      ],
+      "milk": [
+        17.77
+      ],
+      "meal": [
+        361.6
+      ],
+      "soyoil": [
+        58.08
+      ],
+      "crude": [
+        84.96
+      ],
+      "natgas": [
+        3.52
+      ],
+      "gold": [
+        3693.0
+      ],
+      "silver": [
+        44.17
+      ],
+      "dollar": [
+        103.78
+      ],
+      "sp500": [
+        7182.78
+      ]
+    }
+  },
+  "freshness": {
+    "window": 7,
+    "tries": 2,
+    "hits": []
+  },
+  "locked_prices": {
+    "corn": 4.3975,
+    "corn-dec": 4.3975,
+    "beans": 12.44,
+    "beans-nov": 11.8575,
+    "wheat": 5.655,
+    "oats": 3.5325,
+    "cattle": 223.325,
+    "feeders": 327.52499,
+    "hogs": 49.925,
+    "milk": 17.77,
+    "meal": 361.60001,
+    "soyoil": 58.08,
+    "crude": 84.96,
+    "natgas": 3.519,
+    "gold": 3693.0,
+    "silver": 44.175,
+    "dollar": 103.777,
+    "sp500": 7182.77979,
+    "bitcoin": 61540.35156
+  },
+  "locked_changes": {
+    "corn": {
+      "prev": 4.34,
+      "pct": 1.3249,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "contract": "Dec '26"
+    },
+    "corn-dec": {
+      "prev": 4.34,
+      "pct": 1.3249,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24"
+    },
+    "beans": {
+      "prev": 12.34,
+      "pct": 0.8104,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "contract": "Jan '27"
+    },
+    "beans-nov": {
+      "prev": 11.845,
+      "pct": 0.1055,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24"
+    },
+    "wheat": {
+      "prev": 5.6975,
+      "pct": -0.7459,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "contract": "Dec '26"
+    },
+    "oats": {
+      "prev": 3.62,
+      "pct": -2.4171,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24"
+    },
+    "cattle": {
+      "prev": 225.9,
+      "pct": -1.1399,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "contract": "Dec '26"
+    },
+    "feeders": {
+      "prev": 332.9,
+      "pct": -1.6146,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "contract": "Jan '27"
+    },
+    "hogs": {
+      "prev": 51.8,
+      "pct": -3.6197,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "contract": "Dec '26"
+    },
+    "milk": {
+      "prev": 17.74,
+      "pct": 0.1691,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24",
+      "contract": "Nov '26"
+    },
+    "meal": {
+      "prev": 353.0,
+      "pct": 2.4363,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24"
+    },
+    "soyoil": {
+      "prev": 58.11,
+      "pct": -0.0516,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24"
+    },
+    "crude": {
+      "prev": 83.68,
+      "pct": 1.5296,
+      "kind": "last",
+      "at": "2026-11-27T13:01:23Z",
+      "date": "2026-11-27",
+      "prev_date": "2026-11-25"
+    },
+    "natgas": {
+      "prev": null,
+      "pct": null,
+      "kind": "last",
+      "at": "2026-11-27T13:01:23Z",
+      "date": "2026-11-27",
+      "prev_date": "2026-11-25",
+      "withheld": "NG=F moved +7.65% from 3.269 (2026-11-25) to 3.519 (2026-11-27), inside the Dec '26 contract's expiry window (last trade 2026-11-25); the two prices may be different contracts, so the change is withheld"
+    },
+    "gold": {
+      "prev": 3535.8,
+      "pct": 4.446,
+      "kind": "last",
+      "at": "2026-11-27T13:01:23Z",
+      "date": "2026-11-27",
+      "prev_date": "2026-11-25"
+    },
+    "silver": {
+      "prev": 40.052,
+      "pct": 10.2941,
+      "kind": "last",
+      "at": "2026-11-27T13:01:23Z",
+      "date": "2026-11-27",
+      "prev_date": "2026-11-25"
+    },
+    "dollar": {
+      "prev": 103.67,
+      "pct": 0.1032,
+      "kind": "last",
+      "at": "2026-11-27T13:01:25Z",
+      "date": "2026-11-27",
+      "prev_date": "2026-11-25"
+    },
+    "sp500": {
+      "prev": 7201.0898,
+      "pct": -0.2543,
+      "kind": "settle",
+      "date": "2026-11-25",
+      "prev_date": "2026-11-24"
+    },
+    "bitcoin": {
+      "prev": 60494.7109,
+      "pct": 1.7285,
+      "kind": "last",
+      "at": "2026-11-27T13:01:25Z",
+      "date": "2026-11-27",
+      "prev_date": "2026-11-26"
+    }
+  },
+  "board": {
+    "fetched": "2026-11-27T13:01:25Z",
+    "quote_session": "2026-11-27",
+    "prev_close_session": "2026-11-25"
+  },
+  "basis_wow": {
+    "print": false,
+    "rows": [
+      {
+        "st": "OH",
+        "name": "Ohio",
+        "crop": "soybeans",
+        "wow": 5.0,
+        "n": 55,
+        "moved": 29,
+        "companies": 16
+      }
+    ],
+    "why": "the same states within 5 cents of the last print",
+    "snapshot": "2026-11-27T11:30:12Z"
+  },
+  "chart_series": {
+    "corn": [
+      4.425,
+      4.455,
+      4.4875,
+      4.4675,
+      4.355,
+      4.39,
+      4.345,
+      4.3425,
+      4.34,
+      4.3975
+    ],
+    "soybeans": [
+      12.19,
+      12.315,
+      12.29,
+      12.255,
+      12.1675,
+      12.075,
+      12.2075,
+      12.2875,
+      12.34,
+      12.44
+    ]
+  },
+  "chart_dates": [
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-23",
+    "2026-11-24",
+    "2026-11-25"
+  ],
+  "chart_series_dates": {
+    "corn": [
+      "2026-11-12",
+      "2026-11-13",
+      "2026-11-16",
+      "2026-11-17",
+      "2026-11-18",
+      "2026-11-19",
+      "2026-11-20",
+      "2026-11-23",
+      "2026-11-24",
+      "2026-11-25"
+    ],
+    "soybeans": [
+      "2026-11-12",
+      "2026-11-13",
+      "2026-11-16",
+      "2026-11-17",
+      "2026-11-18",
+      "2026-11-19",
+      "2026-11-20",
+      "2026-11-23",
+      "2026-11-24",
+      "2026-11-25"
+    ]
+  },
+  "chart_window": "Nov 12 - Nov 25",
+  "quote_strip": {
+    "asof": "2026-11-27T13:01:25Z",
+    "session": "2026-11-27",
+    "vs_session": "2026-11-25",
+    "quotes": [
+      {
+        "key": "corn-dec",
+        "name": "Corn",
+        "contract": "Dec '26",
+        "last": 4.3975,
+        "prev": 4.34,
+        "pct": 1.3249,
+        "kind": "settle",
+        "date": "2026-11-25"
+      },
+      {
+        "key": "beans",
+        "name": "Soybeans",
+        "contract": "Jan '27",
+        "last": 12.44,
+        "prev": 12.34,
+        "pct": 0.8104,
+        "kind": "settle",
+        "date": "2026-11-25"
+      },
+      {
+        "key": "wheat",
+        "name": "Wheat",
+        "contract": "Dec '26",
+        "last": 5.655,
+        "prev": 5.6975,
+        "pct": -0.7459,
+        "kind": "settle",
+        "date": "2026-11-25"
+      }
+    ]
+  },
+  "price_windows": [
+    {
+      "label": "Week so far",
+      "items": [
+        {
+          "name": "Corn",
+          "text": "+5 1/4¢ (+1.21%)"
+        },
+        {
+          "name": "Soybeans",
+          "text": "+23 1/4¢ (+1.90%)"
+        },
+        {
+          "name": "Wheat",
+          "text": "−8 3/4¢ (−1.52%)"
+        }
+      ]
+    },
+    {
+      "label": "Month to date",
+      "items": [
+        {
+          "name": "Corn",
+          "text": "−8¢ (−1.79%)"
+        },
+        {
+          "name": "Soybeans",
+          "withheld": true,
+          "text": "not compared (Nov '26 at the start of the month, Jan '27 now)"
+        }
+      ]
+    }
+  ],
+  "sponsor": {
+    "active": false,
+    "label": "SPONSOR · 1 SLOT",
+    "advertiser": "AGSIST",
+    "headline": "Sponsor AGSIST: one line under the menu on every page, and in this email.",
+    "body": "One business at a time. Pay by check or bank wire. Money back if you ask inside 30 days. Prices at agsist.com/sponsor.",
+    "cta_text": "Become the sponsor",
+    "cta_url": "mailto:sig@agsist.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+    "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
+    "is_house_ad": true
+  },
+  "generated_at": "2026-11-27T13:04:34.082112+00:00",
+  "generator_version": "5.5.0",
+  "surprise_count": 2,
+  "surprises": [
+    {
+      "commodity": "Silver",
+      "key": "silver",
+      "price": "$44.17",
+      "pct_change": 10.2941,
+      "direction": "up",
+      "surprise_magnitude": 4.1
+    },
+    {
+      "commodity": "Gold",
+      "key": "gold",
+      "price": "$3,693",
+      "pct_change": 4.446,
+      "direction": "up",
+      "surprise_magnitude": 3.0
+    }
+  ],
+  "price_validation_clean": true,
+  "market_closed": false,
+  "market_status_reason": "open",
+  "otp_week_ahead": false,
+  "theme": {
+    "kind": "quiet",
+    "tier": 7,
+    "key": "none",
+    "value": "",
+    "headline": "",
+    "lead": [],
+    "figure": null,
+    "date": "2026-11-27",
+    "move_date": null,
+    "ledger": [],
+    "withheld": []
+  },
+  "weather_line": {
+    "text": "Rain in the week to Nov. 25: an average of 0.27 inch across 612 county gauges in 12 farm states; the 1991-2020 average for the same week is 0.49 inch; Missouri was wettest at an average of 0.53 inch (NOAA).",
+    "as_of": "2026-11-25",
+    "sample": 612
+  },
+  "first_published_at": "2026-11-27T13:04:34.082112+00:00"
+}
