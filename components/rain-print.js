@@ -3486,7 +3486,27 @@
     }
     return (msg || 'Couldn\u2019t draw ' + what + '.') + keep;
   }
+  /* rain_print_draw_fail (2026-11-26): a draw that did not come back, counted by class only. Never the town, the year or
+     the error's own words (they can hold what the reader typed). */
+  function failReason(err) {
+    var m = String(err && err.message || ''), st = err && +err.status;
+    if (st >= 500) return 'http-5xx';
+    if (st >= 400) return 'http-4xx';
+    if (/slow right now|didn.t answer in/.test(m)) return 'timeout';
+    if (/couldn.t be reached/.test(m)) return 'unreachable';
+    if (/isn.t data/.test(m)) return 'bad-data';
+    if (/None of the stations/.test(m)) return 'no-data';
+    if (err && (err.suggest || /Couldn.t find/.test(m))) return 'no-town';
+    if (/station/i.test(m)) return 'no-station';
+    return 'other';
+  }
+  function drawFailed(err) {
+    // a box left empty is the reader's typing, not a failed draw
+    if (err && (err.pick || /^(Type a town and state|Pick a year\.|That link has no town)/.test(String(err.message || '')))) return;
+    ga('rain_print_draw_fail', { reason: failReason(err) });
+  }
   function keepDrawn(snap, err) {
+    drawFailed(err);
     var want = ST;
     ST = snap.ST; DATA = snap.DATA; META = snap.META; STATIONS = snap.STATIONS; EXT = snap.EXT; NORM30 = snap.NORM30;
     PREVIEW = snap.PREVIEW; SETTLE = snap.SETTLE; STUCK = snap.STUCK; EXT_WAIT = snap.EXT_WAIT; NORM_WAIT = snap.NORM_WAIT; NOART = ''; BLOCKED = '';
@@ -3509,6 +3529,7 @@
     if (err && err.suggest) showPick(err.suggest);
   }
   function failDraw(err) {
+    drawFailed(err);
     DATA = null; META = null; PREVIEW = null; SETTLE = false; NOART = ''; EXT = null; NORM30 = null;
     BLOCKED = 'failed';
     yearAskOff();
@@ -4506,6 +4527,11 @@
     }
   }
   // the review sheet's message line: a reason, or "Opening checkout"
+  // the two "go to checkout" links in the sheet's message count as the hand-off too
+  $('rp-proof-msg').addEventListener('click', function (ev) {
+    var a = ev.target && ev.target.closest && ev.target.closest('a[data-co]');
+    if (a) ga('rain_print_checkout', { product: PICK, transport_type: 'beacon' });
+  });
   function proofSay(t, go) {
     var m = $('rp-proof-msg');
     if (go) m.innerHTML = t; else m.textContent = t || '';
@@ -4518,18 +4544,26 @@
      service fails, or a product has no payment link, the order form takes the
      order with the full design code. */
   var MINT_WAIT_MS = 4000, GIFT_KEPT = {};
+  // checkIt's two questions, for pay(): a marked day that can't go on the print (rows), or no name and no OK to go without one
+  function stepBack(rows) {
+    if (rows) { dayNums().forEach(function (i) { if (rowUsed(i)) TOUCHED[i] = true; }); syncDates(); return !!badRow(); }
+    return !ST.name && !NONAME_OK;
+  }
   function pay(opts) {
     var id = PICK;
     proofSay('');
     if (!canOrder()) { closeProof(true); checkIt(); return; }
     var why = orderBlock();
     if (why) { proofSay(why); return; }
-    if (!$('rp-proof-ok').checked) {
-      proofSay('Tick the box once the spelling and the dates are right.');
-      try { $('rp-proof-ok').focus(); } catch (err) {}
-      return;
-    }
+    /* The sheet also opens from a tap on the print or Up close, which skip checkIt's questions. Pay asks the same ones
+       before it goes to Stripe (2026-11-26, with the tick gone): a bad marked day, then a print with no name. */
+    if (stepBack(true)) { closeProof(true); checkIt(); return; }
+    /* No tick box (2026-11-26, Rain Print checkout drop): the buyer approves the proof by email before anything is made, so
+       a required tick here was a second approval that only stopped people at the last step. Pay is the one tap; the line
+       above it says what to check, and the lines around Pay say the email proof is the real OK. */
+    PROOF_OK = encodeCode(ST);
     if (GIFT && GIFT.usable) { closeProof(true); useGift(); return; }
+    if (stepBack(false)) { closeProof(true); checkIt(); return; }
     var gift = pgOn();
     if (gift) {
       var chk = pgOrder('');
@@ -4567,7 +4601,7 @@
         // kept in this browser and sent on the next visit (the way back from Stripe), whichever way the buyer goes now
         if (!GIFT_KEPT[code]) GIFT_KEPT[code] = outboxAdd({ to: 'form', kind: 'rain-print-order', data: g, fields: fs });
         var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
-        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
+        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '" data-co="1">go to checkout</a> and write their name and your note to ' + ORDER_TO + '.', true);
       });
       return;
     }
@@ -4580,12 +4614,17 @@
       flushRedraw();
       updateUrlNow();
       // the same tab: a link to tap in case the browser holds it back (an in-app browser); no design code in the words, it travels with the payment
-      proofSay('Opening checkout\u2026 If nothing happens, <a href="' + esc(u) + '">go to checkout</a>.' + (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : ''), true);
+      proofSay('Opening checkout\u2026 If nothing happens, <a href="' + esc(u) + '" data-co="1">go to checkout</a>.' + (shortRef() ? ' Your design reference: ' + esc(shortRef()) + '.' : ''), true);
       // one order record per press, then Stripe; a second tap while it goes counts once
       if (PRESS_BUSY) return;
       PRESS_BUSY = true;
       var J = OJ().j || {};
-      pressPost(orderRecord(ST, code, id, typeof J[id] === 'number' ? J[id] : null, FRAME)).then(function () { PRESS_BUSY = false; goTo(u); });
+      pressPost(orderRecord(ST, code, id, typeof J[id] === 'number' ? J[id] : null, FRAME)).then(function () {
+        PRESS_BUSY = false;
+        // rain_print_checkout (2026-11-26): the tab is about to go to Stripe. The product only; beacon so the leave doesn't drop it
+        ga('rain_print_checkout', { product: id, transport_type: 'beacon' });
+        goTo(u);
+      });
       return;
     }
     closeProof(true);
@@ -4798,7 +4837,7 @@
       ? ['I email you within 1 business day with a payment link. Nothing\u2019s charged until you pay it.', whenIn + ', I draw it and email you the proof.', 'You OK the proof or ask for changes. Nothing prints before that.', 'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK it.']
       : ['I email you a proof of this exact design within 1 business day, with a payment link.', 'You OK the proof or ask for changes. Nothing is charged until you pay the link, and nothing prints before you OK it.',
         'It ships within ' + (J.ship_business_days || 3) + ' business days after you OK the proof.'];
-    el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you checked the proof' : ' &middot; <a href="#rp-proof" id="ro-see-proof">' + (print ? 'check the proof first' : 'check it up close first') + '</a>') + '</p>' +
+    el.innerHTML = '<p><b>' + esc(CHOICE[id]) + (price ? ', ' + esc(price) : '') + '</b>' + (PROOF_OK === encodeCode(ST) ? ' &middot; you looked it over' : ' &middot; <a href="#rp-proof" id="ro-see-proof">' + (print ? 'check the proof first' : 'check it up close first') + '</a>') + '</p>' +
       '<dl>' + designRows().map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
       '<p><b>What happens next</b></p><ol>' + steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
     var sp = $('ro-see-proof');
@@ -4851,7 +4890,6 @@
     // what the picker above it doesn't say: when it comes (and that a gift card covers it)
     if (can) list.push(['When', esc((gift ? 'Covered by your gift card. ' : '') + whenWords(PICK) + ' ' + MADE_BY[PICK === 'digital' ? 'file' : 'print'])]);
     $('rp-proof-sum').innerHTML = list.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
-    $('rp-proof-ok').checked = PROOF_OK === encodeCode(ST);
     // the one action: pay for what is shown, as picked
     $('rp-proof-order').textContent = !can ? 'Draw your own' : gift ? 'Use my gift' : payLink(PICK) ? 'Pay' + (p ? ' ' + p : '') + ' at checkout' : 'Order it' + (p ? ', ' + p : '');
     $('rp-proof-first').textContent = !can ? 'This is a sample. Type the town nearest the farm to draw your own.'
@@ -4945,7 +4983,7 @@
     // the worker keeps known fields only, so the checkout and the proof tick ride in the notes
     x.notes = ('Paying now at Stripe checkout' + (ref ? ', reference ' + ref : '') + '. Gift details from the review sheet; no payment link needed.' +
       (x.gift_january ? ' Make it after January 1, once the full year is in.' : '') +
-      (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.') + logoKeptNote()).slice(0, 2000);
+      (PROOF_OK === encodeCode(ST) ? ' Review sheet: Pay pressed.' : ' Review sheet: not used.') + logoKeptNote()).slice(0, 2000);
     var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
       : !file && !stripeShips && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
       : file && theirs && !EMAIL_RE.test(x.gift_email) ? ['rp-pg-email', 'Add their email for the file, or choose Me under Send it to.']
@@ -5095,7 +5133,7 @@
     };
     if (ST.logo) x.logo = ST.logo;
     // the worker keeps known fields only, so the proof tick rides in the notes
-    x.notes = ((PROOF_OK === encodeCode(ST) ? 'Proof checked on the page: yes.' : 'Proof checked on the page: no.') +
+    x.notes = ((PROOF_OK === encodeCode(ST) ? 'Review sheet: Pay pressed.' : 'Review sheet: not used.') +
       (SETTLE ? ' NOAA didn\u2019t have all of ' + ST.year + ' in yet: make it once the full year is in.' : '') + (x.notes ? '\n' + x.notes : '')).slice(0, 2000);
     if (x.choice === 'digital') x.address = '';
     if (x.choice === 'framed12x18') x.frame_color = frameColor($('ro-frame').value);
@@ -5998,7 +6036,6 @@
   });
   // the slim copy that pins under the menu on a phone opens the up-close view too
   $('rp-mini').addEventListener('click', openProof);
-  $('rp-proof-ok').addEventListener('change', function () { PROOF_OK = $('rp-proof-ok').checked ? encodeCode(ST) : ''; if (PROOF_OK) proofSay(''); syncSummary(); });
   $('rp-proof-zoom').addEventListener('click', function () { proofZoom(PROOF_ZOOM === 'full' ? 'fit' : 'full'); });
   // click the print to see that spot at actual size; at actual size, drag to move around
   (function () {
