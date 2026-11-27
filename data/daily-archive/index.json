@@ -3,10 +3,10 @@
     {
       "date": "2026-11-27",
       "date_display": "Friday, November 27, 2026",
-      "headline": "December lean hogs settled down 3.6% Wednesday at $49.925",
-      "teaser": "Silver and gold jump overnight, crude gains on tanker-attack reports, and export sales print at 7:30 a.m. CT.",
-      "market_mood": "cautious",
-      "surprise_count": 2,
+      "headline": "Basis firms 5 cents in Iowa and Minnesota as corn rises 7¢",
+      "teaser": "Iowa and Minnesota corn basis each firmed 5 cents on the week; beans and corn are higher this afternoon.",
+      "market_mood": "mixed",
+      "surprise_count": 8,
       "sections": 2,
       "url": "/daily/2026-11-27",
       "market_closed": false
@@ -2954,5 +2954,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-27T13:04:34.092250+00:00"
+  "updated": "2026-11-27T19:18:49.707309+00:00"
 }
