@@ -1,0 +1,34 @@
+# Daily code copy to the backup group.
+# secret needed: GITLAB_TOKEN (skips with one line until set)
+name: GitLab copy
+on:
+  schedule:
+    - cron: '37 9 * * *'
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: gitlab-copy
+  cancel-in-progress: false
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Copy today's files of agsist and bids
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$GITLAB_TOKEN" ]; then echo "gitlab-copy: secret not set yet"; exit 0; fi
+          h="Authorization: Basic $(printf 'oauth2:%s' "$GITLAB_TOKEN" | base64 -w0)"
+          echo "::add-mask::$h"
+          for r in agsist bids; do
+            git clone -q --depth 1 --single-branch --branch main "https://github.com/dnilgis/$r.git" "$RUNNER_TEMP/$r"
+            src=$(git -C "$RUNNER_TEMP/$r" rev-parse --short HEAD)
+            c=$(git -C "$RUNNER_TEMP/$r" -c user.name=dnilgis -c user.email=dnilgis@users.noreply.github.com commit-tree 'HEAD^{tree}' -m "Copy of $r main $src, $(date -u +%Y-%m-%d)")
+            git -C "$RUNNER_TEMP/$r" -c http.extraHeader="$h" push -q --force "https://gitlab.com/agsist-backup/$r.git" "$c:refs/heads/copy"
+            echo "$r: copied"
+            rm -rf "${RUNNER_TEMP:?}/$r"
+          done
