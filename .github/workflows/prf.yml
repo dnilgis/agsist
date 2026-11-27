@@ -190,7 +190,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # g is not in git any more (agsist-data): meta.json's grid_build moves exactly when a grid file changed
+          # grid files live on agsist-data; grid_build moves when one changes
           GRID=$(python - <<'PY'
           import json, subprocess
           def key(t):
