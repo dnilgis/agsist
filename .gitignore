@@ -134,3 +134,8 @@ build/shots/
 # since Nov 26, 2026 (scripts/atlas_hosted.py; test/atlas-hosted.test.mjs). A job that builds from them or tests them
 # has a copy here, fetched from there; it is never committed. farmland-atlas.yml sends a rebuilt folder to agsist-data.
 /data/atlas/counties/
+
+# The PRF grid files (data/prf/g/<shard>.json, 789 files, 31 MiB) are served from dnilgis/agsist-data since Nov 27, 2026
+# (scripts/prf_grid_hosted.py; test/prf-grid-hosted.test.mjs). A job that builds from them or tests them has a copy here,
+# fetched from there; it is never committed. prf.yml sends a rebuilt folder to agsist-data before it commits.
+/data/prf/g/

@@ -175,12 +175,18 @@ jobs:
           set -o pipefail
           python scripts/check_site_budget.py 2>&1 | tee -a prf-run.log
 
+      - name: Grid files to the data host (agsist-data)
+        if: github.event.inputs.limit == ''
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: python3 scripts/prf_grid_hosted.py sync
+
       - name: Commit
         if: github.event.inputs.limit == ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain data/prf/g data/prf/y data/prf/s)" ]; then
+          if [ -n "$(git status --porcelain data/prf/meta.json data/prf/y data/prf/s)" ]; then
             python - <<'PY'
           import re, datetime
           day = datetime.date.today().isoformat()
@@ -209,7 +215,7 @@ jobs:
             if python3 scripts/generated_sets.py pull-rebase prf --autostash && git push -q; then exit 0; fi
             sleep $((30 * i))
           done
-          echo "push failed after 5 attempts"; exit 1
+          echo "::error::push failed after 5 attempts. rerun prf with full=yes: the host has the new grid files (they were sent to agsist-data before this commit), and until the commit lands a run that reads them stops on the older meta.json"; exit 1
 
       - name: Tell search engines the PRF pages changed
         if: env.changed == '1' && github.event.inputs.limit == ''

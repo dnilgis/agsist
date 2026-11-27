@@ -24,6 +24,9 @@
   var M = window.AgPrfMath, root = document.querySelector('[data-prf]');
   if (!M || !root) return;
   var SRC = root.getAttribute('data-src') || '/data/prf/';
+  /* The grid files (g/<shard>.json) are on agsist-data since Nov 27, 2026 (the host Florida's land files and the Atlas county
+     files use). A page pointed at another data folder (data-src: a test's fixture) reads its own g/. */
+  var GRID = SRC === '/data/prf/' ? 'https://dnilgis.github.io/agsist-data/data/prf/g/' : SRC + 'g/';
   var KEY = 'agsist_prf';
   var N = M.N, LABELS = M.LABELS;
 
@@ -63,7 +66,7 @@
   }
   function loadShard(key) {
     if (shards[key]) return Promise.resolve(shards[key]);
-    return Promise.all([getJSON(SRC + 'g/' + key + '.json', true), getJSON(SRC + 'y/' + key + '.json', true)]).then(function (r) {
+    return Promise.all([getJSON(GRID + key + '.json', true), getJSON(SRC + 'y/' + key + '.json', true)]).then(function (r) {
       shards[key] = { g: r[0], y: r[1] || { g: {} } };
       return shards[key];
     });
