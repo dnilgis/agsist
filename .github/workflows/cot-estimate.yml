@@ -57,7 +57,9 @@ jobs:
           case "$MODE" in
             lock) $Q estimate -- python3 scripts/cot_estimate.py --grade --lock --deep "$DEEP" --log "$LOG" ;;
             grade) $Q estimate -- python3 scripts/cot_estimate.py --grade --deep "$DEEP" --log "$LOG" ;;
-            retro) $Q estimate -- bash -c 'python3 scripts/cot_estimate.py --lock --retro --asof "$1" --deep "$2" --log "$3" && python3 scripts/cot_estimate.py --grade --deep "$2" --log "$3"' _ "$ASOF" "$DEEP" "$LOG" ;;
+            retro)
+              $Q estimate-lock -- python3 scripts/cot_estimate.py --lock --retro --asof "$ASOF" --deep "$DEEP" --log "$LOG"
+              $Q estimate-grade -- python3 scripts/cot_estimate.py --grade --deep "$DEEP" --log "$LOG" ;;
             note) $Q estimate -- python3 scripts/cot_estimate.py --note --asof "$ASOF" --deep "$DEEP" --log "$LOG" ;;
             *) echo "unknown mode"; exit 1 ;;
           esac

@@ -30,5 +30,5 @@ jobs:
             c=$(git -C "$RUNNER_TEMP/$r" -c user.name=dnilgis -c user.email=dnilgis@users.noreply.github.com commit-tree 'HEAD^{tree}' -m "Copy of $r main $src, $(date -u +%Y-%m-%d)")
             git -C "$RUNNER_TEMP/$r" -c http.extraHeader="$h" push -q --force "https://gitlab.com/agsist-backup/$r.git" "$c:refs/heads/copy"
             echo "$r: copied"
-            rm -rf "$RUNNER_TEMP/$r"
+            rm -rf "${RUNNER_TEMP:?}/$r"
           done
