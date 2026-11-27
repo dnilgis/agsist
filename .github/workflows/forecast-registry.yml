@@ -1,0 +1,67 @@
+# Private record job; the record stays in the private repository. The Actions log here is public: counts and ok only.
+name: Forecast registry
+on:
+  schedule:
+    - cron: '0 16 * * 6'
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: forecast-registry
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            /data/
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Registry
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          Q="python3 scripts/dev/quiet.py"
+          OUT=private/forecasts
+          $Q selftest -- python3 scripts/forecast_registry.py --selftest
+          $Q read-private -- bash scripts/private_data.sh pull private/cot-estimate/log.json "$OUT/record.jsonl" "$OUT/scorecard.md"
+          $Q registry -- python3 scripts/forecast_registry.py --agsist "$GITHUB_WORKSPACE" --cot-log private/cot-estimate/log.json --out "$OUT"
+          $Q verify -- python3 scripts/forecast_registry.py --verify --out "$OUT"
+          $Q save -- bash scripts/private_data.sh save "Forecast registry $(date -u +%Y-%m-%d)" "$OUT/record.jsonl" "$OUT/scorecard.md"
+      - name: Public record (agsist-data)
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: |
+          set -euo pipefail
+          [ -n "$AGSIST_DATA_TOKEN" ] || { echo "::error::AGSIST_DATA_TOKEN is not set; the public record was not updated"; exit 1; }
+          Q="python3 scripts/dev/quiet.py"
+          auth=$(printf 'x-access-token:%s' "$AGSIST_DATA_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0="http.https://github.com/.extraheader" GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
+          unset auth
+          export GIT_TERMINAL_PROMPT=0
+          for i in 1 2 3; do
+            rm -rf "$RUNNER_TEMP/ad"
+            git clone -q --depth 1 --branch main https://github.com/dnilgis/agsist-data.git "$RUNNER_TEMP/ad" || { sleep 20; continue; }
+            # derived from the private record just written; refuses if the published rows ever drift from it
+            $Q public-rows -- python3 scripts/forecast_registry.py --public-only "$RUNNER_TEMP/ad" --out private/forecasts
+            $Q public-verify -- python3 scripts/forecast_registry.py --verify-public "$RUNNER_TEMP/ad"
+            git -C "$RUNNER_TEMP/ad" add forecasts
+            git -C "$RUNNER_TEMP/ad" diff --cached --quiet && { echo "public record: no change"; exit 0; }
+            git -C "$RUNNER_TEMP/ad" -c user.name=dnilgis -c user.email=dnilgis@users.noreply.github.com commit -q -m "forecasts: weekly record $(date -u +%Y-%m-%d)"
+            git -C "$RUNNER_TEMP/ad" push -q origin HEAD:main && exit 0
+            sleep 20
+          done
+          exit 1

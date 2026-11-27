@@ -1,0 +1,58 @@
+# Private estimate job; the log stays in the private repository. The Actions log here is public: counts and ok only.
+name: COT estimate
+on:
+  schedule:
+    - cron: '0 14 * * 3'
+    - cron: '0 14 * * 6'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: lock, grade, retro or note (retro and note need asof)
+        default: grade
+      asof:
+        description: Tuesday date for retro or note
+        default: ''
+permissions: {}
+concurrency:
+  group: cot-estimate
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Estimate
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          MODE: ${{ github.event.inputs.mode || (github.event.schedule == '0 14 * * 3' && 'lock' || 'grade') }}
+          ASOF: ${{ github.event.inputs.asof }}
+        run: |
+          set -euo pipefail
+          Q="python3 scripts/dev/quiet.py"
+          LOG=private/cot-estimate/log.json
+          DEEP=data/cot-deep.json
+          $Q selftest -- python3 scripts/cot_estimate.py --selftest
+          $Q read-inputs -- bash scripts/pull_raw.sh "$DEEP"
+          $Q read-log -- bash scripts/private_data.sh pull "$LOG"
+          case "$MODE" in
+            lock) $Q estimate -- python3 scripts/cot_estimate.py --grade --lock --deep "$DEEP" --log "$LOG" ;;
+            grade) $Q estimate -- python3 scripts/cot_estimate.py --grade --deep "$DEEP" --log "$LOG" ;;
+            retro) $Q estimate -- bash -c 'python3 scripts/cot_estimate.py --lock --retro --asof "$1" --deep "$2" --log "$3" && python3 scripts/cot_estimate.py --grade --deep "$2" --log "$3"' _ "$ASOF" "$DEEP" "$LOG" ;;
+            note) $Q estimate -- python3 scripts/cot_estimate.py --note --asof "$ASOF" --deep "$DEEP" --log "$LOG" ;;
+            *) echo "unknown mode"; exit 1 ;;
+          esac
+          $Q save -- bash scripts/private_data.sh save "COT estimate $MODE $(date -u +%Y-%m-%d)" "$LOG"
