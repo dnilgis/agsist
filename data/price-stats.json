@@ -1,16 +1,15 @@
 {
-  "updated": "2026-11-26T21:41:06Z",
+  "updated": "2026-11-27T21:54:49Z",
   "corn": {
-    "pct": 30,
-    "cur": 4.3975,
+    "pct": 38,
+    "cur": 4.4675,
     "lo": 3.6775,
     "hi": 8.1825,
     "median": 4.6425,
-    "n": 262,
+    "n": 261,
     "years": 5,
-    "read": "At the 30th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 38th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      5.8675,
       5.86,
       5.885,
       5.9325,
@@ -272,20 +271,19 @@
       4.455,
       4.345
     ],
-    "hist_from": "2021-11-22",
+    "hist_from": "2021-11-29",
     "hist_to": "2026-11-23"
   },
   "soybean": {
-    "pct": 53,
-    "cur": 12.44,
+    "pct": 56,
+    "cur": 12.6625,
     "lo": 9.3875,
     "hi": 17.455,
-    "median": 12.075,
-    "n": 262,
+    "median": 12.0575,
+    "n": 261,
     "years": 5,
-    "read": "At the 53rd percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 56th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      12.5275,
       12.6725,
       12.6775,
       12.8525,
@@ -547,20 +545,19 @@
       12.43,
       12.2075
     ],
-    "hist_from": "2021-11-22",
+    "hist_from": "2021-11-29",
     "hist_to": "2026-11-23"
   },
   "wheat": {
-    "pct": 32,
-    "cur": 5.655,
+    "pct": 33,
+    "cur": 5.665,
     "lo": 4.985,
     "hi": 13.48,
-    "median": 6.0337,
-    "n": 262,
+    "median": 6.0325,
+    "n": 261,
     "years": 5,
-    "read": "At the 32nd percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 33rd percentile of the last 5 years \u2014 below the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      8.255,
       7.945,
       7.82,
       7.75,
@@ -822,20 +819,19 @@
       5.9325,
       5.7425
     ],
-    "hist_from": "2021-11-22",
+    "hist_from": "2021-11-29",
     "hist_to": "2026-11-23"
   },
   "cattle": {
-    "pct": 77,
-    "cur": 223.325,
+    "pct": 78,
+    "cur": 224.35,
     "lo": 131.575,
     "hi": 257.45,
-    "median": 184.225,
-    "n": 262,
+    "median": 184.25,
+    "n": 261,
     "years": 5,
-    "read": "At the 77th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 78th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      138.1,
       137.675,
       136.85,
       134.75,
@@ -1097,20 +1093,19 @@
       220.65,
       223.0
     ],
-    "hist_from": "2021-11-22",
+    "hist_from": "2021-11-29",
     "hist_to": "2026-11-23"
   },
   "feeders": {
-    "pct": 76,
-    "cur": 327.525,
+    "pct": 75,
+    "cur": 331.2,
     "lo": 153.125,
     "hi": 375.5,
-    "median": 249.575,
-    "n": 262,
+    "median": 249.625,
+    "n": 261,
     "years": 5,
-    "read": "At the 76th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
+    "read": "At the 75th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 261 weekly closes, continuous front-month).",
     "hist": [
-      167.15,
       164.125,
       164.875,
       160.25,
@@ -1372,7 +1367,7 @@
       339.025,
       335.425
     ],
-    "hist_from": "2021-11-22",
+    "hist_from": "2021-11-29",
     "hist_to": "2026-11-23"
   }
 }
