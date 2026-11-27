@@ -1,0 +1,1 @@
+County rain pages: a line under each county's Rain Print says what the picture is, what it costs and that shipping is in it, and until the framed cutoff offers last year's print for Christmas; its buttons are counted (rain-county.css?v=20, rain-county-print.js?v=59, here.js?v=65)
