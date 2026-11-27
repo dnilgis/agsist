@@ -7,9 +7,9 @@
  ],
  "cadence": "weekly",
  "source": "USDA AMS, North Carolina Production Cost Report (Weekly)",
- "credit": "USDA AMS, North Carolina Production Cost Report (Weekly), Nov 13, 2026",
- "published": "2026-11-13",
- "week_begin": "2026-11-09",
+ "credit": "USDA AMS, North Carolina Production Cost Report (Weekly), Nov 24, 2026",
+ "published": "2026-11-24",
+ "week_begin": "2026-11-23",
  "terms": "Dealer asking prices, low, high and average, as USDA printed them.",
  "products": [
   {
@@ -23,13 +23,13 @@
    "avg": 767.5,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 767.5,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 648.5,
     "change": 119.0
    },
@@ -46,13 +46,13 @@
    "avg": 635.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 633.33,
-    "change": 1.67
+    "published": "2026-11-13",
+    "avg": 635.0,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 410.0,
     "change": 225.0
    },
@@ -69,13 +69,13 @@
    "avg": 985.5,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 985.5,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 1007.5,
     "change": -22.0
    },
@@ -92,13 +92,13 @@
    "avg": 557.67,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 557.67,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 542.33,
     "change": 15.34
    },
@@ -115,13 +115,13 @@
    "avg": 624.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 624.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 585.67,
     "change": 38.33
    },
@@ -138,13 +138,13 @@
    "avg": 553.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 553.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 526.33,
     "change": 26.67
    },
@@ -161,13 +161,13 @@
    "avg": 753.33,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 753.33,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 700.67,
     "change": 52.66
    },
@@ -184,13 +184,13 @@
    "avg": 85.33,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 85.33,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-26",
     "avg": 78.33,
     "change": 7.0
    },
@@ -366,6 +366,12 @@
     585.0,
     702.0,
     624.0
+   ],
+   [
+    "2026-11-24",
+    585.0,
+    702.0,
+    624.0
    ]
   ],
   "blend-10-10-10": [
@@ -533,6 +539,12 @@
    ],
    [
     "2026-11-13",
+    492.0,
+    592.0,
+    553.0
+   ],
+   [
+    "2026-11-24",
     492.0,
     592.0,
     553.0
@@ -706,6 +718,12 @@
     725.0,
     810.0,
     753.33
+   ],
+   [
+    "2026-11-24",
+    725.0,
+    810.0,
+    753.33
    ]
   ],
   "dap": [
@@ -873,6 +891,12 @@
    ],
    [
     "2026-11-13",
+    885.0,
+    1086.0,
+    985.5
+   ],
+   [
+    "2026-11-24",
     885.0,
     1086.0,
     985.5
@@ -1046,6 +1070,12 @@
     68.0,
     99.0,
     85.33
+   ],
+   [
+    "2026-11-24",
+    68.0,
+    99.0,
+    85.33
    ]
   ],
   "potash": [
@@ -1213,6 +1243,12 @@
    ],
    [
     "2026-11-13",
+    510.0,
+    595.0,
+    557.67
+   ],
+   [
+    "2026-11-24",
     510.0,
     595.0,
     557.67
@@ -1386,6 +1422,12 @@
     490.0,
     900.0,
     635.0
+   ],
+   [
+    "2026-11-24",
+    490.0,
+    900.0,
+    635.0
    ]
   ],
   "urea": [
@@ -1553,6 +1595,12 @@
    ],
    [
     "2026-11-13",
+    710.0,
+    825.0,
+    767.5
+   ],
+   [
+    "2026-11-24",
     710.0,
     825.0,
     767.5
@@ -3743,11 +3791,89 @@
      "change": 0.0
     }
    }
+  },
+  {
+   "published": "2026-11-24",
+   "week_begin": "2026-11-23",
+   "items": {
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 585.0,
+     "high": 702.0,
+     "avg": 624.0,
+     "change": 0.0
+    },
+    "blend-10-10-10": {
+     "name": "Blend (10-10-10)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 492.0,
+     "high": 592.0,
+     "avg": 553.0,
+     "change": 0.0
+    },
+    "calcium-nitrate": {
+     "name": "Calcium Nitrate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 725.0,
+     "high": 810.0,
+     "avg": 753.33,
+     "change": 0.0
+    },
+    "dap": {
+     "name": "DAP (Diammonium Phosphate 18-46-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 885.0,
+     "high": 1086.0,
+     "avg": 985.5,
+     "change": 0.0
+    },
+    "lime": {
+     "name": "Lime",
+     "unit": "$/ton",
+     "freight": "Delivered (Applied)",
+     "low": 68.0,
+     "high": 99.0,
+     "avg": 85.33,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 510.0,
+     "high": 595.0,
+     "avg": 557.67,
+     "change": 0.0
+    },
+    "uan30": {
+     "name": "Liquid Nitrogen (30-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 490.0,
+     "high": 900.0,
+     "avg": 635.0,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 710.0,
+     "high": 825.0,
+     "avg": 767.5,
+     "change": 0.0
+    }
+   }
   }
  ],
  "status": {
   "ok": true,
-  "checked": "2026-11-23T15:24:56Z",
+  "checked": "2026-11-27T20:24:59Z",
   "notes": []
  }
 }

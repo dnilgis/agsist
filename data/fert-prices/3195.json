@@ -7,9 +7,9 @@
  ],
  "cadence": "biweekly",
  "source": "USDA AMS, Illinois Production Cost Report (Bi-weekly)",
- "credit": "USDA AMS, Illinois Production Cost Report (Bi-weekly), Nov 13, 2026",
- "published": "2026-11-13",
- "week_begin": "2026-11-09",
+ "credit": "USDA AMS, Illinois Production Cost Report (Bi-weekly), Nov 27, 2026",
+ "published": "2026-11-27",
+ "week_begin": "2026-11-23",
  "terms": "Dealer asking prices, low, high and average, as USDA printed them.",
  "products": [
   {
@@ -18,14 +18,14 @@
    "name": "Anhydrous Ammonia",
    "unit": "$/ton",
    "freight": "F.O.B.",
-   "low": 850.0,
+   "low": 885.0,
    "high": 1060.0,
-   "avg": 981.11,
+   "avg": 992.22,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 981.11,
-    "change": 0.0
+    "change": 11.11
    },
    "why_prev": null,
    "year": null,
@@ -42,7 +42,7 @@
    "avg": 770.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 770.0,
     "change": 0.0
    },
@@ -61,7 +61,7 @@
    "avg": 467.86,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 467.86,
     "change": 0.0
    },
@@ -80,7 +80,7 @@
    "avg": 540.0,
    "thin": true,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 540.0,
     "change": 0.0
    },
@@ -99,7 +99,7 @@
    "avg": 932.14,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 932.14,
     "change": 0.0
    },
@@ -118,7 +118,7 @@
    "avg": 948.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 948.0,
     "change": 0.0
    },
@@ -137,7 +137,7 @@
    "avg": 517.73,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 517.73,
     "change": 0.0
    },
@@ -165,6 +165,12 @@
     850.0,
     1060.0,
     981.11
+   ],
+   [
+    "2026-11-27",
+    885.0,
+    1060.0,
+    992.22
    ]
   ],
   "dap": [
@@ -182,6 +188,12 @@
    ],
    [
     "2026-11-13",
+    840.0,
+    995.0,
+    932.14
+   ],
+   [
+    "2026-11-27",
     840.0,
     995.0,
     932.14
@@ -205,6 +217,12 @@
     840.0,
     985.0,
     948.0
+   ],
+   [
+    "2026-11-27",
+    840.0,
+    985.0,
+    948.0
    ]
   ],
   "potash": [
@@ -222,6 +240,12 @@
    ],
    [
     "2026-11-13",
+    480.0,
+    550.0,
+    517.73
+   ],
+   [
+    "2026-11-27",
     480.0,
     550.0,
     517.73
@@ -245,6 +269,12 @@
     400.0,
     550.0,
     467.86
+   ],
+   [
+    "2026-11-27",
+    400.0,
+    550.0,
+    467.86
    ]
   ],
   "uan32": [
@@ -265,6 +295,12 @@
     540.0,
     540.0,
     540.0
+   ],
+   [
+    "2026-11-27",
+    540.0,
+    540.0,
+    540.0
    ]
   ],
   "urea": [
@@ -282,6 +318,12 @@
    ],
    [
     "2026-11-13",
+    650.0,
+    890.0,
+    770.0
+   ],
+   [
+    "2026-11-27",
     650.0,
     890.0,
     770.0
@@ -495,11 +537,80 @@
      "change": 0.0
     }
    }
+  },
+  {
+   "published": "2026-11-27",
+   "week_begin": "2026-11-23",
+   "items": {
+    "anhydrous": {
+     "name": "Anhydrous Ammonia",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 885.0,
+     "high": 1060.0,
+     "avg": 992.22,
+     "change": 11.11
+    },
+    "dap": {
+     "name": "DAP (Diammonium Phosphate 18-46-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 995.0,
+     "avg": 932.14,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 840.0,
+     "high": 985.0,
+     "avg": 948.0,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 480.0,
+     "high": 550.0,
+     "avg": 517.73,
+     "change": 0.0
+    },
+    "uan28": {
+     "name": "Liquid Nitrogen (28-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 400.0,
+     "high": 550.0,
+     "avg": 467.86,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 540.0,
+     "high": 540.0,
+     "avg": 540.0,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 650.0,
+     "high": 890.0,
+     "avg": 770.0,
+     "change": 0.0
+    }
+   }
   }
  ],
  "status": {
   "ok": true,
-  "checked": "2026-11-23T15:24:56Z",
+  "checked": "2026-11-27T20:24:59Z",
   "notes": [
    "week of 2025-10-27: published date 2026-10-26 is in the future",
    "week of 2025-11-10: published date 2026-10-26 is in the future",

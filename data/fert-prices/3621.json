@@ -7,9 +7,9 @@
  ],
  "cadence": "biweekly",
  "source": "USDA AMS, Oklahoma Production Cost Report (Bi-Weekly)",
- "credit": "USDA AMS, Oklahoma Production Cost Report (Bi-Weekly), Nov 13, 2026",
- "published": "2026-11-13",
- "week_begin": "2026-11-09",
+ "credit": "USDA AMS, Oklahoma Production Cost Report (Bi-Weekly), Nov 27, 2026",
+ "published": "2026-11-27",
+ "week_begin": "2026-11-23",
  "terms": "Dealer asking prices, low, high and average, as USDA printed them.",
  "products": [
   {
@@ -23,13 +23,13 @@
    "avg": 860.5,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 860.5,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 743.0,
     "change": 117.5
    },
@@ -43,18 +43,18 @@
    "freight": "F.O.B.",
    "low": 585.0,
    "high": 810.0,
-   "avg": 643.04,
+   "avg": 642.04,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 639.44,
-    "change": 3.6
+    "published": "2026-11-13",
+    "avg": 643.04,
+    "change": -1.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 610.29,
-    "change": 32.75
+    "change": 31.75
    },
    "why_year": null
   },
@@ -69,13 +69,13 @@
    "avg": 434.8,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 424.3,
-    "change": 10.5
+    "published": "2026-11-13",
+    "avg": 434.8,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 390.6,
     "change": 44.2
    },
@@ -92,13 +92,13 @@
    "avg": 513.57,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 499.29,
-    "change": 14.28
+    "published": "2026-11-13",
+    "avg": 513.57,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 429.14,
     "change": 84.43
    },
@@ -115,13 +115,13 @@
    "avg": 984.05,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 976.55,
-    "change": 7.5
+    "published": "2026-11-13",
+    "avg": 984.05,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 903.53,
     "change": 80.52
    },
@@ -138,13 +138,13 @@
    "avg": 950.13,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 945.75,
-    "change": 4.38
+    "published": "2026-11-13",
+    "avg": 950.13,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 908.86,
     "change": 41.27
    },
@@ -161,13 +161,13 @@
    "avg": 500.86,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 501.77,
-    "change": -0.91
+    "published": "2026-11-13",
+    "avg": 500.86,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 494.05,
     "change": 6.81
    },
@@ -184,13 +184,13 @@
    "avg": 573.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 573.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 517.25,
     "change": 55.75
    },
@@ -207,7 +207,7 @@
    "avg": 690.0,
    "thin": true,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 690.0,
     "change": 0.0
    },
@@ -226,13 +226,13 @@
    "avg": 415.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 415.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 366.67,
     "change": 48.33
    },
@@ -249,13 +249,13 @@
    "avg": 593.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 593.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 480.0,
     "change": 113.0
    },
@@ -272,7 +272,7 @@
    "avg": 598.0,
    "thin": true,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 598.0,
     "change": 0.0
    },
@@ -291,13 +291,13 @@
    "avg": 755.88,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 740.57,
-    "change": 15.31
+    "published": "2026-11-13",
+    "avg": 755.88,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 664.0,
     "change": 91.88
    },
@@ -314,13 +314,13 @@
    "avg": 277.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 277.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 279.8,
     "change": -2.8
    },
@@ -355,6 +355,12 @@
    ],
    [
     "2026-11-13",
+    690.0,
+    690.0,
+    690.0
+   ],
+   [
+    "2026-11-27",
     690.0,
     690.0,
     690.0
@@ -522,6 +528,12 @@
     550.0,
     595.0,
     573.0
+   ],
+   [
+    "2026-11-27",
+    550.0,
+    595.0,
+    573.0
    ]
   ],
   "anhydrous": [
@@ -683,6 +695,12 @@
    ],
    [
     "2026-11-13",
+    780.0,
+    950.0,
+    860.5
+   ],
+   [
+    "2026-11-27",
     780.0,
     950.0,
     860.5
@@ -850,6 +868,12 @@
     370.0,
     450.0,
     415.0
+   ],
+   [
+    "2026-11-27",
+    370.0,
+    450.0,
+    415.0
    ]
   ],
   "blend-13-13-13": [
@@ -1014,6 +1038,12 @@
     580.0,
     606.0,
     593.0
+   ],
+   [
+    "2026-11-27",
+    580.0,
+    606.0,
+    593.0
    ]
   ],
   "blend-16-16-16": [
@@ -1103,6 +1133,12 @@
    ],
    [
     "2026-11-13",
+    598.0,
+    598.0,
+    598.0
+   ],
+   [
+    "2026-11-27",
     598.0,
     598.0,
     598.0
@@ -1270,6 +1306,12 @@
     694.0,
     810.0,
     755.88
+   ],
+   [
+    "2026-11-27",
+    694.0,
+    810.0,
+    755.88
    ]
   ],
   "dap": [
@@ -1431,6 +1473,12 @@
    ],
    [
     "2026-11-13",
+    820.0,
+    1179.0,
+    984.05
+   ],
+   [
+    "2026-11-27",
     820.0,
     1179.0,
     984.05
@@ -1598,6 +1646,12 @@
     225.0,
     332.0,
     277.0
+   ],
+   [
+    "2026-11-27",
+    225.0,
+    332.0,
+    277.0
    ]
   ],
   "map": [
@@ -1759,6 +1813,12 @@
    ],
    [
     "2026-11-13",
+    850.0,
+    1020.0,
+    950.13
+   ],
+   [
+    "2026-11-27",
     850.0,
     1020.0,
     950.13
@@ -1926,6 +1986,12 @@
     463.0,
     565.0,
     500.86
+   ],
+   [
+    "2026-11-27",
+    463.0,
+    565.0,
+    500.86
    ]
   ],
   "uan28": [
@@ -2087,6 +2153,12 @@
    ],
    [
     "2026-11-13",
+    355.0,
+    540.0,
+    434.8
+   ],
+   [
+    "2026-11-27",
     355.0,
     540.0,
     434.8
@@ -2254,6 +2326,12 @@
     425.0,
     650.0,
     513.57
+   ],
+   [
+    "2026-11-27",
+    425.0,
+    650.0,
+    513.57
    ]
   ],
   "urea": [
@@ -2418,6 +2496,12 @@
     585.0,
     810.0,
     643.04
+   ],
+   [
+    "2026-11-27",
+    585.0,
+    810.0,
+    642.04
    ]
   ]
  },
@@ -5679,11 +5763,143 @@
      "change": 3.6
     }
    }
+  },
+  {
+   "published": "2026-11-27",
+   "week_begin": "2026-11-23",
+   "items": {
+    "10-34-0": {
+     "name": "Ammonium Polyphosphate (10-34-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 690.0,
+     "high": 690.0,
+     "avg": 690.0,
+     "change": 0.0
+    },
+    "ams": {
+     "name": "Ammonium Sulfate",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 550.0,
+     "high": 595.0,
+     "avg": 573.0,
+     "change": 0.0
+    },
+    "anhydrous": {
+     "name": "Anhydrous Ammonia",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 780.0,
+     "high": 950.0,
+     "avg": 860.5,
+     "change": 0.0
+    },
+    "ats": {
+     "name": "ATS (Sulfate)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 370.0,
+     "high": 450.0,
+     "avg": 415.0,
+     "change": 0.0
+    },
+    "blend-13-13-13": {
+     "name": "Blend (13-13-13)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 580.0,
+     "high": 606.0,
+     "avg": 593.0,
+     "change": 0.0
+    },
+    "blend-16-16-16": {
+     "name": "Blend (16-16-16)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 598.0,
+     "high": 598.0,
+     "avg": 598.0,
+     "change": 0.0
+    },
+    "blend-19-19-19": {
+     "name": "Blend (19-19-19)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 694.0,
+     "high": 810.0,
+     "avg": 755.88,
+     "change": 0.0
+    },
+    "dap": {
+     "name": "DAP (Diammonium Phosphate 18-46-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 820.0,
+     "high": 1179.0,
+     "avg": 984.05,
+     "change": 0.0
+    },
+    "lime": {
+     "name": "Lime",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 225.0,
+     "high": 332.0,
+     "avg": 277.0,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 850.0,
+     "high": 1020.0,
+     "avg": 950.13,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 463.0,
+     "high": 565.0,
+     "avg": 500.86,
+     "change": 0.0
+    },
+    "uan28": {
+     "name": "Liquid Nitrogen (28-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 355.0,
+     "high": 540.0,
+     "avg": 434.8,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 425.0,
+     "high": 650.0,
+     "avg": 513.57,
+     "change": 0.0
+    },
+    "urea": {
+     "name": "Urea (46-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 585.0,
+     "high": 810.0,
+     "avg": 642.04,
+     "change": -1.0
+    }
+   }
   }
  ],
  "status": {
   "ok": true,
-  "checked": "2026-11-23T15:24:56Z",
+  "checked": "2026-11-27T20:24:59Z",
   "notes": []
  }
 }

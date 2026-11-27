@@ -7,9 +7,9 @@
  ],
  "cadence": "biweekly",
  "source": "USDA AMS, Iowa Production Cost Report (Bi-Weekly)",
- "credit": "USDA AMS, Iowa Production Cost Report (Bi-Weekly), Nov 13, 2026",
- "published": "2026-11-13",
- "week_begin": "2026-11-09",
+ "credit": "USDA AMS, Iowa Production Cost Report (Bi-Weekly), Nov 27, 2026",
+ "published": "2026-11-27",
+ "week_begin": "2026-11-23",
  "terms": "Dealer asking prices, low, high and average, as USDA printed them.",
  "products": [
   {
@@ -23,15 +23,15 @@
    "avg": 941.75,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 902.33,
-    "change": 39.42
+    "published": "2026-11-13",
+    "avg": 941.75,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
-    "avg": 856.14,
-    "change": 85.61
+    "published": "2025-11-28",
+    "avg": 867.71,
+    "change": 74.04
    },
    "why_year": null
   },
@@ -46,13 +46,13 @@
    "avg": 510.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
+    "published": "2026-11-13",
     "avg": 510.0,
     "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
+    "published": "2025-11-28",
     "avg": 486.75,
     "change": 23.25
    },
@@ -69,15 +69,15 @@
    "avg": 984.0,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 976.0,
-    "change": 8.0
+    "published": "2026-11-13",
+    "avg": 984.0,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
-    "avg": 917.29,
-    "change": 66.71
+    "published": "2025-11-28",
+    "avg": 914.5,
+    "change": 69.5
    },
    "why_year": null
   },
@@ -92,15 +92,15 @@
    "avg": 507.8,
    "thin": false,
    "prev": {
-    "published": "2026-10-30",
-    "avg": 499.8,
-    "change": 8.0
+    "published": "2026-11-13",
+    "avg": 507.8,
+    "change": 0.0
    },
    "why_prev": null,
    "year": {
-    "published": "2025-11-14",
-    "avg": 496.0,
-    "change": 11.8
+    "published": "2025-11-28",
+    "avg": 496.63,
+    "change": 11.17
    },
    "why_year": null
   }
@@ -250,6 +250,12 @@
     892.0,
     1060.0,
     941.75
+   ],
+   [
+    "2026-11-27",
+    892.0,
+    1060.0,
+    941.75
    ]
   ],
   "map": [
@@ -393,6 +399,12 @@
    ],
    [
     "2026-11-13",
+    951.0,
+    1015.0,
+    984.0
+   ],
+   [
+    "2026-11-27",
     951.0,
     1015.0,
     984.0
@@ -542,6 +554,12 @@
     489.0,
     540.0,
     507.8
+   ],
+   [
+    "2026-11-27",
+    489.0,
+    540.0,
+    507.8
    ]
   ],
   "uan32": [
@@ -685,6 +703,12 @@
    ],
    [
     "2026-11-13",
+    435.0,
+    585.0,
+    510.0
+   ],
+   [
+    "2026-11-27",
     435.0,
     585.0,
     510.0
@@ -1807,11 +1831,53 @@
      "change": 0.0
     }
    }
+  },
+  {
+   "published": "2026-11-27",
+   "week_begin": "2026-11-23",
+   "items": {
+    "anhydrous": {
+     "name": "Anhydrous Ammonia",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 892.0,
+     "high": 1060.0,
+     "avg": 941.75,
+     "change": 0.0
+    },
+    "map": {
+     "name": "MAP (Monoammonium Phosphate 11-52-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 951.0,
+     "high": 1015.0,
+     "avg": 984.0,
+     "change": 0.0
+    },
+    "potash": {
+     "name": "Potash (Red 0-0-60)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 489.0,
+     "high": 540.0,
+     "avg": 507.8,
+     "change": 0.0
+    },
+    "uan32": {
+     "name": "Liquid Nitrogen (32-0-0)",
+     "unit": "$/ton",
+     "freight": "F.O.B.",
+     "low": 435.0,
+     "high": 585.0,
+     "avg": 510.0,
+     "change": 0.0
+    }
+   }
   }
  ],
  "status": {
   "ok": true,
-  "checked": "2026-11-23T15:24:56Z",
+  "checked": "2026-11-27T20:24:59Z",
   "notes": []
  }
 }
