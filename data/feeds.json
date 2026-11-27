@@ -813,25 +813,28 @@
     "daily.html"
    ],
    "written_by": [
+    "Cron health",
     "Generate Daily Briefing",
     "Regrade Archive Pages"
    ],
    "touched_by": [
+    "Cron health",
     "Generate Daily Briefing",
     "Regrade Archive Pages"
    ],
-   "cadence": "4 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
+   "cadence": "5 launches on a fixed schedule at about 5am, 6am, 8am, 3pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "26 */2 * * *",
     "19 10 * * *",
     "41 11 * * *",
     "23 13 * * *",
     "0 20 * * 5"
    ],
-   "max_gap_hours": 20.9,
+   "max_gap_hours": 2.0,
    "quiet": null,
    "why_quiet": null
   },
