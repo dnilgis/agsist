@@ -1,0 +1,58 @@
+prf_grid_hosted: 789 shard files from agsist-data in data/prf/g (try 1)
+ADM for crop year 2027
+  https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2027/2027_ADM_YTD.zip: 2570 MB in 443s, last modified Wed, 25 Nov 2026 20:10:01 GMT
+  offers: 232184
+  counties: 3070  grids: 13414  (Hawaii left out: 240 grids)
+  rate keys: 722380 from 11156445 rows; keys with more than one rate id: 0
+reading the ADM
+  read in 72s: crop year 2027, checks {'price_rows_without_an_offer': 0, 'county_use_practice_with_two_base_values': 0, 'rate_keys': 722380, 'rate_keys_with_two_rates': 0, 'grids_missing_any_rate': 755}
+index history: 2026 to 2026 for 13414 grids; whole history for 0 new ones
+  1000 of 13414 grids, 0 failed, 45s
+  2000 of 13414 grids, 0 failed, 83s
+  3000 of 13414 grids, 0 failed, 120s
+  4000 of 13414 grids, 0 failed, 160s
+  5000 of 13414 grids, 0 failed, 197s
+  6000 of 13414 grids, 0 failed, 234s
+  7000 of 13414 grids, 0 failed, 271s
+  8000 of 13414 grids, 0 failed, 310s
+  9000 of 13414 grids, 0 failed, 348s
+  10000 of 13414 grids, 0 failed, 385s
+  11000 of 13414 grids, 0 failed, 423s
+  12000 of 13414 grids, 0 failed, 461s
+  13000 of 13414 grids, 0 failed, 498s
+nothing changed; meta.json left as it was
+agrees       half dollar in the protection: Barron WI, grid 30152, Haying, non-irrigated, 90%, 3 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the premium: Barron WI, grid 30152, Haying, non-irrigated, 90%, 2657 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the subsidy: Barron WI, grid 30152, Haying, non-irrigated, 90%, 82 ac, factor 100, share 100, 2026, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity: Barron WI, grid 30152, Haying, non-irrigated, 90%, 4 ac, factor 100, share 100, 1996, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity, odd dollar: Barron WI, grid 30152, Haying, non-irrigated, 90%, 2 ac, factor 100, share 100, 1957, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       half dollar in the indemnity, tells the two rules apart: Barron WI, grid 30152, Haying, non-irrigated, 90%, 6 ac, factor 100, share 100, 1957, split [0,0,0,50,0,50,0,0,0,0,0]
+agrees       random 7: Clark NV, grid 19863, Haying, non-irrigated, 70%, 7 ac, factor 142, share 100, 1962, split [0,0,0,27,0,23,0,22,0,28,0]
+agrees       random 8: Pickens SC, grid 17589, Grazing, 70%, 2983 ac, factor 75, share 75, 1959, split [25,0,0,40,0,35,0,0,0,0,0]
+agrees       random 9: Campbell KY, grid 22683, Haying, irrigated, certified organic, 90%, 1659 ac, factor 73, share 75, 2008, split [0,28,0,0,0,24,0,0,23,0,25]
+agrees       random 10: Ransom ND, grid 31928, Haying, non-irrigated, transitional organic, 70%, 2859 ac, factor 105, share 75, 1951, split [0,0,0,52,0,0,0,0,48,0,0]
+agrees       random 11: Tyler WV, grid 23298, Haying, irrigated, 75%, 3330 ac, factor 136, share 75, 2016, split [0,0,0,0,57,0,0,0,0,0,43]
+agrees       random 12: Wright IA, grid 27146, Haying, non-irrigated, certified organic, 75%, 226 ac, factor 94, share 100, 1986, split [0,23,0,24,0,0,26,0,0,27,0]
+agrees       random 13: Bristol RI, grid 26335, Haying, irrigated, transitional organic, 75%, 1963 ac, factor 90, share 33, 1984, split [0,0,23,0,0,28,0,0,25,0,24]
+agrees       random 14: Morgan TN, grid 19682, Haying, irrigated, transitional organic, 85%, 355 ac, factor 123, share 33, 1965, split [0,0,32,0,0,0,33,0,35,0,0]
+
+asked 14, reached 14, agreed 14, differ 0
+facts.json written 102729 bytes
+prf.html stamped
+49 state pages written to prf/
+3070 county views (6.0 MB, largest 4 KB) and forwards (2.2 MB) written to prf/<state>/; 0 stale removed, 0 pointers written; sitemap-prf.xml 49 URLs
+alt: PRF insurance: what grid 30454 in Barron County, Wisconsin would have paid each year from 1951 to 2025, with the premium as a dashed line. Sign-up deadline Dec 1, 2026.
+wrote /home/runner/work/agsist/agsist/img/og/prf.jpg 101603 bytes
+published size 653.8 MB (warn 850, fail 900, Pages limit 1024), measured from the working tree
+  folder               published  budget     tree
+  data                  181.3 MB     300 192.3 MB
+  arc-plc               140.4 MB     150 140.4 MB
+  farmland-atlas        132.5 MB     150 132.5 MB
+  rain                   60.6 MB      62  60.6 MB
+  cash-bids              56.1 MB      60  56.1 MB
+  img                    18.9 MB      25  18.9 MB
+  land-sales             16.3 MB      25  16.3 MB
+  daily                  10.9 MB      30  10.9 MB
+  prf                    10.5 MB      75  10.5 MB
+  (root files)            8.1 MB           8.1 MB
+tree total 665.5 MB; left out of the artifact (NOT_READER_FACING): 11.7 MB; headroom to the 900 MB stop: 246.2 MB
