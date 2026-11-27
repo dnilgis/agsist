@@ -129,10 +129,6 @@
    "to": "/rain/mississippi",
    "since": "2026-11-01"
   },
-  "rain/mississippi/jefferson-county.html": {
-   "to": "/rain/mississippi",
-   "since": "2026-11-26"
-  },
   "rain/mississippi/tishomingo-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-11-16"
@@ -281,9 +277,9 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
-  "rain/texas/reeves-county.html": {
+  "rain/texas/somervell-county.html": {
    "to": "/rain/texas",
-   "since": "2026-11-26"
+   "since": "2026-11-27"
   },
   "rain/texas/sutton-county.html": {
    "to": "/rain/texas",
@@ -312,10 +308,6 @@
   "rain/west-virginia/clay-county.html": {
    "to": "/rain/west-virginia",
    "since": "2026-11-24"
-  },
-  "rain/west-virginia/pendleton-county.html": {
-   "to": "/rain/west-virginia",
-   "since": "2026-11-26"
   }
  }
 }
