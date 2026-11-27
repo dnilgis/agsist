@@ -1,5 +1,5 @@
-# Daily copy of the subscriber store to the private repository. The Actions log here is public: ok and nothing else, no artifact, no count.
-# Skips with one line until the secret CF_KV_READ_TOKEN is set on this repository.
+# Daily store copy; ok only in the log.
+# secret needed: CF_KV_READ_TOKEN (skips with one line until set)
 name: KV backup
 on:
   schedule:

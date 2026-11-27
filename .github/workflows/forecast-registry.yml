@@ -1,4 +1,4 @@
-# Private record job; the record stays in the private repository. The Actions log here is public: counts and ok only.
+# Weekly record job; counts only in the log.
 name: Forecast registry
 on:
   schedule:
@@ -55,7 +55,6 @@ jobs:
           for i in 1 2 3; do
             rm -rf "$RUNNER_TEMP/ad"
             git clone -q --depth 1 --branch main https://github.com/dnilgis/agsist-data.git "$RUNNER_TEMP/ad" || { sleep 20; continue; }
-            # derived from the private record just written; refuses if the published rows ever drift from it
             $Q public-rows -- python3 scripts/forecast_registry.py --public-only "$RUNNER_TEMP/ad" --out private/forecasts
             $Q public-verify -- python3 scripts/forecast_registry.py --verify-public "$RUNNER_TEMP/ad"
             git -C "$RUNNER_TEMP/ad" add forecasts

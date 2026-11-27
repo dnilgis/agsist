@@ -1,4 +1,4 @@
-# Private estimate job; the log stays in the private repository. The Actions log here is public: counts and ok only.
+# Weekly estimate job; counts only in the log.
 name: COT estimate
 on:
   schedule:
@@ -35,6 +35,15 @@ jobs:
         with:
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           mode: ${{ vars.ENGINE_MODE }}
+      - name: Read inputs
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          Q="python3 scripts/dev/quiet.py"
+          $Q selftest -- python3 scripts/cot_estimate.py --selftest
+          $Q read-inputs -- bash scripts/pull_raw.sh data/cot-deep.json
+          $Q read-log -- bash scripts/private_data.sh pull private/cot-estimate/log.json
       - name: Estimate
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
@@ -45,9 +54,6 @@ jobs:
           Q="python3 scripts/dev/quiet.py"
           LOG=private/cot-estimate/log.json
           DEEP=data/cot-deep.json
-          $Q selftest -- python3 scripts/cot_estimate.py --selftest
-          $Q read-inputs -- bash scripts/pull_raw.sh "$DEEP"
-          $Q read-log -- bash scripts/private_data.sh pull "$LOG"
           case "$MODE" in
             lock) $Q estimate -- python3 scripts/cot_estimate.py --grade --lock --deep "$DEEP" --log "$LOG" ;;
             grade) $Q estimate -- python3 scripts/cot_estimate.py --grade --deep "$DEEP" --log "$LOG" ;;

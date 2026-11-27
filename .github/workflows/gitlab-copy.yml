@@ -1,5 +1,5 @@
-# Daily off-GitHub copy of the public site code: one commit of main, no history, to branch copy of the backup group's repositories.
-# Skips with one line until the secret GITLAB_TOKEN is set on this repository.
+# Daily code copy to the backup group.
+# secret needed: GITLAB_TOKEN (skips with one line until set)
 name: GitLab copy
 on:
   schedule:
