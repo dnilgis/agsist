@@ -96,7 +96,7 @@ jobs:
           python scripts/send_prf_notice.py --selftest
           python scripts/stamp_prf.py --selftest
           node scripts/prf_facts.mjs --selftest
-          node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs test/prf-county-pages.test.mjs
+          node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs
 
       - name: Take the staged files instead of fetching
         if: github.event.inputs.from_staging == 'yes'
@@ -169,18 +169,41 @@ jobs:
           python scripts/build_prf_card.py 2>&1 | tee -a prf-run.log
           node scripts/prf_facts.mjs --check && python scripts/stamp_prf.py --check && python scripts/build_prf_states.py --check && python scripts/build_prf_counties.py --check
 
+      - name: County views against the fetched grid files and the rebuilt pages
+        if: github.event.inputs.limit == ''
+        run: node --test test/prf-county-pages.test.mjs
+
       - name: Site budget
         if: github.event.inputs.limit == ''
         run: |
           set -o pipefail
           python scripts/check_site_budget.py 2>&1 | tee -a prf-run.log
 
+      - name: Grid files to the data host (agsist-data)
+        if: github.event.inputs.limit == ''
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: python3 scripts/prf_grid_hosted.py sync
+
       - name: Commit
         if: github.event.inputs.limit == ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain data/prf/g data/prf/y data/prf/s)" ]; then
+          # grid files live on agsist-data; grid_build moves when one changes
+          GRID=$(python - <<'PY'
+          import json, subprocess
+          def key(t):
+              m = json.loads(t)
+              return m.get('grid_build') or m['built']
+          try:
+              old = key(subprocess.run(['git', 'show', 'HEAD:data/prf/meta.json'], capture_output=True, text=True, check=True).stdout)
+          except Exception:
+              old = None
+          print('moved' if old != key(open('data/prf/meta.json').read()) else '')
+          PY
+          )
+          if [ -n "$(git status --porcelain data/prf/y data/prf/s)" ] || [ -n "$GRID" ]; then
             python - <<'PY'
           import re, datetime
           day = datetime.date.today().isoformat()
@@ -209,7 +232,7 @@ jobs:
             if python3 scripts/generated_sets.py pull-rebase prf --autostash && git push -q; then exit 0; fi
             sleep $((30 * i))
           done
-          echo "push failed after 5 attempts"; exit 1
+          echo "::error::push failed after 5 attempts. rerun prf with from_staging=yes (it takes the files and the stamp this run left on prf-staging and goes straight to the check, the send and the commit; full=yes only if that fails): the host may already have the new grid files (they were sent to agsist-data before this commit), and until the commit lands a run that reads them stops on the older meta.json"; exit 1
 
       - name: Tell search engines the PRF pages changed
         if: env.changed == '1' && github.event.inputs.limit == ''
