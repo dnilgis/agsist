@@ -650,7 +650,7 @@ function renderPanel(fips,c){
         note:'Blank years had under $1M of premium.'})); }
   } else f+=fact('Crop insurance',''+why(S),'',true);
   if(ok(Lo)&&Lo.share_all&&Object.keys(Lo.share_all).some(function(k){return Lo.share_all[k]>0;})){
-    var NM={heat_drought:'heat and drought',wet:'excess moisture',hail:'hail',wind:'wind',cold:'freeze',irrigation:'irrigation failure',price:'price decline',unassigned:'not assigned',other:'other'};
+    var NM={heat_drought:'drought and heat',wet:'excess moisture',hail:'hail',wind:'wind',cold:'freeze',irrigation:'irrigation failure',price:'price decline',unassigned:'not assigned',other:'other'};
     var top3=Object.keys(Lo.share_all).filter(function(k){return Lo.share_all[k]>0;}).sort(function(x,y){return Lo.share_all[y]-Lo.share_all[x];}).slice(0,3);
     f+=fact('Largest causes of payouts, '+Lo.first_year+'–'+Lo.last_year, top3.map(function(k){return NM[k]+' '+shareWords(Lo.share_all[k]);}).join(' · '));
     var lp=Lo.periods?Object.keys(Lo.periods).filter(function(k){return Lo.periods[k].heat_drought_share!=null;}):[];
