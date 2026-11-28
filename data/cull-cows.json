@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T14:40:35Z",
+ "updated": "2026-11-28T02:48:53Z",
  "as_of": "2026-11-27",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, auction reports",
  "classes": {
@@ -315,9 +315,9 @@
    "slug": "2053",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2053",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2053: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -598,9 +598,9 @@
    "slug": "2052",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2052",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2052: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -1061,9 +1061,9 @@
    "slug": "3090",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3090",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1906: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 3090: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -1477,8 +1477,8 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1901",
    "status": {
     "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "note": "report 2026-11-17 older than 2026-11-24 held",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -1681,9 +1681,9 @@
    "slug": "1903",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1903",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "no slaughter cow table in this run's reports",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -1806,9 +1806,9 @@
    "slug": "1422",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1422",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1609: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1422: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -1953,9 +1953,9 @@
    "slug": "1608",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1608",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1419: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1608: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -2276,9 +2276,9 @@
    "slug": "2528",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2528",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2528: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -2290,8 +2290,8 @@
    "id": "greenville-il",
    "status": {
     "ok": false,
-    "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-11-27T14:40:35Z"
+    "note": "2046: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 2043: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -2768,9 +2768,9 @@
    "slug": "1970",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1970",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1970: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -3016,9 +3016,9 @@
    "slug": "3415",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3415",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "3415: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -3251,7 +3251,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -3282,12 +3282,12 @@
        },
        {
         "dressing": "Average Return to Feed",
-        "head": 95,
-        "avg_wt": 1060,
-        "cwt": 188.48,
-        "per_head": 1997.89,
+        "head": 109,
+        "avg_wt": 1036,
+        "cwt": 199.86,
+        "per_head": 2070.55,
         "lo": 140.0,
-        "hi": 252.0,
+        "hi": 304.0,
         "rows": 1
        },
        {
@@ -3494,7 +3494,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -3506,8 +3506,8 @@
    "id": "salina-ks",
    "status": {
     "ok": false,
-    "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-11-27T14:40:35Z"
+    "note": "1893: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1892: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1894: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -3768,9 +3768,9 @@
    "slug": "2189",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2189",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2189: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -3981,9 +3981,9 @@
    "slug": "2213",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2213",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2213: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -4108,9 +4108,9 @@
    "slug": "2188",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2188",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2188: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -4331,9 +4331,9 @@
    "slug": "2192",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2192",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2192: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 2212: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -4562,9 +4562,9 @@
    "slug": "2195",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2195",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2195: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -4815,9 +4815,9 @@
    "slug": "2198",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2198",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2198: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 2229: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -5084,9 +5084,9 @@
    "slug": "2206",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2206",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2206: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -5337,9 +5337,9 @@
    "slug": "2207",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2207",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2207: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -5442,9 +5442,9 @@
    "slug": "2200",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2200",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2200: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -5755,9 +5755,9 @@
    "slug": "2196",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2196",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2196: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 2221: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -5768,9 +5768,9 @@
    "lon": -84.5,
    "id": "lexington-ky",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2129: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 2128: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 2127: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    },
    "sales": [
     {
@@ -6221,9 +6221,9 @@
    "slug": "2202",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2202",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2202: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -6514,9 +6514,9 @@
    "slug": "2201",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2201",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2201: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -6757,9 +6757,9 @@
    "slug": "2203",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2203",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2203: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -7070,9 +7070,9 @@
    "slug": "2204",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2204",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2204: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 3919: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -7333,9 +7333,9 @@
    "slug": "2210",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2210",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2210: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -7606,9 +7606,9 @@
    "slug": "2208",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2208",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2208: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -7919,9 +7919,9 @@
    "slug": "2199",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2199",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2199: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -8212,9 +8212,9 @@
    "slug": "2194",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2194",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2194: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -8475,9 +8475,9 @@
    "slug": "2209",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2209",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2209: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -8738,9 +8738,9 @@
    "slug": "2190",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2190",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2190: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 2191: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -8949,9 +8949,9 @@
    "slug": "2211",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2211",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2211: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -9269,9 +9269,9 @@
    "slug": "1810",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1810",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1810: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -9512,9 +9512,9 @@
    "slug": "1811",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1811",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1811: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -9847,9 +9847,9 @@
    "slug": "1797",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1797",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1798: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1797: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1245: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -10110,9 +10110,9 @@
    "slug": "1814",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1814",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1814: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -10334,8 +10334,8 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3916",
    "status": {
     "ok": false,
-    "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-11-27T14:40:35Z"
+    "note": "3916: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -10596,9 +10596,9 @@
    "slug": "1812",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1812",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1812: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -10770,8 +10770,8 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1254",
    "status": {
     "ok": false,
-    "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-11-27T14:40:35Z"
+    "note": "1254: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -11042,9 +11042,9 @@
    "slug": "3484",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3484",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "3484: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -11369,9 +11369,9 @@
    "slug": "1819",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1819",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1800: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1819: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -11592,9 +11592,9 @@
    "slug": "1815",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1815",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1815: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -11929,9 +11929,9 @@
    "slug": "1813",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1813",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1813: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -12110,9 +12110,9 @@
    "slug": "1248",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1248",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1248: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -12373,9 +12373,9 @@
    "slug": "3917",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3917",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "3917: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -12656,9 +12656,9 @@
    "slug": "3654",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3654",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "3654: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -12959,9 +12959,9 @@
    "slug": "1788",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1788",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1799: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1788: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1255: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -13232,9 +13232,9 @@
    "slug": "3635",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3635",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "3648: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 3635: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -13445,9 +13445,9 @@
    "slug": "1237",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1237",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1237: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -13708,9 +13708,9 @@
    "slug": "1817",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1817",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1817: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -13994,9 +13994,9 @@
    "slug": "1651",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1651",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1651: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1249: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -14237,9 +14237,9 @@
    "slug": "1622",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1622",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1622: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -14693,9 +14693,9 @@
    "slug": "1775",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1775",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1775: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1777: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -15074,9 +15074,9 @@
    "slug": "1774",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1774",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1774: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1776: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -15477,9 +15477,9 @@
    "slug": "1773",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1773",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1773: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -15850,9 +15850,9 @@
    "slug": "1783",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1783",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1783: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -16111,9 +16111,9 @@
    "slug": "1781",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1781",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1781: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -16384,9 +16384,9 @@
    "slug": "1782",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1782",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1782: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -16673,9 +16673,9 @@
    "slug": "1843",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1843",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1843: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden; 1830: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -17036,9 +17036,9 @@
    "slug": "1829",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1829",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1829: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -17384,7 +17384,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -17800,7 +17800,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -18091,9 +18091,9 @@
    "slug": "1827",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1827",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1827: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -18525,8 +18525,8 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1823",
    "status": {
     "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "note": "report 2026-11-17 older than 2026-11-24 held",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -18897,9 +18897,9 @@
    "slug": "1832",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1832",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "1832: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -19251,8 +19251,8 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1824",
    "status": {
     "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "note": "report 2026-11-17 older than 2026-11-24 held",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -19449,9 +19449,9 @@
    "slug": "2071",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2071",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2071: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -19754,7 +19754,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -20135,9 +20135,9 @@
    "slug": "3724",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3724",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "3724: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -20380,7 +20380,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -20541,7 +20541,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -20722,7 +20722,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -21071,9 +21071,9 @@
    "slug": "2037",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2037",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2037: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -21368,9 +21368,9 @@
    "slug": "2132",
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2132",
    "status": {
-    "ok": true,
-    "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "ok": false,
+    "note": "2132: fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
+    "checked": "2026-11-28T02:48:53Z"
    }
   },
   {
@@ -21519,7 +21519,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-27T14:40:35Z"
+    "checked": "2026-11-28T02:48:53Z"
    }
   }
  ]
