@@ -238,14 +238,6 @@
    ]
   },
   {
-   "key": "basis:MN|STATELINE COOPERATIVE|BLUE EARTH",
-   "rule": "exact",
-   "candidates": [
-    "efzmk6c591",
-    "ehkebqrcqy"
-   ]
-  },
-  {
    "key": "basis:MO|ADM|ST. LOUIS",
    "rule": "exact",
    "candidates": [

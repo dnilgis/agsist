@@ -1206,7 +1206,8 @@
   },
   "a00285": {
    "first": "basis:MN|STATELINE COOPERATIVE|BLUE EARTH",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "ehkebqrcqy"
   },
   "a00286": {
    "first": "basis:MN|TDS FERTILIZER, INC.|FERTILE",
@@ -5273,6 +5274,12 @@
    "merge": "a00441",
    "into": "eaptfre4ay",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-28",
+   "merge": "a00285",
+   "into": "ehkebqrcqy",
+   "why": "every key now matches that bids-repo row"
   }
  ],
  "keys": {
@@ -7576,7 +7583,7 @@
   "basis:MN|RED WING GRAIN|WANAMINGO": "a00284",
   "basis:MN|SARGEANT GRAIN CO.|SARGEANT": "edn01gtp1r",
   "basis:MN|SARGEANT GRAIN COMPANY|SARGEANT GRAIN COMPANY": "e783hwvh7h",
-  "basis:MN|STATELINE COOPERATIVE|BLUE EARTH": "a00285",
+  "basis:MN|STATELINE COOPERATIVE|BLUE EARTH": "ehkebqrcqy",
   "basis:MN|SUNRISE AG COOPERATIVE|BUCKMAN": "e3vsd1rj4m",
   "basis:MN|TDS FERTILIZER, INC.|FERTILE": "a00286",
   "basis:MN|UNITED FARMERS COOPERATIVE (UFC)|BIRD ISLAND": "a00287",
