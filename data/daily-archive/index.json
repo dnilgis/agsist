@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-28",
+      "date_display": "Saturday, November 28, 2026",
+      "headline": "Markets closed for the weekend; December corn last settled Friday at $4.46¾",
+      "teaser": "Two brothers convicted in a $240 million cattle fraud case; USDA signup and WASDE dates ahead.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-28",
+      "market_closed": true
+    },
+    {
       "date": "2026-11-27",
       "date_display": "Friday, November 27, 2026",
       "headline": "Iowa corn basis firmed 5 cents in a week",
@@ -2954,5 +2965,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-27T20:21:16.014411+00:00"
+  "updated": "2026-11-28T12:11:44.108591+00:00"
 }

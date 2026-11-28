@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Nov 2026 20:21:57 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 28 Nov 2026 12:12:22 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Markets closed for the weekend; December corn last settled Friday at $4.46¾</title>
+      <link>https://agsist.com/daily/2026-11-28</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-28</guid>
+      <pubDate>Sat, 28 Nov 2026 12:11:38 +0000</pubDate>
+      <dc:creator>AGSIST</dc:creator>
+      <description>A federal jury convicted two brothers in a $240 million cattle fraud scheme, and a North Dakota man pleaded guilty. It is the biggest livestock-fraud story this week. For anyone who sold cattle through intermediaries, it is a reason to check who holds the paperwork.
+• Grains sit quiet over the holiday weekend
+• Livestock bounces on tight feeders
+Read more: https://agsist.com/daily/2026-11-28</description>
+    </item>
     <item>
       <title>Iowa corn basis firmed 5 cents in a week</title>
       <link>https://agsist.com/daily/2026-11-27</link>
@@ -338,18 +349,6 @@ Read more: https://agsist.com/daily/2026-10-31</description>
 • Grains hold harvest lows
 • Hogs bounce, cattle flat
 Read more: https://agsist.com/daily/2026-10-30</description>
-    </item>
-    <item>
-      <title>Hogs fall 5.5% to $58.60 while corn holds $4.51</title>
-      <link>https://agsist.com/daily/2026-10-29</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-29</guid>
-      <pubDate>Thu, 29 Oct 2026 10:47:52 +0000</pubDate>
-      <dc:creator>AGSIST</dc:creator>
-      <description>Lean hogs settled Wednesday at $58.60, down 5.5% and the biggest drop on the board, only 1% off their 52-week low. Every hog sold this week brought less than it would have Tuesday.
-• Hogs lead the board lower
-• Grains drift on harvest
-• Crude eases on Iran talk
-Read more: https://agsist.com/daily/2026-10-29</description>
     </item>
   </channel>
 </rss>
