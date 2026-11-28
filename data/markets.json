@@ -1,19 +1,57 @@
 {
-  "fetched": "2026-11-27T10:09:49Z",
+  "fetched": "2026-11-28T10:09:24Z",
   "version": 5,
-  "count": 0,
-  "total_found": 0,
+  "count": 1,
+  "total_found": 1,
   "tier_breakdown": {
-    "direct_ag": 0,
+    "direct_ag": 1,
     "trade_energy": 0,
     "macro_weather": 0
   },
   "published_tier_breakdown": {
-    "direct_ag": 0,
+    "direct_ag": 1,
     "trade_energy": 0,
     "macro_weather": 0
   },
-  "published_event_count": 0,
-  "categories": {},
-  "markets": []
+  "published_event_count": 1,
+  "categories": {
+    "Commodities": [
+      {
+        "platform": "Polymarket",
+        "ticker": "7024549",
+        "title": "Will a dozen eggs cost between $2.30 and $2.40 in November?",
+        "yes": 46,
+        "no": 54,
+        "volume_24h": 101.873572,
+        "close_time": "2026-12-11T04:59:00Z",
+        "time_left": "Closes in 12d",
+        "url": "https://polymarket.com/event/price-of-dozen-eggs-in-november-2026",
+        "slug": "price-of-dozen-eggs-in-november-2026",
+        "event_title": "",
+        "relevance": 100,
+        "tier": 1,
+        "category": "Commodities",
+        "why_it_matters": "Egg prices signal avian flu pressure and poultry feed demand."
+      }
+    ]
+  },
+  "markets": [
+    {
+      "platform": "Polymarket",
+      "ticker": "7024549",
+      "title": "Will a dozen eggs cost between $2.30 and $2.40 in November?",
+      "yes": 46,
+      "no": 54,
+      "volume_24h": 101.873572,
+      "close_time": "2026-12-11T04:59:00Z",
+      "time_left": "Closes in 12d",
+      "url": "https://polymarket.com/event/price-of-dozen-eggs-in-november-2026",
+      "slug": "price-of-dozen-eggs-in-november-2026",
+      "event_title": "",
+      "relevance": 100,
+      "tier": 1,
+      "category": "Commodities",
+      "why_it_matters": "Egg prices signal avian flu pressure and poultry feed demand."
+    }
+  ]
 }
