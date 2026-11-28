@@ -385,10 +385,6 @@
    "to": "/cash-bids/kansas/",
    "since": "2026-11-07"
   },
-  "cash-bids/kansas/isabel.html": {
-   "to": "/cash-bids/kansas/",
-   "since": "2026-11-27"
-  },
   "cash-bids/kentucky/clinton.html": {
    "to": "/cash-bids/kentucky/",
    "since": "2026-11-26"
@@ -420,18 +416,6 @@
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
    "since": "2026-10-20"
-  },
-  "cash-bids/wisconsin/columbus.html": {
-   "to": "/cash-bids/wisconsin/",
-   "since": "2026-11-27"
-  },
-  "cash-bids/wisconsin/granton.html": {
-   "to": "/cash-bids/wisconsin/",
-   "since": "2026-11-27"
-  },
-  "cash-bids/wisconsin/thorp.html": {
-   "to": "/cash-bids/wisconsin/",
-   "since": "2026-11-27"
   }
  }
 }
